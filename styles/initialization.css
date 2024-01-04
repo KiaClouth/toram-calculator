@@ -1,0 +1,66 @@
+/* 右侧滚动条样式 */
+::-webkit-scrollbar {
+  height: 0;
+  width: 8px;
+  color: transparent;
+}
+
+/* 正常情况下滑块的样式 */
+::-webkit-scrollbar-thumb {
+  background-color: var(--main-color-2);
+  border-radius: var(--border-radius-small);
+}
+
+/* 鼠标悬浮在滑块上时滑块的样式 */
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--main-color-3);
+}
+
+/* 初始化 */
+a,
+body,
+canvas,
+code,
+div,
+footer,
+form,
+header,
+html,
+i,
+iframe,
+img,
+label,
+li,
+main,
+mark,
+menu,
+nav,
+ol,
+output,
+p,
+pre,
+section,
+small,
+span,
+strong,
+sub,
+ul,
+var {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  vertical-align: baseline;
+}
+
+body {
+  min-width: 100vw;
+  min-height: 100vh;
+}
+
+canvas {
+  touch-action: none;
+}
+
+canvas:focus-visible {
+  outline: none;
+}

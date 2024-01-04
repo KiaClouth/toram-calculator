@@ -1,0 +1,10 @@
+main {
+  min-width: inherit;
+  min-height: inherit;
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.flex-h {
+  display: flex;
+  flex-direction: column;
+}

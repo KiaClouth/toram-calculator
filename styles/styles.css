@@ -1,0 +1,7 @@
+/* 基础样式 */
+@import url(normalize.css); /* 规范化样式 */
+@import url(initialization.css); /* 初始化样式 */
+@import url(atom.css); /* 原子样式库 */
+
+/* 公共布局规则 */
+@import url(layout.css);

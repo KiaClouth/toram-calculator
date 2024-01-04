@@ -1,0 +1,8 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+yarn lint
+# yarn build can be set to ensure that the pushed code can be built successfully. 
+# Sometimes yarn dev can run normally, but the build may fail
+
+# yarn build
