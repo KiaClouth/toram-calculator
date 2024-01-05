@@ -15,7 +15,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="zh_CN" suppressHydrationWarning className="min-h-full w-full">
       <body className={`${inter.className} min-h-screen w-full bg-globalBg overflow-y-auto`}>
-        <div>{'服务器组件'}</div>
         <Providers>{children}</Providers>
       </body>
     </html>
