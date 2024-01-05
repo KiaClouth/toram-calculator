@@ -12,7 +12,7 @@ const Home = () => {
   const globalData = useAppSelector((state) => state.common.globalData);
   const router = useRouter();
   return (
-    <>
+    <div>
       {currentTheme === "dark" ? (
         <div
           className="cursor-pointer text-yellow-400"
@@ -52,7 +52,7 @@ const Home = () => {
       >
         click to user center
       </div>
-    </>
+    </div>
   );
 };
 export default Home;
