@@ -1,7 +1,12 @@
+import Link from "next/link";
 import React from "react";
 
 const UserCenter = () => {
-  return <div>UserCenter</div>;
+  return <div>
+    <Link href={'./'}>
+      pet
+    </Link>
+  </div>;
 };
 
 export default UserCenter;
