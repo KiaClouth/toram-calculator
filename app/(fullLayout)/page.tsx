@@ -11,6 +11,22 @@ const Home = () => {
   const dispatch = useAppDispatch();
   const globalData = useAppSelector((state) => state.common.globalData);
   const router = useRouter();
+  const fetchData = async () => {
+    try {
+      // const response = await fetch('/api/getData');
+      const response = await fetch("/api/getData", {
+        method: "post",
+      });
+      if (response.ok) {
+        const data = await response.json();
+        console.log(data);
+      } else {
+        console.error("Failed to fetch data");
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
   return (
     <div>
       {currentTheme === "dark" ? (
@@ -32,6 +48,7 @@ const Home = () => {
           set dark
         </div>
       )}
+      <div onClick={fetchData}>打印数据</div>
       <div className="bg-globalBg">globalBg</div>
       <div className="bg-globalBgInvert text-globalBgInvert">globalBgInvert</div>
       <div className="border-badgesPurpleBorder border">badgesPurpleBorder</div>
