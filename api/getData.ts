@@ -14,6 +14,6 @@ export default async function getData(req: NextApiRequest, res: NextApiResponse)
     const [rows] = await connection.query("SHOW TABLES");
     res.status(200).json(rows);
   } catch (e) {
-    res.status(500).json({message: e.message});
+    // res.status(500).json({message: e.message});
   }
 }
