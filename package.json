@@ -9,7 +9,8 @@
     "start": "next start",
     "lint": "next lint",
     "prettier": "prettier --write .",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "pm2start": "pm2 start npm --name nextServer -- run start"
   },
   "dependencies": {
     "@emotion/react": "^11.11.3",

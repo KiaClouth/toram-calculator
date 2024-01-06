@@ -1,7 +1,7 @@
 import Header from "@/components/Layout/Header";
 import Footer from "@/components/Layout/Footer";
 
-export default function FullLayout({ children }: { children: React.ReactNode }) {
+export default function FullLayout({children}: {children: React.ReactNode}) {
   return (
     <div>
       <Header />

@@ -1,9 +1,10 @@
-import { IAuthType, IQueryParams, IResponse } from "@/request/type";
+/*global  globalThis*/
+import {IAuthType, IQueryParams, IResponse} from "@/request/type";
 import qs from "qs";
 // 不要用 import {cloneDeep} from "lodash"; 的方式引入，会影响tree shaking的效果
 import cloneDeep from "lodash/cloneDeep";
-import { getSession } from "@/utils/storage";
-import { jwtDecode } from "jwt-decode";
+import {getSession} from "@/utils/storage";
+import {jwtDecode} from "jwt-decode";
 
 const defaultHost = process.env.NEXT_PUBLIC_HOST;
 const aiHost = process.env.NEXT_PUBLIC_AI_HOST;
@@ -23,11 +24,11 @@ export const isExpToken = (expTime: number) => {
 // format jwt token
 export const parseJWT = (
   token: string,
-): { exp: number; iat: number; sub: number; userAddr: string } => {
+): {exp: number; iat: number; sub: number; userAddr: string} => {
   try {
     return jwtDecode(token);
   } catch (err) {
-    return { exp: 0, iat: 0, sub: 0, userAddr: "" };
+    return {exp: 0, iat: 0, sub: 0, userAddr: ""};
   }
 };
 
@@ -63,7 +64,7 @@ export const getStringParams = (params: IQueryParams) => {
       paramsCopy[key] = null;
     }
   }
-  return qs.stringify(paramsCopy, { skipNulls: true });
+  return qs.stringify(paramsCopy, {skipNulls: true});
 };
 
 export const getAuthorization = async (authType: IAuthType) => {
