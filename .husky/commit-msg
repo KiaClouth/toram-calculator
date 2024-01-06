@@ -1,4 +1,5 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
+#下面这个有时候会检测出node_modules里的依赖内不规范的问题，暂时先搁置了
 # npx --no -- commitlint --edit 
