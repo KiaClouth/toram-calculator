@@ -1,0 +1,7383 @@
+{
+  "app--damage-calculation--v1--data": {
+    "calculations": [
+      {
+        "name": "配置 1",
+        "containers": [
+          {
+            "id": "damage_type",
+            "enabled": true,
+            "currentItemId": "physical"
+          },
+          {
+            "id": "base/atk",
+            "enabled": true,
+            "currentItemId": null
+          },
+          {
+            "id": "base/matk",
+            "enabled": true,
+            "currentItemId": null
+          },
+          {
+            "id": "base/dual_sword",
+            "enabled": true,
+            "currentItemId": null
+          },
+          {
+            "id": "base/two_handed",
+            "enabled": false,
+            "currentItemId": null
+          },
+          {
+            "id": "target_resistance",
+            "enabled": true,
+            "currentItemId": null
+          },
+          {
+            "id": "level_difference",
+            "enabled": true,
+            "currentItemId": null
+          },
+          {
+            "id": "target_def_base",
+            "enabled": true,
+            "currentItemId": null
+          },
+          {
+            "id": "pierce",
+            "enabled": true,
+            "currentItemId": null
+          },
+          {
+            "id": "skill/constant",
+            "enabled": true,
+            "currentItemId": null
+          },
+          {
+            "id": "unsheathe_attack/constant",
+            "enabled": true,
+            "currentItemId": null
+          },
+          {
+            "id": "other_constant",
+            "enabled": true,
+            "currentItemId": null
+          },
+          {
+            "id": "skill/multiplier",
+            "enabled": true,
+            "currentItemId": null
+          },
+          {
+            "id": "critical/critical_damage",
+            "enabled": true,
+            "currentItemId": null
+          },
+          {
+            "id": "critical/critical_rate",
+            "enabled": true,
+            "currentItemId": null
+          },
+          {
+            "id": "range_damage",
+            "enabled": true,
+            "currentItemId": "short_range_damage"
+          },
+          {
+            "id": "unsheathe_attack/multiplier",
+            "enabled": true,
+            "currentItemId": null
+          },
+          {
+            "id": "stronger_against_element",
+            "enabled": true,
+            "currentItemId": "stronger_against_neutral"
+          },
+          {
+            "id": "proration",
+            "enabled": true,
+            "currentItemId": null
+          },
+          {
+            "id": "combo_multiplier",
+            "enabled": true,
+            "currentItemId": null
+          },
+          {
+            "id": "stability",
+            "enabled": true,
+            "currentItemId": null
+          },
+          {
+            "id": "accuracy",
+            "enabled": true,
+            "currentItemId": null
+          },
+          {
+            "id": "other_multiplier",
+            "enabled": true,
+            "currentItemId": null
+          }
+        ],
+        "items": [
+          {
+            "id": "physical",
+            "value": 0
+          },
+          {
+            "id": "magic",
+            "value": 0
+          },
+          {
+            "id": "atk",
+            "value": 1337
+          },
+          {
+            "id": "atk_rate",
+            "value": 100
+          },
+          {
+            "id": "matk",
+            "value": 340
+          },
+          {
+            "id": "matk_rate",
+            "value": 100
+          },
+          {
+            "id": "sub_atk",
+            "value": 0
+          },
+          {
+            "id": "sub_stability",
+            "value": 0
+          },
+          {
+            "id": "skill_level_two_handed",
+            "value": 0
+          },
+          {
+            "id": "target_physical_resistance",
+            "value": 6
+          },
+          {
+            "id": "target_magic_resistance",
+            "value": 0
+          },
+          {
+            "id": "character_level",
+            "value": 25
+          },
+          {
+            "id": "target_level",
+            "value": 156
+          },
+          {
+            "id": "target_def",
+            "value": 248
+          },
+          {
+            "id": "target_mdef",
+            "value": 0
+          },
+          {
+            "id": "physical_pierce",
+            "value": 0
+          },
+          {
+            "id": "magic_pierce",
+            "value": 0
+          },
+          {
+            "id": "skill_constant",
+            "value": 0
+          },
+          {
+            "id": "unsheathe_attack_constant",
+            "value": 0
+          },
+          {
+            "id": "other_constant",
+            "value": 0
+          },
+          {
+            "id": "skill_multiplier",
+            "value": 100
+          },
+          {
+            "id": "critical_damage",
+            "value": 150
+          },
+          {
+            "id": "magic_critical_damage_conversion_rate",
+            "value": 50
+          },
+          {
+            "id": "critical_rate",
+            "value": 100
+          },
+          {
+            "id": "magic_critical_rate_conversion_rate",
+            "value": 0
+          },
+          {
+            "id": "target_critical_rate_resistance",
+            "value": 0
+          },
+          {
+            "id": "target_critical_rate_resistance_total",
+            "value": 0
+          },
+          {
+            "id": "short_range_damage",
+            "value": 100
+          },
+          {
+            "id": "long_range_damage",
+            "value": 100
+          },
+          {
+            "id": "unsheathe_attack_multiplier",
+            "value": 100
+          },
+          {
+            "id": "stronger_against_neutral",
+            "value": 100
+          },
+          {
+            "id": "stronger_against_fire",
+            "value": 100
+          },
+          {
+            "id": "stronger_against_water",
+            "value": 100
+          },
+          {
+            "id": "stronger_against_earth",
+            "value": 100
+          },
+          {
+            "id": "stronger_against_wind",
+            "value": 100
+          },
+          {
+            "id": "stronger_against_light",
+            "value": 100
+          },
+          {
+            "id": "stronger_against_dark",
+            "value": 100
+          },
+          {
+            "id": "proration",
+            "value": 250
+          },
+          {
+            "id": "combo_multiplier",
+            "value": 150
+          },
+          {
+            "id": "stability",
+            "value": 100
+          },
+          {
+            "id": "accuracy",
+            "value": 100
+          },
+          {
+            "id": "skill_real_mp_cost",
+            "value": 0
+          },
+          {
+            "id": "target_dodge",
+            "value": 100
+          },
+          {
+            "id": "promised_accuracy_rate",
+            "value": 100
+          },
+          {
+            "id": "other_multiplier",
+            "value": 100
+          }
+        ],
+        "containerCustomItems": [
+          {
+            "containerId": "other_constant",
+            "items": []
+          },
+          {
+            "containerId": "other_multiplier",
+            "items": []
+          }
+        ]
+      }
+    ],
+    "currentCalculationIndex": 0
+  },
+  "app--app-locale": "1",
+  "app--fallback-locale": "0",
+  "app--enchant-simulator--vbeta--auto": {
+    "builds": [
+      {
+        "name": "法师衣服附魔",
+        "equipment": {
+          "basePotential": 15,
+          "originalPotential": 94,
+          "fieldType": 1,
+          "isOriginalElement": false,
+          "steps": [
+            {
+              "type": 0,
+              "hidden": false,
+              "step": 1,
+              "stats": [
+                {
+                  "type": 1,
+                  "value": 8,
+                  "base": "critical_damage"
+                }
+              ]
+            },
+            {
+              "type": 1,
+              "hidden": false,
+              "step": 1,
+              "stats": [
+                {
+                  "type": 0,
+                  "value": 4,
+                  "base": "critical_damage"
+                }
+              ]
+            },
+            {
+              "type": 1,
+              "hidden": false,
+              "step": 1,
+              "stats": [
+                {
+                  "type": 0,
+                  "value": 1,
+                  "base": "critical_rate"
+                }
+              ]
+            },
+            {
+              "type": 0,
+              "hidden": false,
+              "step": 1,
+              "stats": [
+                {
+                  "type": 1,
+                  "value": -11,
+                  "base": "atk"
+                },
+                {
+                  "type": 0,
+                  "value": -6,
+                  "base": "physical_pierce"
+                },
+                {
+                  "type": 1,
+                  "value": -5,
+                  "base": "accuracy"
+                },
+                {
+                  "type": 0,
+                  "value": -12,
+                  "base": "accuracy"
+                }
+              ]
+            },
+            {
+              "type": 1,
+              "hidden": false,
+              "step": 1,
+              "stats": [
+                {
+                  "type": 0,
+                  "value": 20,
+                  "base": "critical_rate"
+                }
+              ]
+            },
+            {
+              "type": 0,
+              "hidden": false,
+              "step": 1,
+              "stats": [
+                {
+                  "type": 1,
+                  "value": 11,
+                  "base": "matk"
+                },
+                {
+                  "type": 0,
+                  "value": 2,
+                  "base": "critical_rate"
+                },
+                {
+                  "type": 0,
+                  "value": 17,
+                  "base": "critical_damage"
+                },
+                {
+                  "type": 1,
+                  "value": 2,
+                  "base": "critical_damage"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "name": "法师衣服附魔2",
+        "equipment": {
+          "basePotential": 15,
+          "originalPotential": 94,
+          "fieldType": 1,
+          "isOriginalElement": false,
+          "steps": [
+            {
+              "type": 0,
+              "hidden": false,
+              "step": 1,
+              "stats": [
+                {
+                  "type": 1,
+                  "value": 1,
+                  "base": "critical_damage"
+                },
+                {
+                  "type": 1,
+                  "value": 3,
+                  "base": "matk"
+                }
+              ]
+            },
+            {
+              "type": 1,
+              "hidden": false,
+              "step": 1,
+              "stats": [
+                {
+                  "type": 0,
+                  "value": 21,
+                  "base": "critical_rate"
+                }
+              ]
+            },
+            {
+              "type": 0,
+              "hidden": false,
+              "step": 1,
+              "stats": [
+                {
+                  "type": 0,
+                  "value": -6,
+                  "base": "physical_pierce"
+                },
+                {
+                  "type": 0,
+                  "value": -12,
+                  "base": "accuracy"
+                },
+                {
+                  "type": 1,
+                  "value": -5,
+                  "base": "accuracy"
+                },
+                {
+                  "type": 1,
+                  "value": -11,
+                  "base": "atk"
+                }
+              ]
+            },
+            {
+              "type": 0,
+              "hidden": false,
+              "step": 1,
+              "stats": [
+                {
+                  "type": 1,
+                  "value": 8,
+                  "base": "matk"
+                },
+                {
+                  "type": 0,
+                  "value": 1,
+                  "base": "critical_rate"
+                },
+                {
+                  "type": 0,
+                  "value": 21,
+                  "base": "critical_damage"
+                },
+                {
+                  "type": 1,
+                  "value": 9,
+                  "base": "critical_damage"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "name": "灵爆伤杖",
+        "equipment": {
+          "basePotential": 15,
+          "originalPotential": 99,
+          "fieldType": 0,
+          "isOriginalElement": false,
+          "steps": [
+            {
+              "type": 0,
+              "hidden": true,
+              "step": 1,
+              "stats": [
+                {
+                  "type": 0,
+                  "value": 1,
+                  "base": "critical_damage"
+                },
+                {
+                  "type": 1,
+                  "value": 7,
+                  "base": "critical_damage"
+                }
+              ]
+            },
+            {
+              "type": 0,
+              "hidden": true,
+              "step": 1,
+              "stats": [
+                {
+                  "type": 0,
+                  "value": -24,
+                  "base": "natural_hp_regen"
+                },
+                {
+                  "type": 1,
+                  "value": -5,
+                  "base": "natural_mp_regen"
+                },
+                {
+                  "type": 1,
+                  "value": -10,
+                  "base": "natural_hp_regen"
+                }
+              ]
+            },
+            {
+              "type": 0,
+              "hidden": true,
+              "step": 1,
+              "stats": [
+                {
+                  "type": 1,
+                  "value": 10,
+                  "base": "dex"
+                },
+                {
+                  "type": 1,
+                  "value": 9,
+                  "base": "critical_damage"
+                },
+                {
+                  "type": 0,
+                  "value": 20,
+                  "base": "critical_damage"
+                },
+                {
+                  "type": 0,
+                  "value": 21,
+                  "base": "stronger_against_dark"
+                },
+                {
+                  "type": 0,
+                  "value": 1,
+                  "base": "element_fire"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "name": "咏速魔导",
+        "equipment": {
+          "basePotential": 15,
+          "originalPotential": 98,
+          "fieldType": 0,
+          "isOriginalElement": false,
+          "steps": [
+            {
+              "type": 0,
+              "hidden": false,
+              "step": 1,
+              "stats": [
+                {
+                  "type": 0,
+                  "value": -24,
+                  "base": "natural_hp_regen"
+                },
+                {
+                  "type": 1,
+                  "value": -11,
+                  "base": "def"
+                },
+                {
+                  "type": 0,
+                  "value": -12,
+                  "base": "dodge"
+                }
+              ]
+            },
+            {
+              "type": 0,
+              "hidden": false,
+              "step": 1,
+              "stats": [
+                {
+                  "type": 1,
+                  "value": 12,
+                  "base": "matk"
+                },
+                {
+                  "type": 1,
+                  "value": 20,
+                  "base": "cspd"
+                },
+                {
+                  "type": 0,
+                  "value": 21,
+                  "base": "stronger_against_dark"
+                },
+                {
+                  "type": 0,
+                  "value": 1,
+                  "base": "element_light"
+                },
+                {
+                  "type": 0,
+                  "value": 24,
+                  "base": "critical_rate"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "name": "匠武器",
+        "equipment": {
+          "basePotential": 15,
+          "originalPotential": 45,
+          "fieldType": 0,
+          "isOriginalElement": false,
+          "steps": [
+            {
+              "type": 0,
+              "hidden": false,
+              "step": 1,
+              "stats": [
+                {
+                  "type": 1,
+                  "value": -5,
+                  "base": "natural_mp_regen"
+                },
+                {
+                  "type": 0,
+                  "value": -12,
+                  "base": "natural_mp_regen"
+                },
+                {
+                  "type": 1,
+                  "value": -10,
+                  "base": "natural_hp_regen"
+                },
+                {
+                  "type": 0,
+                  "value": -24,
+                  "base": "natural_hp_regen"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    ],
+    "index": 4,
+    "config": {
+      "characterLevel": 250,
+      "smithLevel": 60
+    }
+  },
+  "app--font-family": "1",
+  "app--character-simulator--data-v2--auto": {
+    "summary": {
+      "characterIndex": 0,
+      "foodBuildIndex": 1
+    },
+    "datas": {
+      "version": "v2",
+      "characters": [
+        {
+          "id": 0,
+          "name": "id法术魔导",
+          "level": 245,
+          "normalBaseStats": [
+            {
+              "name": "STR",
+              "value": 1
+            },
+            {
+              "name": "DEX",
+              "value": 247
+            },
+            {
+              "name": "INT",
+              "value": 415
+            },
+            {
+              "name": "AGI",
+              "value": 1
+            },
+            {
+              "name": "VIT",
+              "value": 1
+            }
+          ],
+          "fields": [
+            {
+              "type": "main_weapon",
+              "index": 0,
+              "equipmentIndex": 5
+            },
+            {
+              "type": "sub_weapon",
+              "index": 0,
+              "equipmentIndex": 14
+            },
+            {
+              "type": "body_armor",
+              "index": 0,
+              "equipmentIndex": 18
+            },
+            {
+              "type": "additional",
+              "index": 0,
+              "equipmentIndex": 28
+            },
+            {
+              "type": "special",
+              "index": 0,
+              "equipmentIndex": 35
+            },
+            {
+              "type": "avatar",
+              "index": 0,
+              "equipmentIndex": 41
+            },
+            {
+              "type": "avatar",
+              "index": 1,
+              "equipmentIndex": 39
+            },
+            {
+              "type": "avatar",
+              "index": 2,
+              "equipmentIndex": 47
+            }
+          ],
+          "combo": {
+            "combos": [
+              {
+                "skills": [
+                  {
+                    "skill": null,
+                    "tag": null,
+                    "condition": null
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": 1,
+          "name": "物理魔导 近威",
+          "level": 240,
+          "normalBaseStats": [
+            {
+              "name": "STR",
+              "value": 1
+            },
+            {
+              "name": "DEX",
+              "value": 247
+            },
+            {
+              "name": "INT",
+              "value": 1
+            },
+            {
+              "name": "AGI",
+              "value": 375
+            },
+            {
+              "name": "VIT",
+              "value": 1
+            }
+          ],
+          "fields": [
+            {
+              "type": "main_weapon",
+              "index": 0,
+              "equipmentIndex": 7
+            },
+            {
+              "type": "sub_weapon",
+              "index": 0,
+              "equipmentIndex": -1
+            },
+            {
+              "type": "body_armor",
+              "index": 0,
+              "equipmentIndex": 20
+            },
+            {
+              "type": "additional",
+              "index": 0,
+              "equipmentIndex": 27
+            },
+            {
+              "type": "special",
+              "index": 0,
+              "equipmentIndex": 33
+            },
+            {
+              "type": "avatar",
+              "index": 0,
+              "equipmentIndex": 43
+            },
+            {
+              "type": "avatar",
+              "index": 1,
+              "equipmentIndex": 46
+            },
+            {
+              "type": "avatar",
+              "index": 2,
+              "equipmentIndex": 47
+            }
+          ],
+          "combo": {
+            "combos": [
+              {
+                "skills": [
+                  {
+                    "skill": null,
+                    "tag": null,
+                    "condition": null
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": 2,
+          "name": "ia法术魔导",
+          "level": 240,
+          "normalBaseStats": [
+            {
+              "name": "STR",
+              "value": 1
+            },
+            {
+              "name": "DEX",
+              "value": 1
+            },
+            {
+              "name": "INT",
+              "value": 375
+            },
+            {
+              "name": "AGI",
+              "value": 247
+            },
+            {
+              "name": "VIT",
+              "value": 1
+            }
+          ],
+          "fields": [
+            {
+              "type": "main_weapon",
+              "index": 0,
+              "equipmentIndex": 5
+            },
+            {
+              "type": "sub_weapon",
+              "index": 0,
+              "equipmentIndex": 15
+            },
+            {
+              "type": "body_armor",
+              "index": 0,
+              "equipmentIndex": 18
+            },
+            {
+              "type": "additional",
+              "index": 0,
+              "equipmentIndex": 29
+            },
+            {
+              "type": "special",
+              "index": 0,
+              "equipmentIndex": 34
+            },
+            {
+              "type": "avatar",
+              "index": 0,
+              "equipmentIndex": 41
+            },
+            {
+              "type": "avatar",
+              "index": 1,
+              "equipmentIndex": 39
+            },
+            {
+              "type": "avatar",
+              "index": 2,
+              "equipmentIndex": 40
+            }
+          ],
+          "combo": {
+            "combos": [
+              {
+                "skills": [
+                  {
+                    "skill": null,
+                    "tag": null,
+                    "condition": null
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": 3,
+          "name": "剑盾",
+          "level": 240,
+          "normalBaseStats": [
+            {
+              "name": "STR",
+              "value": 247
+            },
+            {
+              "name": "DEX",
+              "value": 375
+            },
+            {
+              "name": "INT",
+              "value": 1
+            },
+            {
+              "name": "AGI",
+              "value": 1
+            },
+            {
+              "name": "VIT",
+              "value": 1
+            }
+          ],
+          "fields": [
+            {
+              "type": "main_weapon",
+              "index": 0,
+              "equipmentIndex": 0
+            },
+            {
+              "type": "sub_weapon",
+              "index": 0,
+              "equipmentIndex": 17
+            },
+            {
+              "type": "body_armor",
+              "index": 0,
+              "equipmentIndex": 25
+            },
+            {
+              "type": "additional",
+              "index": 0,
+              "equipmentIndex": 27
+            },
+            {
+              "type": "special",
+              "index": 0,
+              "equipmentIndex": 33
+            },
+            {
+              "type": "avatar",
+              "index": 0,
+              "equipmentIndex": 45
+            },
+            {
+              "type": "avatar",
+              "index": 1,
+              "equipmentIndex": 50
+            },
+            {
+              "type": "avatar",
+              "index": 2,
+              "equipmentIndex": 47
+            }
+          ],
+          "combo": {
+            "combos": [
+              {
+                "skills": [
+                  {
+                    "skill": null,
+                    "tag": null,
+                    "condition": null
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": 4,
+          "name": "杖魔",
+          "level": 255,
+          "normalBaseStats": [
+            {
+              "name": "STR",
+              "value": 247
+            },
+            {
+              "name": "DEX",
+              "value": 1
+            },
+            {
+              "name": "INT",
+              "value": 415
+            },
+            {
+              "name": "AGI",
+              "value": 1
+            },
+            {
+              "name": "VIT",
+              "value": 1
+            }
+          ],
+          "fields": [
+            {
+              "type": "main_weapon",
+              "index": 0,
+              "equipmentIndex": 3
+            },
+            {
+              "type": "sub_weapon",
+              "index": 0,
+              "equipmentIndex": 5
+            },
+            {
+              "type": "body_armor",
+              "index": 0,
+              "equipmentIndex": 18
+            },
+            {
+              "type": "additional",
+              "index": 0,
+              "equipmentIndex": 31
+            },
+            {
+              "type": "special",
+              "index": 0,
+              "equipmentIndex": 34
+            },
+            {
+              "type": "avatar",
+              "index": 0,
+              "equipmentIndex": 42
+            },
+            {
+              "type": "avatar",
+              "index": 1,
+              "equipmentIndex": 39
+            },
+            {
+              "type": "avatar",
+              "index": 2,
+              "equipmentIndex": 40
+            }
+          ],
+          "combo": {
+            "combos": [
+              {
+                "skills": [
+                  {
+                    "skill": null,
+                    "tag": null,
+                    "condition": null
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": 5,
+          "name": "幸运精炼匠",
+          "level": 240,
+          "normalBaseStats": [
+            {
+              "name": "STR",
+              "value": 1
+            },
+            {
+              "name": "DEX",
+              "value": 367
+            },
+            {
+              "name": "INT",
+              "value": 1
+            },
+            {
+              "name": "AGI",
+              "value": 1
+            },
+            {
+              "name": "VIT",
+              "value": 1
+            }
+          ],
+          "fields": [
+            {
+              "type": "main_weapon",
+              "index": 0,
+              "equipmentIndex": 5
+            },
+            {
+              "type": "sub_weapon",
+              "index": 0,
+              "equipmentIndex": 12
+            },
+            {
+              "type": "body_armor",
+              "index": 0,
+              "equipmentIndex": 18
+            },
+            {
+              "type": "additional",
+              "index": 0,
+              "equipmentIndex": 28
+            },
+            {
+              "type": "special",
+              "index": 0,
+              "equipmentIndex": 34
+            },
+            {
+              "type": "avatar",
+              "index": 0,
+              "equipmentIndex": 41
+            },
+            {
+              "type": "avatar",
+              "index": 1,
+              "equipmentIndex": 39
+            },
+            {
+              "type": "avatar",
+              "index": 2,
+              "equipmentIndex": 40
+            }
+          ],
+          "optionalBaseStat": {
+            "name": "LUK",
+            "value": 255
+          },
+          "combo": {
+            "combos": [
+              {
+                "skills": [
+                  {
+                    "skill": null,
+                    "tag": null,
+                    "condition": null
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": 6,
+          "name": "附魔合成精炼匠",
+          "level": 240,
+          "normalBaseStats": [
+            {
+              "name": "STR",
+              "value": 1
+            },
+            {
+              "name": "DEX",
+              "value": 1
+            },
+            {
+              "name": "INT",
+              "value": 367
+            },
+            {
+              "name": "AGI",
+              "value": 1
+            },
+            {
+              "name": "VIT",
+              "value": 1
+            }
+          ],
+          "fields": [
+            {
+              "type": "main_weapon",
+              "index": 0,
+              "equipmentIndex": 5
+            },
+            {
+              "type": "sub_weapon",
+              "index": 0,
+              "equipmentIndex": 12
+            },
+            {
+              "type": "body_armor",
+              "index": 0,
+              "equipmentIndex": 18
+            },
+            {
+              "type": "additional",
+              "index": 0,
+              "equipmentIndex": 28
+            },
+            {
+              "type": "special",
+              "index": 0,
+              "equipmentIndex": 34
+            },
+            {
+              "type": "avatar",
+              "index": 0,
+              "equipmentIndex": 41
+            },
+            {
+              "type": "avatar",
+              "index": 1,
+              "equipmentIndex": 39
+            },
+            {
+              "type": "avatar",
+              "index": 2,
+              "equipmentIndex": 40
+            }
+          ],
+          "optionalBaseStat": {
+            "name": "TEC",
+            "value": 255
+          },
+          "combo": {
+            "combos": [
+              {
+                "skills": [
+                  {
+                    "skill": null,
+                    "tag": null,
+                    "condition": null
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": 7,
+          "name": "拔刀",
+          "level": 245,
+          "normalBaseStats": [
+            {
+              "name": "STR",
+              "value": 390
+            },
+            {
+              "name": "DEX",
+              "value": 247
+            },
+            {
+              "name": "INT",
+              "value": 1
+            },
+            {
+              "name": "AGI",
+              "value": 1
+            },
+            {
+              "name": "VIT",
+              "value": 1
+            }
+          ],
+          "fields": [
+            {
+              "type": "main_weapon",
+              "index": 0,
+              "equipmentIndex": 52
+            },
+            {
+              "type": "sub_weapon",
+              "index": 0,
+              "equipmentIndex": -1
+            },
+            {
+              "type": "body_armor",
+              "index": 0,
+              "equipmentIndex": -1
+            },
+            {
+              "type": "additional",
+              "index": 0,
+              "equipmentIndex": -1
+            },
+            {
+              "type": "special",
+              "index": 0,
+              "equipmentIndex": -1
+            },
+            {
+              "type": "avatar",
+              "index": 0,
+              "equipmentIndex": -1
+            },
+            {
+              "type": "avatar",
+              "index": 1,
+              "equipmentIndex": -1
+            },
+            {
+              "type": "avatar",
+              "index": 2,
+              "equipmentIndex": -1
+            }
+          ],
+          "combo": {
+            "combos": [
+              {
+                "skills": [
+                  {
+                    "skill": null,
+                    "tag": null,
+                    "condition": null
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": 8,
+          "name": "元劈佣兵",
+          "level": 255,
+          "normalBaseStats": [
+            {
+              "name": "STR",
+              "value": 1
+            },
+            {
+              "name": "DEX",
+              "value": 415
+            },
+            {
+              "name": "INT",
+              "value": 1
+            },
+            {
+              "name": "AGI",
+              "value": 247
+            },
+            {
+              "name": "VIT",
+              "value": 1
+            }
+          ],
+          "fields": [
+            {
+              "type": "main_weapon",
+              "index": 0,
+              "equipmentIndex": 53
+            },
+            {
+              "type": "sub_weapon",
+              "index": 0,
+              "equipmentIndex": 8
+            },
+            {
+              "type": "body_armor",
+              "index": 0,
+              "equipmentIndex": 54
+            },
+            {
+              "type": "additional",
+              "index": 0,
+              "equipmentIndex": 55
+            },
+            {
+              "type": "special",
+              "index": 0,
+              "equipmentIndex": 56
+            },
+            {
+              "type": "avatar",
+              "index": 0,
+              "equipmentIndex": -1
+            },
+            {
+              "type": "avatar",
+              "index": 1,
+              "equipmentIndex": -1
+            },
+            {
+              "type": "avatar",
+              "index": 2,
+              "equipmentIndex": -1
+            }
+          ],
+          "combo": {
+            "combos": [
+              {
+                "skills": [
+                  {
+                    "skill": null,
+                    "tag": null,
+                    "condition": null
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": 9,
+          "name": "疾风魔炮",
+          "level": 255,
+          "normalBaseStats": [
+            {
+              "name": "STR",
+              "value": 1
+            },
+            {
+              "name": "DEX",
+              "value": 247
+            },
+            {
+              "name": "INT",
+              "value": 415
+            },
+            {
+              "name": "AGI",
+              "value": 1
+            },
+            {
+              "name": "VIT",
+              "value": 1
+            }
+          ],
+          "fields": [
+            {
+              "type": "main_weapon",
+              "index": 0,
+              "equipmentIndex": 58
+            },
+            {
+              "type": "sub_weapon",
+              "index": 0,
+              "equipmentIndex": 57
+            },
+            {
+              "type": "body_armor",
+              "index": 0,
+              "equipmentIndex": 18
+            },
+            {
+              "type": "additional",
+              "index": 0,
+              "equipmentIndex": 31
+            },
+            {
+              "type": "special",
+              "index": 0,
+              "equipmentIndex": 35
+            },
+            {
+              "type": "avatar",
+              "index": 0,
+              "equipmentIndex": 41
+            },
+            {
+              "type": "avatar",
+              "index": 1,
+              "equipmentIndex": 39
+            },
+            {
+              "type": "avatar",
+              "index": 2,
+              "equipmentIndex": 47
+            }
+          ],
+          "combo": {
+            "combos": [
+              {
+                "skills": [
+                  {
+                    "skill": null,
+                    "tag": null,
+                    "condition": null
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "equipments": [
+        {
+          "idx": 0,
+          "instance": 0,
+          "stats": [
+            {
+              "id": "atk",
+              "value": 12,
+              "type": "multiplier",
+              "restriction": null
+            },
+            {
+              "id": "critical_rate",
+              "value": 24,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "critical_damage",
+              "value": 21,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "critical_damage",
+              "value": 10,
+              "type": "multiplier",
+              "restriction": null
+            }
+          ],
+          "id": 0,
+          "name": "剑盾剑",
+          "type": "one-hand-sword",
+          "basicValue": 370,
+          "stability": 80,
+          "refining": 15,
+          "crystals": ["魔糰子", "炎龍布蘭瑪"]
+        },
+        {
+          "idx": 1,
+          "instance": 0,
+          "stats": [
+            {
+              "id": "critical_rate",
+              "value": 25,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "critical_damage",
+              "value": 21,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "critical_damage",
+              "value": 2,
+              "type": "multiplier",
+              "restriction": null
+            },
+            {
+              "id": "matk",
+              "value": 12,
+              "type": "multiplier",
+              "restriction": null
+            },
+            {
+              "id": "stronger_against_dark",
+              "value": 21,
+              "type": "constant",
+              "restriction": null
+            }
+          ],
+          "id": 1,
+          "name": "疾风魔炮 主手",
+          "type": "one-hand-sword",
+          "basicValue": 400,
+          "stability": 70,
+          "refining": 15,
+          "crystals": ["寄生甲獸", "移儡原生素體"]
+        },
+        {
+          "idx": 2,
+          "instance": 0,
+          "stats": [
+            {
+              "id": "matk",
+              "value": 12,
+              "type": "multiplier",
+              "restriction": null
+            },
+            {
+              "id": "stronger_against_dark",
+              "value": 21,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "element_light",
+              "value": 1,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "int",
+              "value": 10,
+              "type": "multiplier",
+              "restriction": null
+            }
+          ],
+          "id": 2,
+          "name": "非暴击光对暗杖",
+          "type": "staff",
+          "basicValue": 377,
+          "stability": 60,
+          "refining": 15,
+          "crystals": ["樹毒羚", "死靈妖兔II"]
+        },
+        {
+          "idx": 3,
+          "instance": 0,
+          "stats": [
+            {
+              "id": "matk",
+              "value": 6,
+              "type": "multiplier",
+              "restriction": null
+            },
+            {
+              "id": "critical_rate",
+              "value": 24,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "critical_damage",
+              "value": 21,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "stronger_against_dark",
+              "value": 21,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "element_light",
+              "value": 1,
+              "type": "constant",
+              "restriction": null
+            }
+          ],
+          "id": 3,
+          "name": "通用杖",
+          "type": "staff",
+          "basicValue": 370,
+          "stability": 60,
+          "refining": 15,
+          "crystals": ["寄生甲獸", "移儡原生素體"]
+        },
+        {
+          "idx": 4,
+          "instance": 0,
+          "stats": [],
+          "id": 4,
+          "name": "1周年飛翼",
+          "type": "magic-device",
+          "basicValue": 14,
+          "stability": 70,
+          "refining": 0,
+          "crystals": []
+        },
+        {
+          "idx": 5,
+          "instance": 0,
+          "stats": [
+            {
+              "id": "element_light",
+              "value": 1,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "stronger_against_dark",
+              "value": 21,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "matk",
+              "value": 6,
+              "type": "multiplier",
+              "restriction": null
+            },
+            {
+              "id": "critical_rate",
+              "value": 25,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "critical_damage",
+              "value": 21,
+              "type": "constant",
+              "restriction": null
+            }
+          ],
+          "id": 5,
+          "name": "光对暗 穿山甲壳 暴击",
+          "type": "magic-device",
+          "basicValue": 324,
+          "stability": 60,
+          "refining": 15,
+          "crystals": ["寄生甲獸", "死靈妖兔II"]
+        },
+        {
+          "idx": 6,
+          "instance": 0,
+          "stats": [
+            {
+              "id": "element_light",
+              "value": 1,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "stronger_against_dark",
+              "value": 21,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "matk",
+              "value": 12,
+              "type": "multiplier",
+              "restriction": null
+            },
+            {
+              "id": "cspd",
+              "value": 20,
+              "type": "multiplier",
+              "restriction": null
+            },
+            {
+              "id": "aspd",
+              "value": 20,
+              "type": "multiplier",
+              "restriction": null
+            }
+          ],
+          "id": 6,
+          "name": "光对暗 残酷之翼 暴击 敏",
+          "type": "magic-device",
+          "basicValue": 190,
+          "stability": 70,
+          "refining": 15,
+          "crystals": ["寄生甲獸", "移儡原生素體"]
+        },
+        {
+          "idx": 7,
+          "instance": 0,
+          "stats": [
+            {
+              "id": "atk",
+              "value": 5,
+              "type": "multiplier",
+              "restriction": null
+            },
+            {
+              "id": "element_light",
+              "value": 1,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "stronger_against_dark",
+              "value": 21,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "critical_rate",
+              "value": 24,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "critical_damage",
+              "value": 21,
+              "type": "constant",
+              "restriction": null
+            }
+          ],
+          "id": 7,
+          "name": "光对暗 残酷之翼 暴击 物理",
+          "type": "magic-device",
+          "basicValue": 190,
+          "stability": 70,
+          "refining": 15,
+          "crystals": ["魔糰子", "炎龍布蘭瑪"]
+        },
+        {
+          "idx": 8,
+          "instance": 0,
+          "stats": [
+            {
+              "id": "element_light",
+              "value": 1,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "stronger_against_dark",
+              "value": 21,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "matk",
+              "value": 12,
+              "type": "multiplier",
+              "restriction": null
+            },
+            {
+              "id": "int",
+              "value": 10,
+              "type": "multiplier",
+              "restriction": null
+            }
+          ],
+          "id": 8,
+          "name": "光对暗 残酷之翼 非暴击",
+          "type": "magic-device",
+          "basicValue": 190,
+          "stability": 70,
+          "refining": 15,
+          "crystals": ["寄生甲獸", "樹毒羚"]
+        },
+        {
+          "idx": 9,
+          "instance": 0,
+          "stats": [
+            {
+              "id": "element_wind",
+              "value": 1,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "long_range_damage",
+              "value": 8,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "max_mp",
+              "value": 300,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "magic_pierce",
+              "value": 30,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "dodge",
+              "value": 30,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "earth_resistance",
+              "value": -50,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "weapon_range",
+              "value": -2,
+              "type": "constant",
+              "restriction": null
+            }
+          ],
+          "id": 9,
+          "name": "女王翅",
+          "type": "magic-device",
+          "basicValue": 409,
+          "stability": 50,
+          "refining": 15,
+          "crystals": ["死靈妖兔II", "皮斯泰烏魚"]
+        },
+        {
+          "idx": 10,
+          "instance": 1,
+          "stats": [
+            {
+              "id": "aggro",
+              "value": -10,
+              "type": "constant",
+              "restriction": null
+            }
+          ],
+          "id": 10,
+          "name": "忍術卷軸．闇遁",
+          "type": "ninjutsu-scroll",
+          "basicValue": 0,
+          "stability": 0
+        },
+        {
+          "idx": 11,
+          "instance": 1,
+          "stats": [
+            {
+              "id": "ailment_resistance",
+              "value": 5,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "aggro",
+              "value": -10,
+              "type": "constant",
+              "restriction": {
+                "main": "magic-device",
+                "sub": null,
+                "body": null,
+                "other": null
+              }
+            }
+          ],
+          "id": 11,
+          "name": "忍術卷軸．水遁",
+          "type": "ninjutsu-scroll",
+          "basicValue": 0,
+          "stability": 0
+        },
+        {
+          "idx": 12,
+          "instance": 1,
+          "stats": [
+            {
+              "id": "aspd",
+              "value": 250,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "critical_rate",
+              "value": 5,
+              "type": "constant",
+              "restriction": {
+                "main": "katana",
+                "sub": null,
+                "body": null,
+                "other": null
+              }
+            }
+          ],
+          "id": 12,
+          "name": "忍術卷軸．風遁",
+          "type": "ninjutsu-scroll",
+          "basicValue": 280,
+          "stability": 0
+        },
+        {
+          "idx": 13,
+          "instance": 1,
+          "stats": [
+            {
+              "id": "matk",
+              "value": 1,
+              "type": "multiplier",
+              "restriction": null
+            },
+            {
+              "id": "magic_pierce",
+              "value": 5,
+              "type": "constant",
+              "restriction": {
+                "main": "staff",
+                "sub": null,
+                "body": null,
+                "other": null
+              }
+            }
+          ],
+          "id": 13,
+          "name": "忍術卷軸．火遁",
+          "type": "ninjutsu-scroll",
+          "basicValue": 0,
+          "stability": 0
+        },
+        {
+          "idx": 14,
+          "instance": 1,
+          "stats": [
+            {
+              "id": "critical_rate",
+              "value": 5,
+              "type": "constant",
+              "restriction": null
+            }
+          ],
+          "id": 14,
+          "name": "忍術卷軸．金遁",
+          "type": "ninjutsu-scroll",
+          "basicValue": 0,
+          "stability": 0
+        },
+        {
+          "idx": 15,
+          "instance": 1,
+          "stats": [
+            {
+              "id": "stability",
+              "value": 5,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "accuracy",
+              "value": 10,
+              "type": "multiplier",
+              "restriction": {
+                "main": "katana",
+                "sub": null,
+                "body": null,
+                "other": null
+              }
+            }
+          ],
+          "id": 15,
+          "name": "忍術卷軸．雷遁",
+          "type": "ninjutsu-scroll",
+          "basicValue": 280,
+          "stability": 0
+        },
+        {
+          "idx": 16,
+          "instance": 1,
+          "stats": [
+            {
+              "id": "max_hp",
+              "value": 10,
+              "type": "multiplier",
+              "restriction": null
+            },
+            {
+              "id": "fractional_barrier",
+              "value": 10,
+              "type": "constant",
+              "restriction": {
+                "main": "one-hand-sword",
+                "sub": null,
+                "body": null,
+                "other": null
+              }
+            }
+          ],
+          "id": 16,
+          "name": "忍術卷軸．土遁",
+          "type": "ninjutsu-scroll",
+          "basicValue": 0,
+          "stability": 0
+        },
+        {
+          "idx": 17,
+          "instance": 2,
+          "stats": [
+            {
+              "id": "dex",
+              "value": 3,
+              "type": "multiplier",
+              "restriction": null
+            },
+            {
+              "id": "physical_pierce",
+              "value": 6,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "aspd",
+              "value": 600,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "water_resistance",
+              "value": 15,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "magic_resistance",
+              "value": 20,
+              "type": "constant",
+              "restriction": {
+                "main": "staff",
+                "sub": null,
+                "body": null,
+                "other": null
+              }
+            }
+          ],
+          "id": 17,
+          "name": "惡靈魚的圓盾",
+          "type": "shield",
+          "basicValue": 120,
+          "refining": 0
+        },
+        {
+          "idx": 18,
+          "instance": 3,
+          "stats": [
+            {
+              "id": "critical_rate",
+              "value": 25,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "critical_damage",
+              "value": 21,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "stronger_against_dark",
+              "value": 21,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "critical_damage",
+              "value": 10,
+              "type": "multiplier",
+              "restriction": null
+            },
+            {
+              "id": "physical_pierce",
+              "value": -6,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "atk",
+              "value": -12,
+              "type": "multiplier",
+              "restriction": null
+            },
+            {
+              "id": "accuracy",
+              "value": -6,
+              "type": "multiplier",
+              "restriction": null
+            },
+            {
+              "id": "accuracy",
+              "value": -14,
+              "type": "constant",
+              "restriction": null
+            }
+          ],
+          "id": 18,
+          "name": "对属爆伤衣",
+          "type": "body-dodge",
+          "basicValue": 1,
+          "refining": 0,
+          "crystals": ["鐵之女帝", "席比拉雷斯"]
+        },
+        {
+          "idx": 19,
+          "instance": 3,
+          "stats": [
+            {
+              "id": "critical_rate",
+              "value": 24,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "critical_damage",
+              "value": 20,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "stronger_against_dark",
+              "value": 20,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "critical_damage",
+              "value": 10,
+              "type": "multiplier",
+              "restriction": null
+            }
+          ],
+          "id": 19,
+          "name": "对属爆伤衣 攻速",
+          "type": "body-dodge",
+          "basicValue": 0,
+          "refining": 0,
+          "crystals": ["鐵之女帝", "死神稻草人"]
+        },
+        {
+          "idx": 20,
+          "instance": 3,
+          "stats": [
+            {
+              "id": "critical_rate",
+              "value": 24,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "critical_damage",
+              "value": 20,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "stronger_against_dark",
+              "value": 20,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "critical_damage",
+              "value": 10,
+              "type": "multiplier",
+              "restriction": null
+            }
+          ],
+          "id": 20,
+          "name": "对属爆伤衣 物理",
+          "type": "body-dodge",
+          "basicValue": 0,
+          "refining": 0,
+          "crystals": ["變異幽靈牛", "波姆波姆博士"]
+        },
+        {
+          "idx": 21,
+          "instance": 3,
+          "stats": [
+            {
+              "id": "stronger_against_dark",
+              "value": 21,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "physical_pierce",
+              "value": -6,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "accuracy",
+              "value": -5,
+              "type": "multiplier",
+              "restriction": null
+            },
+            {
+              "id": "accuracy",
+              "value": -14,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "int",
+              "value": 10,
+              "type": "multiplier",
+              "restriction": null
+            },
+            {
+              "id": "matk",
+              "value": 5,
+              "type": "multiplier",
+              "restriction": null
+            }
+          ],
+          "id": 21,
+          "name": "对属魔攻攻速衣服",
+          "type": "body-dodge",
+          "basicValue": 10,
+          "refining": 15,
+          "crystals": ["鐵之女帝", "波姆波姆博士"]
+        },
+        {
+          "idx": 22,
+          "instance": 3,
+          "stats": [
+            {
+              "id": "matk",
+              "value": 10,
+              "type": "multiplier",
+              "restriction": null
+            },
+            {
+              "id": "stronger_against_dark",
+              "value": 21,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "critical_rate",
+              "value": 20,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "physical_pierce",
+              "value": -6,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "atk",
+              "value": -11,
+              "type": "multiplier",
+              "restriction": null
+            },
+            {
+              "id": "accuracy",
+              "value": -5,
+              "type": "multiplier",
+              "restriction": null
+            },
+            {
+              "id": "accuracy",
+              "value": -14,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "atk",
+              "value": -24,
+              "type": "constant",
+              "restriction": null
+            }
+          ],
+          "id": 22,
+          "name": "对属魔攻咏唱衣服 ",
+          "type": "body-dodge",
+          "basicValue": 10,
+          "refining": 15,
+          "crystals": ["鐵之女帝", "波姆波姆博士"]
+        },
+        {
+          "idx": 23,
+          "instance": 3,
+          "stats": [
+            {
+              "id": "stronger_against_dark",
+              "value": 21,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "critical_rate",
+              "value": 24,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "aspd",
+              "value": 20,
+              "type": "multiplier",
+              "restriction": null
+            },
+            {
+              "id": "physical_pierce",
+              "value": -6,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "accuracy",
+              "value": -5,
+              "type": "multiplier",
+              "restriction": null
+            },
+            {
+              "id": "accuracy",
+              "value": -14,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "int",
+              "value": 10,
+              "type": "multiplier",
+              "restriction": null
+            }
+          ],
+          "id": 23,
+          "name": "对属智力攻速衣服 ",
+          "type": "body-dodge",
+          "basicValue": 10,
+          "refining": 15,
+          "crystals": ["鐵之女帝", "波姆波姆博士"]
+        },
+        {
+          "idx": 24,
+          "instance": 3,
+          "stats": [
+            {
+              "id": "stronger_against_neutral",
+              "value": 10,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "long_range_damage",
+              "value": 8,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "agi",
+              "value": 6,
+              "type": "multiplier",
+              "restriction": null
+            },
+            {
+              "id": "aspd",
+              "value": 40,
+              "type": "multiplier",
+              "restriction": null
+            },
+            {
+              "id": "max_mp",
+              "value": 200,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "magic_pierce",
+              "value": 30,
+              "type": "constant",
+              "restriction": {
+                "main": "magic-device",
+                "sub": null,
+                "body": null,
+                "other": null
+              }
+            }
+          ],
+          "id": 24,
+          "name": "情人節圍裙",
+          "type": "body-dodge",
+          "basicValue": 263,
+          "refining": 0,
+          "crystals": []
+        },
+        {
+          "idx": 25,
+          "instance": 3,
+          "stats": [
+            {
+              "id": "atk",
+              "value": 8,
+              "type": "multiplier",
+              "restriction": null
+            },
+            {
+              "id": "critical_rate",
+              "value": 24,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "critical_damage",
+              "value": 21,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "critical_damage",
+              "value": 10,
+              "type": "multiplier",
+              "restriction": null
+            }
+          ],
+          "id": 25,
+          "name": "剑盾衣",
+          "type": "body-defense",
+          "basicValue": 0,
+          "refining": 0,
+          "crystals": ["魔人庫維札", "加納瑪龜"]
+        },
+        {
+          "idx": 26,
+          "instance": 4,
+          "stats": [
+            {
+              "id": "max_hp",
+              "value": -30,
+              "type": "multiplier",
+              "restriction": null
+            },
+            {
+              "id": "magic_pierce",
+              "value": 10,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "cspd",
+              "value": 1000,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "aggro",
+              "value": -20,
+              "type": "constant",
+              "restriction": null
+            }
+          ],
+          "id": 26,
+          "name": "魔術師斗篷",
+          "type": "additional",
+          "basicValue": 66,
+          "refining": 0,
+          "crystals": ["黏液諾瓦", "蜜愛麗"]
+        },
+        {
+          "idx": 27,
+          "instance": 4,
+          "stats": [
+            {
+              "id": "atk",
+              "value": 8,
+              "type": "multiplier",
+              "restriction": null
+            },
+            {
+              "id": "physical_pierce",
+              "value": 16,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "reduce_dmg_charge",
+              "value": 32,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "aggro",
+              "value": 4,
+              "type": "constant",
+              "restriction": null
+            }
+          ],
+          "id": 27,
+          "name": "聖誕樹",
+          "type": "additional",
+          "basicValue": 195,
+          "refining": 0,
+          "crystals": ["邪惡雷菲娜", "糖明凰"]
+        },
+        {
+          "idx": 28,
+          "instance": 4,
+          "stats": [
+            {
+              "id": "max_mp",
+              "value": 300,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "magic_pierce",
+              "value": 20,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "cspd",
+              "value": 400,
+              "type": "constant",
+              "restriction": null
+            }
+          ],
+          "id": 28,
+          "name": "鐵魔女頭冠 暴击",
+          "type": "additional",
+          "basicValue": 67,
+          "refining": 0,
+          "crystals": ["深謀的青影", "蜜愛麗"]
+        },
+        {
+          "idx": 29,
+          "instance": 4,
+          "stats": [
+            {
+              "id": "max_mp",
+              "value": 300,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "magic_pierce",
+              "value": 20,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "cspd",
+              "value": 400,
+              "type": "constant",
+              "restriction": null
+            }
+          ],
+          "id": 29,
+          "name": "鐵魔女頭冠 非暴击",
+          "type": "additional",
+          "basicValue": 67,
+          "refining": 0,
+          "crystals": ["黏液諾瓦", "蜜愛麗"]
+        },
+        {
+          "idx": 30,
+          "instance": 4,
+          "stats": [
+            {
+              "id": "max_mp",
+              "value": 400,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "critical_rate",
+              "value": 20,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "magic_pierce",
+              "value": 10,
+              "type": "constant",
+              "restriction": null
+            }
+          ],
+          "id": 30,
+          "name": "頭頂魔女貓",
+          "type": "additional",
+          "basicValue": 70,
+          "refining": 13,
+          "crystals": ["深謀的青影", "黏液諾瓦"]
+        },
+        {
+          "idx": 31,
+          "instance": 4,
+          "stats": [
+            {
+              "id": "max_mp",
+              "value": 400,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "critical_rate",
+              "value": 20,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "magic_pierce",
+              "value": 10,
+              "type": "constant",
+              "restriction": null
+            }
+          ],
+          "id": 31,
+          "name": "頭頂魔女貓",
+          "type": "additional",
+          "basicValue": 70,
+          "refining": 15,
+          "crystals": ["魔力費雷西亞", "黏液諾瓦"]
+        },
+        {
+          "idx": 32,
+          "instance": 4,
+          "stats": [
+            {
+              "id": "short_range_damage",
+              "value": 5,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "aspd",
+              "value": 30,
+              "type": "multiplier",
+              "restriction": null
+            },
+            {
+              "id": "cspd",
+              "value": 30,
+              "type": "multiplier",
+              "restriction": null
+            },
+            {
+              "id": "barrier_cooldown",
+              "value": 10,
+              "type": "constant",
+              "restriction": null
+            }
+          ],
+          "id": 32,
+          "name": "雪人的暖耳罩",
+          "type": "additional",
+          "basicValue": 65,
+          "refining": 0,
+          "crystals": ["戈爾多", "黏液諾瓦"]
+        },
+        {
+          "idx": 33,
+          "instance": 5,
+          "stats": [
+            {
+              "id": "physical_resistance",
+              "value": -9,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "magic_resistance",
+              "value": -9,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "aspd",
+              "value": 1000,
+              "type": "constant",
+              "restriction": null
+            }
+          ],
+          "id": 33,
+          "name": "穿越時空的懷錶",
+          "type": "special",
+          "basicValue": 0,
+          "crystals": ["佛拉布喇", "變異幽靈牛"]
+        },
+        {
+          "idx": 34,
+          "instance": 5,
+          "stats": [
+            {
+              "id": "max_mp",
+              "value": 300,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "magic_pierce",
+              "value": 10,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "natural_mp_regen",
+              "value": 20,
+              "type": "multiplier",
+              "restriction": null
+            }
+          ],
+          "id": 34,
+          "name": "讀星提燈",
+          "type": "special",
+          "basicValue": 0,
+          "crystals": ["星之魔導士", "澤雷薩烏迦"]
+        },
+        {
+          "idx": 35,
+          "instance": 5,
+          "stats": [
+            {
+              "id": "max_mp",
+              "value": 300,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "magic_pierce",
+              "value": 10,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "natural_mp_regen",
+              "value": 20,
+              "type": "multiplier",
+              "restriction": null
+            }
+          ],
+          "id": 35,
+          "name": "讀星提燈·顶配",
+          "type": "special",
+          "basicValue": 0,
+          "crystals": ["星之魔導士", "塔圖羅基特"]
+        },
+        {
+          "idx": 36,
+          "instance": 5,
+          "stats": [
+            {
+              "id": "max_mp",
+              "value": 200,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "aspd",
+              "value": 750,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "cspd",
+              "value": 750,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "ailment_resistance",
+              "value": -8,
+              "type": "constant",
+              "restriction": null
+            }
+          ],
+          "id": 36,
+          "name": "爛漫守石",
+          "type": "special",
+          "basicValue": 0,
+          "crystals": ["星之魔導士", "塔圖羅基特"]
+        },
+        {
+          "idx": 37,
+          "instance": 5,
+          "stats": [
+            {
+              "id": "cspd",
+              "value": 1000,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "physical_resistance",
+              "value": -10,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "magic_resistance",
+              "value": -10,
+              "type": "constant",
+              "restriction": null
+            }
+          ],
+          "id": 37,
+          "name": "羅塞塔石板",
+          "type": "special",
+          "basicValue": 0,
+          "crystals": ["佛拉布喇", "星之魔導士"]
+        },
+        {
+          "idx": 38,
+          "instance": 5,
+          "stats": [
+            {
+              "id": "max_mp",
+              "value": 100,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "aspd",
+              "value": 250,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "cspd",
+              "value": 750,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "ailment_resistance",
+              "value": -4,
+              "type": "constant",
+              "restriction": null
+            }
+          ],
+          "id": 38,
+          "name": "夜櫻守石",
+          "type": "special",
+          "basicValue": 0,
+          "crystals": ["星之魔導士", "塔圖羅基特"]
+        },
+        {
+          "idx": 39,
+          "instance": 6,
+          "stats": [
+            {
+              "id": "matk",
+              "value": 15,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "magic_pierce",
+              "value": 8,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "earth_resistance",
+              "value": 5,
+              "type": "constant",
+              "restriction": null
+            }
+          ],
+          "id": 39,
+          "name": "哥特 上 8%法穿",
+          "type": "avatar",
+          "basicValue": 0
+        },
+        {
+          "idx": 40,
+          "instance": 6,
+          "stats": [
+            {
+              "id": "dex",
+              "value": 5,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "magic_pierce",
+              "value": 6,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "matk",
+              "value": 6,
+              "type": "constant",
+              "restriction": null
+            }
+          ],
+          "id": 40,
+          "name": "哥特 下 5DEX 6%魔贯",
+          "type": "avatar",
+          "basicValue": 0
+        },
+        {
+          "idx": 41,
+          "instance": 6,
+          "stats": [
+            {
+              "id": "matk",
+              "value": 9,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "magic_pierce",
+              "value": 6,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "max_hp",
+              "value": 500,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "max_mp",
+              "value": 200,
+              "type": "constant",
+              "restriction": null
+            }
+          ],
+          "id": 41,
+          "name": "哥特翅膀  头",
+          "type": "avatar",
+          "basicValue": 0
+        },
+        {
+          "idx": 42,
+          "instance": 6,
+          "stats": [
+            {
+              "id": "matk",
+              "value": 9,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "magic_pierce",
+              "value": 6,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "dark_resistance",
+              "value": 1,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "max_hp",
+              "value": 500,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "max_mp",
+              "value": 200,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "aspd",
+              "value": 1000,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "cspd",
+              "value": 700,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "stronger_against_dark",
+              "value": 0,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "matk",
+              "value": 0,
+              "type": "multiplier",
+              "restriction": null
+            },
+            {
+              "id": "magic_crt_percentage",
+              "value": 50,
+              "type": "constant",
+              "restriction": null
+            }
+          ],
+          "id": 42,
+          "name": "哥特翅膀  头 衰弱",
+          "type": "avatar",
+          "basicValue": 0
+        },
+        {
+          "idx": 43,
+          "instance": 6,
+          "stats": [
+            {
+              "id": "magic_pierce",
+              "value": 7,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "critical_rate",
+              "value": 0,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "stronger_against_dark",
+              "value": 0,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "aspd",
+              "value": 1100,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "cspd",
+              "value": 800,
+              "type": "constant",
+              "restriction": null
+            }
+          ],
+          "id": 43,
+          "name": "和风 头 7%魔贯",
+          "type": "avatar",
+          "basicValue": 0
+        },
+        {
+          "idx": 44,
+          "instance": 6,
+          "stats": [
+            {
+              "id": "str",
+              "value": 4,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "long_range_damage",
+              "value": 2,
+              "type": "constant",
+              "restriction": null
+            }
+          ],
+          "id": 44,
+          "name": "红鸟 头 4STR 2%远威",
+          "type": "avatar",
+          "basicValue": 0
+        },
+        {
+          "idx": 45,
+          "instance": 6,
+          "stats": [
+            {
+              "id": "dex",
+              "value": 8,
+              "type": "constant",
+              "restriction": null
+            }
+          ],
+          "id": 45,
+          "name": "精灵 头 8dex",
+          "type": "avatar",
+          "basicValue": 0
+        },
+        {
+          "idx": 46,
+          "instance": 6,
+          "stats": [
+            {
+              "id": "magic_pierce",
+              "value": 6,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "guard_break",
+              "value": 2,
+              "type": "constant",
+              "restriction": null
+            }
+          ],
+          "id": 46,
+          "name": "清凉 上 6%魔贯",
+          "type": "avatar",
+          "basicValue": 0
+        },
+        {
+          "idx": 47,
+          "instance": 6,
+          "stats": [
+            {
+              "id": "magic_pierce",
+              "value": 7,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "short_range_damage",
+              "value": 2,
+              "type": "constant",
+              "restriction": null
+            }
+          ],
+          "id": 47,
+          "name": "清凉 下 7%魔贯 2%近威",
+          "type": "avatar",
+          "basicValue": 0
+        },
+        {
+          "idx": 48,
+          "instance": 6,
+          "stats": [
+            {
+              "id": "agi",
+              "value": 1,
+              "type": "multiplier",
+              "restriction": null
+            },
+            {
+              "id": "physical_pierce",
+              "value": 6,
+              "type": "constant",
+              "restriction": null
+            }
+          ],
+          "id": 48,
+          "name": "人偶 下 1%AGI 6%物贯",
+          "type": "avatar",
+          "basicValue": 0
+        },
+        {
+          "idx": 49,
+          "instance": 6,
+          "stats": [
+            {
+              "id": "int",
+              "value": 7,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "critical_damage",
+              "value": 4,
+              "type": "constant",
+              "restriction": null
+            }
+          ],
+          "id": 49,
+          "name": "圣诞 下 7INT 4cd",
+          "type": "avatar",
+          "basicValue": 0
+        },
+        {
+          "idx": 50,
+          "instance": 6,
+          "stats": [
+            {
+              "id": "physical_pierce",
+              "value": 8,
+              "type": "constant",
+              "restriction": null
+            }
+          ],
+          "id": 50,
+          "name": "双角 上 8%物贯",
+          "type": "avatar",
+          "basicValue": 0
+        },
+        {
+          "idx": 51,
+          "instance": 6,
+          "stats": [
+            {
+              "id": "str",
+              "value": 7,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "attack_mp_recovery",
+              "value": 5,
+              "type": "constant",
+              "restriction": null
+            }
+          ],
+          "id": 51,
+          "name": "天马 上 7STR 5攻回",
+          "type": "avatar",
+          "basicValue": 0
+        },
+        {
+          "idx": 52,
+          "instance": 0,
+          "stats": [],
+          "id": 52,
+          "name": "自订拔刀剑",
+          "type": "katana",
+          "basicValue": 190,
+          "stability": 70,
+          "refining": 15,
+          "crystals": ["欺龍米繆加", "炎龍布蘭瑪"]
+        },
+        {
+          "idx": 53,
+          "instance": 0,
+          "stats": [
+            {
+              "id": "max_mp",
+              "value": 1000,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "attack_mp_recovery",
+              "value": 20,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "accuracy",
+              "value": 300,
+              "type": "multiplier",
+              "restriction": null
+            },
+            {
+              "id": "critical_rate",
+              "value": 300,
+              "type": "multiplier",
+              "restriction": null
+            },
+            {
+              "id": "invincible_aid_sec",
+              "value": 3,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "reduce_dmg_floor",
+              "value": 30,
+              "type": "constant",
+              "restriction": null
+            }
+          ],
+          "id": 53,
+          "name": "滑雪手套",
+          "type": "knuckle",
+          "basicValue": 238,
+          "stability": 100,
+          "refining": 0,
+          "crystals": ["死靈科隆"]
+        },
+        {
+          "idx": 54,
+          "instance": 3,
+          "stats": [
+            {
+              "id": "max_hp",
+              "value": 10000,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "max_mp",
+              "value": 1000,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "accuracy",
+              "value": 30,
+              "type": "multiplier",
+              "restriction": null
+            },
+            {
+              "id": "dodge",
+              "value": 30,
+              "type": "multiplier",
+              "restriction": null
+            },
+            {
+              "id": "fractional_barrier",
+              "value": 20,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "neutral_resistance",
+              "value": 20,
+              "type": "constant",
+              "restriction": null
+            }
+          ],
+          "id": 54,
+          "name": "皇魔之衣",
+          "type": "body-normal",
+          "basicValue": 187,
+          "refining": 0,
+          "crystals": ["岩龍飛爾尊"]
+        },
+        {
+          "idx": 55,
+          "instance": 4,
+          "stats": [
+            {
+              "id": "physical_pierce",
+              "value": 15,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "accuracy",
+              "value": 100,
+              "type": "multiplier",
+              "restriction": null
+            },
+            {
+              "id": "critical_rate",
+              "value": 25,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "aspd",
+              "value": -1000,
+              "type": "constant",
+              "restriction": null
+            }
+          ],
+          "id": 55,
+          "name": "奈亞達寶冠",
+          "type": "additional",
+          "basicValue": 80,
+          "refining": 0,
+          "crystals": ["戈爾多"]
+        },
+        {
+          "idx": 56,
+          "instance": 5,
+          "stats": [
+            {
+              "id": "max_mp",
+              "value": 200,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "aspd",
+              "value": 1000,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "physical_resistance",
+              "value": -90,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "magic_resistance",
+              "value": -90,
+              "type": "constant",
+              "restriction": null
+            }
+          ],
+          "id": 56,
+          "name": "惡作劇懷錶",
+          "type": "special",
+          "basicValue": 0,
+          "crystals": ["龍．伏爾加"]
+        },
+        {
+          "idx": 57,
+          "instance": 0,
+          "stats": [
+            {
+              "id": "element_light",
+              "value": 1,
+              "type": "constant",
+              "restriction": null
+            }
+          ],
+          "id": 57,
+          "name": "疾风魔炮 副手",
+          "type": "one-hand-sword",
+          "basicValue": 370,
+          "stability": 70,
+          "refining": 0,
+          "crystals": []
+        },
+        {
+          "idx": 58,
+          "instance": 0,
+          "stats": [
+            {
+              "id": "stronger_against_neutral",
+              "value": 30,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "magic_pierce",
+              "value": 50,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "cspd",
+              "value": 75,
+              "type": "multiplier",
+              "restriction": null
+            },
+            {
+              "id": "matk_up_dex",
+              "value": 100,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "reduce_dmg_charge",
+              "value": 30,
+              "type": "constant",
+              "restriction": null
+            },
+            {
+              "id": "critical_rate",
+              "value": 100,
+              "type": "constant",
+              "restriction": {
+                "main": null,
+                "sub": "one-hand-sword",
+                "body": null,
+                "other": null
+              }
+            }
+          ],
+          "id": 58,
+          "name": "滑雪杖",
+          "type": "one-hand-sword",
+          "basicValue": 170,
+          "stability": 100,
+          "refining": 15,
+          "crystals": ["寄生甲獸", "死靈妖兔II"]
+        }
+      ],
+      "skillBuilds": [
+        {
+          "id": 0,
+          "name": "法术魔导",
+          "skillStates": [
+            {
+              "skillId": "0-1-9",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-1-11",
+              "enabled": true,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-1",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-2",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-3",
+              "enabled": false,
+              "level": 7,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-0",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-9",
+              "enabled": true,
+              "level": 0,
+              "starGemLevel": 10
+            },
+            {
+              "skillId": "0-2-10",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-11",
+              "enabled": true,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-12",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-13",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-6-9",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-6-10",
+              "enabled": false,
+              "level": 1,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "1-0-3",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "1-0-5",
+              "enabled": true,
+              "level": 1,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "2-0-5",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "2-0-6",
+              "enabled": true,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "2-1-0",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "2-1-1",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "2-1-2",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "2-1-3",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "2-1-4",
+              "enabled": true,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-5",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-6",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-7",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-8",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-5-11",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-4",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-16",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-18",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-5-12",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-5-13",
+              "enabled": true,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-15",
+              "enabled": false,
+              "level": 1,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "4-5-0",
+              "enabled": true,
+              "level": 1,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "2-0-7",
+              "enabled": true,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-17",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "5-2-0",
+              "enabled": false,
+              "level": 1,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "5-2-2",
+              "enabled": false,
+              "level": 1,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "5-2-4",
+              "enabled": true,
+              "level": 1,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "5-2-6",
+              "enabled": false,
+              "level": 1,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "5-2-7",
+              "enabled": false,
+              "level": 1,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "5-2-1",
+              "enabled": false,
+              "level": 1,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "5-2-3",
+              "enabled": false,
+              "level": 1,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "5-2-5",
+              "enabled": false,
+              "level": 1,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "5-2-11",
+              "enabled": false,
+              "level": 1,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "5-2-8",
+              "enabled": false,
+              "level": 1,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "5-2-9",
+              "enabled": false,
+              "level": 1,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "5-2-10",
+              "enabled": false,
+              "level": 1,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-1-12",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-1-13",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-8-2",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-8-4",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-8-5",
+              "enabled": true,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-8-6",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-8-8",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            }
+          ],
+          "selectedSkillTrees": [
+            "0-1",
+            "0-2",
+            "0-6",
+            "1-0",
+            "2-0",
+            "2-1",
+            "0-5",
+            "4-5",
+            "5-2",
+            "0-8"
+          ]
+        },
+        {
+          "id": 1,
+          "name": "物理魔导 近威",
+          "skillStates": [
+            {
+              "skillId": "0-1-9",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-1-11",
+              "enabled": true,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-1",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-2",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-3",
+              "enabled": false,
+              "level": 7,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-0",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-10",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-11",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-12",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-13",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-6-9",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-6-10",
+              "enabled": false,
+              "level": 1,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "1-0-3",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "1-0-5",
+              "enabled": true,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "2-0-5",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "2-0-6",
+              "enabled": true,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-5-11",
+              "enabled": true,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-4",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-18",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-6-11",
+              "enabled": true,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-5-12",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-5-13",
+              "enabled": true,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-1-12",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-1-13",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "4-0-0",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "4-0-1",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "4-0-2",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "4-0-6",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-6-12",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-6-13",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "2-1-5",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "2-1-6",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "2-1-7",
+              "enabled": true,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "4-0-3",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "4-0-4",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "4-0-5",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "4-0-7",
+              "enabled": false,
+              "level": 1,
+              "starGemLevel": 0
+            }
+          ],
+          "selectedSkillTrees": ["0-1", "0-2", "0-6", "1-0", "2-0", "2-1", "0-5", "4-0"]
+        },
+        {
+          "id": 2,
+          "name": "法术魔导 敏捷",
+          "skillStates": [
+            {
+              "skillId": "0-1-9",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-1-11",
+              "enabled": true,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-1",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-2",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-3",
+              "enabled": false,
+              "level": 7,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-0",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-9",
+              "enabled": true,
+              "level": 0,
+              "starGemLevel": 10
+            },
+            {
+              "skillId": "0-2-10",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-11",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-12",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-13",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-6-9",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-6-10",
+              "enabled": false,
+              "level": 1,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "1-0-3",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "1-0-5",
+              "enabled": true,
+              "level": 1,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "2-0-5",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "2-0-6",
+              "enabled": true,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "2-1-0",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "2-1-1",
+              "enabled": true,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "2-1-2",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "2-1-3",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "2-1-4",
+              "enabled": true,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-5",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-6",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-7",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-8",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "1-5-4",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "1-5-5",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "1-5-6",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "1-5-7",
+              "enabled": true,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-5-11",
+              "enabled": true,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-4",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-16",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-18",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-6-11",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "2-0-7",
+              "enabled": true,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "4-5-0",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "2-0-8",
+              "enabled": true,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "1-6-4",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "1-6-5",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "1-6-6",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "1-6-7",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "5-2-0",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "5-2-2",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "5-2-4",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "5-2-6",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "5-2-7",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "5-2-1",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "5-2-3",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "5-2-5",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "5-2-11",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "5-2-8",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "5-2-9",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "5-2-10",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-6-12",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "1-6-0",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "1-6-1",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "1-6-2",
+              "enabled": false,
+              "level": 1,
+              "starGemLevel": 0
+            }
+          ],
+          "selectedSkillTrees": [
+            "0-1",
+            "0-2",
+            "0-6",
+            "1-0",
+            "2-0",
+            "2-1",
+            "1-5",
+            "0-5",
+            "4-5",
+            "1-6",
+            "4-0",
+            "5-2"
+          ]
+        },
+        {
+          "id": 3,
+          "name": "剑盾",
+          "skillStates": [
+            {
+              "skillId": "0-0-1",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-0-2",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-0-3",
+              "enabled": true,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-0-0",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-0-5",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-0-6",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-0-8",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-0-9",
+              "enabled": true,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-0-10",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-0-12",
+              "enabled": true,
+              "level": 9,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-0-13",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-1-9",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-1-11",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-1-12",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-1-13",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-1",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-2",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-3",
+              "enabled": false,
+              "level": 7,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-4",
+              "enabled": false,
+              "level": 1,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-0",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-5-11",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-5-12",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-5-13",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-6-9",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-6-10",
+              "enabled": true,
+              "level": 1,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-6-11",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-6-12",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-6-13",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "1-0-3",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "1-0-5",
+              "enabled": true,
+              "level": 1,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "1-3-0",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "1-3-1",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "1-3-2",
+              "enabled": false,
+              "level": 1,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "1-3-4",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "1-3-5",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "1-3-8",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "1-3-9",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "1-1-1",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "1-1-2",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "1-1-0",
+              "enabled": true,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "1-1-4",
+              "enabled": true,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "1-1-5",
+              "enabled": true,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "2-0-5",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "2-0-6",
+              "enabled": true,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "2-1-5",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "2-1-6",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "2-1-7",
+              "enabled": true,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "4-0-0",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "4-0-1",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "4-0-2",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "4-0-6",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "4-0-3",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "4-0-4",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "4-0-5",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "4-0-7",
+              "enabled": false,
+              "level": 1,
+              "starGemLevel": 0
+            }
+          ],
+          "selectedSkillTrees": [
+            "0-0",
+            "0-1",
+            "0-2",
+            "0-5",
+            "0-6",
+            "1-0",
+            "1-3",
+            "1-1",
+            "2-0",
+            "2-1",
+            "4-0"
+          ]
+        },
+        {
+          "id": 4,
+          "name": "杖魔",
+          "skillStates": [
+            {
+              "skillId": "4-1-1",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-1-9",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-1-11",
+              "enabled": true,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-1",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-2",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-3",
+              "enabled": false,
+              "level": 7,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-4",
+              "enabled": false,
+              "level": 1,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-0",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-5",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-6",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-7",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-8",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-16",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-9",
+              "enabled": true,
+              "level": 0,
+              "starGemLevel": 10
+            },
+            {
+              "skillId": "0-2-17",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-10",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-11",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-12",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-13",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-18",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-5-11",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-5-12",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-5-13",
+              "enabled": true,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-6-9",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-6-10",
+              "enabled": true,
+              "level": 1,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-6-11",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-6-12",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "1-0-3",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "1-0-5",
+              "enabled": true,
+              "level": 1,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "1-5-4",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "1-5-5",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "1-5-6",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "1-5-7",
+              "enabled": true,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "1-5-9",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "1-5-10",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "1-5-11",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "2-0-5",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "2-0-6",
+              "enabled": true,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "2-1-0",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "2-1-1",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "2-1-2",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "2-1-3",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "2-1-4",
+              "enabled": true,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "2-1-5",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "2-1-6",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "2-1-7",
+              "enabled": true,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "4-1-0",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "4-1-2",
+              "enabled": false,
+              "level": 1,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "4-1-3",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "4-1-4",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "4-3-6",
+              "enabled": false,
+              "level": 1,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "4-2-5",
+              "enabled": false,
+              "level": 1,
+              "starGemLevel": 0
+            }
+          ],
+          "selectedSkillTrees": [
+            "0-1",
+            "0-2",
+            "0-5",
+            "0-6",
+            "1-0",
+            "1-5",
+            "2-0",
+            "2-1",
+            "4-1",
+            "4-3",
+            "4-2"
+          ]
+        },
+        {
+          "id": 5,
+          "name": "幸灵匠",
+          "skillStates": [
+            {
+              "skillId": "3-0-0",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "3-0-4",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "3-0-5",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "3-0-12",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "3-0-10",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-1",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-2",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-3",
+              "enabled": false,
+              "level": 7,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-4",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-15",
+              "enabled": false,
+              "level": 1,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-0",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-5",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-6",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-7",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-8",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-16",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-10",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-11",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-12",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-13",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-18",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-1-9",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-1-11",
+              "enabled": true,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-1-12",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-1-13",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-6-9",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-6-10",
+              "enabled": true,
+              "level": 1,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "1-0-3",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "1-0-5",
+              "enabled": true,
+              "level": 1,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "1-4-0",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "1-4-1",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "2-1-0",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "2-1-1",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "2-1-2",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "2-1-3",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "2-1-4",
+              "enabled": true,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "2-1-5",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "2-1-6",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "2-1-7",
+              "enabled": true,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-5-11",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-5-12",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-5-13",
+              "enabled": true,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "1-7-0",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "1-7-2",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "1-5-0",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            }
+          ],
+          "selectedSkillTrees": [
+            "3-0",
+            "0-2",
+            "0-1",
+            "0-6",
+            "1-0",
+            "1-4",
+            "2-1",
+            "0-5",
+            "1-7",
+            "1-5"
+          ]
+        },
+        {
+          "id": 6,
+          "name": "智技匠",
+          "skillStates": [
+            {
+              "skillId": "3-0-0",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-1",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-2",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-3",
+              "enabled": false,
+              "level": 7,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-4",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-0",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-5",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-6",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-7",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-8",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-16",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-10",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-11",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-12",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-13",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-6-9",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-6-10",
+              "enabled": true,
+              "level": 1,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "1-0-3",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "1-0-5",
+              "enabled": true,
+              "level": 1,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "3-0-6",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "3-0-8",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "3-0-9",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "3-0-14",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "3-1-1",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "3-1-2",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "3-1-3",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "3-1-0",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "3-1-7",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "3-1-8",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "3-1-4",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "3-1-5",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "3-1-10",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "3-1-11",
+              "enabled": false,
+              "level": 6,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-15",
+              "enabled": false,
+              "level": 1,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-9",
+              "enabled": true,
+              "level": 0,
+              "starGemLevel": 10
+            },
+            {
+              "skillId": "0-2-17",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-18",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-5-11",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-5-12",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-5-13",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-1-9",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-1-11",
+              "enabled": true,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "1-5-4",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "1-5-5",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "1-5-6",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "1-5-7",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "2-0-5",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "2-0-6",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "2-0-7",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "4-5-0",
+              "enabled": true,
+              "level": 1,
+              "starGemLevel": 0
+            }
+          ],
+          "selectedSkillTrees": [
+            "3-0",
+            "0-2",
+            "0-6",
+            "1-0",
+            "0-5",
+            "3-1",
+            "0-1",
+            "1-5",
+            "1-6",
+            "2-0",
+            "4-5"
+          ]
+        },
+        {
+          "id": 7,
+          "name": "魔导匠加点",
+          "skillStates": [
+            {
+              "skillId": "0-1-9",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-1-11",
+              "enabled": true,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-1",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-2",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-3",
+              "enabled": false,
+              "level": 7,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-4",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-15",
+              "enabled": false,
+              "level": 1,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-0",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-5",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-6",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-7",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-8",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-16",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-9",
+              "enabled": true,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-17",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-10",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-11",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-12",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-13",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-18",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-6-9",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-6-10",
+              "enabled": true,
+              "level": 1,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-5-11",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-5-12",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-5-13",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "1-5-4",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "1-5-5",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "1-5-6",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "1-5-7",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "1-6-4",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "1-6-5",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "1-6-6",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "1-6-7",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "2-0-5",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "2-0-6",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "2-1-0",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "2-1-1",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "2-1-2",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "2-1-3",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "2-1-4",
+              "enabled": true,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "3-0-1",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "3-0-2",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "3-0-3",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "3-0-0",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "3-0-6",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "3-0-7",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "3-0-13",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "4-5-0",
+              "enabled": true,
+              "level": 1,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "1-0-3",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "1-0-5",
+              "enabled": true,
+              "level": 1,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "2-0-7",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "2-1-5",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "2-1-6",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "2-1-7",
+              "enabled": true,
+              "level": 10,
+              "starGemLevel": 0
+            }
+          ],
+          "selectedSkillTrees": [
+            "0-1",
+            "0-2",
+            "0-6",
+            "0-5",
+            "1-5",
+            "1-6",
+            "2-0",
+            "2-1",
+            "3-0",
+            "4-5",
+            "1-0"
+          ]
+        },
+        {
+          "id": 8,
+          "name": "拔刀",
+          "skillStates": [
+            {
+              "skillId": "0-1-9",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-1-11",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-1-12",
+              "enabled": true,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-1-13",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-5-11",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-5-12",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-5-13",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-4-0",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-4-8",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-4-9",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-4-11",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-4-12",
+              "enabled": true,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-6-0",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-6-1",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-6-2",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-6-3",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-6-5",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-6-15",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-6-6",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-6-7",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-6-8",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-6-4",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-6-16",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-6-9",
+              "enabled": true,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-6-10",
+              "enabled": true,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-6-17",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-6-11",
+              "enabled": true,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-6-12",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-6-13",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-6-18",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-6-14",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "1-0-3",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "1-0-5",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "2-0-5",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "2-0-6",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "2-1-5",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "2-1-6",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "2-1-7",
+              "enabled": true,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "2-1-8",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "4-5-0",
+              "enabled": true,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "4-5-1",
+              "enabled": true,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "4-5-2",
+              "enabled": true,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "4-5-3",
+              "enabled": true,
+              "level": 10,
+              "starGemLevel": 0
+            }
+          ],
+          "selectedSkillTrees": ["0-1", "0-5", "0-4", "0-6", "1-0", "2-0", "2-1", "4-5"]
+        },
+        {
+          "id": 9,
+          "name": "命中坦佣",
+          "skillStates": [],
+          "selectedSkillTrees": []
+        },
+        {
+          "id": 10,
+          "name": "疾风魔炮",
+          "skillStates": [
+            {
+              "skillId": "4-1-1",
+              "enabled": true,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-1",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-2",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-3",
+              "enabled": false,
+              "level": 7,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-4",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-0",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-5",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-6",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-7",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-8",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-16",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-9",
+              "enabled": true,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-17",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-10",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-11",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-12",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-13",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-2-18",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-1-9",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-1-11",
+              "enabled": true,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-1-12",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-1-13",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-4-0",
+              "enabled": true,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-4-4",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-4-5",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-4-6",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-4-8",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-4-9",
+              "enabled": true,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-4-10",
+              "enabled": true,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-4-11",
+              "enabled": true,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-6-9",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-6-10",
+              "enabled": true,
+              "level": 1,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-6-11",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-6-12",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-6-13",
+              "enabled": true,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-5-0",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-5-5",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-5-8",
+              "enabled": false,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-5-11",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-5-12",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "0-5-13",
+              "enabled": true,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "1-5-4",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "1-5-5",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "1-5-6",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "1-5-7",
+              "enabled": true,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "2-0-5",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "2-0-6",
+              "enabled": true,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "2-0-9",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "2-0-10",
+              "enabled": false,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "2-0-11",
+              "enabled": true,
+              "level": 1,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "2-1-0",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "2-1-1",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "2-1-2",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "2-1-3",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "2-1-4",
+              "enabled": true,
+              "level": 10,
+              "starGemLevel": 0
+            },
+            {
+              "skillId": "4-1-0",
+              "enabled": true,
+              "level": 5,
+              "starGemLevel": 0
+            }
+          ],
+          "selectedSkillTrees": ["0-2", "0-1", "0-4", "0-6", "0-5", "1-5", "2-0", "2-1", "4-1"]
+        }
+      ],
+      "foodBuilds": [
+        {
+          "id": 0,
+          "name": "非暴击魔导料理",
+          "foods": [
+            {
+              "statId": "max_hp",
+              "level": 10,
+              "negative": false,
+              "selected": false
+            },
+            {
+              "statId": "max_mp",
+              "level": 10,
+              "negative": false,
+              "selected": true
+            },
+            {
+              "statId": "str",
+              "level": 0,
+              "negative": false,
+              "selected": false
+            },
+            {
+              "statId": "dex",
+              "level": 10,
+              "negative": false,
+              "selected": true
+            },
+            {
+              "statId": "int",
+              "level": 5,
+              "negative": false,
+              "selected": false
+            },
+            {
+              "statId": "agi",
+              "level": 10,
+              "negative": false,
+              "selected": false
+            },
+            {
+              "statId": "vit",
+              "level": 0,
+              "negative": false,
+              "selected": false
+            },
+            {
+              "statId": "atk",
+              "level": 0,
+              "negative": false,
+              "selected": false
+            },
+            {
+              "statId": "matk",
+              "level": 10,
+              "negative": false,
+              "selected": false
+            },
+            {
+              "statId": "weapon_atk",
+              "level": 10,
+              "negative": false,
+              "selected": false
+            },
+            {
+              "statId": "physical_resistance",
+              "level": 0,
+              "negative": false,
+              "selected": false
+            },
+            {
+              "statId": "magic_resistance",
+              "level": 0,
+              "negative": false,
+              "selected": false
+            },
+            {
+              "statId": "aggro",
+              "level": 10,
+              "negative": false,
+              "selected": false
+            },
+            {
+              "statId": "aggro",
+              "level": 10,
+              "negative": true,
+              "selected": true
+            },
+            {
+              "statId": "attack_mp_recovery",
+              "level": 10,
+              "negative": false,
+              "selected": true
+            },
+            {
+              "statId": "critical_rate",
+              "level": 10,
+              "negative": false,
+              "selected": true
+            },
+            {
+              "statId": "accuracy",
+              "level": 0,
+              "negative": false,
+              "selected": false
+            },
+            {
+              "statId": "dodge",
+              "level": 0,
+              "negative": false,
+              "selected": false
+            },
+            {
+              "statId": "def",
+              "level": 0,
+              "negative": false,
+              "selected": false
+            },
+            {
+              "statId": "mdef",
+              "level": 0,
+              "negative": false,
+              "selected": false
+            },
+            {
+              "statId": "drop_rate",
+              "level": 0,
+              "negative": false,
+              "selected": false
+            },
+            {
+              "statId": "physical_barrier",
+              "level": 0,
+              "negative": false,
+              "selected": false
+            },
+            {
+              "statId": "magical_barrier",
+              "level": 0,
+              "negative": false,
+              "selected": false
+            },
+            {
+              "statId": "fractional_barrier",
+              "level": 0,
+              "negative": false,
+              "selected": false
+            },
+            {
+              "statId": "stronger_against_neutral",
+              "level": 10,
+              "negative": false,
+              "selected": false
+            },
+            {
+              "statId": "stronger_against_fire",
+              "level": 0,
+              "negative": false,
+              "selected": false
+            },
+            {
+              "statId": "stronger_against_water",
+              "level": 0,
+              "negative": false,
+              "selected": false
+            },
+            {
+              "statId": "stronger_against_earth",
+              "level": 0,
+              "negative": false,
+              "selected": false
+            },
+            {
+              "statId": "stronger_against_wind",
+              "level": 0,
+              "negative": false,
+              "selected": false
+            },
+            {
+              "statId": "stronger_against_light",
+              "level": 0,
+              "negative": false,
+              "selected": false
+            },
+            {
+              "statId": "stronger_against_dark",
+              "level": 4,
+              "negative": false,
+              "selected": false
+            },
+            {
+              "statId": "neutral_resistance",
+              "level": 0,
+              "negative": false,
+              "selected": false
+            },
+            {
+              "statId": "fire_resistance",
+              "level": 0,
+              "negative": false,
+              "selected": false
+            },
+            {
+              "statId": "water_resistance",
+              "level": 0,
+              "negative": false,
+              "selected": false
+            },
+            {
+              "statId": "earth_resistance",
+              "level": 0,
+              "negative": false,
+              "selected": false
+            },
+            {
+              "statId": "wind_resistance",
+              "level": 0,
+              "negative": false,
+              "selected": false
+            },
+            {
+              "statId": "light_resistance",
+              "level": 0,
+              "negative": false,
+              "selected": false
+            },
+            {
+              "statId": "dark_resistance",
+              "level": 0,
+              "negative": false,
+              "selected": false
+            }
+          ]
+        },
+        {
+          "id": 1,
+          "name": "常用料理",
+          "foods": [
+            {
+              "statId": "max_hp",
+              "level": 10,
+              "negative": false,
+              "selected": false
+            },
+            {
+              "statId": "max_mp",
+              "level": 10,
+              "negative": false,
+              "selected": true
+            },
+            {
+              "statId": "str",
+              "level": 0,
+              "negative": false,
+              "selected": false
+            },
+            {
+              "statId": "dex",
+              "level": 0,
+              "negative": false,
+              "selected": false
+            },
+            {
+              "statId": "int",
+              "level": 0,
+              "negative": false,
+              "selected": false
+            },
+            {
+              "statId": "agi",
+              "level": 0,
+              "negative": false,
+              "selected": false
+            },
+            {
+              "statId": "vit",
+              "level": 0,
+              "negative": false,
+              "selected": false
+            },
+            {
+              "statId": "atk",
+              "level": 0,
+              "negative": false,
+              "selected": false
+            },
+            {
+              "statId": "matk",
+              "level": 0,
+              "negative": false,
+              "selected": false
+            },
+            {
+              "statId": "weapon_atk",
+              "level": 0,
+              "negative": false,
+              "selected": false
+            },
+            {
+              "statId": "physical_resistance",
+              "level": 0,
+              "negative": false,
+              "selected": false
+            },
+            {
+              "statId": "magic_resistance",
+              "level": 0,
+              "negative": false,
+              "selected": false
+            },
+            {
+              "statId": "aggro",
+              "level": 10,
+              "negative": false,
+              "selected": false
+            },
+            {
+              "statId": "aggro",
+              "level": 10,
+              "negative": true,
+              "selected": true
+            },
+            {
+              "statId": "attack_mp_recovery",
+              "level": 10,
+              "negative": false,
+              "selected": true
+            },
+            {
+              "statId": "critical_rate",
+              "level": 10,
+              "negative": false,
+              "selected": true
+            },
+            {
+              "statId": "accuracy",
+              "level": 0,
+              "negative": false,
+              "selected": false
+            },
+            {
+              "statId": "dodge",
+              "level": 0,
+              "negative": false,
+              "selected": false
+            },
+            {
+              "statId": "def",
+              "level": 0,
+              "negative": false,
+              "selected": false
+            },
+            {
+              "statId": "mdef",
+              "level": 0,
+              "negative": false,
+              "selected": false
+            },
+            {
+              "statId": "drop_rate",
+              "level": 0,
+              "negative": false,
+              "selected": false
+            },
+            {
+              "statId": "physical_barrier",
+              "level": 0,
+              "negative": false,
+              "selected": false
+            },
+            {
+              "statId": "magical_barrier",
+              "level": 0,
+              "negative": false,
+              "selected": false
+            },
+            {
+              "statId": "fractional_barrier",
+              "level": 0,
+              "negative": false,
+              "selected": false
+            },
+            {
+              "statId": "stronger_against_neutral",
+              "level": 0,
+              "negative": false,
+              "selected": false
+            },
+            {
+              "statId": "stronger_against_fire",
+              "level": 0,
+              "negative": false,
+              "selected": false
+            },
+            {
+              "statId": "stronger_against_water",
+              "level": 0,
+              "negative": false,
+              "selected": false
+            },
+            {
+              "statId": "stronger_against_earth",
+              "level": 0,
+              "negative": false,
+              "selected": false
+            },
+            {
+              "statId": "stronger_against_wind",
+              "level": 0,
+              "negative": false,
+              "selected": false
+            },
+            {
+              "statId": "stronger_against_light",
+              "level": 0,
+              "negative": false,
+              "selected": false
+            },
+            {
+              "statId": "stronger_against_dark",
+              "level": 0,
+              "negative": false,
+              "selected": false
+            },
+            {
+              "statId": "neutral_resistance",
+              "level": 0,
+              "negative": false,
+              "selected": false
+            },
+            {
+              "statId": "fire_resistance",
+              "level": 0,
+              "negative": false,
+              "selected": false
+            },
+            {
+              "statId": "water_resistance",
+              "level": 0,
+              "negative": false,
+              "selected": false
+            },
+            {
+              "statId": "earth_resistance",
+              "level": 0,
+              "negative": false,
+              "selected": false
+            },
+            {
+              "statId": "wind_resistance",
+              "level": 0,
+              "negative": false,
+              "selected": false
+            },
+            {
+              "statId": "light_resistance",
+              "level": 0,
+              "negative": false,
+              "selected": false
+            },
+            {
+              "statId": "dark_resistance",
+              "level": 0,
+              "negative": false,
+              "selected": false
+            }
+          ]
+        }
+      ],
+      "registletBuilds": [
+        {
+          "id": 0,
+          "name": "双速魔导",
+          "items": [
+            {
+              "id": "special-19",
+              "level": 10,
+              "enabled": true
+            },
+            {
+              "id": "special-21",
+              "level": 10,
+              "enabled": true
+            },
+            {
+              "id": "stat-9",
+              "level": 100,
+              "enabled": true
+            },
+            {
+              "id": "stat-10",
+              "level": 100,
+              "enabled": true
+            }
+          ]
+        }
+      ],
+      "potionBuilds": [
+        {
+          "id": 0,
+          "name": "魔导法药品",
+          "potions": [
+            {
+              "id": "6-0-5",
+              "enabled": true
+            },
+            {
+              "id": "7-3-6",
+              "enabled": true
+            },
+            {
+              "id": "8-0-3"
+            },
+            {
+              "id": "8-0-2",
+              "enabled": true
+            },
+            {
+              "id": "9-0-3",
+              "enabled": true
+            },
+            {
+              "id": "3-3-0",
+              "enabled": true
+            }
+          ]
+        }
+      ],
+      "characterStates": [
+        {
+          "id": 0,
+          "skillBuildId": 0,
+          "foodBuildId": 1,
+          "registletBuildId": 0,
+          "potionBuildId": 0
+        },
+        {
+          "id": 1,
+          "skillBuildId": 1,
+          "foodBuildId": 0,
+          "registletBuildId": 0,
+          "potionBuildId": 0
+        },
+        {
+          "id": 2,
+          "skillBuildId": 2,
+          "foodBuildId": 0,
+          "registletBuildId": 0,
+          "potionBuildId": 0
+        },
+        {
+          "id": 3,
+          "skillBuildId": 3,
+          "foodBuildId": 0,
+          "registletBuildId": 0,
+          "potionBuildId": 0
+        },
+        {
+          "id": 4,
+          "skillBuildId": 4,
+          "foodBuildId": 0,
+          "registletBuildId": 0,
+          "potionBuildId": 0
+        },
+        {
+          "id": 5,
+          "skillBuildId": 5,
+          "foodBuildId": 0,
+          "registletBuildId": 0,
+          "potionBuildId": 0
+        },
+        {
+          "id": 6,
+          "skillBuildId": 0,
+          "foodBuildId": 0,
+          "registletBuildId": 0,
+          "potionBuildId": 0
+        },
+        {
+          "id": 7,
+          "skillBuildId": 8,
+          "foodBuildId": 0,
+          "registletBuildId": 0,
+          "potionBuildId": 0
+        },
+        {
+          "id": 8,
+          "skillBuildId": 9,
+          "foodBuildId": 0,
+          "registletBuildId": 0,
+          "potionBuildId": 0
+        },
+        {
+          "id": 9,
+          "skillBuildId": 10,
+          "foodBuildId": 1,
+          "registletBuildId": 0,
+          "potionBuildId": 0
+        }
+      ]
+    }
+  }
+}
