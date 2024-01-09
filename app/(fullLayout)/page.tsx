@@ -15,17 +15,17 @@ const Home = () => {
     try {
       // const response = await fetch('/api/getData');
       const response = await fetch("/api/user", {
-        method: "GET",
+        method: "POST",
         headers: {
           "Authorization": "000000",
           "Content-Type": "application/json", // 设置请求体的类型为 JSON
-          "requestUrl": "/profile",
+          "requestUrl": "/test",
           "authType": "default",
         },
-        // body: JSON.stringify({
-        //   contentType: "application/json"
-        //   /* your request data here */
-        // })
+        body: JSON.stringify({
+          contentType: "application/json"
+          /* your request data here */
+        })
       });
       if (response.ok) {
         const data = await response.json();
