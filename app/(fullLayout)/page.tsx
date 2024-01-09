@@ -22,7 +22,7 @@ const Home = () => {
           authType: "default",
         },
       });
-      // const response = await fetch("/api/user", {
+      // const response = await fetch("/test", {
       //   method: "POST",
       //   headers: {
       //     "Authorization": "000000",
@@ -31,8 +31,10 @@ const Home = () => {
       //     "authType": "default",
       //   },
       //   body: JSON.stringify({
-      //     contentType: "application/json"
-      //     /* your request data here */
+      //     id: 1,
+      //     name: 'testUserName',
+      //     age: 30,
+      //     roles: 'superAdmin'
       //   })
       // });
       if (response.ok) {
