@@ -1,32 +1,40 @@
 "use client";
 import React from "react";
-import { useTheme } from "next-themes";
-import { useAppSelector, useAppDispatch } from "@/store/hooks";
-import { setGlobalData } from "@/store/modules/common";
-import { useRouter } from "next-nprogress-bar";
+import {useTheme} from "next-themes";
+import {useAppSelector, useAppDispatch} from "@/store/hooks";
+import {setGlobalData} from "@/store/modules/common";
+import {useRouter} from "next-nprogress-bar";
 import Link from "next/link";
 const Home = () => {
-  const { systemTheme, theme, setTheme } = useTheme();
+  const {systemTheme, theme, setTheme} = useTheme();
   const currentTheme = theme === "system" ? systemTheme : theme;
   const dispatch = useAppDispatch();
   const globalData = useAppSelector((state) => state.common.globalData);
   const router = useRouter();
   const fetchData = async () => {
     try {
-      // const response = await fetch('/api/getData');
-      const response = await fetch("/api/user", {
-        method: "POST",
+      const response = await fetch("/api/banner", {
+        method: "GET",
         headers: {
-          "Authorization": "000000",
+          Authorization: "000000",
           "Content-Type": "application/json", // 设置请求体的类型为 JSON
-          "requestUrl": "/test",
-          "authType": "default",
+          requestUrl: "/test",
+          authType: "default",
         },
-        body: JSON.stringify({
-          contentType: "application/json"
-          /* your request data here */
-        })
       });
+      // const response = await fetch("/api/user", {
+      //   method: "POST",
+      //   headers: {
+      //     "Authorization": "000000",
+      //     "Content-Type": "application/json", // 设置请求体的类型为 JSON
+      //     "requestUrl": "/test",
+      //     "authType": "default",
+      //   },
+      //   body: JSON.stringify({
+      //     contentType: "application/json"
+      //     /* your request data here */
+      //   })
+      // });
       if (response.ok) {
         const data = await response.json();
         console.log(data);
@@ -64,7 +72,7 @@ const Home = () => {
       <div className="border-badgesPurpleBorder border">badgesPurpleBorder</div>
       <div
         onClick={() => {
-          dispatch(setGlobalData({ role: "admin" }));
+          dispatch(setGlobalData({role: "admin"}));
         }}
       >
         click change role: {globalData.role}

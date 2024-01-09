@@ -1,4 +1,4 @@
-import { NextApiRequest, NextApiResponse } from "next";
+import {NextApiRequest, NextApiResponse} from "next";
 import mysql from "mysql2/promise";
 
 export const getDataInfo = async (req: NextApiRequest, res: NextApiResponse): Promise<void> => {
@@ -16,4 +16,4 @@ export const getDataInfo = async (req: NextApiRequest, res: NextApiResponse): Pr
   } catch (e) {
     // res.status(500).json({message: e.message});
   }
-}
+};
