@@ -80,6 +80,8 @@ const Home = () => {
         click change role: {globalData.role}
       </div>
       <Link href={"./pet"}>pet</Link>
+      <br />
+      <Link href={"./signIn"}>signIn</Link>
       <div
         onClick={() => {
           router.push("/userCenter");
