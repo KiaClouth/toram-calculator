@@ -53,6 +53,18 @@ export default async function Home() {
             >
               {session ? "Sign out" : "Sign in"}
             </Link>
+            <Link
+              href={"/pet"}
+              className="rounded-full bg-white/10 px-10 py-3 font-semibold no-underline transition hover:bg-white/20"
+            >
+              Pet
+            </Link>
+            <Link
+              href={"/character"}
+              className="rounded-full bg-white/10 px-10 py-3 font-semibold no-underline transition hover:bg-white/20"
+            >
+              Character
+            </Link>
           </div>
         </div>
 
