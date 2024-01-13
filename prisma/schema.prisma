@@ -9,29 +9,6 @@ datasource db {
 
 // 以下是托拉姆的数据模型
 
-enum abiType {
-    Si
-    Sv
-    Sd
-    Sa
-    Is
-    Iv
-    Id
-    Ia
-    Vs
-    Vi
-    Vd
-    Va
-    Ds
-    Di
-    Dv
-    Da
-    As
-    Ai
-    Av
-    Ad
-}
-
 model Character {
     id          Int      @id @default(autoincrement())
     name        String
@@ -39,12 +16,10 @@ model Character {
     updatedAt   DateTime @updatedAt
     createdBy   User     @relation(fields: [createdById], references: [id])
     createdById String
-    baseAbiStr Int
-    abiType abiType
+    baseAbiStr  Int
 
     @@index([name])
 }
-
 
 model Post {
     id        Int      @id @default(autoincrement())
