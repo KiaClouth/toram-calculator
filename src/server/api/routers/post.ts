@@ -1,3 +1,4 @@
+import { create } from "domain";
 import { z } from "zod";
 
 import {
@@ -19,7 +20,7 @@ export const postRouter = createTRPCRouter({
     .input(z.object({ name: z.string().min(1) }))
     .mutation(async ({ ctx, input }) => {
       // simulate a slow db call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      // await new Promise((resolve) => setTimeout(resolve, 1000));
 
       return ctx.db.post.create({
         data: {
@@ -29,12 +30,24 @@ export const postRouter = createTRPCRouter({
       });
     }),
 
+  createCharacter: protectedProcedure
+    .input(z.object({ name: z.string().min(1), baseAbiStr: z.number().min(1) }))
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.character.create({
+        data: {
+          name: input.name,
+          baseAbiStr: input.baseAbiStr,
+          createdBy: { connect: { id: ctx.session.user.id } }
+        }
+      })
+    }),
+
   getLatest: protectedProcedure.query(({ ctx }) => {
-    return ctx.db.post.findFirst({
-      orderBy: { createdAt: "desc" },
-      where: { createdBy: { id: ctx.session.user.id } },
-    });
-  }),
+      return ctx.db.post.findFirst({
+        orderBy: { createdAt: "desc" },
+        where: { createdBy: { id: ctx.session.user.id } },
+      });
+    }),
 
   getSecretMessage: protectedProcedure.query(() => {
     return "you can now see this secret message!";

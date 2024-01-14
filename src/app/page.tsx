@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { CreatePost } from "~/app/_components/create-post";
+import { CreateCharacter } from "~/app/_components/create-character";
 import { getServerAuthSession } from "~/server/auth";
 import { api } from "~/trpc/server";
 
@@ -54,6 +55,12 @@ export default async function Home() {
               {session ? "Sign out" : "Sign in"}
             </Link>
             <Link
+              href={"/dashboard"}
+              className="rounded-full bg-white/10 px-10 py-3 font-semibold no-underline transition hover:bg-white/20"
+            >
+              dashboard
+            </Link>
+            {/* <Link
               href={"/pet"}
               className="rounded-full bg-white/10 px-10 py-3 font-semibold no-underline transition hover:bg-white/20"
             >
@@ -64,7 +71,7 @@ export default async function Home() {
               className="rounded-full bg-white/10 px-10 py-3 font-semibold no-underline transition hover:bg-white/20"
             >
               Character
-            </Link>
+            </Link> */}
           </div>
         </div>
 
@@ -88,7 +95,7 @@ async function CrudShowcase() {
         <p>You have no posts yet.</p>
       )}
 
-      <CreatePost />
+      <CreateCharacter />
     </div>
   );
 }
