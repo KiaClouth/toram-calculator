@@ -1,14 +1,15 @@
 import Link from "next/link";
 
-import { CreatePost } from "~/app/_components/create-post";
+// import { CreatePost } from "~/app/_components/create-post";
 import { CreateCharacter } from "~/app/_components/create-character";
 import { SignDialog } from "~/app/_components/sign-Dialog"
 import { getServerAuthSession } from "~/server/auth";
 import { api } from "~/trpc/server";
+import { getProviders } from "next-auth/react";
 export default async function Home() {
   const hello = await api.post.hello.query({ text: "from tRPC" });
   const session = await getServerAuthSession();
-
+  const providers = await getProviders();
   return (
     <main className="flex min-h-screen flex-col items-center justify-center">
       <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
@@ -39,7 +40,7 @@ export default async function Home() {
             </div>
           </Link>
         </div> */}
-        <SignDialog session={session} />
+        <SignDialog session={session} providers={providers} />
         <div className="flex flex-col items-center gap-2">
           <p className="text-2xl text-white">
             {hello ? hello.greeting : "Loading tRPC query..."}
@@ -54,6 +55,12 @@ export default async function Home() {
               className="rounded-full bg-black/10 px-10 py-3 font-semibold no-underline transition hover:bg-black/20"
             >
               {session ? "登出" : "登录"}
+            </Link>
+            <Link
+              href={"/signIn"}
+              className="rounded-full bg-white/10 px-10 py-3 font-semibold no-underline transition hover:bg-white/20"
+            >
+              dashboard
             </Link>
             {/* <Link
               href={"/dashboard"}
