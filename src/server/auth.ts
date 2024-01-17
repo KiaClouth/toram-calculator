@@ -107,6 +107,7 @@ export const authOptions: NextAuthOptions = {
  */
 export const getServerAuthSession = () => getServerSession(authOptions);
 
+// https://graph.qq.com/oauth2.0/show?which=Login&display=pc&client_id=100255473&response_type=code&redirect_uri=https%3A%2F%2Fnote.youdao.com%2Flogin%2Facc%2Fcallback&state=qZOLP40LJpVTFhHwu0MTL0ZZZZZu0HTu0
 // 自定义QQ认证
 export interface QQProfile extends Record<string, string | boolean | number> {
   aud: string
@@ -133,10 +134,14 @@ export default function QQProvider<P extends QQProfile>(
     id: "qq",
     name: "QQ",
     type: "oauth",
-    wellKnown: "https://wiki.connect.qq.com/%e8%8e%b7%e5%8f%96%e7%94%a8%e6%88%b7openid_oauth2-0",
     authorization: {
       url: "https://graph.qq.com/oauth2.0/authorize",
-      params: { scope: "openid email profile" }
+      params: { 
+        response_type: "code",
+        client_id: options.clientId,
+        redirect_uri: `${env.NEXTAUTH_URL}/api/auth/callback/qq`,
+        state: Math.random().toString(36).substring(7)
+      }
     },
     idToken: true,
     checks: ["pkce", "state"],
