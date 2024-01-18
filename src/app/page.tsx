@@ -60,7 +60,6 @@ export default async function Home() {
             </Link> */}
           </div>
         </div>
-
         <CrudShowcase />
       </div>
     </main>
@@ -71,16 +70,15 @@ async function CrudShowcase() {
   const session = await getServerAuthSession();
   if (!session?.user) return null;
 
-  const latestPost = await api.post.getLatest.query();
+  const latestPost = await api.get.getLatest.query();
 
   return (
     <div className="w-full max-w-xs">
       {latestPost ? (
-        <p className="truncate">Your most recent post: {latestPost.name}</p>
+        <p className="truncate">上一次发送的post内容: {latestPost.name}</p>
       ) : (
-        <p>You have no posts yet.</p>
+        <p>你还没有发送过任何post.</p>
       )}
-
       <CreateCharacter />
     </div>
   );

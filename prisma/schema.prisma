@@ -7,20 +7,6 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-// 以下是托拉姆的数据模型
-
-model Character {
-    id            Int      @id @default(autoincrement())
-    name          String
-    createdAt     DateTime @default(now())
-    updatedAt     DateTime @updatedAt
-    createdBy     User     @relation(fields: [createdByUser], references: [name])
-    createdByUser String
-    baseAbiStr    Int
-
-    @@index([name])
-}
-
 model Post {
     id          Int      @id @default(autoincrement())
     name        String
@@ -30,6 +16,148 @@ model Post {
     createdById String
 
     @@index([name])
+}
+
+// 以下是托拉姆的数据模型
+enum Element {
+    NoElement
+    Light
+    Dark
+    Water
+    Fire
+    Earth
+    Wind
+}
+
+model Monster {
+    id                               String   @id @default(cuid())
+    createdAt                        DateTime @default(now())
+    updatedAt                        DateTime @updatedAt
+    updatedBy                        User     @relation(fields: [updatedById], references: [id])
+    updatedById                      String
+    name                             String
+    baseLv                           Int?
+    experience                       Int?
+    address                          String?  @db.TinyText
+    element                          Element?
+    radius                           Int?
+    maxhp                            Int?
+    physicalDefense                  Int?
+    physicalResistance               Int?
+    magicalDefense                   Int?
+    magicalResistance                Int?
+    criticalResistance               Int?
+    avoidance                        Int?
+    dodge                            Int?
+    block                            Int?
+    normalAttackResistanceModifier   Int?
+    physicalAttackResistanceModifier Int?
+    magicalAttackResistanceModifier  Int?
+    difficultyOfTank                 Int?     @default(5)
+    difficultyOfMelee                Int?     @default(5)
+    difficultyOfRanged               Int?     @default(5)
+    possibilityOfRunningAround       Int?     @default(5)
+    specialBehavior                  String?  @db.TinyText
+
+    @@index([name])
+}
+
+model Character {
+    id                  String                @id @default(cuid())
+    createdAt           DateTime              @default(now())
+    updatedAt           DateTime              @updatedAt
+    createdBy           User                  @relation(fields: [createdById], references: [name])
+    createdById         String
+    name                String
+    baseAbi             BaseAbi[]
+    mainWeapoen         MainWeapoen[]
+    subWeapoen          SubWeapoen[]
+    bodyArmor           BodyArmor[]
+    additionalEquipment AdditionalEquipment[]
+    specialEquipment    SpecialEquipment[]
+}
+
+enum MainWeaType {
+    NoWea
+    OneHandedSword
+    TwoHandedSword
+    Bow
+    Staff
+    MagicDevice
+    Knuckle
+    Halberd
+    Katana
+}
+
+enum SubWeaType {
+    NoWea
+    OneHandedSword
+    MagicDevice
+    Knuckle
+    Katana
+    Arrow
+    Dagger
+    NinjutsuScroll
+    Shield
+}
+
+model MainWeapoen {
+    id                 String      @id @default(cuid())
+    createdAt          DateTime    @default(now())
+    updatedAt          DateTime    @updatedAt
+    createdBy          Character   @relation(fields: [createdByCharacter], references: [id])
+    createdByCharacter String
+    mainWeaType        MainWeaType @default(OneHandedSword)
+}
+
+model SubWeapoen {
+    id                 String     @id @default(cuid())
+    createdAt          DateTime   @default(now())
+    updatedAt          DateTime   @updatedAt
+    createdBy          Character  @relation(fields: [createdByCharacter], references: [id])
+    createdByCharacter String
+    subWeaType         SubWeaType @default(NoWea)
+}
+
+model BodyArmor {
+    id                 String    @id @default(cuid())
+    createdAt          DateTime  @default(now())
+    updatedAt          DateTime  @updatedAt
+    createdBy          Character @relation(fields: [createdByCharacter], references: [id])
+    createdByCharacter String
+}
+
+model AdditionalEquipment {
+    id                 String    @id @default(cuid())
+    createdAt          DateTime  @default(now())
+    updatedAt          DateTime  @updatedAt
+    createdBy          Character @relation(fields: [createdByCharacter], references: [id])
+    createdByCharacter String
+}
+
+model SpecialEquipment {
+    id                 String    @id @default(cuid())
+    createdAt          DateTime  @default(now())
+    updatedAt          DateTime  @updatedAt
+    createdBy          Character @relation(fields: [createdByCharacter], references: [id])
+    createdByCharacter String
+}
+
+model BaseAbi {
+    id                 String    @id @default(cuid())
+    createdAt          DateTime  @default(now())
+    updatedAt          DateTime  @updatedAt
+    createdBy          Character @relation(fields: [createdByCharacter], references: [id])
+    createdByCharacter String
+    baseStr            Int       @default(1)
+    baseInt            Int       @default(1)
+    baseVit            Int       @default(1)
+    baseAgi            Int       @default(1)
+    baseDex            Int       @default(1)
+    baseLuc            Int       @default(0)
+    baseCri            Int       @default(0)
+    baseTec            Int       @default(0)
+    baseMen            Int       @default(0)
 }
 
 // Next-auth的必要模型
@@ -69,6 +197,7 @@ model User {
     sessions      Session[]
     posts         Post[]
     character     Character[]
+    Monster       Monster[]
 }
 
 model VerificationToken {

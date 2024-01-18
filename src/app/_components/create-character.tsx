@@ -29,21 +29,21 @@ export function CreateCharacter() {
         placeholder="机体名称"
         value={name}
         onChange={(e) => setName(e.target.value)}
-        className="w-full rounded-full px-4 py-2 text-black"
+        className="w-full rounded-full px-4 py-2 text-black bg-black/10"
       />
       <input
         type="number"
         placeholder="基础力量"
         value={baseAbiStr}
         onChange={(e) => setbaseAbiStr(Number(e.target.value))}
-        className="w-full rounded-full px-4 py-2 text-black"
+        className="w-full rounded-full px-4 py-2 text-black bg-black/10"
       />
       <button
         type="submit"
-        className="rounded-full bg-white/10 px-10 py-3 font-semibold transition hover:bg-white/20"
+        className="rounded-full bg-black/10 px-10 py-3 font-semibold transition hover:bg-black/20"
         disabled={createPost.isLoading}
       >
-        {createPost.isLoading ? "Submitting..." : "Submit"}
+        {createPost.isLoading ? "保存中..." : "保存"}
       </button>
     </form>
   );
