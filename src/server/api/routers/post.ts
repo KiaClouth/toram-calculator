@@ -1,4 +1,3 @@
-import { create } from "domain";
 import { z } from "zod";
 
 import {
@@ -16,6 +15,13 @@ export const postRouter = createTRPCRouter({
       };
     }),
 
+    getLatest: protectedProcedure.query(({ ctx }) => {
+      return ctx.db.post.findFirst({
+        orderBy: { createdAt: "desc" },
+        where: { createdBy: { id: ctx.session.user.id } },
+      });
+    }),
+
   create: protectedProcedure
     .input(z.object({ name: z.string().min(1) }))
     .mutation(async ({ ctx, input }) => {
@@ -28,17 +34,5 @@ export const postRouter = createTRPCRouter({
           createdBy: { connect: { id: ctx.session.user.id } },
         },
       });
-    }),
-
-  createCharacter: protectedProcedure
-    .input(z.object({ name: z.string().min(1), baseAbiStr: z.number().min(1) }))
-    .mutation(async ({ ctx, input }) => {
-      return ctx.db.character.create({
-        data: {
-          name: input.name,
-          baseAbiStr: input.baseAbiStr,
-          createdBy: { connect: { id: ctx.session.user.id } }
-        }
-      })
     }),
 });

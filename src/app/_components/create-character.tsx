@@ -8,9 +8,8 @@ import { api } from "~/trpc/react";
 export function CreateCharacter() {
   const router = useRouter();
   const [name, setName] = useState("");
-  const [baseAbiStr, setbaseAbiStr] = useState(1);
 
-  const createPost = api.post.createCharacter.useMutation({
+  const createPost = api.character.createCharacter.useMutation({
     onSuccess: () => {
       router.refresh();
     },
@@ -20,7 +19,7 @@ export function CreateCharacter() {
     <form
       onSubmit={(e) => {
         e.preventDefault();
-        createPost.mutate({name,baseAbiStr});
+        createPost.mutate({name});
       }}
       className="flex flex-col gap-2"
     >
@@ -29,13 +28,6 @@ export function CreateCharacter() {
         placeholder="机体名称"
         value={name}
         onChange={(e) => setName(e.target.value)}
-        className="w-full rounded-full px-4 py-2 text-black bg-black/10"
-      />
-      <input
-        type="number"
-        placeholder="基础力量"
-        value={baseAbiStr}
-        onChange={(e) => setbaseAbiStr(Number(e.target.value))}
         className="w-full rounded-full px-4 py-2 text-black bg-black/10"
       />
       <button

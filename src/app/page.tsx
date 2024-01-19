@@ -1,5 +1,3 @@
-import Link from "next/link";
-
 import { env } from "~/env";
 // import { CreatePost } from "~/app/_components/create-post";
 import { CreateCharacter } from "~/app/_components/create-character";
@@ -7,6 +5,8 @@ import { SignDialog } from "~/app/_components/sign-Dialog"
 import { getServerAuthSession } from "~/server/auth";
 import { api } from "~/trpc/server";
 import { getProviders } from "next-auth/react";
+// import { RegisterServiceWorker } from "./_components/register-serviceWorker";
+
 export default async function Home() {
   const hello = await api.post.hello.query({ text: "from tRPC" });
   const session = await getServerAuthSession();
@@ -14,6 +14,7 @@ export default async function Home() {
   const host = env.NEXTAUTH_URL
   return (
     <main className="flex min-h-screen flex-col items-center justify-center">
+      {/* <RegisterServiceWorker /> */}
       <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
         <h1 className="text-5xl font-extrabold tracking-tight sm:text-[5rem]">
           Kiya <span className="text-[hsl(280,100%,70%)]">の</span> Toram-Calculactor
@@ -70,7 +71,7 @@ async function CrudShowcase() {
   const session = await getServerAuthSession();
   if (!session?.user) return null;
 
-  const latestPost = await api.get.getLatest.query();
+  const latestPost = await api.post.getLatest.query();
 
   return (
     <div className="w-full max-w-xs">
