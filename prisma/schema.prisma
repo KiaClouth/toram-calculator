@@ -20,25 +20,192 @@ model Post {
 
 // 以下是托拉姆的数据模型
 enum Element {
-    NoElement
-    Light
-    Dark
-    Water
-    Fire
-    Earth
-    Wind
+    NO_ELEMENT
+    LIGHT
+    DARK
+    WATER
+    FIRE
+    EARTH
+    WIND
+}
+
+enum ModifiersType {
+    ABI
+    DAMAGE
+    DAMAGE_RECEIVE
+    SPEED
+    ENDURANCE
+    OTHERS
+}
+
+enum ModifiersValueType {
+    FLAT_BONUS
+    PERCENTAGE_BONUS
+}
+
+enum ModifiersName {
+    STR // 力量
+    INT // 智力
+    VIT // 耐力
+    AGI // 敏捷
+    DEX // 灵巧
+    // 单次伤害增幅
+    PHYSICAL_ATK // 物理攻击
+    MAGICAL_ATK // 魔法攻击
+    WEAPON_ATK // 武器攻击
+    UNSHEATHE_ATK // 拔刀攻击
+    PHYSICAL_PIERCE // 物理贯穿
+    MAGICAL_PIERCE // 魔法贯穿
+    CRITICAL_RATE // 暴击率
+    CRITICAL_DAMAGE // 暴击伤害
+    MAGIC_CRT_CONVERSION_RATE // 魔法暴击转化率
+    MAGIC_CRT_DAMAGE_CONVERSION_RATE // 魔法爆伤转化率
+    SHORT_RANGE_DAMAGE // 近距离威力
+    LONG_RANGE_DAMAGE // 远距离威力
+    STRONGER_AGAINST_NETURAL // 对无属性增强
+    STRONGER_AGAINST_LIGHT // 对光属性增强
+    STRONGER_AGAINST_DARK // 对暗属性增强
+    STRONGER_AGAINST_WATER // 对水属性增强
+    STRONGER_AGAINST_FIRE // 对火属性增强
+    STRONGER_AGAINST_EARTH // 对地属性增强
+    STRONGER_AGAINST_WIND // 对风属性增强
+    STABILITY // 稳定率
+    ACCURACY // 命中
+    ADDITIONAL_PHYSICS // 物理追击
+    ADDITIONAL_MAGIC // 魔法追击
+    ANTICIPATE // 看穿
+    GUARD_BREAK // 破防
+    REFLECT // 反弹伤害
+    ABSOLUTA_ACCURACY // 最对命中
+    ATK_UP_STR // 物理攻击提升（力量）
+    ATK_UP_INT // 物理攻击提升（智力）
+    ATK_UP_VIT // 物理攻击提升（耐力）
+    ATK_UP_AGI // 物理攻击提升（敏捷）
+    ATK_UP_DEX // 物理攻击提升（灵巧）
+    MATK_UP_STR // 魔法攻击提升（力量）
+    MATK_UP_INT // 魔法攻击提升（智力）
+    MATK_UP_VIT // 魔法攻击提升（耐力）
+    MATK_UP_AGI // 魔法攻击提升（敏捷）
+    MATK_UP_DEX // 魔法攻击提升（灵巧）
+    ATK_DOWN_STR // 物理攻击下降（力量）
+    ATK_DOWN_INT // 物理攻击下降（智力）
+    ATK_DOWN_VIT // 物理攻击下降（耐力）
+    ATK_DOWN_AGI // 物理攻击下降（敏捷）
+    ATK_DOWN_DEX // 物理攻击下降（灵巧）
+    MATK_DOWN_STR // 魔法攻击下降（力量）
+    MATK_DOWN_INT // 魔法攻击下降（智力）
+    MATK_DOWN_VIT // 魔法攻击下降（耐力）
+    MATK_DOWN_AGI // 魔法攻击下降（敏捷）
+    MATK_DOWN_DEX // 魔法攻击下降（灵巧）
+    // 生存能力加成
+    PHYSICAL_DEF // 物理防御
+    MAGICAL_DEF // 魔法防御
+    PHYSICAL_RESISTANCE // 物理抗性
+    MAGICAL_RESISTANCE // 魔法抗性
+    NEUTRAL_RESISTANCE // 无属性抗性
+    LIGHT_RESISTANCE // 光属性抗性
+    DARK_RESISTANCE // 暗属性抗性
+    WATER_RESISTANCE // 水属性抗性
+    FIRE_RESISTANCE // 火属性抗性
+    EARTH_RESISTANCE // 地属性抗性
+    WIND_RESISTANCE // 风属性抗性
+    DODGE // 回避
+    AILMENT_RESISTANCE // 异常抗性
+    BASE_GUARD_POWER // 基础格挡力
+    GUARD_POWER // 格挡力
+    BASE_GUARD_RECHARGE // 基础格挡回复
+    GUARD_RECHANGE // 格挡回复
+    EVASION_RECHARGE // 闪躲回复
+    PHYSICAL_BARRIER // 物理屏障
+    MAGICAL_BARRIER // 魔法屏障
+    FRACTIONAL_BARRIER // 百分比瓶屏障
+    BARRIER_COOLDOWN // 屏障回复速度
+    REDUCE_DMG_FLOOR // 地面伤害减轻（地刺）
+    REDUCE_DMG_METEOR // 陨石伤害减轻（天火）
+    REDUCE_DMG_PLAYER_EPICENTER // 范围伤害减轻（以玩家为中心的范围伤害）
+    REDUCE_DMG_FOE_EPICENTER // 敌方周围伤害减轻（以怪物自身为中心的范围伤害）
+    REDUCE_DMG_BOWLING // 贴地伤害减轻（剑气、风刃）
+    REDUCE_DMG_BULLET // 子弹伤害减轻（各种球）
+    REDUCE_DMG_STRAIGHT_LINE // 直线伤害减轻（激光）
+    REDUCE_DMG_CHARGE // 冲撞伤害减轻（怪物的位移技能）
+    ABSOLUTE_DODGE // 绝对回避
+    // 速度加成
+    ASPD // 攻击速度
+    CSPD // 咏唱速度
+    MSPD // 行动速度
+    // 其他加成 
+    MAX_HP // 最大HP
+    MAX_MP // 最大MP
+    AGGRO // 仇恨值
+    WEAPON_RANGE // 武器射程
+    DROP_RATE // 掉宝率
+    NATYRAL_HP_REGEN // HP自然回复
+    NATURAL_MP_REGEN // MP自然回复
+    REVIVE_TIME // 复活时间
+    FLINCH_UNAVAILABLE // 封印胆怯
+    TUMBLE_UNAVAILABLE // 封印翻覆
+    STUN_UNAVAILABLE // 封印昏厥
+    INVINCIBLE_AID // 无敌急救
+    EXP_RATE // 经验加成
+    PET_EXP // 宠物经验
+    ITEM_COOLDOWN // 道具冷却
+    RECOIL_DAMAGE // 反作用伤害
+    GEM_POWDER_DROP // 晶石粉末掉落
+}
+
+model Modifiers {
+    id        String             @id @default(cuid())
+    type      ModifiersType
+    name      ModifiersName
+    valueType ModifiersValueType
+    value     Int
+    usedBy    ModifiersList?     @relation(fields: [usedById], references: [id])
+    usedById  String?
+}
+
+model ModifiersList {
+    id                    String               @id @default(cuid())
+    createdAt             DateTime             @default(now())
+    updatedAt             DateTime             @updatedAt
+    modifiers             Modifiers[]
+    usedByMainWeapon      MainWeapon?          @relation(fields: [usedByMainWeaponId], references: [id])
+    usedByMainWeaponId    String
+    Cuisine               Cuisine?             @relation(fields: [cuisineId], references: [id])
+    cuisineId             String?
+    SubWeapon             SubWeapon?           @relation(fields: [subWeaponId], references: [id])
+    subWeaponId           String?
+    BodyArmor             BodyArmor?           @relation(fields: [bodyArmorId], references: [id])
+    bodyArmorId           String?
+    AdditionalEquipment   AdditionalEquipment? @relation(fields: [additionalEquipmentId], references: [id])
+    additionalEquipmentId String?
+    SpecialEquipment      SpecialEquipment?    @relation(fields: [specialEquipmentId], references: [id])
+    specialEquipmentId    String?
+    Consumables           Consumables?         @relation(fields: [consumablesId], references: [id])
+    consumablesId         String?
+    Fashion               Fashion?             @relation(fields: [fashionId], references: [id])
+    fashionId             String?
+}
+
+enum MonsterType {
+    COMMON_MOBS
+    COMMON_MINI_BOSS
+    COMMON_BOSS
+    EVENT_MOBS
+    EVENT_MINI_BOSS
+    EVENT_BOSS
 }
 
 model Monster {
-    id                               String   @id @default(cuid())
-    createdAt                        DateTime @default(now())
-    updatedAt                        DateTime @updatedAt
-    updatedBy                        User     @relation(fields: [updatedById], references: [id])
+    id                               String       @id @default(cuid())
+    createdAt                        DateTime     @default(now())
+    updatedAt                        DateTime     @updatedAt
+    updatedBy                        User         @relation(fields: [updatedById], references: [id])
     updatedById                      String
     name                             String
+    type                             MonsterType?
     baseLv                           Int?
     experience                       Int?
-    address                          String?  @db.TinyText
+    address                          String?      @db.TinyText
     element                          Element?
     radius                           Int?
     maxhp                            Int?
@@ -53,94 +220,27 @@ model Monster {
     normalAttackResistanceModifier   Int?
     physicalAttackResistanceModifier Int?
     magicalAttackResistanceModifier  Int?
-    difficultyOfTank                 Int?     @default(5)
-    difficultyOfMelee                Int?     @default(5)
-    difficultyOfRanged               Int?     @default(5)
-    possibilityOfRunningAround       Int?     @default(5)
-    specialBehavior                  String?  @db.TinyText
+    difficultyOfTank                 Int?         @default(5)
+    difficultyOfMelee                Int?         @default(5)
+    difficultyOfRanged               Int?         @default(5)
+    possibilityOfRunningAround       Int?         @default(5)
+    specialBehavior                  String?      @db.TinyText
 
     @@index([name])
 }
 
 model Character {
-    id                  String                @id @default(cuid())
-    createdAt           DateTime              @default(now())
-    updatedAt           DateTime              @updatedAt
-    createdBy           User                  @relation(fields: [createdById], references: [id])
-    createdById         String
-    name                String
-    baseAbi             BaseAbi[]
-    mainWeapoen         MainWeapoen[]
-    subWeapoen          SubWeapoen[]
-    bodyArmor           BodyArmor[]
-    additionalEquipment AdditionalEquipment[]
-    specialEquipment    SpecialEquipment[]
-}
-
-enum MainWeaType {
-    NoWea
-    OneHandedSword
-    TwoHandedSword
-    Bow
-    Staff
-    MagicDevice
-    Knuckle
-    Halberd
-    Katana
-}
-
-enum SubWeaType {
-    NoWea
-    OneHandedSword
-    MagicDevice
-    Knuckle
-    Katana
-    Arrow
-    Dagger
-    NinjutsuScroll
-    Shield
-}
-
-model MainWeapoen {
-    id                 String      @id @default(cuid())
-    createdAt          DateTime    @default(now())
-    updatedAt          DateTime    @updatedAt
-    createdBy          Character   @relation(fields: [createdByCharacter], references: [id])
-    createdByCharacter String
-    mainWeaType        MainWeaType @default(OneHandedSword)
-}
-
-model SubWeapoen {
-    id                 String     @id @default(cuid())
-    createdAt          DateTime   @default(now())
-    updatedAt          DateTime   @updatedAt
-    createdBy          Character  @relation(fields: [createdByCharacter], references: [id])
-    createdByCharacter String
-    subWeaType         SubWeaType @default(NoWea)
-}
-
-model BodyArmor {
-    id                 String    @id @default(cuid())
-    createdAt          DateTime  @default(now())
-    updatedAt          DateTime  @updatedAt
-    createdBy          Character @relation(fields: [createdByCharacter], references: [id])
-    createdByCharacter String
-}
-
-model AdditionalEquipment {
-    id                 String    @id @default(cuid())
-    createdAt          DateTime  @default(now())
-    updatedAt          DateTime  @updatedAt
-    createdBy          Character @relation(fields: [createdByCharacter], references: [id])
-    createdByCharacter String
-}
-
-model SpecialEquipment {
-    id                 String    @id @default(cuid())
-    createdAt          DateTime  @default(now())
-    updatedAt          DateTime  @updatedAt
-    createdBy          Character @relation(fields: [createdByCharacter], references: [id])
-    createdByCharacter String
+    id          String        @id @default(cuid())
+    createdAt   DateTime      @default(now())
+    updatedAt   DateTime      @updatedAt
+    createdBy   User          @relation(fields: [createdById], references: [id])
+    createdById String
+    name        String
+    baseAbi     BaseAbi[]
+    equipment   Equipment[]
+    cuisine     Cuisine[]
+    consumables Consumables[]
+    skill       Skill[]
 }
 
 model BaseAbi {
@@ -158,6 +258,130 @@ model BaseAbi {
     baseCri            Int       @default(0)
     baseTec            Int       @default(0)
     baseMen            Int       @default(0)
+}
+
+model Equipment {
+    id                  String                @id @default(cuid())
+    createdAt           DateTime              @default(now())
+    updatedAt           DateTime              @updatedAt
+    createdBy           Character             @relation(fields: [createdById], references: [id])
+    createdById         String
+    mainWeapon          MainWeapon[]
+    subWeapon           SubWeapon[]
+    bodyArmor           BodyArmor[]
+    additionalEquipment AdditionalEquipment[]
+    specialEquipment    SpecialEquipment[]
+    fashion             Fashion[]
+}
+
+enum MainWeaType {
+    NO_WEAPOEN
+    ONE_HAND_SWORD
+    TWO_HANDS_SWORD
+    BOW
+    STAFF
+    MAGIC_DEVICE
+    KNUCKLE
+    HALBERD
+    KATANA
+}
+
+enum SubWeaType {
+    NO_WEAPOEN
+    ONE_HAND_SWORD
+    MAGIC_DEVICE
+    KNUCKLE
+    KATANA
+    ARROW
+    DAGGER
+    NINJUTSUSCROLL
+    SHIELD
+}
+
+model MainWeapon {
+    id            String          @id @default(cuid())
+    createdAt     DateTime        @default(now())
+    updatedAt     DateTime        @updatedAt
+    createdBy     Equipment       @relation(fields: [createdById], references: [id])
+    createdById   String
+    mainWeaType   MainWeaType     @default(ONE_HAND_SWORD)
+    baseAtk       Int             @default(0)
+    refinement    Int             @default(0)
+    stability     Int             @default(60)
+    dte           Element         @default(NO_ELEMENT)
+    modifiersList ModifiersList[]
+}
+
+model SubWeapon {
+    id            String          @id @default(cuid())
+    createdAt     DateTime        @default(now())
+    updatedAt     DateTime        @updatedAt
+    createdBy     Equipment       @relation(fields: [createdById], references: [id])
+    createdById   String
+    subWeaType    SubWeaType      @default(NO_WEAPOEN)
+    modifiersList ModifiersList[]
+}
+
+model BodyArmor {
+    id            String          @id @default(cuid())
+    createdAt     DateTime        @default(now())
+    updatedAt     DateTime        @updatedAt
+    createdBy     Equipment       @relation(fields: [createdById], references: [id])
+    createdById   String
+    modifiersList ModifiersList[]
+}
+
+model AdditionalEquipment {
+    id            String          @id @default(cuid())
+    createdAt     DateTime        @default(now())
+    updatedAt     DateTime        @updatedAt
+    createdBy     Equipment       @relation(fields: [createdById], references: [id])
+    createdById   String
+    modifiersList ModifiersList[]
+}
+
+model SpecialEquipment {
+    id            String          @id @default(cuid())
+    createdAt     DateTime        @default(now())
+    updatedAt     DateTime        @updatedAt
+    createdBy     Equipment       @relation(fields: [createdById], references: [id])
+    createdById   String
+    modifiersList ModifiersList[]
+}
+
+model Fashion {
+    id            String          @id @default(cuid())
+    createdAt     DateTime        @default(now())
+    updatedAt     DateTime        @updatedAt
+    createdBy     Equipment       @relation(fields: [createdById], references: [id])
+    createdById   String
+    modifiersList ModifiersList[]
+}
+
+model Cuisine {
+    id            String          @id @default(cuid())
+    createdAt     DateTime        @default(now())
+    updatedAt     DateTime        @updatedAt
+    createdBy     Character       @relation(fields: [createdById], references: [id])
+    createdById   String
+    modifiersList ModifiersList[]
+}
+
+model Consumables {
+    id            String          @id @default(cuid())
+    createdAt     DateTime        @default(now())
+    updatedAt     DateTime        @updatedAt
+    createdBy     Character       @relation(fields: [createdById], references: [id])
+    createdById   String
+    modifiersList ModifiersList[]
+}
+
+model Skill {
+    id          String    @id @default(cuid())
+    createdAt   DateTime  @default(now())
+    updatedAt   DateTime  @updatedAt
+    createdBy   Character @relation(fields: [createdById], references: [id])
+    createdById String
 }
 
 // Next-auth的必要模型
