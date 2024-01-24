@@ -1,3 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+*{
+    transition: all 150ms;
+}
+
+body{
+    display: flex;
+}

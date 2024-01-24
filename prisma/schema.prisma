@@ -7,6 +7,19 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
+model User {
+    id            String      @id @default(cuid())
+    name          String?
+    email         String?     @unique
+    emailVerified DateTime?
+    image         String?
+    accounts      Account[]
+    sessions      Session[]
+    posts         Post[]
+    characters    Character[]
+    monsters      Monster[]
+}
+
 model Post {
     id          Int      @id @default(autoincrement())
     name        String
@@ -19,6 +32,11 @@ model Post {
 }
 
 // 以下是托拉姆的数据模型
+enum State {
+    PRIVATE
+    PUBLIC
+}
+
 enum Element {
     NO_ELEMENT
     LIGHT
@@ -29,13 +47,48 @@ enum Element {
     WIND
 }
 
-enum ModifiersType {
-    ABI
-    DAMAGE
-    DAMAGE_RECEIVE
-    SPEED
-    ENDURANCE
-    OTHERS
+enum MonsterType {
+    COMMON_MOBS
+    COMMON_MINI_BOSS
+    COMMON_BOSS
+    EVENT_MOBS
+    EVENT_MINI_BOSS
+    EVENT_BOSS
+}
+
+model Monster {
+    id                               String       @id @default(cuid())
+    createdAt                        DateTime     @default(now())
+    updatedAt                        DateTime     @updatedAt
+    updatedBy                        User         @relation(fields: [updatedById], references: [id])
+    updatedById                      String
+    state                            State        @default(PRIVATE)
+    name                             String       @default("一只没有名字的怪物")
+    type                             MonsterType?
+    baseLv                           Int?
+    experience                       Int?
+    address                          String?      @db.TinyText
+    element                          Element?
+    radius                           Int?
+    maxhp                            Int?
+    physicalDefense                  Int?
+    physicalResistance               Int?
+    magicalDefense                   Int?
+    magicalResistance                Int?
+    criticalResistance               Int?
+    avoidance                        Int?
+    dodge                            Int?
+    block                            Int?
+    normalAttackResistanceModifier   Int?
+    physicalAttackResistanceModifier Int?
+    magicalAttackResistanceModifier  Int?
+    difficultyOfTank                 Int          @default(5)
+    difficultyOfMelee                Int          @default(5)
+    difficultyOfRanged               Int          @default(5)
+    possibilityOfRunningAround       Int          @default(5)
+    specialBehavior                  String?      @db.TinyText
+
+    @@index([name])
 }
 
 enum ModifiersValueType {
@@ -155,10 +208,9 @@ enum ModifiersName {
 
 model Modifiers {
     id        String             @id @default(cuid())
-    type      ModifiersType
     name      ModifiersName
     valueType ModifiersValueType
-    value     Int
+    value     Int                @default(0)
     usedBy    ModifiersList?     @relation(fields: [usedById], references: [id])
     usedById  String?
 }
@@ -167,6 +219,7 @@ model ModifiersList {
     id                    String               @id @default(cuid())
     createdAt             DateTime             @default(now())
     updatedAt             DateTime             @updatedAt
+    name                  String?
     modifiers             Modifiers[]
     usedByMainWeapon      MainWeapon?          @relation(fields: [usedByMainWeaponId], references: [id])
     usedByMainWeaponId    String
@@ -184,63 +237,26 @@ model ModifiersList {
     consumablesId         String?
     Fashion               Fashion?             @relation(fields: [fashionId], references: [id])
     fashionId             String?
-}
-
-enum MonsterType {
-    COMMON_MOBS
-    COMMON_MINI_BOSS
-    COMMON_BOSS
-    EVENT_MOBS
-    EVENT_MINI_BOSS
-    EVENT_BOSS
-}
-
-model Monster {
-    id                               String       @id @default(cuid())
-    createdAt                        DateTime     @default(now())
-    updatedAt                        DateTime     @updatedAt
-    updatedBy                        User         @relation(fields: [updatedById], references: [id])
-    updatedById                      String
-    name                             String
-    type                             MonsterType?
-    baseLv                           Int?
-    experience                       Int?
-    address                          String?      @db.TinyText
-    element                          Element?
-    radius                           Int?
-    maxhp                            Int?
-    physicalDefense                  Int?
-    physicalResistance               Int?
-    magicalDefense                   Int?
-    magicalResistance                Int?
-    criticalResistance               Int?
-    avoidance                        Int?
-    dodge                            Int?
-    block                            Int?
-    normalAttackResistanceModifier   Int?
-    physicalAttackResistanceModifier Int?
-    magicalAttackResistanceModifier  Int?
-    difficultyOfTank                 Int?         @default(5)
-    difficultyOfMelee                Int?         @default(5)
-    difficultyOfRanged               Int?         @default(5)
-    possibilityOfRunningAround       Int?         @default(5)
-    specialBehavior                  String?      @db.TinyText
-
-    @@index([name])
+    Character             Character?           @relation(fields: [characterId], references: [id])
+    characterId           String?
 }
 
 model Character {
-    id          String        @id @default(cuid())
-    createdAt   DateTime      @default(now())
-    updatedAt   DateTime      @updatedAt
-    createdBy   User          @relation(fields: [createdById], references: [id])
-    createdById String
-    name        String
-    baseAbi     BaseAbi[]
-    equipment   Equipment[]
-    cuisine     Cuisine[]
-    consumables Consumables[]
-    skill       Skill[]
+    id              String          @id @default(cuid())
+    createdAt       DateTime        @default(now())
+    updatedAt       DateTime        @updatedAt
+    createdBy       User            @relation(fields: [createdById], references: [id])
+    createdById     String
+    state           State           @default(PRIVATE)
+    name            String          @default("取不起名字的机体")
+    lv              Int             @default(1)
+    baseAbi         BaseAbi[]
+    equipment       Equipment[]
+    cuisine         Cuisine[]
+    consumables     Consumables[]
+    skill           Skill[]
+    pet             Pet[]
+    othersModifiers ModifiersList[]
 }
 
 model BaseAbi {
@@ -302,8 +318,10 @@ model MainWeapon {
     id            String          @id @default(cuid())
     createdAt     DateTime        @default(now())
     updatedAt     DateTime        @updatedAt
-    createdBy     Equipment       @relation(fields: [createdById], references: [id])
-    createdById   String
+    createdBy     Equipment?      @relation(fields: [createdById], references: [id])
+    createdById   String?
+    state         State           @default(PRIVATE)
+    name          String          @default("传说中的武器")
     mainWeaType   MainWeaType     @default(ONE_HAND_SWORD)
     baseAtk       Int             @default(0)
     refinement    Int             @default(0)
@@ -316,18 +334,34 @@ model SubWeapon {
     id            String          @id @default(cuid())
     createdAt     DateTime        @default(now())
     updatedAt     DateTime        @updatedAt
-    createdBy     Equipment       @relation(fields: [createdById], references: [id])
-    createdById   String
+    createdBy     Equipment?      @relation(fields: [createdById], references: [id])
+    createdById   String?
+    state         State           @default(PRIVATE)
+    name          String          @default("传说中的的副武器")
     subWeaType    SubWeaType      @default(NO_WEAPOEN)
+    baseAtk       Int             @default(0)
+    refinement    Int             @default(0)
+    stability     Int             @default(60)
+    dte           Element         @default(NO_ELEMENT)
     modifiersList ModifiersList[]
+}
+
+enum BodyArmorType {
+    NORMAL
+    LIGHT
+    HEAVY
 }
 
 model BodyArmor {
     id            String          @id @default(cuid())
     createdAt     DateTime        @default(now())
     updatedAt     DateTime        @updatedAt
-    createdBy     Equipment       @relation(fields: [createdById], references: [id])
-    createdById   String
+    createdBy     Equipment?      @relation(fields: [createdById], references: [id])
+    createdById   String?
+    state         State           @default(PRIVATE)
+    type          BodyArmorType   @default(NORMAL)
+    name          String          @default("传说中的的身体装备")
+    refinement    Int             @default(0)
     modifiersList ModifiersList[]
 }
 
@@ -335,8 +369,11 @@ model AdditionalEquipment {
     id            String          @id @default(cuid())
     createdAt     DateTime        @default(now())
     updatedAt     DateTime        @updatedAt
-    createdBy     Equipment       @relation(fields: [createdById], references: [id])
-    createdById   String
+    createdBy     Equipment?      @relation(fields: [createdById], references: [id])
+    createdById   String?
+    state         State           @default(PRIVATE)
+    name          String          @default("传说中的追加装备")
+    refinement    Int             @default(0)
     modifiersList ModifiersList[]
 }
 
@@ -344,8 +381,9 @@ model SpecialEquipment {
     id            String          @id @default(cuid())
     createdAt     DateTime        @default(now())
     updatedAt     DateTime        @updatedAt
-    createdBy     Equipment       @relation(fields: [createdById], references: [id])
-    createdById   String
+    createdBy     Equipment?      @relation(fields: [createdById], references: [id])
+    createdById   String?
+    state         State           @default(PRIVATE)
     modifiersList ModifiersList[]
 }
 
@@ -371,17 +409,31 @@ model Consumables {
     id            String          @id @default(cuid())
     createdAt     DateTime        @default(now())
     updatedAt     DateTime        @updatedAt
-    createdBy     Character       @relation(fields: [createdById], references: [id])
-    createdById   String
+    createdBy     Character?      @relation(fields: [createdById], references: [id])
+    createdById   String?
+    state         State           @default(PRIVATE)
+    name          String?         @default("传说中的消耗品")
     modifiersList ModifiersList[]
 }
 
 model Skill {
-    id          String    @id @default(cuid())
-    createdAt   DateTime  @default(now())
-    updatedAt   DateTime  @updatedAt
-    createdBy   Character @relation(fields: [createdById], references: [id])
-    createdById String
+    id          String     @id @default(cuid())
+    createdAt   DateTime   @default(now())
+    updatedAt   DateTime   @updatedAt
+    createdBy   Character? @relation(fields: [createdById], references: [id])
+    createdById String?
+    state       State      @default(PRIVATE)
+    name        String?    @default("传说中的技能")
+}
+
+model Pet {
+    id          String     @id @default(cuid())
+    createdAt   DateTime   @default(now())
+    updatedAt   DateTime   @updatedAt
+    createdBy   Character? @relation(fields: [createdById], references: [id])
+    createdById String?
+    state       State      @default(PRIVATE)
+    name        String?    @default("传说中的宠物")
 }
 
 // Next-auth的必要模型
@@ -409,19 +461,7 @@ model Session {
     userId       String
     expires      DateTime
     user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
-
-model User {
-    id            String      @id @default(cuid())
-    name          String?
-    email         String?     @unique
-    emailVerified DateTime?
-    image         String?
-    accounts      Account[]
-    sessions      Session[]
-    posts         Post[]
-    character     Character[]
-    Monster       Monster[]
+    lastPage     String   @default("/")
 }
 
 model VerificationToken {
