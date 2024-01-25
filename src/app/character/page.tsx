@@ -257,10 +257,6 @@ class Character {
     this.wea = wea;
     this.permanentSkillList = permanentSkillList;
   }
-
-  public display = (): void => {
-    console.log(this);
-  };
 }
 
 export default function CharacterPage() {
@@ -297,7 +293,6 @@ export default function CharacterPage() {
     },
   ];
   const character = new Character(cLv, cAbi, cWeapon, cPermanentSkillList);
-  character.display();
   return (
     <div id="toram">
       <Link href="./">home</Link>

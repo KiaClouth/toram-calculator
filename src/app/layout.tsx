@@ -1,14 +1,30 @@
+import { env } from "~/env";
 import "~/styles/globals.css";
 
 import { Inter } from "next/font/google";
 import { cookies } from "next/headers";
-import Image from "next/image";
 
 import { TRPCReactProvider } from "~/trpc/react";
-import CssBaseline from "@mui/material/CssBaseline";
 import { getServerAuthSession } from "~/server/auth";
+
+import type { Metadata, Viewport } from "next";
 import Link from "next/link";
+import Image from "next/image";
+import CssBaseline from "@mui/material/CssBaseline";
 import SignInOrOut from "./_components/signInOrOut";
+
+const Nav = [
+  ["怪物", "/app-image/icons/Calendar.svg", "/monster"],
+  [],
+  ["技能", "/app-image/icons/Basketball.svg", ""],
+  ["装备", "/app-image/icons/Category 2.svg", ""],
+  ["锻晶", "/app-image/icons/Box 2.svg", ""],
+  ["宠物", "/app-image/icons/money.svg", "/pet"],
+  ["消耗品", "/app-image/icons/Coins.svg", ""],
+  [],
+  ["机体配置", "/app-image/icons/Gamepad.svg", "/character"],
+  ["连击分析", "/app-image/icons/Filter.svg", ""],
+]
 
 const session = await getServerAuthSession();
 
@@ -19,11 +35,51 @@ const inter = Inter({
 
 export const dynamic = "force-dynamic";
 
-export const metadata = {
-  title: "托拉姆计算器-ToramCalculator",
-  description: "一个简单的托拉姆数值计算器：角色配置、连击计算等",
-  manifest: "/manifest.json",
+const APP_NAME = "托拉姆计算器-ToramCalculator";
+const APP_DEFAULT_TITLE = "一个简单的托拉姆数值计算器";
+const APP_TITLE_TEMPLATE = "ToramCalculator";
+const APP_DESCRIPTION = "Wiki、角色配置、连击计算等";
+
+export const metadata: Metadata = {
   icons: [{ rel: "icon", url: "/icons/48.ico" }],
+  applicationName: APP_NAME,
+  title: {
+    default: APP_DEFAULT_TITLE,
+    template: APP_TITLE_TEMPLATE,
+  },
+  description: APP_DESCRIPTION,
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: APP_DEFAULT_TITLE,
+    // startUpImage: [],
+  },
+  formatDetection: {
+    telephone: false,
+  },
+  openGraph: {
+    type: "website",
+    siteName: APP_NAME,
+    title: {
+      default: APP_DEFAULT_TITLE,
+      template: APP_TITLE_TEMPLATE,
+    },
+    description: APP_DESCRIPTION,
+  },
+  twitter: {
+    card: "summary",
+    title: {
+      default: APP_DEFAULT_TITLE,
+      template: APP_TITLE_TEMPLATE,
+    },
+    description: APP_DESCRIPTION,
+  },
+  metadataBase: new URL(env.NEXTAUTH_URL)
+};
+
+export const viewport: Viewport = {
+  themeColor: "#FFFFFF",
 };
 
 export default function RootLayout({
@@ -43,7 +99,7 @@ export default function RootLayout({
           <CssBaseline />
           <div className="Nav fixed -left-full lg:static lg:w-24 h-dvh w-3/4 flex flex-col items-center gap-3 bg-bg-white-100 px-2.5 py-10 lg:bg-bg-grey-8 lg:py-5">
             <div className="Top flex h-full w-full flex-1 flex-col gap-20 overflow-hidden lg:gap-10">
-              <div className="LOGO flex w-min flex-none flex-col px-4 lg:top-5 lg:w-[78px] lg:items-center">
+              <Link href={"/"} className="LOGO flex w-min flex-none flex-col px-4 lg:top-5 lg:w-[78px] lg:items-center">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="50"
@@ -103,24 +159,13 @@ export default function RootLayout({
                     fill="#FFA63C"
                   />
                 </svg>
-              </div>
+              </Link>
               <div className="NavBtnList flex h-full w-full shrink flex-col items-center gap-2 overflow-y-auto last:mb-0 lg:gap-4">
-                {[
-                  ["怪物", "/app-image/icons/Calendar.svg"],
-                  [],
-                  ["技能", "/app-image/icons/Basketball.svg"],
-                  ["装备", "/app-image/icons/Category 2.svg"],
-                  ["锻晶", "/app-image/icons/Box 2.svg"],
-                  ["宠物", "/app-image/icons/money.svg"],
-                  ["消耗品", "/app-image/icons/Coins.svg"],
-                  [],
-                  ["机体配置", "/app-image/icons/Gamepad.svg"],
-                  ["连击分析", "/app-image/icons/Filter.svg"],
-                ].map(([btnName, iconUrl]) => {
-                  if (btnName !== undefined && iconUrl !== undefined) {
+                {Nav.map(([btnName, iconPath, url]) => {
+                  if (btnName !== undefined && iconPath !== undefined && url !== undefined) {
                     return (
                       <Link
-                        href={""}
+                        href={url}
                         key={btnName}
                         className={
                           "btn-" +
@@ -130,7 +175,7 @@ export default function RootLayout({
                       >
                         <div className="iconArea rounded-full px-4 py-1 lg:group-hover:bg-brand-color-blue">
                           <Image
-                            src={iconUrl}
+                            src={iconPath}
                             alt={btnName}
                             height={0}
                             width={0}

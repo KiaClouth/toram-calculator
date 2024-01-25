@@ -161,11 +161,11 @@ class Pet {
       childType,
       childMainAbiName,
       childeCharacter,
-    }: {childType: petTypeName; childMainAbiName: abiName; childeCharacter: number},
+    }: { childType: petTypeName; childMainAbiName: abiName; childeCharacter: number },
   ): Pet => {
     const childGeneration = this.generations + otherPet.generations + 1;
     const childMaxLv = 1 + (this.maxLv + otherPet.maxLv) / 2;
-    const childPotential = {...petTypeArray[childType]};
+    const childPotential = { ...petTypeArray[childType] };
     for (const potentialName in otherPet.potential) {
       if (potentialName === childMainAbiName) {
         childPotential[potentialName] =
@@ -177,7 +177,7 @@ class Pet {
           petTypeArray[childType][potentialName as keyof abi] +
           (this.potential[potentialName as keyof abi] +
             otherPet.potential[potentialName as keyof abi]) /
-            10;
+          10;
       }
     }
     return new Pet(
@@ -190,8 +190,8 @@ class Pet {
     );
   };
 
-  public display = (): void => {
-    const displayData = {
+  public display = () => {
+    return {
       类型: this.type,
       性格加成倍率: this.character,
       合成代数: this.generations,
@@ -214,21 +214,25 @@ class Pet {
       武器为杖和魔导时的最终魔攻: Math.ceil(this.matk()),
       最大HP: Math.ceil(this.maxHp()),
     };
-    console.table(displayData);
+
   };
 }
 
 export default function PetPage() {
-  const levePet = new Pet(0, 250, {str: 88, int: 285, vit: 88, agi: 88, dex: 88}, "天才", "int", 1);
-  let testPet = new Pet(0, 2, {str: 96, int: 285, vit: 96, agi: 96, dex: 96}, "天才", "int", 1);
-
-  for (let i = 0; i < 8; i++) {
-    testPet = testPet.synthesisWith(levePet, {
-      childType: "天才",
-      childMainAbiName: "int",
-      childeCharacter: 1,
-    });
-    testPet.display();
+  const sacrificialPet = new Pet(0, 250, { str: 88, int: 285, vit: 88, agi: 88, dex: 88 }, "天才", "int", 1);
+  let mainPet = new Pet(0, 2, { str: 96, int: 285, vit: 96, agi: 96, dex: 96 }, "天才", "int", 1);
+  const NumberOfSacrificialPets = 8
+  const childEducationMainAbi = "int"
+  const childSubAbi = ""
+  const completeDisplay = () => {
+    for (let i = 0; i < NumberOfSacrificialPets; i++) {
+      mainPet = mainPet.synthesisWith(sacrificialPet, {
+        childType: "天才",
+        childMainAbiName: childEducationMainAbi,
+        childeCharacter: 1,
+      })
+      return <p>{JSON.stringify(mainPet.display(), null, 2)}</p>
+    }
   }
   return (
     <div id="Main">
@@ -241,7 +245,9 @@ export default function PetPage() {
         </div>
         <div id="content">
           <div id="inputModule"></div>
-          <div id="outModule"></div>
+          <div className="outModule w-full flex flex-col gap-4">
+            {completeDisplay()}
+          </div>
         </div>
       </div>
     </div>
