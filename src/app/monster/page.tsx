@@ -25,6 +25,7 @@ export default function MonsterPage() {
             }
           })}
         />
+        <CrateMonster />
         <div className="List"></div>
       </div>
     </main>

@@ -15,7 +15,7 @@ export default function SignInOrOut(props: { session: Session | null }) {
         return "登出";
       } else {
         return (
-          <Image src={s.user.image} alt={"用户头像"} width={40} height={40} />
+          <Image src={s.user.image} alt={"用户头像"} width={44} height={44} className="rounded-full" />
         );
       }
     }

@@ -15,13 +15,13 @@ import SignInOrOut from "./_components/signInOrOut";
 
 const Nav = [
   ["怪物", "/app-image/icons/Calendar.svg", "/monster"],
-  [],
+  ["LineA"],
   ["技能", "/app-image/icons/Basketball.svg", ""],
   ["装备", "/app-image/icons/Category 2.svg", ""],
   ["锻晶", "/app-image/icons/Box 2.svg", ""],
   ["宠物", "/app-image/icons/money.svg", "/pet"],
   ["消耗品", "/app-image/icons/Coins.svg", ""],
-  [],
+  ["LineB"],
   ["机体配置", "/app-image/icons/Gamepad.svg", "/character"],
   ["连击分析", "/app-image/icons/Filter.svg", ""],
 ]
@@ -200,8 +200,8 @@ export default async function RootLayout({
                 })}
               </div>
             </div>
-            <div className="NavFunctionBtnList flex w-full flex-none flex-col items-center gap-3 last:mb-0">
-              <div className="ThemeModuleSwitchBtn rounded-full border-1.5 border-brand-color-blue p-2">
+            <div className="NavFunctionBtnList flex w-full flex-none flex-col items-center justify-center gap-3 last:mb-0">
+              <div className="ThemeModuleSwitchBtn rounded-full border-1.5 border-brand-color-blue p-1 hover:p-2">
                 <SignInOrOut session={session} />
               </div>
               {/* <div className="ThemeModuleSwitchBtn p-2 rounded-full border-1.5 border-main-color-100">

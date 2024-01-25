@@ -18,7 +18,28 @@ export default withSerwist({
   compiler: {
     removeConsole: process.env.NODE_ENV !== "development", // Remove console.log in production
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'avatars.githubusercontent.com',
+        port: '',
+        pathname: '/u/**',
+      },
+    ],
+  },
 });
 
-// const nextConfig = {};
+// const nextConfig = {
+//   images: {
+//     remotePatterns: [
+//       {
+//         protocol: 'https',
+//         hostname: 'assets.example.com',
+//         port: '',
+//         pathname: '/account123/**',
+//       },
+//     ],
+//   },
+// };
 // export default nextConfig
