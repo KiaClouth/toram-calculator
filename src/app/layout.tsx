@@ -26,8 +26,6 @@ const Nav = [
   ["连击分析", "/app-image/icons/Filter.svg", ""],
 ]
 
-const session = await getServerAuthSession();
-
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-sans",
@@ -82,11 +80,13 @@ export const viewport: Viewport = {
   themeColor: "#FFFFFF",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+
+  const session = await getServerAuthSession();
   return (
     <html lang="zh-CN">
       <body
