@@ -3,17 +3,29 @@ import * as React from "react";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import CircularProgress from "@mui/material/CircularProgress";
+import { api } from "~/trpc/react";
 
 interface Film {
   name: string;
   baseLv: number;
 }
-
-export default function LongSearchBox(props: { topFilms: Film[] }) {
-  const topFilms = React.useMemo(() => props.topFilms || [{ name: "暂无数据", baseLv: 0 }], [props.topFilms]);
+// [{ name: "暂无数据", baseLv: 0 }]
+export default function LongSearchBox() {
   const [open, setOpen] = React.useState(false);
   const [options, setOptions] = React.useState<readonly Film[]>([]);
   const loading = open && options.length === 0;
+  const { data: monsterList, error } = api.monster.getList.useQuery();
+  const topFilms = React.useMemo(() => {
+    return monsterList === undefined
+      ? [{ name: "暂无数据", baseLv: 0 }]
+      : monsterList.map((monster) => {
+          if (typeof monster.baseLv === "number") {
+            return { name: monster.name, baseLv: monster.baseLv };
+          } else {
+            return { name: monster.name, baseLv: 0 };
+          }
+        });
+  }, [monsterList]);
 
   React.useEffect(() => {
     let active = true;

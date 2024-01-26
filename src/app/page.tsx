@@ -8,7 +8,7 @@ const Nav = [
   ["技能", "/app-image/icons/Basketball.svg", ""],
   ["装备", "/app-image/icons/Category 2.svg", ""],
   ["锻晶", "/app-image/icons/Box 2.svg", ""],
-  ["宠物", "/app-image/icons/money.svg", "/pet"],
+  ["宠物", "/app-image/icons/Money.svg", "/pet"],
   ["消耗品", "/app-image/icons/Coins.svg", ""],
   ["line2"],
   ["机体配置", "/app-image/icons/Gamepad.svg", "/character"],
