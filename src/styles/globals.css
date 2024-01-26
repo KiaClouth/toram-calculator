@@ -9,3 +9,7 @@
 body{
     display: flex;
 }
+
+.MuiAutocomplete-popper {
+    transition: none;
+}

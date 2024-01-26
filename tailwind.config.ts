@@ -22,6 +22,9 @@ export default {
       'brand-color-orange': '#FD7E50',
     },
     extend: {
+      maxWidth: {
+        '8xl': "96rem"
+      },
       height: {
         'line': '1px'
       },

@@ -9,14 +9,15 @@ class Monster {
   }
 }
 
-
 export default function MonsterPage() {
   return (
-    <main className="main w-full flex">
-      <div className="module2 h-full min-h-dvh w-full flex flex-col bg-brand-color-blue">
-        <LongSearchBox />
-        <CrateMonster />
-        <div className="List"></div>
+    <main className="main flex w-full">
+      <div className="module2 flex h-full w-full flex-col items-center">
+        <div className="moduleContent max-w-8xl min-h-dvh w-full">
+          <LongSearchBox />
+          <CrateMonster />
+          <div className="List"></div>
+        </div>
       </div>
     </main>
   );
