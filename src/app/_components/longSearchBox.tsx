@@ -6,8 +6,8 @@ import * as React from "react";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import CircularProgress from "@mui/material/CircularProgress";
-import { api } from "~/trpc/react";
-import { useRouter } from "next/navigation";
+import { type Monster } from "@prisma/client";
+import MonsterDialog from "./monsterDisplay";
 
 interface Film {
   name: string;
@@ -15,32 +15,34 @@ interface Film {
   id: string
 }
 
-export default function LongSearchBox() {
-  const router = useRouter();
+export default function LongSearchBox(props: {monsterList:Monster[]}) {
+  const { monsterList } = props;
+  const [monsterData, setMonsteData] = React.useState(monsterList[0]);
+  const [monsterDialogState, setMonsterDialogState] = React.useState(false);
   const [open, setOpen] = React.useState(false);
   const [options, setOptions] = React.useState<readonly Film[]>([]);
   const loading = options.length === 0;
-  const { data: monsterList } = api.monster.getList.useQuery();
-  const topFilms = React.useMemo(() => {
-    return monsterList === undefined
-      ? [{ name: "暂无数据", baseLv: 0, id: "" }]
-      : monsterList.map((monster) => {
-          if (typeof monster.baseLv === "number") {
-            return { name: monster.name, baseLv: monster.baseLv, id: monster.id };
-          } else {
-            return { name: monster.name, baseLv: 0, id: monster.id };
-          }
-        });
-  }, [monsterList]);
-  
-  console.log(monsterList)
 
-  const handleChange = (event: React.SyntheticEvent<Element, Event>, newValue: Film) => {
-    console.log('Selected value:', newValue);
-    // router.push("/monster/" + newValue)
+  const handleChange = (event: React.SyntheticEvent<Element, Event>, shortMonsertData: Film) => {
+    for (const monsterData of monsterList) {
+      if (monsterData.id === shortMonsertData.id) {
+        setMonsteData(monsterData)
+        setMonsterDialogState(true)
+      }
+    }
   };
 
   React.useEffect(() => {
+    console.log(monsterList)
+    const topFilms = monsterList === undefined
+    ? [{ name: "暂无数据", baseLv: 0, id: "" }]
+    : monsterList.map((monster) => {
+        if (typeof monster.baseLv === "number") {
+          return { name: monster.name, baseLv: monster.baseLv, id: monster.id };
+        } else {
+          return { name: monster.name, baseLv: 0, id: monster.id };
+        }
+      });
     let active = true;
 
     if (!loading) {
@@ -54,20 +56,19 @@ export default function LongSearchBox() {
     return () => {
       active = false;
     };
-  }, [loading, topFilms]);
+  }, [loading, monsterList]);
 
-  React.useEffect(() => {
-    if (!open) {
-      setOptions([]);
-    }
-  }, [open]);
+  // React.useEffect(() => {
+  //   if (!open) {
+  //     setOptions([]);
+  //   }
+  // }, [open]);
 
   return (
     <ThemeProvider theme={createTheme(themeOptions)}>
       <Autocomplete
         id="asynchronous-demo"
-        fullWidth={true}
-        className="p-5"
+        className="flex-1"
         open={open}
         onOpen={() => {
           setOpen(true);
@@ -83,7 +84,7 @@ export default function LongSearchBox() {
         renderInput={(params) => (
           <TextField
             {...params}
-            label="在这里怪物名字"
+            label="传说中的怪物名字"
             InputProps={{
               ...params.InputProps,
               endAdornment: (
@@ -98,6 +99,7 @@ export default function LongSearchBox() {
           />
         )}
       />
+      <MonsterDialog monsterData={monsterData} monsterDialogState={monsterDialogState} setMonsterDialogState={setMonsterDialogState} />
     </ThemeProvider>
   );
 }
