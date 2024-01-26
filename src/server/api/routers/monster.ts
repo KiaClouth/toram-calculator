@@ -1,23 +1,23 @@
-import { z } from "zod";
+import { MonsterSchema } from "prisma/generated/zod";
 
 import {
-    createTRPCRouter,
-    protectedProcedure,
-    publicProcedure,
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
 } from "~/server/api/trpc";
 
 export const monsterRouter = createTRPCRouter({
-    getMonsterList: protectedProcedure.query(({ ctx }) => {
-        return ctx.db.monster.findMany();
-    }),
+  getList: protectedProcedure.query(({ ctx }) => {
+    return ctx.db.monster.findMany();
+  }),
 
-    create: protectedProcedure
-    .input(z.object({ name: z.string().min(1) }))
+  create: protectedProcedure
+    .input(MonsterSchema)
     .mutation(async ({ ctx, input }) => {
       return ctx.db.monster.create({
         data: {
-          name: input.name,
-          updatedById: ctx.session.user.id,
+          ...input,
+          updatedBy: { connect: { id: ctx.session.user.id} },
         },
       });
     })

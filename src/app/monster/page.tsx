@@ -2,6 +2,7 @@ import Link from "next/link";
 import CrateMonster from "~/app/_components/create-monster";
 import LongSearchBox from "~/app/_components/longSearchBox";
 import { api } from "~/trpc/server";
+import { CreatePost } from "../_components/create-post";
 
 class Monster {
   lv: number;
@@ -10,7 +11,7 @@ class Monster {
   }
 }
 
-const monsterList = await api.monster.getMonsterList.query();
+const monsterList = await api.monster.getList.query();
 
 export default function MonsterPage() {
   return (
@@ -25,6 +26,7 @@ export default function MonsterPage() {
             }
           })}
         />
+        <CreatePost />
         <CrateMonster />
         <div className="List"></div>
       </div>

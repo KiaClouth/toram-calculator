@@ -1,6 +1,4 @@
 "use client";
-
-import { type Monster } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -9,35 +7,6 @@ import { api } from "~/trpc/react";
 export default function CreateMonster() {
   const router = useRouter();
   const [name, setName] = useState("");
-  const monster: Monster = {
-    name: name,
-    id: "",
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    updatedById: "",
-    baseLv: null,
-    experience: null,
-    address: null,
-    element: null,
-    radius: null,
-    maxhp: null,
-    physicalDefense: null,
-    physicalResistance: null,
-    magicalDefense: null,
-    magicalResistance: null,
-    criticalResistance: null,
-    avoidance: null,
-    dodge: null,
-    block: null,
-    normalAttackResistanceModifier: null,
-    physicalAttackResistanceModifier: null,
-    magicalAttackResistanceModifier: null,
-    difficultyOfTank: null,
-    difficultyOfMelee: null,
-    difficultyOfRanged: null,
-    possibilityOfRunningAround: null,
-    specialBehavior: null
-  }
 
   
   const createMonster = api.monster.create.useMutation({
@@ -50,7 +19,29 @@ export default function CreateMonster() {
     <form
       onSubmit={(e) => {
         e.preventDefault();
-        // createMonster.mutate({monster});
+        createMonster.mutate({
+          name: name,
+          type: "COMMON_MOBS",
+          state: "PRIVATE",
+          element: null,
+          baseLv: null,
+          experience: null,
+          address: null,
+          radius: null,
+          maxhp: null,
+          physicalDefense: null,
+          physicalResistance: null,
+          magicalDefense: null,
+          magicalResistance: null,
+          criticalResistance: null,
+          avoidance: null,
+          dodge: null,
+          block: null,
+          difficultyOfTank: 0,
+          difficultyOfMelee: 0,
+          difficultyOfRanged: 0,
+          possibilityOfRunningAround: 0
+        });
       }}
       className="flex flex-col gap-2"
     >
