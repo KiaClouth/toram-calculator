@@ -18,13 +18,13 @@ const Nav = [
 export default function Index() {
   return (
     <div className="flex h-dvh w-full flex-col items-center justify-between">
-      <div className="Top flex h-1/5 w-full items-center justify-center lg:h-3/4">
-        <h1 className="w-full text-center text-2xl font-extrabold tracking-tight text-main-color-100 lg:text-7xl">
-          Kiya <span className=" text-brand-color-blue">の</span>{" "}
-          Toram-Calculactor
+      <div className="Top h-full min-h-48 w-full flex items-center justify-center lg:h-3/4">
+        <h1 className="w-full text-center text-5xl font-extrabold tracking-tight text-main-color-100 lg:text-9xl">
+        Toram <span className=" text-brand-color-blue">の</span>{" "}
+          Calculactor
         </h1>
       </div>
-      <div className="Bottom flex h-4/5 w-full flex-col items-center justify-between lg:h-1/4">
+      <div className="Bottom h-full w-full flex flex-1 flex-col items-center justify-between lg:h-1/4">
         <div className="Content w-full h-full p-5">
           <div className="Nav lg:invisible flex h-full w-full shrink flex-col items-center gap-2 overflow-y-auto last:mb-0">
             {Nav.map(([btnName, iconPath, url]) => {

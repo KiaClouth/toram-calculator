@@ -25,7 +25,7 @@ export default function SignInOrOut(props: { session: Session | null }) {
     <SessionProvider session={session}>
       <Link
         href={session ? "/api/auth/signout" : "/api/auth/signin"}
-        className=" text-xs"
+        className="SingBtn w-11 h-11 flex justify-center items-center rounded-full border-1.5 border-main-color-100 hover:scale-110 text-xs"
       >
         {btnContent(session)}
       </Link>

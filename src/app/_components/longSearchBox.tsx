@@ -7,28 +7,38 @@ import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import CircularProgress from "@mui/material/CircularProgress";
 import { api } from "~/trpc/react";
+import { useRouter } from "next/navigation";
 
 interface Film {
   name: string;
   baseLv: number;
+  id: string
 }
 
 export default function LongSearchBox() {
+  const router = useRouter();
   const [open, setOpen] = React.useState(false);
   const [options, setOptions] = React.useState<readonly Film[]>([]);
   const loading = options.length === 0;
   const { data: monsterList } = api.monster.getList.useQuery();
   const topFilms = React.useMemo(() => {
     return monsterList === undefined
-      ? [{ name: "暂无数据", baseLv: 0 }]
+      ? [{ name: "暂无数据", baseLv: 0, id: "" }]
       : monsterList.map((monster) => {
           if (typeof monster.baseLv === "number") {
-            return { name: monster.name, baseLv: monster.baseLv };
+            return { name: monster.name, baseLv: monster.baseLv, id: monster.id };
           } else {
-            return { name: monster.name, baseLv: 0 };
+            return { name: monster.name, baseLv: 0, id: monster.id };
           }
         });
   }, [monsterList]);
+  
+  console.log(monsterList)
+
+  const handleChange = (event: React.SyntheticEvent<Element, Event>, newValue: Film) => {
+    console.log('Selected value:', newValue);
+    // router.push("/monster/" + newValue)
+  };
 
   React.useEffect(() => {
     let active = true;
@@ -65,6 +75,7 @@ export default function LongSearchBox() {
         onClose={() => {
           setOpen(false);
         }}
+        onChange={(e, value) => handleChange(e,value ? value : {name:"默认",baseLv: 0, id:"默认"})}
         isOptionEqualToValue={(option, value) => option.name === value.name}
         getOptionLabel={(option) => option.name}
         options={options}

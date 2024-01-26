@@ -33,8 +33,8 @@ const inter = Inter({
 
 export const dynamic = "force-dynamic";
 
-const APP_NAME = "托拉姆计算器-ToramCalculator";
-const APP_DEFAULT_TITLE = "一个简单的托拉姆数值计算器";
+const APP_NAME = "托拉姆计算器-ToramCalculator:一个简单的托拉姆数值计算器";
+const APP_DEFAULT_TITLE = "托拉姆计算器-ToramCalculator";
 const APP_TITLE_TEMPLATE = "ToramCalculator";
 const APP_DESCRIPTION = "Wiki、角色配置、连击计算等";
 
@@ -201,17 +201,7 @@ export default async function RootLayout({
               </div>
             </div>
             <div className="NavFunctionBtnList flex w-full flex-none flex-col items-center justify-center gap-3 last:mb-0">
-              <div className="ThemeModuleSwitchBtn rounded-full border-1.5 border-brand-color-blue p-1 hover:p-2">
-                <SignInOrOut session={session} />
-              </div>
-              {/* <div className="ThemeModuleSwitchBtn p-2 rounded-full border-1.5 border-main-color-100">
-                <Image
-                  src={"/app-image/icons/Loading.svg"}
-                  alt={"模式切换按钮"}
-                  width={24}
-                  height={24}
-                />
-              </div> */}
+              <SignInOrOut session={session} />
             </div>
           </div>
           {children}

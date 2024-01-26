@@ -57,7 +57,7 @@ export default function CreateMonster() {
         className="rounded-full bg-black/10 px-10 py-3 font-semibold transition hover:bg-black/20"
         disabled={createMonster.isLoading}
       >
-        {createMonster.isLoading ? "保存中..." : "保存"}
+        {createMonster.isLoading ? "上传中..." : "上传"}
       </button>
     </form>
   );
