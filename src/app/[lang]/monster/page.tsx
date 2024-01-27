@@ -1,5 +1,5 @@
-import CrateMonster from "~/app/_components/create-monster";
-import LongSearchBox from "~/app/_components/longSearchBox";
+import CrateMonster from "~/app/[lang]/_components/create-monster";
+import LongSearchBox from "~/app/[lang]/_components/longSearchBox";
 import { api } from "~/trpc/server";
 
 // class Monster {

@@ -2,18 +2,28 @@
 import Link from "next/link";
 import Image from "next/image";
 
-const Nav = [
-  ["怪物", "/app-image/icons/Calendar.svg", "/monster"],
-  ["line1"],
-  ["技能", "/app-image/icons/Basketball.svg", ""],
-  ["装备", "/app-image/icons/Category 2.svg", ""],
-  ["锻晶", "/app-image/icons/Box 2.svg", ""],
-  ["宠物", "/app-image/icons/Money.svg", "/pet"],
-  ["消耗品", "/app-image/icons/Coins.svg", ""],
-  ["line2"],
-  ["机体配置", "/app-image/icons/Gamepad.svg", "/character"],
-  ["连击分析", "/app-image/icons/Filter.svg", ""],
-]
+import { type StaticImport } from "next/dist/shared/lib/get-img-props";
+import iconBasketball from "~/../public/app-image/icons/Basketball.svg";
+import iconBox2 from "~/../public/app-image/icons/Box 2.svg";
+import iconCalendar from "~/../public/app-image/icons/Calendar.svg";
+import iconCategory2 from "~/../public/app-image/icons/Category 2.svg";
+import iconCoins from "~/../public/app-image/icons/Coins.svg";
+import iconFilter from "~/../public/app-image/icons/Filter.svg";
+import iconGamepad from "~/../public/app-image/icons/Gamepad.svg";
+import iconMoney from "~/../public/app-image/icons/Money.svg";
+
+const Nav: [string, StaticImport | undefined, string | undefined][] = [
+  ["怪物", iconCalendar, "/monster"],
+  ["LineA", , ,],
+  ["技能", iconBasketball, ""],
+  ["装备", iconCategory2, ""],
+  ["锻晶", iconBox2, ""],
+  ["宠物", iconMoney, "/pet"],
+  ["消耗品", iconCoins, ""],
+  ["LineB", , ,],
+  ["机体配置", iconGamepad, "/character"],
+  ["连击分析", iconFilter, ""],
+];
 
 export default function Index() {
   return (
