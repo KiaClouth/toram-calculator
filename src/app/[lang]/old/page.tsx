@@ -1,7 +1,7 @@
 import { env } from "~/env";
 // import { CreatePost } from "~/app/_components/create-post";
-import { CreateCharacter } from "~/app/_components/create-character";
-import { SignDialog } from "~/app/_components/sign-Dialog"
+import { CreateCharacter } from "~/app/[lang]/_components/create-character";
+import { SignDialog } from "~/app/[lang]/_components/sign-Dialog"
 import { getServerAuthSession } from "~/server/auth";
 import { api } from "~/trpc/server";
 import { getProviders } from "next-auth/react";
