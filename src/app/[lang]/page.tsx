@@ -14,7 +14,7 @@ import { getDictionary } from "get-dictionary";
 import { type Locale } from "i18n-config";
 
 export default async function Index({params: {lang}}: {params: { lang: Locale }}) {
-  const dictionary = await getDictionary(lang);
+  const dictionary = getDictionary(lang);
   const Nav: [string, StaticImport | undefined, string | undefined][] = [
     [dictionary.ui.root.monsters, iconCalendar, "/monster"],
     ["LineA", , ,],
