@@ -1,4 +1,3 @@
-"use client";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -11,21 +10,24 @@ import iconCoins from "~/../public/app-image/icons/Coins.svg";
 import iconFilter from "~/../public/app-image/icons/Filter.svg";
 import iconGamepad from "~/../public/app-image/icons/Gamepad.svg";
 import iconMoney from "~/../public/app-image/icons/Money.svg";
+import { getDictionary } from "get-dictionary";
+import { type Locale } from "i18n-config";
 
-const Nav: [string, StaticImport | undefined, string | undefined][] = [
-  ["怪物", iconCalendar, "/monster"],
-  ["LineA", , ,],
-  ["技能", iconBasketball, ""],
-  ["装备", iconCategory2, ""],
-  ["锻晶", iconBox2, ""],
-  ["宠物", iconMoney, "/pet"],
-  ["消耗品", iconCoins, ""],
-  ["LineB", , ,],
-  ["机体配置", iconGamepad, "/character"],
-  ["连击分析", iconFilter, ""],
-];
+export default async function Index({params: {lang}}: {params: { lang: Locale }}) {
+  const dictionary = await getDictionary(lang);
+  const Nav: [string, StaticImport | undefined, string | undefined][] = [
+    [dictionary.ui.root.monsters, iconCalendar, "/monster"],
+    ["LineA", , ,],
+    [dictionary.ui.root.skills, iconBasketball, ""],
+    [dictionary.ui.root.equipments, iconCategory2, ""],
+    [dictionary.ui.root.crystas, iconBox2, ""],
+    [dictionary.ui.root.pets, iconMoney, "/pet"],
+    [dictionary.ui.root.items, iconCoins, ""],
+    ["LineB", , ,],
+    [dictionary.ui.root.character, iconGamepad, "/character"],
+    [dictionary.ui.root.comboAnalyze, iconFilter, ""],
+  ];
 
-export default function Index() {
   return (
     <div className="flex h-dvh w-full flex-col items-center justify-between">
       <div className="Top h-full min-h-48 w-full flex items-center justify-center lg:h-3/4">
@@ -57,7 +59,7 @@ export default function Index() {
                       <Image
                         src={iconPath}
                         alt={btnName}
-                        height={0}
+                        height={24}
                         width={0}
                         style={{ width: "24px", height: "auto" }}
                       />

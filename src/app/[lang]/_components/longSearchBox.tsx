@@ -8,6 +8,10 @@ import Autocomplete from "@mui/material/Autocomplete";
 import CircularProgress from "@mui/material/CircularProgress";
 import { type Monster } from "@prisma/client";
 import MonsterDialog from "./monsterDisplay";
+import { type getDictionary } from "get-dictionary";
+import tailwindConfig from "tailwind.config";
+
+const tailwindColor = tailwindConfig.theme.colors
 
 interface Film {
   name: string;
@@ -15,14 +19,13 @@ interface Film {
   id: string
 }
 
-export default function LongSearchBox(props: {monsterList:Monster[]}) {
-  const { monsterList } = props;
+export default function LongSearchBox(props: {dictionary: ReturnType<typeof getDictionary> ,monsterList:Monster[]}) {
+  const { dictionary, monsterList } = props;
   const [monsterData, setMonsteData] = React.useState(monsterList[0]);
   const [monsterDialogState, setMonsterDialogState] = React.useState(false);
   const [open, setOpen] = React.useState(false);
   const [options, setOptions] = React.useState<readonly Film[]>([]);
   const loading = options.length === 0;
-
   const handleChange = (event: React.SyntheticEvent<Element, Event>, shortMonsertData: Film) => {
     for (const monsterData of monsterList) {
       if (monsterData.id === shortMonsertData.id) {
@@ -34,7 +37,7 @@ export default function LongSearchBox(props: {monsterList:Monster[]}) {
 
   React.useEffect(() => {
     const topFilms = monsterList === undefined
-    ? [{ name: "暂无数据", baseLv: 0, id: "" }]
+    ? [{ name: "", baseLv: 0, id: "" }]
     : monsterList.map((monster) => {
         if (typeof monster.baseLv === "number") {
           return { name: monster.name, baseLv: monster.baseLv, id: monster.id };
@@ -67,7 +70,7 @@ export default function LongSearchBox(props: {monsterList:Monster[]}) {
     <ThemeProvider theme={createTheme(themeOptions)}>
       <Autocomplete
         id="asynchronous-demo"
-        className="flex-1"
+        sx={{ flex: "1 1 0%", '.MuiInputBase-root': { borderRadius: 9999, px:2, bgcolor:tailwindColor["bg-grey"][8] }, '& .MuiFormLabel-root': { pl:2 },'& .MuiFormLabel-root.Mui-focused': { pl:0 } }}
         open={open}
         onOpen={() => {
           setOpen(true);
@@ -75,7 +78,7 @@ export default function LongSearchBox(props: {monsterList:Monster[]}) {
         onClose={() => {
           setOpen(false);
         }}
-        onChange={(e, value) => handleChange(e,value ? value : {name:"默认",baseLv: 0, id:"默认"})}
+        onChange={(e, value) => handleChange(e,value ? value : {name:"",baseLv: 0, id:""})}
         isOptionEqualToValue={(option, value) => option.name === value.name}
         getOptionLabel={(option) => option.name}
         options={options}
@@ -83,7 +86,7 @@ export default function LongSearchBox(props: {monsterList:Monster[]}) {
         renderInput={(params) => (
           <TextField
             {...params}
-            label="传说中的怪物名字"
+            label={dictionary.ui.monster.searchPlaceholder}
             InputProps={{
               ...params.InputProps,
               endAdornment: (
@@ -98,7 +101,7 @@ export default function LongSearchBox(props: {monsterList:Monster[]}) {
           />
         )}
       />
-      <MonsterDialog monsterData={monsterData} monsterDialogState={monsterDialogState} setMonsterDialogState={setMonsterDialogState} />
+      <MonsterDialog dictionary={dictionary} monsterData={monsterData} monsterDialogState={monsterDialogState} setMonsterDialogState={setMonsterDialogState} />
     </ThemeProvider>
   );
 }

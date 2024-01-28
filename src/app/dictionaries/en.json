@@ -1,9 +1,52 @@
 {
-    "server-component": {
-      "welcome": "Welcome"
+  "ui": {
+    "root":{
+      "monsters": "Monsters",
+      "skills": "Skills",
+      "equipments":"Equipments",
+      "crystas":"Crystas",
+      "pets":"Pets",
+      "items":"Items",
+      "character":"Character",
+      "comboAnalyze":"Combo"
     },
-    "counter": {
-      "increment": "Increment",
-      "decrement": "Decrement"
+    "monster": {
+      "searchPlaceholder": "传说中的怪物",
+      "upload":"上传怪物数据",
+      "save":"保存",
+      "modify":"修改"
+    }
+  },
+  "db": {
+    "monster": {
+      "id": "ID",
+      "updatedAt": "更新时间",
+      "updatedById": "更新者",
+      "state": "状态",
+      "name": "名称",
+      "type": "类型",
+      "baseLv": "基础等级",
+      "experience": "基础经验",
+      "address": "所在地址",
+      "element": "元素属性",
+      "radius": "半径",
+      "maxhp": "最大HP",
+      "physicalDefense": "物理防御",
+      "physicalResistance": "物理抗性",
+      "magicalDefense": "魔法防御",
+      "magicalResistance": "魔法抗性",
+      "criticalResistance": "暴击抗性",
+      "avoidance": "回避值",
+      "dodge": "闪避率",
+      "block": "格挡率",
+      "normalAttackResistanceModifier": "一般惯性变动率",
+      "physicalAttackResistanceModifier": "物理惯性变动率",
+      "magicalAttackResistanceModifier": "魔法惯性变动率",
+      "difficultyOfTank": "难度：坦职",
+      "difficultyOfMelee": "难度：近战",
+      "difficultyOfRanged": "难度：远程",
+      "possibilityOfRunningAround": "好动程度",
+      "specialBehavior": "特殊说明"
     }
   }
+}

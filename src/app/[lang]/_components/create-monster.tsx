@@ -6,8 +6,10 @@ import { useState } from "react";
 import { api } from "~/trpc/react";
 import { themeOptions } from "~/app/themeOptions";
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import { getDictionary } from "get-dictionary";
 
-export default function CreateMonster() {
+export default function CreateMonster(props: { dictionary: ReturnType<typeof getDictionary> }) {
+  const { dictionary } = props;
   const router = useRouter();
   const [name, setName] = useState("");
 
@@ -20,7 +22,7 @@ export default function CreateMonster() {
   return (
     <ThemeProvider theme={createTheme(themeOptions)}>
       <Button variant="outlined" size="large" startIcon={<CloudUploadIcon />} disableElevation >
-        上传怪物数据
+        {dictionary.ui.monster.upload}
       </Button>
       {/* <form
         onSubmit={(e) => {

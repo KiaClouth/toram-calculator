@@ -7,10 +7,12 @@ import Image from "next/image";
 import { TRPCReactProvider } from "~/trpc/react";
 import CssBaseline from "@mui/material/CssBaseline";
 import type { Metadata, Viewport } from "next";
+import { type Locale } from "~/../i18n-config";
 import { getServerAuthSession } from "~/server/auth";
 
 import SignInOrOut from "./_components/signInOrOut";
 
+import Logo from "~/../public/app-image/LOGO.svg";
 import { type StaticImport } from "next/dist/shared/lib/get-img-props";
 import iconBasketball from "~/../public/app-image/icons/Basketball.svg";
 import iconBox2 from "~/../public/app-image/icons/Box 2.svg";
@@ -20,17 +22,16 @@ import iconCoins from "~/../public/app-image/icons/Coins.svg";
 import iconFilter from "~/../public/app-image/icons/Filter.svg";
 import iconGamepad from "~/../public/app-image/icons/Gamepad.svg";
 import iconMoney from "~/../public/app-image/icons/Money.svg";
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-sans",
-});
+import { getDictionary } from "get-dictionary";
 
-export const dynamic = "force-dynamic";
+const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
 const APP_NAME = "托拉姆计算器-ToramCalculator:一个简单的托拉姆数值计算器";
 const APP_DEFAULT_TITLE = "托拉姆计算器-ToramCalculator";
 const APP_TITLE_TEMPLATE = "ToramCalculator";
 const APP_DESCRIPTION = "Wiki、角色配置、连击计算等";
+
+// export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   icons: [{ rel: "icon", url: "/icons/48.ico" }],
@@ -74,24 +75,30 @@ export const viewport: Viewport = {
   themeColor: "#FFFFFF",
 };
 
-
-const Nav: [string, StaticImport | undefined, string | undefined][] = [
-  ["怪物", iconCalendar, "/monster"],
-  ["LineA", , ,],
-  ["技能", iconBasketball, ""],
-  ["装备", iconCategory2, ""],
-  ["锻晶", iconBox2, ""],
-  ["宠物", iconMoney, "/pet"],
-  ["消耗品", iconCoins, ""],
-  ["LineB", , ,],
-  ["机体配置", iconGamepad, "/character"],
-  ["连击分析", iconFilter, ""],
-];
-
-export default async function RootLayout({ children, params }: { children: React.ReactNode, params: { lang: string } }) {
+export default async function RootLayout({
+  children,
+  params: { lang },
+}: {
+  children: React.ReactNode;
+  params: { lang: Locale };
+}) {
   const session = await getServerAuthSession();
+  const dictionary = getDictionary(lang);
+  const Nav: [string, StaticImport | undefined, string | undefined][] = [
+    [dictionary.ui.root.monsters, iconCalendar, "/monster"],
+    ["LineA", , ,],
+    [dictionary.ui.root.skills, iconBasketball, ""],
+    [dictionary.ui.root.equipments, iconCategory2, ""],
+    [dictionary.ui.root.crystas, iconBox2, ""],
+    [dictionary.ui.root.pets, iconMoney, "/pet"],
+    [dictionary.ui.root.items, iconCoins, ""],
+    ["LineB", , ,],
+    [dictionary.ui.root.character, iconGamepad, "/character"],
+    [dictionary.ui.root.comboAnalyze, iconFilter, ""],
+  ];
+
   return (
-    <html lang={params.lang}>
+    <html lang={lang}>
       <body
         className={
           `font-sans ${inter.variable}` +
@@ -107,65 +114,14 @@ export default async function RootLayout({ children, params }: { children: React
                 href={"/"}
                 className="LOGO flex w-min flex-none flex-col px-4 lg:top-5 lg:w-[78px] lg:items-center"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="50"
-                  height="50"
-                  viewBox="0 0 50 50"
-                  fill="none"
-                >
-                  <rect
-                    x="0.75"
-                    y="0.75"
-                    width="48.5"
-                    height="48.5"
-                    rx="24.25"
-                    fill="white"
-                  />
-                  <rect
-                    x="0.75"
-                    y="0.75"
-                    width="48.5"
-                    height="48.5"
-                    rx="24.25"
-                    stroke="#2F1A49"
-                    strokeWidth="1.5"
-                  />
-                  <rect
-                    x="12.3611"
-                    y="12.2222"
-                    width="8.61111"
-                    height="27.7778"
-                    rx="4.30556"
-                    fill="#2F1A49"
-                  />
-                  <rect
-                    x="23.2077"
-                    y="28.6913"
-                    width="5.20137"
-                    height="16.7786"
-                    rx="2.60068"
-                    transform="rotate(-45 23.2077 28.6913)"
-                    fill="#FD7E50"
-                  />
-                  <rect
-                    x="35.0366"
-                    y="25"
-                    width="5.20137"
-                    height="16.7786"
-                    rx="2.60068"
-                    transform="rotate(45 35.0366 25)"
-                    fill="#FD7E50"
-                  />
-                  <rect
-                    x="24.4444"
-                    y="11.8055"
-                    width="12.7778"
-                    height="12.7778"
-                    rx="6.38889"
-                    fill="#FFA63C"
-                  />
-                </svg>
+                <Image
+                  src={Logo as StaticImport}
+                  alt="Logo"
+                  height={50}
+                  width={50}
+                  style={{ width: "50px", height: "auto" }}
+                  priority
+                />
               </Link>
               <div className="NavBtnList flex h-full w-full shrink flex-col items-center gap-2 overflow-y-auto last:mb-0 lg:gap-4">
                 {Nav.map(([btnName, iconPath, url]) => {
@@ -184,8 +140,8 @@ export default async function RootLayout({ children, params }: { children: React
                           <Image
                             src={iconPath}
                             alt={btnName}
+                            width={24}
                             height={0}
-                            width={0}
                             style={{ width: "24px", height: "auto" }}
                           />
                         </div>
@@ -217,5 +173,3 @@ export default async function RootLayout({ children, params }: { children: React
     </html>
   );
 }
-
-

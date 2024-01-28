@@ -6,9 +6,10 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { type Monster } from '@prisma/client';
+import { type getDictionary } from "get-dictionary";
 
-export default function MonsterDialog(props: { monsterData: Monster | undefined, monsterDialogState: boolean, setMonsterDialogState: (state:boolean) => void }) {
-  const { monsterData,monsterDialogState, setMonsterDialogState } = props;
+export default function MonsterDialog(props: {dictionary: ReturnType<typeof getDictionary>, monsterData: Monster | undefined, monsterDialogState: boolean, setMonsterDialogState: (state:boolean) => void }) {
+  const { dictionary,monsterData,monsterDialogState, setMonsterDialogState } = props;
 
   const descriptionElementRef = React.useRef<HTMLElement>(null);
 
@@ -43,8 +44,8 @@ export default function MonsterDialog(props: { monsterData: Monster | undefined,
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCancel}>关闭</Button>
-          <Button onClick={handleModify}>修改</Button>
+          <Button onClick={handleCancel}>{dictionary.ui.monster.save}</Button>
+          <Button onClick={handleModify}>{dictionary.ui.monster.modify}</Button>
         </DialogActions>
       </Dialog>
     </React.Fragment>
