@@ -105,7 +105,7 @@ export default async function RootLayout({
         }
       >
         <TRPCReactProvider cookies={cookies().toString()}>
-          <div id="rootNav" className="Nav fixed flex h-dvh w-4/5 flex-col items-center gap-3 bg-bg-white-100 lg:static lg:w-24 lg:bg-bg-grey-8 lg:py-5">
+          <div id="rootNav" className="Nav fixed flex flex-none h-dvh w-4/5 flex-col items-center gap-3 bg-bg-white-100 lg:static lg:w-24 lg:bg-bg-grey-8 lg:py-5">
             <div className="Top flex h-full w-full flex-1 flex-col gap-10 overflow-hidden">
               <Link
                 href={"/"}
