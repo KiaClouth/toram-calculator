@@ -2,14 +2,26 @@
 @tailwind components;
 @tailwind utilities;
 
-*{
-    transition: all 150ms;
+* {
+  transition: all 150ms;
 }
 
-body{
-    display: flex;
+*:focus {
+  outline-width: 1.5px;
+  outline-color: rgba(47, 26, 73, 1);
+  outline-style: solid;
 }
 
-.MuiAutocomplete-popper {
-    transition: none;
+#rootNav *:focus {
+  outline: none;
+}
+
+@media (min-width: 1024px) {
+  #rootNav *:focus .iconArea {
+    background-color: #95cfd5;
+  }
+}
+
+body {
+  display: flex;
 }

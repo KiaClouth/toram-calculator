@@ -65,7 +65,6 @@ enum MonsterType {
 
 model Monster {
     id                               String       @id @default(cuid()) /// @zod.custom.omit(["model","input"])
-    createdAt                        DateTime     @default(now()) /// @zod.custom.omit(["model","input"])
     updatedAt                        DateTime     @updatedAt /// @zod.custom.omit(["model","input"])
     updatedBy                        User         @relation(fields: [updatedById], references: [id])
     updatedById                      String /// @zod.custom.omit(["model","input"])

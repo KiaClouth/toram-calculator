@@ -5,7 +5,6 @@ import { cookies } from "next/headers";
 import Link from "next/link";
 import Image from "next/image";
 import { TRPCReactProvider } from "~/trpc/react";
-import CssBaseline from "@mui/material/CssBaseline";
 import type { Metadata, Viewport } from "next";
 import { type Locale } from "~/../i18n-config";
 import { getServerAuthSession } from "~/server/auth";
@@ -106,13 +105,12 @@ export default async function RootLayout({
         }
       >
         <TRPCReactProvider cookies={cookies().toString()}>
-          <CssBaseline />
-
-          <div className="Nav fixed -left-full flex h-dvh w-3/4 flex-col items-center gap-3 bg-bg-white-100 px-2.5 py-10 lg:static lg:w-24 lg:bg-bg-grey-8 lg:py-5">
-            <div className="Top flex h-full w-full flex-1 flex-col gap-20 overflow-hidden lg:gap-10">
+          <div id="rootNav" className="Nav fixed flex h-dvh w-4/5 flex-col items-center gap-3 bg-bg-white-100 lg:static lg:w-24 lg:bg-bg-grey-8 lg:py-5">
+            <div className="Top flex h-full w-full flex-1 flex-col gap-10 overflow-hidden">
               <Link
                 href={"/"}
-                className="LOGO flex w-min flex-none flex-col px-4 lg:top-5 lg:w-[78px] lg:items-center"
+                className="LOGO flex flex-none my-12 px-4 lg:top-5 items-center lg:justify-center gap-4"
+                tabIndex={1}
               >
                 <Image
                   src={Logo as StaticImport}
@@ -122,6 +120,7 @@ export default async function RootLayout({
                   style={{ width: "50px", height: "auto" }}
                   priority
                 />
+                <span className=" text-2xl lg:hidden">ToramCalculator</span>
               </Link>
               <div className="NavBtnList flex h-full w-full shrink flex-col items-center gap-2 overflow-y-auto last:mb-0 lg:gap-4">
                 {Nav.map(([btnName, iconPath, url]) => {
@@ -130,10 +129,11 @@ export default async function RootLayout({
                       <Link
                         href={url}
                         key={btnName}
+                        tabIndex={0}
                         className={
                           "btn-" +
                           btnName +
-                          " group flex w-full flex-row items-center gap-8 py-1 active:bg-brand-color-blue lg:flex-col lg:gap-1 lg:py-0 lg:active:bg-transparent"
+                          " group flex w-full flex-row items-center gap-8 py-2 active:bg-brand-color-blue lg:flex-col lg:gap-1 lg:py-0 lg:active:bg-transparent"
                         }
                       >
                         <div className="iconArea rounded-full px-4 py-1 lg:group-hover:bg-brand-color-blue">
@@ -155,7 +155,7 @@ export default async function RootLayout({
                       <div
                         key={btnName}
                         className={
-                          "Line h-line w-full bg-bg-grey-8 lg:w-12 lg:bg-brand-color-blue"
+                          "Line h-line w-full bg-bg-grey-20 lg:w-12 lg:bg-brand-color-blue"
                         }
                       ></div>
                     );
@@ -163,7 +163,7 @@ export default async function RootLayout({
                 })}
               </div>
             </div>
-            <div className="NavFunctionBtnList flex w-full flex-none flex-col items-center justify-center gap-3 last:mb-0">
+            <div className="NavFunctionBtnList hidden lg:flex w-full flex-none flex-col items-center justify-center gap-3 last:mb-0">
               <SignInOrOut session={session} />
             </div>
           </div>

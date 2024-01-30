@@ -1,16 +1,10 @@
-import { env } from "~/env";
-// import { CreatePost } from "~/app/_components/create-post";
 import { CreateCharacter } from "~/app/[lang]/_components/create-character";
-import { SignDialog } from "~/app/[lang]/_components/sign-Dialog"
 import { getServerAuthSession } from "~/server/auth";
 import { api } from "~/trpc/server";
-import { getProviders } from "next-auth/react";
 
 export default async function Home() {
   const hello = await api.post.hello.query({ text: "from tRPC" });
   const session = await getServerAuthSession();
-  const providers = await getProviders();
-  const host = env.NEXTAUTH_URL
   return (
     <main className="flex min-h-screen flex-col items-center justify-center">
       <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
@@ -26,7 +20,6 @@ export default async function Home() {
             <p className="text-center text-2xl text-black">
               {session && <span>哦哈喵~{session.user?.name}</span>}
             </p>
-            <SignDialog session={session} providers={providers} host={host} />
             {/* <Link
               href={session ? "/api/auth/signout" : "/api/auth/signin"}
               className="rounded-full bg-black/10 px-10 py-3 font-semibold no-underline transition hover:bg-black/20"

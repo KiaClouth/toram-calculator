@@ -1,10 +1,5 @@
+'use client'
 import * as React from 'react';
-import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
 import { type Monster } from '@prisma/client';
 import { type getDictionary } from "get-dictionary";
 
@@ -23,7 +18,7 @@ export default function MonsterDialog(props: {dictionary: ReturnType<typeof getD
 
   return (
     <React.Fragment>
-      <Dialog
+      {/* <Dialog
         fullWidth={true}
         maxWidth={"lg"}
         open={monsterDialogState}
@@ -47,7 +42,7 @@ export default function MonsterDialog(props: {dictionary: ReturnType<typeof getD
           <Button onClick={handleCancel}>{dictionary.ui.monster.save}</Button>
           <Button onClick={handleModify}>{dictionary.ui.monster.modify}</Button>
         </DialogActions>
-      </Dialog>
+      </Dialog> */}
     </React.Fragment>
   );
 }

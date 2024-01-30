@@ -1,107 +1,90 @@
 "use client";
-import { ThemeProvider } from "@mui/material";
-import { createTheme } from "@mui/material/styles";
-import { themeOptions } from "~/app/themeOptions";
 import * as React from "react";
-import TextField from "@mui/material/TextField";
-import Autocomplete from "@mui/material/Autocomplete";
-import CircularProgress from "@mui/material/CircularProgress";
 import { type Monster } from "@prisma/client";
 import MonsterDialog from "./monsterDisplay";
 import { type getDictionary } from "get-dictionary";
-import tailwindConfig from "tailwind.config";
-
-const tailwindColor = tailwindConfig.theme.colors
 
 interface Film {
+  id: string;
   name: string;
-  baseLv: number;
-  id: string
+  related: string;
 }
 
-export default function LongSearchBox(props: {dictionary: ReturnType<typeof getDictionary> ,monsterList:Monster[]}) {
+export default function LongSearchBox(props: {
+  dictionary: ReturnType<typeof getDictionary>;
+  monsterList: Monster[];
+}) {
   const { dictionary, monsterList } = props;
   const [monsterData, setMonsteData] = React.useState(monsterList[0]);
   const [monsterDialogState, setMonsterDialogState] = React.useState(false);
-  const [open, setOpen] = React.useState(false);
+  const closeClass = " invisible opacity-0 pointer-events-none ";
+  const openClass = " visible opacity-100 pointer-events-auto ";
+  const [open, setOpen] = React.useState(closeClass);
   const [options, setOptions] = React.useState<readonly Film[]>([]);
-  const loading = options.length === 0;
-  const handleChange = (event: React.SyntheticEvent<Element, Event>, shortMonsertData: Film) => {
-    for (const monsterData of monsterList) {
-      if (monsterData.id === shortMonsertData.id) {
-        setMonsteData(monsterData)
-        setMonsterDialogState(true)
-      }
+
+  const handleChange = (value: string) => {
+    if (value === "" || value === null) {
+      setOpen(closeClass);
+      return;
     }
+    setOpen(openClass);
+    const tempFilm: Film[] = [];
+    monsterList.forEach((monster) => {
+      let related = "";
+      for (const attr in monster) {
+        if (!["id", "updatedAt", "updatedById", "state"].includes(attr)) {
+          const monsterAttr = monster[attr as keyof Monster]?.toString();
+          if (monsterAttr?.match(value)?.input !== undefined) {
+            related =
+              related + attr + ":" + monsterAttr?.match(value)?.input + ";";
+          }
+        }
+      }
+      related !== "" &&
+        tempFilm.push({ id: monster.id, name: monster.name, related: related });
+    });
+    setOptions(tempFilm);
   };
 
-  React.useEffect(() => {
-    const topFilms = monsterList === undefined
-    ? [{ name: "", baseLv: 0, id: "" }]
-    : monsterList.map((monster) => {
-        if (typeof monster.baseLv === "number") {
-          return { name: monster.name, baseLv: monster.baseLv, id: monster.id };
-        } else {
-          return { name: monster.name, baseLv: 0, id: monster.id };
-        }
-      });
-    let active = true;
-
-    if (!loading) {
-      return undefined;
-    }
-
-    if (active) {
-      setOptions([...topFilms]);
-    }
-
-    return () => {
-      active = false;
-    };
-  }, [loading, monsterList]);
-
-  // React.useEffect(() => {
-  //   if (!open) {
-  //     setOptions([]);
-  //   }
-  // }, [open]);
-
   return (
-    <ThemeProvider theme={createTheme(themeOptions)}>
-      <Autocomplete
-        id="asynchronous-demo"
-        sx={{ flex: "1 1 0%", '.MuiInputBase-root': { borderRadius: 9999, px:2, bgcolor:tailwindColor["bg-grey"][8] }, '& .MuiFormLabel-root': { pl:2 },'& .MuiFormLabel-root.Mui-focused': { pl:0 } }}
-        open={open}
-        onOpen={() => {
-          setOpen(true);
-        }}
-        onClose={() => {
-          setOpen(false);
-        }}
-        onChange={(e, value) => handleChange(e,value ? value : {name:"",baseLv: 0, id:""})}
-        isOptionEqualToValue={(option, value) => option.name === value.name}
-        getOptionLabel={(option) => option.name}
-        options={options}
-        loading={loading}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            label={dictionary.ui.monster.searchPlaceholder}
-            InputProps={{
-              ...params.InputProps,
-              endAdornment: (
-                <React.Fragment>
-                  {loading ? (
-                    <CircularProgress color="inherit" size={20} />
-                  ) : null}
-                  {params.InputProps.endAdornment}
-                </React.Fragment>
-              ),
-            }}
-          />
-        )}
+    <>
+      <div
+        // onBlur={() => {
+        //   setOpen(closeClass);
+        // }}
+        className="searchBox flex flex-col w-full gap-1"
+      >
+        <input
+          type="search"
+          placeholder={dictionary.ui.monster.searchPlaceholder}
+          list="options"
+          className="hover:bg-bg-grey-20 w-full flex-1 rounded-full bg-bg-grey-8 px-5 py-3 text-main-color-100 transition placeholder:text-main-color-50"
+          onChange={(e) => handleChange(e.target.value)}
+        />
+        <div
+          id="options"
+          className={`max-h-[80dvh] w-full rounded overflow-y-auto bg-bg-grey-8 p-1 shadow-bg-grey-20 shadow-2xl ${open}`}
+        >
+          {options.map((option) => (
+            <div
+              key={option.id}
+              tabIndex={0}
+              className={`option flex justify-between cursor-pointer rounded p-3 hover:bg-brand-color-blue`}
+            >
+              <span className=" text-main-color-100 w-2/5 lg:w-1/5">
+                {option.name}
+              </span>
+              <span className=" w-3/5 lg:w-4/5 overflow-x-hidden">{option.related}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+      <MonsterDialog
+        dictionary={dictionary}
+        monsterData={monsterData}
+        monsterDialogState={monsterDialogState}
+        setMonsterDialogState={setMonsterDialogState}
       />
-      <MonsterDialog dictionary={dictionary} monsterData={monsterData} monsterDialogState={monsterDialogState} setMonsterDialogState={setMonsterDialogState} />
-    </ThemeProvider>
+    </>
   );
 }
