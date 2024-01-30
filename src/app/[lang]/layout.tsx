@@ -109,7 +109,7 @@ export default async function RootLayout({
             <div className="Top flex h-full w-full flex-1 flex-col gap-10 overflow-hidden">
               <Link
                 href={"/"}
-                className="LOGO flex flex-none my-12 px-4 lg:top-5 items-center lg:justify-center gap-4"
+                className="LOGO flex flex-none my-12 lg:my-0 px-4 lg:top-5 items-center lg:justify-center gap-4"
                 tabIndex={1}
               >
                 <Image
