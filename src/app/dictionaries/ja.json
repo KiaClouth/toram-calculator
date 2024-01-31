@@ -14,7 +14,9 @@
       "searchPlaceholder": "传说中的怪物",
       "upload":"上传怪物数据",
       "save":"保存",
-      "modify":"修改"
+      "reset":"清空",
+      "modify":"修改",
+      "cancel":"取消"
     }
   },
   "db": {

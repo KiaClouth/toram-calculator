@@ -17,8 +17,8 @@ export default function LongSearchBox(props: {
   const { dictionary, monsterList } = props;
   const [monsterData, setMonsteData] = React.useState(monsterList[0]);
   const [monsterDialogState, setMonsterDialogState] = React.useState(false);
-  const closeClass = " invisible opacity-0 pointer-events-none ";
-  const openClass = " visible opacity-100 pointer-events-auto ";
+  const closeClass = " hidden ";
+  const openClass = " flex ";
   const [open, setOpen] = React.useState(closeClass);
   const [options, setOptions] = React.useState<readonly Film[]>([]);
 
@@ -63,7 +63,7 @@ export default function LongSearchBox(props: {
         />
         <div
           id="options"
-          className={`max-h-[80dvh] w-full rounded overflow-y-auto bg-bg-grey-8 p-1 shadow-bg-grey-20 shadow-2xl ${open}`}
+          className={`max-h-[80dvh] w-full rounded flex-col overflow-y-auto bg-bg-grey-8 p-1 shadow-bg-grey-20 shadow-2xl ${open}`}
         >
           {options.map((option) => (
             <div

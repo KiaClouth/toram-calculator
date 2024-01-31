@@ -8,7 +8,7 @@
 
 *:focus {
   outline-width: 1.5px;
-  outline-color: rgba(47, 26, 73, 1);
+  outline-color: rgba(105,145,214,.2);
   outline-style: solid;
 }
 

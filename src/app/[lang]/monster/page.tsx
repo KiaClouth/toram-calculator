@@ -18,9 +18,9 @@ export default async function MonsterPage({params: {lang}}: {params: { lang: Loc
     <main className="main flex w-full">
       <div className="module2 flex h-full w-full flex-col items-center">
         <div className="moduleContent min-h-dvh w-full max-w-8xl">
-          <div className="w-full p-5 flex flex-col lg:flex-row gap-4">
+          <div className="top w-full p-5 flex justify-center lg:flex-row gap-4">
             <LongSearchBox dictionary={dictionary} monsterList={monsterList} />
-            {/* <CrateMonster dictionary={dictionary} /> */}
+            <CrateMonster dictionary={dictionary} />
           </div>
           <div className="List"></div>
         </div>
