@@ -83,7 +83,7 @@ export default async function RootLayout({
 }) {
   const session = await getServerAuthSession();
   const dictionary = getDictionary(lang);
-  const Nav: [string, StaticImport | undefined, string | undefined][] = [
+  const rNav: [string, StaticImport | undefined, string | undefined][] = [
     [dictionary.ui.root.monsters, iconCalendar, "/monster"],
     ["LineA", , ,],
     [dictionary.ui.root.skills, iconBasketball, ""],
@@ -95,21 +95,35 @@ export default async function RootLayout({
     [dictionary.ui.root.character, iconGamepad, "/character"],
     [dictionary.ui.root.comboAnalyze, iconFilter, ""],
   ];
+  const bNav: [string, StaticImport | undefined, string | undefined][] = [
+    [dictionary.ui.root.monsters, iconCalendar, "/monster"],
+    [dictionary.ui.root.skills, iconBasketball, ""],
+    [dictionary.ui.root.equipments, iconCategory2, ""],
+    [dictionary.ui.root.crystas, iconBox2, ""],
+    [dictionary.ui.root.pets, iconMoney, "/pet"],
+    [dictionary.ui.root.items, iconCoins, ""],
+    [dictionary.ui.root.character, iconGamepad, "/character"],
+    [dictionary.ui.root.comboAnalyze, iconFilter, ""],
+    ["LineA", , ,],
+  ];
 
   return (
     <html lang={lang}>
       <body
         className={
           `font-sans ${inter.variable}` +
-          " min-h-dvh flex-row items-start justify-start"
+          " min-h-dvh flex-col items-start justify-end lg:justify-start lg:flex-row"
         }
       >
         <TRPCReactProvider cookies={cookies().toString()}>
-          <div id="rootNav" className="Nav fixed flex flex-none h-dvh w-4/5 flex-col items-center gap-3 bg-bg-white-100 lg:static lg:w-24 lg:bg-bg-grey-8 lg:py-5">
+          <div
+            id="rootNav"
+            className="Nav fixed -left-full flex h-dvh w-4/5 flex-none flex-col items-center gap-3 lg:static lg:w-24 lg:bg-bg-grey-8 lg:py-5"
+          >
             <div className="Top flex h-full w-full flex-1 flex-col gap-10 overflow-hidden">
               <Link
                 href={"/"}
-                className="LOGO flex flex-none my-12 lg:my-0 px-4 lg:top-5 items-center lg:justify-center gap-4"
+                className="LOGO my-12 flex flex-none items-center gap-4 px-4 lg:top-5 lg:my-0 lg:justify-center"
                 tabIndex={1}
               >
                 <Image
@@ -123,7 +137,7 @@ export default async function RootLayout({
                 <span className=" text-2xl lg:hidden">ToramCalculator</span>
               </Link>
               <div className="NavBtnList flex h-full w-full shrink flex-col items-center gap-2 overflow-y-auto last:mb-0 lg:gap-4">
-                {Nav.map(([btnName, iconPath, url]) => {
+                {rNav.map(([btnName, iconPath, url]) => {
                   if (iconPath !== undefined && url !== undefined) {
                     return (
                       <Link
@@ -163,11 +177,49 @@ export default async function RootLayout({
                 })}
               </div>
             </div>
-            <div className="NavFunctionBtnList hidden lg:flex w-full flex-none flex-col items-center justify-center gap-3 last:mb-0">
+            <div className="NavFunctionBtnList hidden w-full flex-none flex-col items-center justify-center gap-3 last:mb-0 lg:flex">
               <SignInOrOut session={session} />
             </div>
           </div>
           {children}
+          <div
+            id="bottomNav"
+            className="flex max-w-full overflow-x-auto items-center justify-between bg-bg-grey-8 px-2 lg:hidden"
+          >
+          {bNav.map(([btnName, iconPath, url]) => {
+            if (iconPath !== undefined && url !== undefined) {
+              return (
+                <Link
+                  href={url}
+                  key={btnName}
+                  tabIndex={0}
+                  className={
+                    "btn-" +
+                    btnName +
+                    " group flex flex-row flex-none items-center gap-1 p-4 active:bg-brand-color-blue"
+                  }
+                >
+                  <div className="iconArea rounded-full px-4 py-1">
+                    <Image
+                      src={iconPath}
+                      alt={btnName}
+                      width={24}
+                      height={0}
+                      style={{ width: "24px", height: "auto" }}
+                    />
+                  </div>
+                  <div className="text-base text-main-color-100">
+                    {btnName}
+                  </div>
+                </Link>
+              );
+            } else {
+              return (<div key={"bottomNavSignInOrOut"} className=" group flex flex-row flex-none items-center gap-1 p-4 active:bg-brand-color-blue">
+                <SignInOrOut session={session} />
+              </div>)
+            }
+          })}
+          </div>
         </TRPCReactProvider>
       </body>
     </html>

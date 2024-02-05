@@ -4,12 +4,14 @@
 
 * {
   transition: all 150ms;
+  outline-width: 0.5px;
+  outline-color: rgba(105, 145, 214, 0);
+  outline-style: solid;
 }
 
 *:focus {
   outline-width: 1.5px;
-  outline-color: rgba(105,145,214,.2);
-  outline-style: solid;
+  outline-color: rgba(105,145,214,.7);
 }
 
 #rootNav *:focus {
@@ -24,4 +26,6 @@
 
 body {
   display: flex;
+  /* background: url(./../../public/app-image/bg1.png) no-repeat center; */
+  background-size: cover;
 }

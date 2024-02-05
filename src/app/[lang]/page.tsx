@@ -13,7 +13,11 @@ import iconMoney from "~/../public/app-image/icons/Money.svg";
 import { getDictionary } from "get-dictionary";
 import { type Locale } from "i18n-config";
 
-export default async function Index({params: {lang}}: {params: { lang: Locale }}) {
+export default async function Index({
+  params: { lang },
+}: {
+  params: { lang: Locale };
+}) {
   const dictionary = getDictionary(lang);
   const Nav: [string, StaticImport | undefined, string | undefined][] = [
     [dictionary.ui.root.monsters, iconCalendar, "/monster"],
@@ -27,18 +31,24 @@ export default async function Index({params: {lang}}: {params: { lang: Locale }}
     [dictionary.ui.root.character, iconGamepad, "/character"],
     [dictionary.ui.root.comboAnalyze, iconFilter, ""],
   ];
-
+  const now = new Date().getHours();
+  let greetings = dictionary.ui.index.goodMorning;
+  if (now >= 13 && now < 18) {
+    greetings = dictionary.ui.index.goodAfternoon;
+  } else if ((now >= 18 && now < 24) || now < 5) {
+    greetings = dictionary.ui.index.goodEvening;
+  }
+  console.log(greetings)
   return (
-    <div className="flex h-dvh w-full flex-col items-center justify-between">
-      <div className="Top h-full min-h-48 w-full flex items-center justify-center lg:h-3/4">
+    <div className="flex h-full w-full flex-col items-center justify-between">
+      <div className="Top flex h-full min-h-48 w-full items-center justify-center lg:h-3/4">
         <h1 className="w-full text-center text-5xl font-extrabold tracking-tight text-main-color-100 lg:text-9xl">
-        Toram <span className=" text-brand-color-blue">の</span>{" "}
-          Calculactor
+          Toram <span className=" text-brand-color-blue">の</span> Calculactor
         </h1>
       </div>
-      <div className="Bottom h-full w-full flex flex-1 flex-col items-center justify-between lg:h-1/4">
-        <div className="Content w-full h-full p-5">
-          <div className="Nav lg:invisible flex h-full w-full shrink flex-col items-center gap-2 overflow-y-auto last:mb-0">
+      <div className="Bottom flex h-full w-full flex-1 flex-col items-center justify-between lg:h-1/4">
+        <div className="Content h-full w-full p-5">
+          {/* <div className="Nav flex h-full w-full shrink flex-col items-center gap-2 overflow-y-auto last:mb-0 lg:invisible">
             {Nav.map(([btnName, iconPath, url]) => {
               if (
                 btnName !== undefined &&
@@ -78,7 +88,7 @@ export default async function Index({params: {lang}}: {params: { lang: Locale }}
                 );
               }
             })}
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

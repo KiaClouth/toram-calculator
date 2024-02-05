@@ -10,6 +10,11 @@
       "character": "角色配置",
       "comboAnalyze": "连击分析"
     },
+    "index":{
+      "goodMorning":"早上好",
+      "goodAfternoon":"下午好",
+      "goodEvening":"晚上好"
+    },
     "monster": {
       "searchPlaceholder": "传说中的怪物",
       "upload":"上传怪物数据",

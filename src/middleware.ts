@@ -52,6 +52,8 @@ export function middleware(request: NextRequest) {
       '/icons/256.ico',
       '/icons/384.png',
       '/icons/512.png',
+      // '/sw.ts',
+      '/sw.js'
       // Your other files in `public`
     ].includes(pathname)
   )

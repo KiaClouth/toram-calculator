@@ -10,6 +10,11 @@
       "character":"Character",
       "comboAnalyze":"Combo"
     },
+    "index":{
+      "goodMorning":"早上好",
+      "goodAfternoon":"下午好",
+      "goodEvening":"晚上好"
+    },
     "monster": {
       "searchPlaceholder": "monster name",
       "upload":"upload",

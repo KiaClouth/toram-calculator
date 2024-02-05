@@ -15,10 +15,10 @@ export default async function MonsterPage({params: {lang}}: {params: { lang: Loc
   const dictionary = getDictionary(lang);
   const monsterList = await api.monster.getList.query();
   return (
-    <main className="main flex w-full">
+    <main className="main flex h-full w-full">
       <div className="module2 flex h-full w-full flex-col items-center">
-        <div className="moduleContent min-h-dvh w-full max-w-8xl">
-          <div className="top w-full p-5 flex justify-center lg:flex-row gap-4">
+        <div className="moduleContent h-full w-full max-w-8xl">
+          <div className="top w-full p-5 flex items-end lg:items-center lg:flex-row gap-4">
             <LongSearchBox dictionary={dictionary} monsterList={monsterList} />
             <CrateMonster dictionary={dictionary} />
           </div>
