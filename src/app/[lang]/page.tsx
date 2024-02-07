@@ -38,57 +38,18 @@ export default async function Index({
   } else if ((now >= 18 && now < 24) || now < 5) {
     greetings = dictionary.ui.index.goodEvening;
   }
-  console.log(greetings)
   return (
-    <div className="flex h-full w-full flex-col items-center justify-between">
-      <div className="Top flex h-full min-h-48 w-full items-center justify-center lg:h-3/4">
-        <h1 className="w-full text-center text-5xl font-extrabold tracking-tight text-main-color-100 lg:text-9xl">
-          Toram <span className=" text-brand-color-blue">の</span> Calculactor
+    <div className="Index flex flex-1 flex-col overflow-x-hidden">
+    <div className="jumbo fixed top-0 left-0 w-dvw h-dvh -z-50 opacity-50"></div>
+      <div className="Top flex flex-1 flex-col justify-center">
+        <h1 className="Title text-center text-5xl font-extrabold tracking-tight text-main-color-100 lg:text-9xl">
+          Toram <span className=" text-brand-color-blue">の</span>{" "}
+          Calculactor
         </h1>
+        <span className=" hidden text-center">{greetings}</span>
       </div>
-      <div className="Bottom flex h-full w-full flex-1 flex-col items-center justify-between lg:h-1/4">
-        <div className="Content h-full w-full p-5">
-          {/* <div className="Nav flex h-full w-full shrink flex-col items-center gap-2 overflow-y-auto last:mb-0 lg:invisible">
-            {Nav.map(([btnName, iconPath, url]) => {
-              if (
-                btnName !== undefined &&
-                iconPath !== undefined &&
-                url !== undefined
-              ) {
-                return (
-                  <Link
-                    href={url}
-                    key={btnName}
-                    className={
-                      "btn-" +
-                      btnName +
-                      " group flex w-full flex-row items-center gap-4 bg-bg-grey-8 py-2 active:bg-brand-color-blue"
-                    }
-                  >
-                    <div className="iconArea rounded-full px-8 py-1">
-                      <Image
-                        src={iconPath}
-                        alt={btnName}
-                        height={24}
-                        width={0}
-                        style={{ width: "24px", height: "auto" }}
-                      />
-                    </div>
-                    <div className="text-base text-main-color-100">
-                      {btnName}
-                    </div>
-                  </Link>
-                );
-              } else {
-                return (
-                  <div
-                    key={btnName}
-                    className={"Line h-line w-full bg-bg-grey-8"}
-                  ></div>
-                );
-              }
-            })}
-          </div> */}
+      <div className="Bottom flex flex-initial flex-col">
+        <div className="Content flex flex-1 flex-col p-5">
         </div>
       </div>
     </div>

@@ -7,7 +7,7 @@ import { type getDictionary } from "get-dictionary";
 interface Film {
   id: string;
   name: string;
-  related: string;
+  related: [string, string | undefined][];
 }
 
 export default function LongSearchBox(props: {
@@ -30,51 +30,65 @@ export default function LongSearchBox(props: {
     setOpen(openClass);
     const tempFilm: Film[] = [];
     monsterList.forEach((monster) => {
-      let related = "";
+      const related: [string, string | undefined][] = [];
       for (const attr in monster) {
         if (!["id", "updatedAt", "updatedById", "state"].includes(attr)) {
           const monsterAttr = monster[attr as keyof Monster]?.toString();
           if (monsterAttr?.match(value)?.input !== undefined) {
-            related =
-              related + attr + ":" + monsterAttr?.match(value)?.input + ";";
+            related.push([attr, monsterAttr?.match(value)?.input]);
           }
         }
       }
-      related !== "" &&
+      related.length !== 0 &&
         tempFilm.push({ id: monster.id, name: monster.name, related: related });
     });
     setOptions(tempFilm);
   };
 
+  const handleClick = (id: string) => {
+    monsterList.forEach((monster) => {
+      if (monster.id !== id) return;
+      setMonsteData(monster);
+      setMonsterDialogState(true);
+    });
+  };
+
   return (
-    <>
-      <div className="searchBox flex w-full flex-col lg:flex-col-reverse">
-        <div
-          id="options"
-          className={`max-h-[78dvh] w-full flex-col overflow-y-auto overflow-x-hidden rounded bg-bg-grey-8 p-1 shadow-2xl shadow-bg-grey-20 ${open}`}
-        >
-          {options.map((option) => (
-            <div
-              key={option.id}
-              tabIndex={0}
-              className={`option flex cursor-pointer justify-between rounded p-3 hover:bg-brand-color-blue`}
-            >
-              <span className=" w-2/5 text-main-color-100 lg:w-1/5">
-                {option.name}
-              </span>
-              <span className=" w-3/5 overflow-x-hidden lg:w-4/5">
-                {option.related}
-              </span>
-            </div>
-          ))}
-        </div>
+    <React.Fragment>
+      <div className="SearchBox flex-1">
         <input
           type="search"
           placeholder={dictionary.ui.monster.searchPlaceholder}
           list="options"
-          className="h-fit w-full rounded-full bg-bg-grey-8 px-5 py-3 text-main-color-100 transition placeholder:text-main-color-50 hover:bg-bg-grey-20"
+          className="Search w-full rounded-full bg-bg-grey-8 px-5 py-3 text-main-color-100 placeholder:text-main-color-50 hover:bg-bg-grey-20"
           onChange={(e) => handleChange(e.target.value)}
         />
+        <div id="options" className={`Options h-0 flex-col rounded ${open}`}>
+          <div className="OptionsContent mt-4 flex max-h-[60dvh] flex-shrink-0 flex-col overflow-y-auto p-2 shadow-2xl shadow-bg-grey-20">
+            {options.map((option) => (
+              <button
+                key={option.id}
+                onClick={() => handleClick(option.id)}
+                tabIndex={0}
+                className={`option mx-1 my-0.5 flex gap-1 rounded hover:bg-brand-color-blue`}
+              >
+                <div className=" basis-1/4 self-stretch break-all bg-bg-grey-8 p-2 text-start text-main-color-100">
+                  {option.name}
+                </div>
+                <div className=" basis-3/4 self-stretch break-all bg-bg-grey-8 p-2 text-start text-main-color-70">
+                  {option.related.map((attr) => {
+                    return (
+                      <div key={`${attr[0]}${attr[1]}`}>
+                        <span>{attr[0]}:</span>
+                        <span>{attr[1]}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
 
       <MonsterDialog
@@ -83,6 +97,6 @@ export default function LongSearchBox(props: {
         monsterDialogState={monsterDialogState}
         setMonsterDialogState={setMonsterDialogState}
       />
-    </>
+    </React.Fragment>
   );
 }

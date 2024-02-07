@@ -21,6 +21,7 @@ import iconCoins from "~/../public/app-image/icons/Coins.svg";
 import iconFilter from "~/../public/app-image/icons/Filter.svg";
 import iconGamepad from "~/../public/app-image/icons/Gamepad.svg";
 import iconMoney from "~/../public/app-image/icons/Money.svg";
+import iconHome from "~/../public/app-image/icons/Home.svg";
 import { getDictionary } from "get-dictionary";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
@@ -96,6 +97,7 @@ export default async function RootLayout({
     [dictionary.ui.root.comboAnalyze, iconFilter, ""],
   ];
   const bNav: [string, StaticImport | undefined, string | undefined][] = [
+    [dictionary.ui.root.home, iconHome, "/"],
     [dictionary.ui.root.monsters, iconCalendar, "/monster"],
     [dictionary.ui.root.skills, iconBasketball, ""],
     [dictionary.ui.root.equipments, iconCategory2, ""],
@@ -112,7 +114,7 @@ export default async function RootLayout({
       <body
         className={
           `font-sans ${inter.variable}` +
-          " min-h-dvh flex-col items-start justify-end lg:justify-start lg:flex-row"
+          " min-h-dvh flex flex-col lg:flex-row"
         }
       >
         <TRPCReactProvider cookies={cookies().toString()}>
@@ -184,41 +186,46 @@ export default async function RootLayout({
           {children}
           <div
             id="bottomNav"
-            className="flex max-w-full overflow-x-auto items-center justify-between bg-bg-grey-8 px-2 lg:hidden"
+            className="flex items-center justify-between overflow-x-auto bg-bg-grey-8 lg:hidden"
           >
-          {bNav.map(([btnName, iconPath, url]) => {
-            if (iconPath !== undefined && url !== undefined) {
-              return (
-                <Link
-                  href={url}
-                  key={btnName}
-                  tabIndex={0}
-                  className={
-                    "btn-" +
-                    btnName +
-                    " group flex flex-row flex-none items-center gap-1 p-4 active:bg-brand-color-blue"
-                  }
-                >
-                  <div className="iconArea rounded-full px-4 py-1">
-                    <Image
-                      src={iconPath}
-                      alt={btnName}
-                      width={24}
-                      height={0}
-                      style={{ width: "24px", height: "auto" }}
-                    />
+            {bNav.map(([btnName, iconPath, url]) => {
+              if (iconPath !== undefined && url !== undefined) {
+                return (
+                  <Link
+                    href={url}
+                    key={btnName}
+                    tabIndex={0}
+                    className={
+                      "btn-" +
+                      btnName +
+                      " group flex flex-none flex-col items-center p-3 gap-0.5"
+                    }
+                  >
+                    <div className="iconArea rounded-full px-4 py-1">
+                      <Image
+                        src={iconPath}
+                        alt={btnName}
+                        width={24}
+                        height={0}
+                        style={{ width: "24px", height: "auto" }}
+                      />
+                    </div>
+                    <div className=" text-xs text-main-color-100">
+                      {btnName}
+                    </div>
+                  </Link>
+                );
+              } else {
+                return (
+                  <div
+                    key={"bottomNavSignInOrOut"}
+                    className=" group flex flex-none flex-row items-center gap-1 p-4 active:bg-brand-color-blue"
+                  >
+                    <SignInOrOut session={session} />
                   </div>
-                  <div className="text-base text-main-color-100">
-                    {btnName}
-                  </div>
-                </Link>
-              );
-            } else {
-              return (<div key={"bottomNavSignInOrOut"} className=" group flex flex-row flex-none items-center gap-1 p-4 active:bg-brand-color-blue">
-                <SignInOrOut session={session} />
-              </div>)
-            }
-          })}
+                );
+              }
+            })}
           </div>
         </TRPCReactProvider>
       </body>

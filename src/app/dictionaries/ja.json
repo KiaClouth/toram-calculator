@@ -1,6 +1,7 @@
 {
   "ui": {
     "root": {
+      "home":"首页",
       "monsters": "怪物",
       "skills": "技能",
       "equipments": "装备",

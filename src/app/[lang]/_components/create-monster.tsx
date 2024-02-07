@@ -1,6 +1,12 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { ChangeEvent, FormEvent, MouseEvent, useEffect, useState } from "react";
+import React, {
+  ChangeEvent,
+  FormEvent,
+  MouseEvent,
+  useEffect,
+  useState,
+} from "react";
 import Image from "next/image";
 
 import { api } from "~/trpc/react";
@@ -58,13 +64,13 @@ export default function CreateMonster(props: {
   };
 
   const nameHandleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setName(e.target.value)
+    setName(e.target.value);
     if (e.target.value === "") {
-      setSubmitState(false)
+      setSubmitState(false);
     } else {
-      setSubmitState(true)
+      setSubmitState(true);
     }
-  }
+  };
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -92,13 +98,13 @@ export default function CreateMonster(props: {
       possibilityOfRunningAround: possibilityOfRunningAround,
     });
   };
-  
+
   return (
-    <>
+    <React.Fragment>
       <button
         onClick={handleUploadClick}
         className={
-          "cloudUpload flex flex-none h-12 w-12 cursor-pointer items-center justify-center rounded-full hover:bg-bg-grey-20"
+          "cloudUpload flex w-12 flex-none cursor-pointer items-center justify-center rounded-full hover:bg-bg-grey-20"
         }
       >
         <Image
@@ -120,7 +126,7 @@ export default function CreateMonster(props: {
           <form
             id="createMonsterFrom"
             onSubmit={(e) => handleSubmit(e)}
-            className={`flex min-h-full w-full lg:w-4/5 max-w-7xl flex-col gap-4 overflow-y-auto rounded p-5 ${bottom}`}
+            className={`flex min-h-full w-full max-w-7xl flex-col gap-4 overflow-y-auto rounded p-5 lg:w-4/5 ${bottom}`}
           >
             <div className="title flex w-full items-center justify-between">
               <div className="left flex gap-1">
@@ -147,14 +153,14 @@ export default function CreateMonster(props: {
             </div>
             <div className="line h-line w-full bg-brand-color-blue"></div>
             <div className="inputArea h-full">
-              <fieldset className="dataKinds flex flex-col lg:flex-row gap-4">
+              <fieldset className="dataKinds flex flex-col gap-4 lg:flex-row">
                 <label>
                   {dictionary.db.monster.name}
                   <input
                     type="text"
                     value={name}
                     onChange={(e) => nameHandleChange(e)}
-                    className=" w-full mt-1 rounded-full bg-bg-grey-8 px-4 py-2 text-main-color-100"
+                    className=" mt-1 w-full rounded-full bg-bg-grey-8 px-4 py-2 text-main-color-100"
                   />
                 </label>
                 <label>
@@ -163,7 +169,7 @@ export default function CreateMonster(props: {
                     type="number"
                     value={baseLv}
                     onChange={(e) => setBaseLv(e.target.valueAsNumber)}
-                    className=" w-full mt-1 rounded-full bg-bg-grey-8 px-4 py-2 text-main-color-100"
+                    className=" mt-1 w-full rounded-full bg-bg-grey-8 px-4 py-2 text-main-color-100"
                   />
                 </label>
                 <label>
@@ -172,7 +178,7 @@ export default function CreateMonster(props: {
                     type="number"
                     value={physicalDefense}
                     onChange={(e) => setPhysicalDefense(e.target.valueAsNumber)}
-                    className=" w-full mt-1 rounded-full bg-bg-grey-8 px-4 py-2 text-main-color-100"
+                    className=" mt-1 w-full rounded-full bg-bg-grey-8 px-4 py-2 text-main-color-100"
                   />
                 </label>
                 <label>
@@ -183,7 +189,7 @@ export default function CreateMonster(props: {
                     onChange={(e) =>
                       setPhysicalResistance(e.target.valueAsNumber)
                     }
-                    className=" w-full mt-1 rounded-full bg-bg-grey-8 px-4 py-2 text-main-color-100"
+                    className=" mt-1 w-full rounded-full bg-bg-grey-8 px-4 py-2 text-main-color-100"
                   />
                 </label>
                 <label>
@@ -192,7 +198,7 @@ export default function CreateMonster(props: {
                     type="number"
                     value={magicalDefense}
                     onChange={(e) => setMagicalDefense(e.target.valueAsNumber)}
-                    className=" w-full mt-1 rounded-full bg-bg-grey-8 px-4 py-2 text-main-color-100"
+                    className=" mt-1 w-full rounded-full bg-bg-grey-8 px-4 py-2 text-main-color-100"
                   />
                 </label>
                 <label>
@@ -203,7 +209,7 @@ export default function CreateMonster(props: {
                     onChange={(e) =>
                       setMagicalResistance(e.target.valueAsNumber)
                     }
-                    className=" w-full mt-1 rounded-full bg-bg-grey-8 px-4 py-2 text-main-color-100"
+                    className=" mt-1 w-full rounded-full bg-bg-grey-8 px-4 py-2 text-main-color-100"
                   />
                 </label>
               </fieldset>
@@ -213,7 +219,7 @@ export default function CreateMonster(props: {
               <div className="btnGroup flex gap-5">
                 <button
                   type="submit"
-                  className={`cloudUpload flex h-12 items-center justify-center rounded-full px-6 text-bg-white-100 ${submitBtnState ? " bg-main-color-100 hover:bg-bg-grey-20 hover:text-main-color-100" : " bg-main-color-50 cursor-no-drop"}`}
+                  className={`cloudUpload flex h-12 items-center justify-center rounded-full px-6 text-bg-white-100 ${submitBtnState ? " bg-main-color-100 hover:bg-bg-grey-20 hover:text-main-color-100" : " cursor-no-drop bg-main-color-50"}`}
                   disabled={createMonster.isLoading || !submitBtnState}
                 >
                   {createMonster.isLoading
@@ -225,6 +231,6 @@ export default function CreateMonster(props: {
           </form>
         </div>
       </div>
-    </>
+    </React.Fragment>
   );
 }

@@ -235,21 +235,23 @@ export default function PetPage() {
     }
   }
   return (
-    <div id="Main">
-      <Link href="./">home</Link>
-
-      <div id="Pet">
+    <div className="Main flex-auto items-stretch bg-brand-color-orange">
+      <div className="flex basis-full bg-bg-grey-20">
+        <div className="flex basis-[2000px] h-2"></div>
+      </div>
+      {/* <Link href="./">home</Link>
+      <div id="Pet" className="flex items-center">
         <div id="title">
           <div id="mianTitle">Pet</div>
           <div id="subTitle">宠物相关计算</div>
         </div>
         <div id="content">
           <div id="inputModule"></div>
-          <div className="outModule w-full flex flex-col gap-4">
+          <div className="outModule flex flex-col gap-4">
             {completeDisplay()}
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }

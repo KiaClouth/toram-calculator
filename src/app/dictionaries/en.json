@@ -1,6 +1,7 @@
 {
   "ui": {
     "root":{
+      "home":"Home",
       "monsters": "Monsters",
       "skills": "Skills",
       "equipments":"Equipments",
