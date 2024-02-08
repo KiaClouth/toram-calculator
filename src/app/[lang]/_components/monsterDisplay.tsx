@@ -12,7 +12,7 @@ export default function MonsterDialog(props: {
 }) {
   const { dictionary, monsterData, monsterDialogState, setMonsterDialogState } =
     props;
-  
+
   // const User = await api.monster.getUserByMonsterId.query(monsterData ? monsterData.updatedById : "")
 
   function handleCancel(): void {
@@ -28,13 +28,9 @@ export default function MonsterDialog(props: {
     for (const attr in monsterData) {
       const monsterAttr = monsterData[attr as keyof Monster]?.toString();
       if (attr === "updatedById") {
-        
-        attrList.push([attr, ""]);
-      }
-      if (
-        !["id", "updatedAt", "state"].includes(monsterAttr ? monsterAttr : "")
-      ) {
-        attrList.push([attr, monsterAttr]);
+        attrList.push([attr, "~"]);
+      } else if (!["id", "updatedAt", "state"].includes(attr ? attr : "")) {
+        attrList.push([attr, monsterAttr ? monsterAttr : "?"]);
       }
     }
     return attrList;
@@ -46,23 +42,22 @@ export default function MonsterDialog(props: {
         onClick={handleCancel}
         className={`DialogBg fixed left-0 top-0 flex h-dvh w-dvw flex-col items-stretch justify-center overflow-y-auto bg-bg-dark-20 ${monsterDialogState ? " visible opacity-100" : " invisible opacity-0"}`}
       >
-        <div className="DialogContent flex max-h-dvh flex-col gap-3 bg-bg-white-100 p-4">
-          <div className="DialogTitle text-center text-lg font-semibold text-main-color-100">
-            {JSON.stringify(monsterData?.name, null, 2)}
+        <div className="DialogContent flex max-h-dvh min-h-[70dvh] flex-col gap-3 bg-bg-white-100 p-4 lg:px-[15%]">
+          <div className="DialogTitle border-b-1.5 border-brand-color-blue py-3 text-center text-lg font-semibold text-main-color-100">
+            {monsterData?.name}
           </div>
           <div className="DialogContent overflow-y-auto">
             <div
-              className="DialogContentText flex flex-col gap-4 rounded bg-bg-grey-8 p-2"
-              id="scroll-dialog-description"
+              className="DialogContentText flex flex-1 flex-wrap rounded p-2"
               tabIndex={0}
             >
               {renderContent().map(([key, value]) => {
                 return (
-                  <div key={key + value} className="Name&Attr">
-                    <div className="Name p-2 text-main-color-50">
+                  <div key={key + value} className="Name&Attr basis-1/2 lg:basis-1/4 px-2 pb-2 rounded hover:bg-bg-grey-8">
+                    <div className="Name p-2 text-main-color-70">
                       {dictionary.db.monster[key as keyof Monster]}:
                     </div>
-                    <div className="Attr bg-bg-grey-8 p-2 text-main-color-100">
+                    <div className="Attr border-bg-grey-20 border-1.5 p-2 text-main-color-100 rounded">
                       {value}
                     </div>
                   </div>
@@ -70,12 +65,12 @@ export default function MonsterDialog(props: {
               })}
             </div>
           </div>
-          {/* <div className="DialogActions flex gap-4 justify-end">
+          <div className="DialogActions flex gap-4 justify-end border-t-1.5 border-brand-color-blue py-3">
             <button
               className="Button flex px-4 py-1 flex-none cursor-pointer items-center justify-center rounded-full text-bg-white-100 bg-main-color-100 hover:bg-main-color-70"
               onClick={handleCancel}
             >
-              {dictionary.ui.monster.save}
+              {dictionary.ui.monster.cancel}
             </button>
             <button
               className="Button flex px-4 py-2 flex-none cursor-pointer items-center justify-center rounded-full bg-bg-grey-8 hover:bg-bg-grey-20"
@@ -83,7 +78,7 @@ export default function MonsterDialog(props: {
             >
               {dictionary.ui.monster.modify}
             </button>
-          </div> */}
+          </div>
         </div>
       </div>
     </React.Fragment>

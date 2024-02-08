@@ -1,25 +1,26 @@
 "use client";
-import { useRouter } from "next/navigation";
 import React, {
-  ChangeEvent,
-  FormEvent,
-  MouseEvent,
-  useEffect,
+  type ChangeEvent,
+  type FormEvent,
   useState,
 } from "react";
 import Image from "next/image";
 
 import { api } from "~/trpc/react";
-import { getDictionary } from "get-dictionary";
+import type { getDictionary } from "get-dictionary";
 
 import CloudUpload from "~/../public/app-image/icons/Cloud upload.svg";
-import { StaticImport } from "next/dist/shared/lib/get-img-props";
-import { Element, Monster, MonsterType, State } from "@prisma/client";
+import type { StaticImport } from "next/dist/shared/lib/get-img-props";
+import type { Element, MonsterType, State } from "@prisma/client";
+import type { Session } from "next-auth";
+import { useRouter } from "next/navigation";
 
 export default function CreateMonster(props: {
   dictionary: ReturnType<typeof getDictionary>;
+  session: Session | null;
 }) {
-  const { dictionary } = props;
+  const router = useRouter();
+  const { dictionary, session } = props;
   const [open, setOpen] = useState("invisible");
   const [bottom, setBottom] = useState("translate-y-1/2");
   const [submitBtnState, setSubmitState] = useState(false);
@@ -49,7 +50,7 @@ export default function CreateMonster(props: {
 
   const createMonster = api.monster.create.useMutation({
     onSuccess: () => {
-      document.forms[0]?.reset();
+      router.refresh();
     },
   });
 
@@ -103,9 +104,7 @@ export default function CreateMonster(props: {
     <React.Fragment>
       <button
         onClick={handleUploadClick}
-        className={
-          "cloudUpload flex w-12 flex-none cursor-pointer items-center justify-center rounded-full hover:bg-bg-grey-20"
-        }
+        className={`cloudUpload flex w-12 flex-none cursor-pointer items-center justify-center rounded-full hover:bg-bg-grey-20 ${session?.user ? "" : "hidden" }`}
       >
         <Image
           src={CloudUpload as StaticImport}
@@ -153,35 +152,35 @@ export default function CreateMonster(props: {
             </div>
             <div className="line h-line w-full bg-brand-color-blue"></div>
             <div className="inputArea h-full">
-              <fieldset className="dataKinds flex flex-col gap-4 lg:flex-row">
-                <label>
+              <fieldset className="dataKinds flex flex-col flex-wrap lg:flex-row">
+                <label className="flex flex-col gap-1 basis-1/4 p-2 text-main-color-100">
                   {dictionary.db.monster.name}
                   <input
                     type="text"
                     value={name}
                     onChange={(e) => nameHandleChange(e)}
-                    className=" mt-1 w-full rounded-full bg-bg-grey-8 px-4 py-2 text-main-color-100"
+                    className=" mt-1 w-full rounded bg-bg-grey-8 px-4 py-2 text-main-color-100"
                   />
                 </label>
-                <label>
+                <label className="flex flex-col gap-1 basis-1/4 p-2 text-main-color-100">
                   {dictionary.db.monster.baseLv}
                   <input
                     type="number"
                     value={baseLv}
                     onChange={(e) => setBaseLv(e.target.valueAsNumber)}
-                    className=" mt-1 w-full rounded-full bg-bg-grey-8 px-4 py-2 text-main-color-100"
+                    className=" mt-1 w-full rounded bg-bg-grey-8 px-4 py-2 text-main-color-100"
                   />
                 </label>
-                <label>
+                <label className="flex flex-col gap-1 basis-1/4 p-2 text-main-color-100">
                   {dictionary.db.monster.physicalDefense}
                   <input
                     type="number"
                     value={physicalDefense}
                     onChange={(e) => setPhysicalDefense(e.target.valueAsNumber)}
-                    className=" mt-1 w-full rounded-full bg-bg-grey-8 px-4 py-2 text-main-color-100"
+                    className=" mt-1 w-full rounded bg-bg-grey-8 px-4 py-2 text-main-color-100"
                   />
                 </label>
-                <label>
+                <label className="flex flex-col gap-1 basis-1/4 p-2 text-main-color-100">
                   {dictionary.db.monster.physicalResistance}
                   <input
                     type="number"
@@ -189,19 +188,19 @@ export default function CreateMonster(props: {
                     onChange={(e) =>
                       setPhysicalResistance(e.target.valueAsNumber)
                     }
-                    className=" mt-1 w-full rounded-full bg-bg-grey-8 px-4 py-2 text-main-color-100"
+                    className=" mt-1 w-full rounded bg-bg-grey-8 px-4 py-2 text-main-color-100"
                   />
                 </label>
-                <label>
+                <label className="flex flex-col gap-1 basis-1/4 p-2 text-main-color-100">
                   {dictionary.db.monster.magicalDefense}
                   <input
                     type="number"
                     value={magicalDefense}
                     onChange={(e) => setMagicalDefense(e.target.valueAsNumber)}
-                    className=" mt-1 w-full rounded-full bg-bg-grey-8 px-4 py-2 text-main-color-100"
+                    className=" mt-1 w-full rounded bg-bg-grey-8 px-4 py-2 text-main-color-100"
                   />
                 </label>
-                <label>
+                <label className="flex flex-col gap-1 basis-1/4 p-2 text-main-color-100">
                   {dictionary.db.monster.magicalResistance}
                   <input
                     type="number"
@@ -209,7 +208,7 @@ export default function CreateMonster(props: {
                     onChange={(e) =>
                       setMagicalResistance(e.target.valueAsNumber)
                     }
-                    className=" mt-1 w-full rounded-full bg-bg-grey-8 px-4 py-2 text-main-color-100"
+                    className=" mt-1 w-full rounded bg-bg-grey-8 px-4 py-2 text-main-color-100"
                   />
                 </label>
               </fieldset>

@@ -55,7 +55,7 @@ export default function LongSearchBox(props: {
 
   return (
     <React.Fragment>
-      <div className="SearchBox flex-1">
+      <div className="SearchBox z-0 flex-1">
         <input
           type="search"
           placeholder={dictionary.ui.monster.searchPlaceholder}
@@ -64,7 +64,7 @@ export default function LongSearchBox(props: {
           onChange={(e) => handleChange(e.target.value)}
         />
         <div id="options" className={`Options h-0 flex-col rounded ${open}`}>
-          <div className="OptionsContent mt-4 flex max-h-[60dvh] flex-shrink-0 flex-col overflow-y-auto p-2 shadow-2xl shadow-bg-grey-20">
+          <div className="OptionsContent rounded mt-4 flex max-h-[60dvh] flex-shrink-0 flex-col overflow-y-auto p-2 shadow-bg-grey-20 shadow-2xl bg-bg-white-100">
             {options.map((option) => (
               <button
                 key={option.id}
@@ -75,12 +75,12 @@ export default function LongSearchBox(props: {
                 <div className=" basis-1/4 self-stretch break-all bg-bg-grey-8 p-2 text-start text-main-color-100">
                   {option.name}
                 </div>
-                <div className=" basis-3/4 self-stretch break-all bg-bg-grey-8 p-2 text-start text-main-color-70">
+                <div className=" basis-3/4 self-stretch break-all flex flex-wrap gap-x-4 bg-bg-grey-8 p-2 text-start text-main-color-70">
                   {option.related.map((attr) => {
                     return (
-                      <div key={`${attr[0]}${attr[1]}`}>
+                      <div key={`${attr[0]}${attr[1]}`} className=" flex flex-wrap gap-1">
                         <span>{attr[0]}:</span>
-                        <span>{attr[1]}</span>
+                        <span className=" text-main-color-100">{attr[1]}</span>
                       </div>
                     );
                   })}
