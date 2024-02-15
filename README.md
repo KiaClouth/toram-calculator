@@ -1,10 +1,13 @@
-# Toram
+# ToramCalculator
+
 
 ## 项目信息
 
 - 出于兴趣为Toram Online开发的小工具￣ω￣=
 
-## 分支规则说明
+## 开发者文档
+
+### 分支规则说明
 
 - master 分支为最新稳定版本的代码
 - dev 分支项目负责人才有合并权限
@@ -13,7 +16,7 @@
 - 发布版本分支名称 v1.0-release
 - 每个版本封版后需要打一个 tag
 
-## 目录说明
+### 目录说明
 
 - .husky: git hooks
 - prisma: 棱镜数据库入口
@@ -23,7 +26,7 @@
 - src/trpc: trpc
 - public: 公共静态资源
 
-## Commit 规范
+### Commit 规范
 
 <type>(<scope>): <subject>
 type: 类型
@@ -45,7 +48,7 @@ type: 类型
 scope: 可选,影响范围
 subject: 对 commit 的简短描述
 
-## Build Setup
+### Build Setup
 
 ```bash
 # install dependencies
@@ -61,14 +64,14 @@ pnpm build
 pnpm start
 ```
 
-## 引入新的 pnpm 包
+### 引入新的 pnpm 包
 
 - devDependencies 预编译时用到的模块，生产环境用不上
   `pnpm install --save-dev moduleName`
 - dependencies 实际运行时要用到的模块，生产环境也要用到
   `pnpm install --save moduleName`
 
-## 开发概要
+### 开发概要
 
 - Next.js 14+
 - TypeScript

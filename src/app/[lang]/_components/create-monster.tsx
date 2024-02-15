@@ -93,7 +93,7 @@ export default function CreateMonster(props: {
         return (
           <fieldset
             key={key}
-            className="flex flex-1 basis-full flex-col gap-1 p-2 text-main-color-100"
+            className="flex flex-1 basis-full lg:basis-full flex-col gap-1 p-2 text-main-color-100"
           >
             {dictionary.db.models.monster[key as keyof typeof monsterInput]}
             <fieldset className="flex flex-1 flex-col flex-wrap gap-4 lg:flex-row">
@@ -122,7 +122,7 @@ export default function CreateMonster(props: {
         return (
           <fieldset
             key={key}
-            className="flex basis-1/4 flex-col gap-1 p-2 text-main-color-100"
+            className="flex basis-1/2 lg:basis-1/4 flex-col gap-1 p-2 text-main-color-100"
           >
             <label className="flex basis-1/4 flex-col gap-1 p-2 text-main-color-100">
               {dictionary.db.models.monster[key as keyof typeof monsterInput]}
@@ -204,7 +204,7 @@ export default function CreateMonster(props: {
               </span>
             </div>
             <div className="inputArea flex-1 overflow-y-auto">
-              <fieldset className="dataKinds flex flex-col flex-wrap lg:flex-row">
+              <fieldset className="dataKinds flex flex-wrap lg:flex-row">
                 {Object.keys(monsterInput).map((key) =>
                   inputAttr(key as keyof typeof monsterInput),
                 )}
