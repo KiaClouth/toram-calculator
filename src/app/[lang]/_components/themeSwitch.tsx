@@ -10,10 +10,6 @@ const ThemeSwitch = () => {
     setMounted(true);
   }, []);
 
-  if (!mounted) {
-    return null;
-  }
-
   const handleClick = () => {
     switch (theme) {
       case "dark":
@@ -28,10 +24,16 @@ const ThemeSwitch = () => {
     }
   };
 
+  if (!mounted) {
+    return (
+      <button className="SwitchTheme h-11 w-11 rounded-full border-1.5 border-brand-color-blue text-xs"></button>
+    );
+  }
+
   return (
     <button
       onClick={handleClick}
-      className="SwitchTheme hidden h-11 w-11 rounded-full border-1.5 border-brand-color-blue text-xs"
+      className="SwitchTheme h-11 w-11 rounded-full border-1.5 border-brand-color-blue text-xs"
     >
       {theme}
     </button>
