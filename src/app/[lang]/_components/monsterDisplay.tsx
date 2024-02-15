@@ -1,8 +1,7 @@
 "use client";
 import * as React from "react";
-import { ModifiersName, type Monster } from "@prisma/client";
+import { type Monster } from "@prisma/client";
 import { type getDictionary } from "get-dictionary";
-import { api } from "~/trpc/server";
 
 export default function MonsterDialog(props: {
   dictionary: ReturnType<typeof getDictionary>;
@@ -43,19 +42,19 @@ export default function MonsterDialog(props: {
         className={`DialogBg fixed left-0 top-0 flex h-dvh w-dvw flex-col items-stretch justify-center overflow-y-auto bg-bg-dark-20 ${monsterDialogState ? " visible opacity-100" : " invisible opacity-0"}`}
       >
         <div className="DialogContent flex max-h-dvh min-h-[70dvh] flex-col gap-3 bg-bg-white-100 p-4 lg:px-[15%]">
-          <div className="DialogTitle border-b-1.5 border-brand-color-blue py-3 text-center text-lg font-semibold text-main-color-100">
+          <div className="DialogTitle border-b-1.5 border-brand-color-blue p-3 text-lg font-semibold text-main-color-100">
             {monsterData?.name}
           </div>
           <div className="DialogContent overflow-y-auto">
             <div
-              className="DialogContentText flex flex-1 flex-wrap rounded p-2"
+              className="DialogContentText flex flex-1 flex-wrap rounded"
               tabIndex={0}
             >
               {renderContent().map(([key, value]) => {
                 return (
                   <div key={key + value} className="Name&Attr basis-1/2 lg:basis-1/4 px-2 pb-2 rounded hover:bg-bg-grey-8">
                     <div className="Name p-2 text-main-color-70">
-                      {dictionary.db.monster[key as keyof Monster]}:
+                      {dictionary.db.models.monster[key as keyof Monster]}:
                     </div>
                     <div className="Attr border-bg-grey-20 border-1.5 p-2 text-main-color-100 rounded">
                       {value}

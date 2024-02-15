@@ -1,4 +1,6 @@
-import { MonsterSchema } from "prisma/generated/zod";
+import {
+  MonsterSchema,
+} from "prisma/generated/zod";
 import { z } from "zod";
 
 import {
@@ -14,11 +16,11 @@ export const monsterRouter = createTRPCRouter({
   getUserByMonsterId: publicProcedure
     .input(z.string())
     .query(({ ctx, input }) => {
-    return ctx.db.monster.findFirst({
-      // orderBy: { createdAt: "desc" },
-      where: { updatedById: input },
-    });
-  }),
+      return ctx.db.monster.findFirst({
+        // orderBy: { createdAt: "desc" },
+        where: { updatedById: input },
+      });
+    }),
 
   // getMonster: publicProcedure
   // .input({})
@@ -33,8 +35,10 @@ export const monsterRouter = createTRPCRouter({
       return ctx.db.monster.create({
         data: {
           ...input,
-          updatedBy: { connect: { id: ctx.session.user.id ? ctx.session.user.id : "不知名的冒险者" } },
+          updatedBy: {
+            connect: { id: ctx.session ? ctx.session?.user.id : "" },
+          },
         },
       });
-    })
+    }),
 });

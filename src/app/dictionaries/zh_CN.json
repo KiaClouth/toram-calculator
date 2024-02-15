@@ -1,7 +1,7 @@
 {
   "ui": {
     "root": {
-      "home":"首页",
+      "home": "首页",
       "monsters": "怪物",
       "skills": "技能",
       "equipments": "装备",
@@ -11,50 +11,74 @@
       "character": "角色配置",
       "comboAnalyze": "连击分析"
     },
-    "index":{
-      "goodMorning":"早上好",
-      "goodAfternoon":"下午好",
-      "goodEvening":"晚上好"
+    "index": {
+      "goodMorning": "早上好",
+      "goodAfternoon": "下午好",
+      "goodEvening": "晚上好"
     },
     "monster": {
       "searchPlaceholder": "传说中的怪物",
-      "upload":"上传怪物数据",
-      "save":"保存",
-      "reset":"清空",
-      "modify":"修改",
-      "cancel":"取消"
+      "upload": "上传怪物数据",
+      "save": "保存",
+      "reset": "清空",
+      "modify": "修改",
+      "cancel": "取消"
     }
   },
   "db": {
-    "monster": {
-      "id": "ID",
-      "updatedAt": "更新时间",
-      "updatedById": "更新者",
-      "state": "状态",
-      "name": "名称",
-      "type": "类型",
-      "baseLv": "基础等级",
-      "experience": "基础经验",
-      "address": "所在地址",
-      "element": "元素属性",
-      "radius": "半径",
-      "maxhp": "最大HP",
-      "physicalDefense": "物理防御",
-      "physicalResistance": "物理抗性",
-      "magicalDefense": "魔法防御",
-      "magicalResistance": "魔法抗性",
-      "criticalResistance": "暴击抗性",
-      "avoidance": "回避值",
-      "dodge": "闪避率",
-      "block": "格挡率",
-      "normalAttackResistanceModifier": "一般惯性变动率",
-      "physicalAttackResistanceModifier": "物理惯性变动率",
-      "magicalAttackResistanceModifier": "魔法惯性变动率",
-      "difficultyOfTank": "难度：坦职",
-      "difficultyOfMelee": "难度：近战",
-      "difficultyOfRanged": "难度：远程",
-      "possibilityOfRunningAround": "好动程度",
-      "specialBehavior": "特殊说明"
+    "enums": {
+      "state": {
+        "PRIVATE":"自用", "PUBLIC":"公开"
+      },
+      "type": {
+        "COMMON_BOSS":"定点王",
+        "COMMON_MINI_BOSS":"野王",
+        "COMMON_MOBS":"小怪",
+        "EVENT_BOSS":"活动定点王",
+        "EVENT_MINI_BOSS":"活动野王",
+        "EVENT_MOBS":"活动小怪"
+      },
+      "element": {
+        "NO_ELEMENT":"无属性",
+        "DARK":"暗属性",
+        "EARTH":"地属性",
+        "FIRE":"火属性",
+        "LIGHT":"光属性",
+        "WATER":"水属性",
+        "WIND":"风属性"
+      }
+    },
+    "models":{
+      "monster": {
+        "id": "ID",
+        "updatedAt": "更新时间",
+        "updatedById": "更新者",
+        "state": "状态",
+        "name": "名称",
+        "type": "类型",
+        "baseLv": "基础等级",
+        "experience": "基础经验",
+        "address": "所在地址",
+        "element": "元素属性",
+        "radius": "半径",
+        "maxhp": "最大HP",
+        "physicalDefense": "物理防御",
+        "physicalResistance": "物理抗性",
+        "magicalDefense": "魔法防御",
+        "magicalResistance": "魔法抗性",
+        "criticalResistance": "暴击抗性",
+        "avoidance": "回避值",
+        "dodge": "闪避率",
+        "block": "格挡率",
+        "normalAttackResistanceModifier": "一般惯性变动率",
+        "physicalAttackResistanceModifier": "物理惯性变动率",
+        "magicalAttackResistanceModifier": "魔法惯性变动率",
+        "difficultyOfTank": "难度：坦职",
+        "difficultyOfMelee": "难度：近战",
+        "difficultyOfRanged": "难度：远程",
+        "possibilityOfRunningAround": "好动程度",
+        "specialBehavior": "特殊说明"
+      }
     }
   }
 }

@@ -97,6 +97,14 @@ model Monster {
     @@index([name])
 }
 
+model OffensiveAttribute {
+    id                  String @id @default(cuid())
+    physicalAttack      Float
+    physicalPenetration Float
+    magicalAttack       Float
+    magicalPenetration  Float
+}
+
 enum ModifiersValueType {
     FLAT_BONUS
     PERCENTAGE_BONUS
