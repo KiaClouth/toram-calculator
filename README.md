@@ -1,11 +1,9 @@
 # ToramCalculator
 
-
 ## 项目信息
 
 - 出于兴趣为Toram Online开发的小工具￣ω￣=
 
-## 开发者文档
 
 ### 分支规则说明
 
@@ -29,6 +27,7 @@
 ### Commit 规范
 
 <type>(<scope>): <subject>
+
 type: 类型
 
 ```

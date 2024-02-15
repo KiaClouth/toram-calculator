@@ -2,6 +2,7 @@ import { type Config } from "tailwindcss";
 import { fontFamily } from "tailwindcss/defaultTheme";
 
 export default {
+  darkMode: 'class',
   content: ["./src/**/*.tsx"],
   theme: {
     colors: {
@@ -9,17 +10,24 @@ export default {
       current: 'currentColor',
       'bg-light-orange':'rgba(252,245,238,1)',
       'bg-grey': {
-        8: 'rgba(105,145,214,.08)',
         20: 'rgba(105,145,214,.2)',
+        8: 'rgba(105,145,214,.08)',
       },
       'bg-white': {
         100: 'rgba(255,255,255,1)',
         50: 'rgba(255,255,255,.5)',
+        40: 'rgba(255,255,255,.4)',
+        30: 'rgba(255,255,255,.3)',
+        20: 'rgba(255,255,255,.2)',
+        10: 'rgba(255,255,255,.1)',
       },
       'bg-dark': {
         100: 'rgba(0,0,0,1)',
         50: 'rgba(0,0,0,.5)',
+        40: 'rgba(0,0,0,.4)',
+        30: 'rgba(0,0,0,.3)',
         20: 'rgba(0,0,0,.2)',
+        10: 'rgba(0,0,0,.1)',
       },
       'main-color': {
         100: 'rgba(47,26,73,1)',

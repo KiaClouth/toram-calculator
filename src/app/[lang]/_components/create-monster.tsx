@@ -7,7 +7,7 @@ import type { getDictionary } from "get-dictionary";
 
 import CloudUpload from "~/../public/app-image/icons/Cloud upload.svg";
 import type { StaticImport } from "next/dist/shared/lib/get-img-props";
-import { MonsterType, type Monster } from "@prisma/client";
+import { type Monster } from "@prisma/client";
 import type { Session } from "next-auth";
 import { useRouter } from "next/navigation";
 

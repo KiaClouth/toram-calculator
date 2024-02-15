@@ -1,15 +1,3 @@
-import Link from "next/link";
-import Image from "next/image";
-
-import { type StaticImport } from "next/dist/shared/lib/get-img-props";
-import iconBasketball from "~/../public/app-image/icons/Basketball.svg";
-import iconBox2 from "~/../public/app-image/icons/Box 2.svg";
-import iconCalendar from "~/../public/app-image/icons/Calendar.svg";
-import iconCategory2 from "~/../public/app-image/icons/Category 2.svg";
-import iconCoins from "~/../public/app-image/icons/Coins.svg";
-import iconFilter from "~/../public/app-image/icons/Filter.svg";
-import iconGamepad from "~/../public/app-image/icons/Gamepad.svg";
-import iconMoney from "~/../public/app-image/icons/Money.svg";
 import { getDictionary } from "get-dictionary";
 import { type Locale } from "i18n-config";
 
@@ -19,18 +7,6 @@ export default async function Index({
   params: { lang: Locale };
 }) {
   const dictionary = getDictionary(lang);
-  const Nav: [string, StaticImport | undefined, string | undefined][] = [
-    [dictionary.ui.root.monsters, iconCalendar, "/monster"],
-    ["LineA", , ,],
-    [dictionary.ui.root.skills, iconBasketball, ""],
-    [dictionary.ui.root.equipments, iconCategory2, ""],
-    [dictionary.ui.root.crystas, iconBox2, ""],
-    [dictionary.ui.root.pets, iconMoney, "/pet"],
-    [dictionary.ui.root.items, iconCoins, ""],
-    ["LineB", , ,],
-    [dictionary.ui.root.character, iconGamepad, "/character"],
-    [dictionary.ui.root.comboAnalyze, iconFilter, ""],
-  ];
   const now = new Date().getHours();
   let greetings = dictionary.ui.index.goodMorning;
   if (now >= 13 && now < 18) {
