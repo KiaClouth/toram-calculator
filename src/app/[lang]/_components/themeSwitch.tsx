@@ -33,7 +33,7 @@ const ThemeSwitch = () => {
   return (
     <button
       onClick={handleClick}
-      className="SwitchTheme h-11 w-11 rounded-full border-1.5 border-brand-color-blue text-xs"
+      className="SwitchTheme h-11 w-11 rounded-full border-1.5 border-brand-color-blue hover:bg-brand-color-blue text-xs"
     >
       {theme}
     </button>
