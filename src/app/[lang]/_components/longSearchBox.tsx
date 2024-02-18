@@ -64,13 +64,13 @@ export default function LongSearchBox(props: {
           onChange={(e) => handleChange(e.target.value)}
         />
         <div id="options" className={`Options h-0 flex-col rounded ${open}`}>
-          <div className="OptionsContent rounded mt-4 flex max-h-[60dvh] flex-shrink-0 flex-col overflow-y-auto p-2 shadow-bg-grey-20 shadow-2xl bg-bg-white-100">
+          <div className="OptionsContent rounded mt-4 flex max-h-[60dvh] flex-shrink-0 flex-col overflow-y-auto p-2 shadow-bg-grey-20 shadow-2xl backdrop-blur bg-bg-white-50">
             {options.map((option) => (
               <button
                 key={option.id}
                 onClick={() => handleClick(option.id)}
                 tabIndex={0}
-                className={`option mx-1 my-0.5 flex gap-1 rounded hover:bg-brand-color-blue`}
+                className={`option mx-1 my-0.5 flex gap-1 rounded hover:bg-brand-color-1st`}
               >
                 <div className=" basis-1/4 self-stretch break-all bg-bg-grey-8 p-2 text-start text-main-color-100">
                   {option.name}

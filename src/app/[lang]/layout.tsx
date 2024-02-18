@@ -3,28 +3,27 @@ import { env } from "~/env";
 import { Inter } from "next/font/google";
 import { cookies } from "next/headers";
 import Link from "next/link";
-import Image from "next/image";
 import { TRPCReactProvider } from "~/trpc/react";
 import type { Metadata, Viewport } from "next";
 import type { Locale } from "~/../i18n-config";
 import { getServerAuthSession } from "~/server/auth";
 
 import SignInOrOut from "./_components/signInOrOut";
-
-import Logo from "~/../public/app-image/LOGO-light.svg";
-import type { StaticImport } from "next/dist/shared/lib/get-img-props";
-import iconBasketball from "~/../public/app-image/icons/Basketball.svg";
-import iconBox2 from "~/../public/app-image/icons/Box 2.svg";
-import iconCalendar from "~/../public/app-image/icons/Calendar.svg";
-import iconCategory2 from "~/../public/app-image/icons/Category 2.svg";
-import iconCoins from "~/../public/app-image/icons/Coins.svg";
-import iconFilter from "~/../public/app-image/icons/Filter.svg";
-import iconGamepad from "~/../public/app-image/icons/Gamepad.svg";
-import iconMoney from "~/../public/app-image/icons/Money.svg";
-import iconHome from "~/../public/app-image/icons/Home.svg";
 import { getDictionary } from "get-dictionary";
 import ThemeProvider from "./_components/themeProvider";
 import ThemeSwitch from "./_components/themeSwitch";
+import {
+  IconLogo,
+  IconBasketball,
+  IconBox2,
+  IconCalendar,
+  IconCategory2,
+  IconCoins,
+  IconFilter,
+  IconGamepad,
+  IconHome,
+  IconMoney,
+} from "./_components/iconsList";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -86,28 +85,52 @@ export default async function RootLayout({
 }) {
   const session = await getServerAuthSession();
   const dictionary = getDictionary(lang);
-  const rNav: [string, StaticImport | undefined, string | undefined][] = [
-    [dictionary.ui.root.monsters, iconCalendar, "/monster"],
+  const rNav: [string, JSX.Element | undefined, string | undefined][] = [
+    [
+      dictionary.ui.root.monsters,
+      <IconCalendar key={"IconCalendar"} />,
+      "/monster",
+    ],
     ["LineA", , ,],
-    [dictionary.ui.root.skills, iconBasketball, ""],
-    [dictionary.ui.root.equipments, iconCategory2, ""],
-    [dictionary.ui.root.crystas, iconBox2, ""],
-    [dictionary.ui.root.pets, iconMoney, "/pet"],
-    [dictionary.ui.root.items, iconCoins, ""],
+    [dictionary.ui.root.skills, <IconBasketball key={"IconBasketball"} />, ""],
+    [
+      dictionary.ui.root.equipments,
+      <IconCategory2 key={"IconCategory2"} />,
+      "",
+    ],
+    [dictionary.ui.root.crystas, <IconBox2 key={"IconBox2"} />, ""],
+    [dictionary.ui.root.pets, <IconMoney key={"IconMoney"} />, "/pet"],
+    [dictionary.ui.root.items, <IconCoins key={"IconCoins"} />, ""],
     ["LineB", , ,],
-    [dictionary.ui.root.character, iconGamepad, "/character"],
-    [dictionary.ui.root.comboAnalyze, iconFilter, ""],
+    [
+      dictionary.ui.root.character,
+      <IconGamepad key={"IconGamepad"} />,
+      "/character",
+    ],
+    [dictionary.ui.root.comboAnalyze, <IconFilter key={"IconFilter"} />, ""],
   ];
-  const bNav: [string, StaticImport | undefined, string | undefined][] = [
-    [dictionary.ui.root.home, iconHome, "/"],
-    [dictionary.ui.root.monsters, iconCalendar, "/monster"],
-    [dictionary.ui.root.skills, iconBasketball, ""],
-    [dictionary.ui.root.equipments, iconCategory2, ""],
-    [dictionary.ui.root.crystas, iconBox2, ""],
-    [dictionary.ui.root.pets, iconMoney, "/pet"],
-    [dictionary.ui.root.items, iconCoins, ""],
-    [dictionary.ui.root.character, iconGamepad, "/character"],
-    [dictionary.ui.root.comboAnalyze, iconFilter, ""],
+  const bNav: [string, JSX.Element | undefined, string | undefined][] = [
+    [dictionary.ui.root.home, <IconHome key={"IconHome"} />, "/"],
+    [
+      dictionary.ui.root.monsters,
+      <IconCalendar key={"IconCalendar"} />,
+      "/monster",
+    ],
+    [dictionary.ui.root.skills, <IconBasketball key={"IconBasketball"} />, ""],
+    [
+      dictionary.ui.root.equipments,
+      <IconCategory2 key={"IconCategory2"} />,
+      "",
+    ],
+    [dictionary.ui.root.crystas, <IconBox2 key={"IconBox2"} />, ""],
+    [dictionary.ui.root.pets, <IconMoney key={"IconMoney"} />, "/pet"],
+    [dictionary.ui.root.items, <IconCoins key={"IconCoins"} />, ""],
+    [
+      dictionary.ui.root.character,
+      <IconGamepad key={"IconGamepad"} />,
+      "/character",
+    ],
+    [dictionary.ui.root.comboAnalyze, <IconFilter key={"IconFilter"} />, ""],
     ["LineA", , ,],
   ];
 
@@ -115,14 +138,15 @@ export default async function RootLayout({
     <html lang={lang} suppressHydrationWarning>
       <body
         className={
-          `font-sans ${inter.variable}` + " flex min-h-dvh flex-col lg:flex-row"
+          `font-sans ${inter.variable}` +
+          " flex min-h-dvh flex-col text-accent-color dark:text-accent-color-dark lg:flex-row"
         }
       >
         <TRPCReactProvider cookies={cookies().toString()}>
           <ThemeProvider>
             <div
               id="rootNav"
-              className="Nav fixed -left-full flex h-dvh w-4/5 flex-none flex-col items-center gap-3 lg:static lg:w-24 lg:bg-bg-grey-8 dark:lg:bg-bg-white-10 lg:py-5"
+              className="Nav lg:bg-transtion-color-8 lg:dark:bg-transtion-color-8-dark fixed -left-full flex h-dvh w-4/5 flex-none flex-col items-center gap-3 backdrop-blur lg:left-0 lg:w-24 lg:-translate-x-3/4 lg:py-5 lg:opacity-0 lg:hover:translate-x-0 lg:hover:opacity-100"
             >
               <div className="Top flex h-full w-full flex-1 flex-col gap-10 overflow-hidden">
                 <Link
@@ -130,19 +154,12 @@ export default async function RootLayout({
                   className="LOGO my-12 flex flex-none items-center gap-4 px-4 lg:top-5 lg:my-0 lg:justify-center"
                   tabIndex={1}
                 >
-                  <Image
-                    src={Logo as StaticImport}
-                    alt="Logo"
-                    height={50}
-                    width={50}
-                    style={{ width: "50px", height: "auto" }}
-                    priority
-                  />
+                  <IconLogo />
                   <span className=" text-2xl lg:hidden">ToramCalculator</span>
                 </Link>
                 <div className="NavBtnList flex h-full w-full shrink flex-col items-center gap-2 overflow-y-auto last:mb-0 lg:gap-4">
-                  {rNav.map(([btnName, iconPath, url]) => {
-                    if (iconPath !== undefined && url !== undefined) {
+                  {rNav.map(([btnName, icon, url]) => {
+                    if (icon !== undefined && url !== undefined) {
                       return (
                         <Link
                           href={url}
@@ -151,19 +168,13 @@ export default async function RootLayout({
                           className={
                             "btn-" +
                             btnName +
-                            " group flex w-full flex-row items-center gap-8 py-2 active:bg-brand-color-blue lg:flex-col lg:gap-1 lg:py-0 lg:active:bg-transparent"
+                            " group flex w-full flex-row items-center gap-8 py-2 active:bg-brand-color-1st lg:flex-col lg:gap-1 lg:py-0 lg:active:bg-transparent"
                           }
                         >
-                          <div className="iconArea rounded-full px-4 py-1 lg:group-hover:bg-brand-color-blue">
-                            <Image
-                              src={iconPath}
-                              alt={btnName}
-                              width={24}
-                              height={0}
-                              style={{ width: "24px", height: "auto" }}
-                            />
+                          <div className="iconArea rounded-full px-4 py-1 lg:group-hover:bg-brand-color-1st dark:lg:group-hover:bg-accent-color-30-dark">
+                            {icon}
                           </div>
-                          <div className="text-base text-main-color-100 lg:text-xs">
+                          <div className="text-main-color-100 text-base lg:text-xs">
                             {btnName}
                           </div>
                         </Link>
@@ -173,7 +184,7 @@ export default async function RootLayout({
                         <div
                           key={btnName}
                           className={
-                            "Line h-line w-full bg-bg-grey-20 lg:w-12 lg:bg-brand-color-blue"
+                            "Line bg-bg-grey-20 h-line w-full lg:w-12 lg:bg-brand-color-1st"
                           }
                         ></div>
                       );
@@ -189,10 +200,10 @@ export default async function RootLayout({
             {children}
             <div
               id="bottomNav"
-              className="flex items-center justify-between overflow-x-auto bg-bg-grey-8 lg:hidden"
+              className="bg-bg-grey-8 flex items-center justify-between overflow-x-auto lg:hidden"
             >
-              {bNav.map(([btnName, iconPath, url]) => {
-                if (iconPath !== undefined && url !== undefined) {
+              {bNav.map(([btnName, icon, url]) => {
+                if (icon !== undefined && url !== undefined) {
                   return (
                     <Link
                       href={url}
@@ -205,15 +216,9 @@ export default async function RootLayout({
                       }
                     >
                       <div className="iconArea rounded-full px-4 py-1">
-                        <Image
-                          src={iconPath}
-                          alt={btnName}
-                          width={24}
-                          height={0}
-                          style={{ width: "24px", height: "auto" }}
-                        />
+                        {icon}
                       </div>
-                      <div className=" text-xs text-main-color-100">
+                      <div className=" text-main-color-100 text-xs">
                         {btnName}
                       </div>
                     </Link>
@@ -222,7 +227,7 @@ export default async function RootLayout({
                   return (
                     <div
                       key={"bottomNavSignInOrOut"}
-                      className=" group flex flex-none flex-row items-center gap-1 p-4 active:bg-brand-color-blue"
+                      className=" group flex flex-none flex-row items-center gap-1 p-4 active:bg-brand-color-1st"
                     >
                       <SignInOrOut session={session} />
                       <ThemeSwitch />

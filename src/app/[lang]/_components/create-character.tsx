@@ -28,11 +28,11 @@ export function CreateCharacter() {
         placeholder="机体名称"
         value={name}
         onChange={(e) => setName(e.target.value)}
-        className="w-full rounded-full px-4 py-2 text-black bg-black/10"
+        className="w-full rounded-full px-4 py-2 text-primary-color bg-transition-color-8"
       />
       <button
         type="submit"
-        className="rounded-full bg-black/10 px-10 py-3 font-semibold transition hover:bg-black/20"
+        className="rounded-full bg-transition-color-8 px-10 py-3 font-semibold transition hover:bg-transition-color-20"
         disabled={createPost.isLoading}
       >
         {createPost.isLoading ? "保存中..." : "保存"}

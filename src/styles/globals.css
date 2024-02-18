@@ -2,6 +2,35 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  /* 颜色署名 */
+  :root {
+    --white: 255 255 255;
+    --dark: 0 0 0;
+    --brown: 47 26 73;
+    --navyBlue: 105 145 214;
+    --greenBlue: 149 207 213;
+    --yellow: 255 166 60;
+    --orange: 253 126 80;
+  }
+
+  /* .light {
+    --main: var(--brown);
+    --bg: var(--white);
+    --brand-1st: var(--blue);
+    --brand-2nd: var(--orange);
+    --brand-3rd: var(--yellow);
+  }
+
+  .dark {
+    --main: var(--white);
+    --bg: var(--dark);
+    --brand-1st: var(--blue);
+    --brand-2nd: var(--orange);
+    --brand-3rd: var(--yellow);
+  } */
+}
+
 * {
   transition: all 150ms;
   outline-width: 0.5px;
@@ -11,7 +40,7 @@
 
 *:focus {
   outline-width: 1.5px;
-  outline-color: rgba(105,145,214,.7);
+  outline-color: rgba(105, 145, 214, 0.7);
 }
 
 #rootNav *,
@@ -20,7 +49,7 @@
 }
 
 @media (min-width: 1024px) {
-  #rootNav *:focus .iconArea{
+  #rootNav *:focus .iconArea {
     background-color: #95cfd5;
   }
 }
@@ -31,7 +60,7 @@
 
 body {
   display: flex;
-  /* background: url(./../../public/app-image/bg1.png) no-repeat center; */
+  background: url(./../../public/app-image/bg.png) no-repeat center;
   background-size: cover;
 }
 
@@ -39,46 +68,49 @@ body {
 
 @keyframes jumbo {
   from {
-      background-position: 50% 50%, 50% 50%;
+    background-position:
+      50% 50%,
+      50% 50%;
   }
   to {
-      background-position: 350% 50%, 350% 50%;
+    background-position:
+      350% 50%,
+      350% 50%;
   }
 }
 
 .jumbo {
   --stripes: repeating-linear-gradient(
-      100deg,
-      #fff 0%,
-      #fff 7%,
-      transparent 10%,
-      transparent 12%,
-      #fff 16%
+    100deg,
+    #fff 0%,
+    #fff 7%,
+    transparent 10%,
+    transparent 12%,
+    #fff 16%
   );
   --stripesDark: repeating-linear-gradient(
-      100deg,
-      #000 0%,
-      #000 7%,
-      transparent 10%,
-      transparent 12%,
-      #000 16%
+    100deg,
+    #000 0%,
+    #000 7%,
+    transparent 10%,
+    transparent 12%,
+    #000 16%
   );
   --rainbow: repeating-linear-gradient(
-      100deg,
-      #60a5fa 10%,
-      #e879f9 15%,
-      #60a5fa 20%,
-      #5eead4 25%,
-      #60a5fa 30%
+    100deg,
+    #60a5fa 10%,
+    #e879f9 15%,
+    #60a5fa 20%,
+    #5eead4 25%,
+    #60a5fa 30%
   );
   background-image: var(--stripes), var(--rainbow);
   background-size: 300%, 200%;
-  background-position: 50% 50%, 50% 50%;
-
+  background-position:
+    50% 50%,
+    50% 50%;
   filter: blur(10px) invert(100%);
-
   mask-image: radial-gradient(ellipse at 100% 0%, black 40%, transparent 70%);
-
   pointer-events: none;
 }
 

@@ -235,7 +235,7 @@ export default function PetPage() {
     }
   }
   return (
-    <div className="Main flex-auto items-stretch bg-brand-color-orange">
+    <div className="Main flex-auto items-stretch bg-brand-color-2nd">
       <div className="flex basis-full bg-bg-grey-20">
         <div className="flex basis-[2000px] h-2"></div>
       </div>

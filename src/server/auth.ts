@@ -10,8 +10,7 @@ import EmailProvider from "next-auth/providers/email"
 
 import { env } from "~/env";
 import { db } from "~/server/db";
-
-import type { OAuthConfig, OAuthUserConfig } from "next-auth/providers/oauth"
+import QQProvider from "./next-auth-provider/qq";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -48,11 +47,13 @@ export const authOptions: NextAuthOptions = {
         id: user.id,
         email: user.email
       },
+      expires: session.expires,
     }),
   },
   adapter: PrismaAdapter(db),
   providers: [
     QQProvider({
+      issuer: "KiaClouth",
       clientId: env.QQ_CLIENT_ID,
       clientSecret: env.QQ_CLIENT_SECRET,
       httpOptions: {
@@ -106,54 +107,3 @@ export const authOptions: NextAuthOptions = {
  * @see https://next-auth.js.org/configuration/nextjs
  */
 export const getServerAuthSession = () => getServerSession(authOptions);
-
-// https://graph.qq.com/oauth2.0/show?which=Login&display=pc&client_id=100255473&response_type=code&redirect_uri=https%3A%2F%2Fnote.youdao.com%2Flogin%2Facc%2Fcallback&state=qZOLP40LJpVTFhHwu0MTL0ZZZZZu0HTu0
-// 自定义QQ认证
-export interface QQProfile extends Record<string, string | boolean | number> {
-  aud: string
-  azp: string
-  email: string
-  email_verified: boolean
-  exp: number
-  family_name: string
-  given_name: string
-  hd: string
-  iat: number
-  iss: string
-  jti: string
-  name: string
-  nbf: number
-  picture: string
-  sub: string
-}
-
-export default function QQProvider<P extends QQProfile>(
-  options: OAuthUserConfig<P>
-): OAuthConfig<P> {
-  return {
-    id: "qq",
-    name: "QQ",
-    type: "oauth",
-    authorization: {
-      url: "https://graph.qq.com/oauth2.0/authorize",
-      params: { 
-        response_type: "code",
-        client_id: options.clientId,
-        redirect_uri: `${env.NEXTAUTH_URL}/api/auth/callback/qq`,
-        state: Math.random().toString(36).substring(7)
-      }
-    },
-    idToken: true,
-    checks: ["pkce", "state"],
-    profile(profile) {
-      return {
-        id: profile.sub,
-        name: profile.name,
-        email: profile.email,
-        image: profile.picture,
-      }
-    },
-    style: { logo: "~/../public/next-auth/provider/icon-svg/QQ.svg", bg: "#fff", text: "#000" },
-    options,
-  }
-}

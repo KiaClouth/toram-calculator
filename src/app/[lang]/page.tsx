@@ -16,10 +16,10 @@ export default async function Index({
   }
   return (
     <div className="Index flex flex-1 flex-col overflow-x-hidden">
-    <div className="jumbo fixed top-0 left-0 w-dvw h-dvh -z-50 opacity-50"></div>
-      <div className="Top flex flex-1 flex-col justify-center">
-        <h1 className="Title text-center text-5xl font-extrabold tracking-tight text-main-color-100 lg:text-9xl">
-          Toram <span className=" text-brand-color-blue">の</span>{" "}
+    <div className="jumbo$ fixed top-0 left-0 w-dvw h-dvh -z-50 opacity-50"></div>
+      <div className="Top flex flex-1 flex-col justify-center items-center">
+        <h1 className="Title text-center text-5xl p-10 mx-8 font-extrabold tracking-tight lg:text-9xl border-b-2 border-bg-white-30 -translate-y-1/3">
+          Toram <span className=" text-brand-color-1st">の</span>{" "}
           Calculactor
         </h1>
         <span className=" hidden text-center">{greetings}</span>

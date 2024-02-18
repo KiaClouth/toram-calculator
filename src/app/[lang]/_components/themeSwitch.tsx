@@ -3,8 +3,8 @@ import { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
 
 const ThemeSwitch = () => {
-  const [mounted, setMounted] = useState(false);
   const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -26,14 +26,14 @@ const ThemeSwitch = () => {
 
   if (!mounted) {
     return (
-      <button className="SwitchTheme h-11 w-11 rounded-full border-1.5 border-brand-color-blue text-xs"></button>
+      <button className="SwitchTheme h-11 w-11 rounded-full border-1.5 border-brand-color-1st text-xs"></button>
     );
   }
 
   return (
     <button
       onClick={handleClick}
-      className="SwitchTheme h-11 w-11 rounded-full border-1.5 border-brand-color-blue hover:bg-brand-color-blue text-xs"
+      className="SwitchTheme h-11 w-11 rounded-full border-1.5 border-brand-color-1st hover:bg-brand-color-1st text-xs"
     >
       {theme}
     </button>

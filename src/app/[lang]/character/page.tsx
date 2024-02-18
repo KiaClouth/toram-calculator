@@ -294,7 +294,7 @@ export default function CharacterPage() {
   ];
   const character = new Character(cLv, cAbi, cWeapon, cPermanentSkillList);
   return (
-    <div className="Character flex flex-1 flex-col bg-brand-color-orange">
+    <div className="Character flex flex-1 flex-col bg-brand-color-2nd">
       <div id="Character">
         <div id="title">
           <div id="mianTitle">Character</div>

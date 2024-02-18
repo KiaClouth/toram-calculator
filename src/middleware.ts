@@ -52,6 +52,7 @@ export function middleware(request: NextRequest) {
       '/icons/256.ico',
       '/icons/384.png',
       '/icons/512.png',
+      '/next-auth/provider/icon-svg/QQ.svg',
       // '/sw.ts',
       '/sw.js'
       // Your other files in `public`
