@@ -26,6 +26,12 @@ export default withSerwist({
         port: '',
         pathname: '/u/**',
       },
+      {
+        protocol: 'http',
+        hostname: 'thirdqq.qlogo.cn',
+        port: '',
+        pathname: '/ek_qqapp/**',
+      },
     ],
   },
 });

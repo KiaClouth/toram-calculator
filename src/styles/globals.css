@@ -60,7 +60,7 @@
 
 body {
   display: flex;
-  background: url(./../../public/app-image/bg.png) no-repeat center;
+  /* background: url(./../../public/app-image/bg.png) no-repeat center; */
   background-size: cover;
 }
 
