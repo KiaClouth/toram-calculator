@@ -84,13 +84,12 @@ export default function QQProvider<P extends QQProfile>(
         getUserInfoUrl.searchParams.append("access_token", tokens.access_token ?? "");
         getUserInfoUrl.searchParams.append("oauth_consumer_key", options.clientId);
         getUserInfoUrl.searchParams.append("openid", openId);
-        // 
-        const profile = await fetch(getUserInfoUrl).then(async (res) => (await res.json()) as Profile);
-        console.log(profile)
+        const profile = await fetch(getUserInfoUrl).then(async (res) => (await res.json()) as QQProfile);
+        console.log(profile.nickname)
         return {
           ...profile,
           open_id: openId
-        }
+        } as Profile // 这个断言是偷懒乱写的
       },
     },
     // checks: ["pkce", "state"],

@@ -22,7 +22,7 @@ export default async function Index({
           Toram <span className=" text-brand-color-1st">の</span>{" "}
           Calculactor
         </h1>
-        <span className=" hidden text-center">{greetings}</span>
+        <span className="  text-center">{greetings}</span>
       </div>
       <div className="Bottom flex flex-initial flex-col">
         <div className="Content flex flex-1 flex-col p-5">

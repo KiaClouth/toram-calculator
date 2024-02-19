@@ -146,7 +146,7 @@ export default async function RootLayout({
           <ThemeProvider>
             <div
               id="rootNav"
-              className="Nav lg:bg-transtion-color-8 lg:dark:bg-transtion-color-8-dark fixed -left-full flex h-dvh w-4/5 flex-none flex-col items-center gap-3 backdrop-blur lg:left-0 lg:w-24 lg:-translate-x-3/4 lg:py-5 lg:opacity-0 lg:hover:translate-x-0 lg:hover:opacity-100"
+              className="Nav fixed -left-full flex h-dvh w-4/5 flex-none flex-col items-center gap-3 backdrop-blur lg:left-0 lg:w-24 lg:-translate-x-3/4 lg:bg-transtion-color-8 lg:py-5 lg:opacity-0 lg:hover:translate-x-0 lg:hover:opacity-100 lg:dark:bg-transtion-color-8-dark"
             >
               <div className="Top flex h-full w-full flex-1 flex-col gap-10 overflow-hidden">
                 <Link
@@ -157,7 +157,7 @@ export default async function RootLayout({
                   <IconLogo />
                   <span className=" text-2xl lg:hidden">ToramCalculator</span>
                 </Link>
-                <div className="NavBtnList flex h-full w-full shrink flex-col items-center gap-2 overflow-y-auto last:mb-0 lg:gap-4">
+                <div className="NavBtnList flex h-full w-full shrink flex-col items-center gap-2 overflow-y-auto lg:gap-4">
                   {rNav.map(([btnName, icon, url]) => {
                     if (icon !== undefined && url !== undefined) {
                       return (
@@ -192,7 +192,7 @@ export default async function RootLayout({
                   })}
                 </div>
               </div>
-              <div className="NavFunctionBtnList hidden w-full flex-none flex-col items-center justify-center gap-3 last:mb-0 lg:flex">
+              <div className="NavFunctionBtnList hidden w-full flex-none flex-col items-center justify-center gap-3 lg:flex">
                 <SignInOrOut session={session} />
                 <ThemeSwitch />
               </div>
@@ -200,7 +200,7 @@ export default async function RootLayout({
             {children}
             <div
               id="bottomNav"
-              className="bg-bg-grey-8 flex items-center justify-between overflow-x-auto lg:hidden"
+              className=" flex items-center backdrop-blur justify-between overflow-x-auto bg-transtion-color-8 dark:bg-transtion-color-8-dark lg:hidden"
             >
               {bNav.map(([btnName, icon, url]) => {
                 if (icon !== undefined && url !== undefined) {

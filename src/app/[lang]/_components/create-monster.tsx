@@ -65,7 +65,7 @@ const inputOption = {
     min: 0,
     max: 10,
   },
-}
+};
 
 export default function CreateMonster(props: {
   dictionary: ReturnType<typeof getDictionary>;
@@ -89,11 +89,11 @@ export default function CreateMonster(props: {
       return;
     } else {
       if (Object.keys(monsterEnums).includes(key)) {
-        const enumsObject = monsterEnums[key as keyof typeof monsterEnums]
+        const enumsObject = monsterEnums[key as keyof typeof monsterEnums];
         return (
           <fieldset
             key={key}
-            className="flex flex-1 basis-full lg:basis-full flex-col gap-1 p-2 text-main-color-100"
+            className="flex flex-1 basis-full flex-col gap-1 p-2 lg:basis-full"
           >
             {dictionary.db.models.monster[key as keyof typeof monsterInput]}
             <fieldset className="flex flex-1 flex-col flex-wrap gap-4 lg:flex-row">
@@ -101,16 +101,18 @@ export default function CreateMonster(props: {
                 return (
                   <label
                     key={key + option}
-                    className="flex cursor-pointer justify-between gap-2 rounded-full border-1.5 border-bg-grey-8 p-2 px-4 text-main-color-100 hover:border-bg-grey-20 lg:flex-row-reverse lg:justify-end"
+                    className="hover:dark:border-transtion-color-20-dark0 flex cursor-pointer justify-between gap-2 rounded-full border-1.5 border-transtion-color-8 p-2 px-4 hover:border-transtion-color-20 dark:border-transtion-color-8-dark lg:flex-row-reverse lg:justify-end"
                   >
-                    {dictionary.db.enums[key as keyof typeof enumsObject][option]}
+                    {
+                      dictionary.db.enums[key as keyof typeof enumsObject][
+                        option
+                      ]
+                    }
                     <input
                       type="radio"
                       name={key}
                       value={option}
-                      onChange={(e) =>
-                        inputHandleChange(e, key)
-                      }
+                      onChange={(e) => inputHandleChange(e, key)}
                     />
                   </label>
                 );
@@ -122,19 +124,31 @@ export default function CreateMonster(props: {
         return (
           <fieldset
             key={key}
-            className="flex basis-1/2 lg:basis-1/4 flex-col gap-1 p-2 text-main-color-100"
+            className="flex basis-1/2 flex-col gap-1 p-2 lg:basis-1/4"
           >
-            <label className="flex basis-1/4 flex-col gap-1 p-2 text-main-color-100">
+            <label className="flex basis-1/4 flex-col gap-1 p-2">
               {dictionary.db.models.monster[key as keyof typeof monsterInput]}
               <input
-                type={typeof monsterInput[key] === "number" ? Object.keys(inputOption).includes(key) ? inputOption[key as keyof typeof inputOption].type : "number" : "text"}
-                name={key}
-                min={ Object.keys(inputOption).includes(key) ? inputOption[key as keyof typeof inputOption]?.min : 0}
-                max={ Object.keys(inputOption).includes(key) ? inputOption[key as keyof typeof inputOption]?.max : undefined}
-                onChange={(e) =>
-                  inputHandleChange(e, key)
+                type={
+                  typeof monsterInput[key] === "number"
+                    ? Object.keys(inputOption).includes(key)
+                      ? inputOption[key as keyof typeof inputOption].type
+                      : "number"
+                    : "text"
                 }
-                className=" mt-1 w-full rounded bg-bg-grey-8 px-4 py-2 text-main-color-100"
+                name={key}
+                min={
+                  Object.keys(inputOption).includes(key)
+                    ? inputOption[key as keyof typeof inputOption]?.min
+                    : 0
+                }
+                max={
+                  Object.keys(inputOption).includes(key)
+                    ? inputOption[key as keyof typeof inputOption]?.max
+                    : undefined
+                }
+                onChange={(e) => inputHandleChange(e, key)}
+                className=" mt-1 w-full rounded bg-transtion-color-8 px-4 py-2 dark:bg-transtion-color-8-dark"
               />
             </label>
           </fieldset>
@@ -147,7 +161,12 @@ export default function CreateMonster(props: {
     e: React.ChangeEvent<HTMLInputElement>,
     key: keyof typeof monsterInput,
   ) => {
-    (monsterInput[key] as typeof e.target.value | number) = ["number","range"].includes(e.target.type) ? parseInt(e.target.value) : e.target.value;
+    (monsterInput[key] as typeof e.target.value | number) = [
+      "number",
+      "range",
+    ].includes(e.target.type)
+      ? parseInt(e.target.value)
+      : e.target.value;
     // console.log(typeof monsterInput[key])
     if (e.target.name === "name" && e.target.value === "") {
       setSubmitState(false);
@@ -176,7 +195,7 @@ export default function CreateMonster(props: {
     <React.Fragment>
       <button
         onClick={handleUploadClick}
-        className={`cloudUpload flex w-12 flex-none cursor-pointer items-center justify-center rounded-full hover:bg-bg-grey-20 ${session?.user ? "" : "hidden"}`}
+        className={`cloudUpload hover:bg-transtion-color-20 dark:hover: flex w-12 flex-none cursor-pointer items-center justify-center rounded-full ${session?.user ? "" : "hidden"}`}
       >
         <Image
           src={CloudUpload as StaticImport}
@@ -187,18 +206,18 @@ export default function CreateMonster(props: {
         />
       </button>
       <div
-        className={`FormBoxBg fixed left-0 top-0 flex h-dvh w-dvw flex-col bg-bg-dark-50 ${open}`}
+        className={`FormBoxBg bg-bg-dark-50 fixed left-0 top-0 flex h-dvh w-dvw flex-col ${open}`}
       >
         <div
           onClick={handleUploadClick}
           className="FormCloseBtn h-24 cursor-pointer"
         ></div>
-        <div className="FormBoxContent flex h-[91dvh] flex-1 flex-col bg-bg-white-100 lg:items-center">
+        <div className="FormBoxContent bg-bg-white-100 flex h-[91dvh] flex-1 flex-col lg:items-center">
           <form
             onSubmit={(e) => handleSubmit(e)}
             className={`CreateMonsterFrom flex min-h-full max-w-7xl flex-col gap-4 overflow-y-auto rounded p-4 lg:w-4/5 ${bottom}`}
           >
-            <div className="title flex justify-between border-b-1.5 border-brand-color-blue p-3 text-lg font-semibold text-main-color-100">
+            <div className="title border-brand-color-blue text-main-color-100 flex justify-between border-b-1.5 p-3 text-lg font-semibold">
               <span className=" text-main-color-100">
                 {dictionary.ui.monster.upload}
               </span>
@@ -210,11 +229,11 @@ export default function CreateMonster(props: {
                 )}
               </fieldset>
             </div>
-            <div className="functionArea flex justify-end border-t-1.5 border-brand-color-blue py-3">
+            <div className="functionArea border-brand-color-blue flex justify-end border-t-1.5 py-3">
               <div className="btnGroup flex gap-5">
                 <button
                   type="submit"
-                  className={`cloudUpload flex h-12 items-center justify-center rounded-full px-6 text-bg-white-100 ${submitBtnState ? " bg-main-color-100 hover:bg-bg-grey-20 hover:text-main-color-100" : " cursor-no-drop bg-main-color-50"}`}
+                  className={`cloudUpload text-bg-white-100 flex h-12 items-center justify-center rounded-full px-6 ${submitBtnState ? " bg-main-color-100 hover:bg-bg-grey-20 hover:text-main-color-100" : " bg-main-color-50 cursor-no-drop"}`}
                   disabled={createMonster.isLoading || !submitBtnState}
                 >
                   {createMonster.isLoading

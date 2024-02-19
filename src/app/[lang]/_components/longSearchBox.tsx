@@ -60,11 +60,11 @@ export default function LongSearchBox(props: {
           type="search"
           placeholder={dictionary.ui.monster.searchPlaceholder}
           list="options"
-          className="Search w-full rounded-full bg-bg-grey-8 px-5 py-3 text-main-color-100 placeholder:text-main-color-50 hover:bg-bg-grey-20"
+          className="Search w-full rounded-full bg-transtion-color-8 px-5 py-3 placeholder:text-accent-color-50 hover:bg-transtion-color-20 dark:bg-transtion-color-8-dark dark:hover:bg-transtion-color-8-dark"
           onChange={(e) => handleChange(e.target.value)}
         />
         <div id="options" className={`Options h-0 flex-col rounded ${open}`}>
-          <div className="OptionsContent rounded mt-4 flex max-h-[60dvh] flex-shrink-0 flex-col overflow-y-auto p-2 shadow-bg-grey-20 shadow-2xl backdrop-blur bg-bg-white-50">
+          <div className="OptionsContent mt-4 flex max-h-[60dvh] flex-shrink-0 flex-col overflow-y-auto rounded bg-primary-color-50 p-2 shadow-2xl shadow-transtion-color-20 backdrop-blur dark:bg-primary-color-50-dark dark:shadow-transtion-color-20-dark">
             {options.map((option) => (
               <button
                 key={option.id}
@@ -72,15 +72,24 @@ export default function LongSearchBox(props: {
                 tabIndex={0}
                 className={`option mx-1 my-0.5 flex gap-1 rounded hover:bg-brand-color-1st`}
               >
-                <div className=" basis-1/4 self-stretch break-all bg-bg-grey-8 p-2 text-start text-main-color-100">
+                <div className=" basis-1/4 self-stretch break-all bg-transtion-color-8 p-2 text-start dark:bg-transtion-color-8-dark">
                   {option.name}
                 </div>
-                <div className=" basis-3/4 self-stretch break-all flex flex-wrap gap-x-4 bg-bg-grey-8 p-2 text-start text-main-color-70">
+                <div className=" flex basis-3/4 flex-wrap gap-x-4 self-stretch break-all bg-transtion-color-8 p-2 text-start text-accent-color-70 dark:bg-transtion-color-8-dark dark:text-accent-color-70-dark">
                   {option.related.map((attr) => {
+                    if (attr[0] === "name") return;
                     return (
-                      <div key={`${attr[0]}${attr[1]}`} className=" flex flex-wrap gap-1">
-                        <span>{attr[0]}:</span>
-                        <span className=" text-main-color-100">{attr[1]}</span>
+                      <div
+                        key={`${attr[0]}${attr[1]}`}
+                        className=" flex flex-wrap gap-1"
+                      >
+                        <span>
+                          {dictionary.db.models.monster[
+                            `${attr[0]}` as keyof typeof dictionary.db.models.monster
+                          ] ?? "[此属性名在词库中未找到=。=]"}
+                          :
+                        </span>
+                        <span>{attr[1]}</span>
                       </div>
                     );
                   })}

@@ -14,21 +14,21 @@
     --orange: 253 126 80;
   }
 
-  /* .light {
-    --main: var(--brown);
-    --bg: var(--white);
+  .light {
+    --accent: var(--brown);
+    --primary: var(--white);
     --brand-1st: var(--blue);
     --brand-2nd: var(--orange);
     --brand-3rd: var(--yellow);
   }
 
   .dark {
-    --main: var(--white);
-    --bg: var(--dark);
+    --accent: var(--white);
+    --primary: var(--dark);
     --brand-1st: var(--blue);
     --brand-2nd: var(--orange);
     --brand-3rd: var(--yellow);
-  } */
+  }
 }
 
 * {
