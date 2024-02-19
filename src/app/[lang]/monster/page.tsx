@@ -30,7 +30,7 @@ export default async function MonsterPage({
             <LongSearchBox dictionary={dictionary} monsterList={monsterList} />
             <CrateMonster dictionary={dictionary} session={session} />
           </div>
-          <table className="MonsterList bg-transtion-color-8 dark:bg-transtion-color-8-dark m-5 rounded">
+          <table className="MonsterList bg-transition-color-8 m-5 rounded">
             <caption>Front-end web developer course 2021</caption>
             <thead>
               <tr>

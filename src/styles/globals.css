@@ -6,7 +6,8 @@
   /* 颜色署名 */
   :root {
     --white: 255 255 255;
-    --dark: 0 0 0;
+    --grey: 55 55 55;
+    /* --dark: 0 0 0; */
     --brown: 47 26 73;
     --navyBlue: 105 145 214;
     --greenBlue: 149 207 213;
@@ -17,18 +18,25 @@
   .light {
     --accent: var(--brown);
     --primary: var(--white);
-    --brand-1st: var(--blue);
+    --transition: var(--navyBlue);
+    --brand-1st: var(--greenBlue);
     --brand-2nd: var(--orange);
     --brand-3rd: var(--yellow);
   }
 
   .dark {
     --accent: var(--white);
-    --primary: var(--dark);
-    --brand-1st: var(--blue);
+    --primary: var(--grey);
+    --transition: var(--white);
+    --brand-1st: var(--greenBlue);
     --brand-2nd: var(--orange);
     --brand-3rd: var(--yellow);
   }
+}
+
+:root{
+  color: rgb(var(--accent));
+  background-color: rgb(var(--primary));
 }
 
 * {
@@ -58,10 +66,25 @@
   background-color: #95cfd5;
 }
 
-body {
+.BG {
   display: flex;
-  /* background: url(./../../public/app-image/bg.png) no-repeat center; */
+  background: url(./../../public/app-image/bg.jpg) no-repeat center;
   background-size: cover;
+}
+
+.BGMask {
+  content: '';
+  z-index: -9;
+}
+
+.light .BGMask {
+  background-color: rgba(255,255,255,0.5);
+  background-blend-mode: multiply;
+}
+
+.dark .BGMask {
+  background-color: rgba(0,0,0,0.7);
+  background-blend-mode: multiply;
 }
 
 /* index的背景效果 */

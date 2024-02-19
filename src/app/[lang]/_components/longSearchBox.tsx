@@ -60,11 +60,11 @@ export default function LongSearchBox(props: {
           type="search"
           placeholder={dictionary.ui.monster.searchPlaceholder}
           list="options"
-          className="Search w-full rounded-full bg-transtion-color-8 px-5 py-3 placeholder:text-accent-color-50 hover:bg-transtion-color-20 dark:bg-transtion-color-8-dark dark:hover:bg-transtion-color-8-dark"
+          className="Search w-full rounded-full bg-transition-color-8 px-5 py-3 placeholder:text-accent-color-50 hover:bg-transition-color-20 dark:bg-transition-color-8-dark dark:hover:bg-transition-color-8-dark"
           onChange={(e) => handleChange(e.target.value)}
         />
         <div id="options" className={`Options h-0 flex-col rounded ${open}`}>
-          <div className="OptionsContent mt-4 flex max-h-[60dvh] flex-shrink-0 flex-col overflow-y-auto rounded bg-primary-color-50 p-2 shadow-2xl shadow-transtion-color-20 backdrop-blur dark:bg-primary-color-50-dark dark:shadow-transtion-color-20-dark">
+          <div className="OptionsContent mt-4 flex max-h-[60dvh] flex-shrink-0 flex-col overflow-y-auto rounded bg-primary-color-50 p-2 shadow-2xl shadow-transition-color-20 backdrop-blur dark:bg-primary-color-50-dark dark:shadow-transition-color-20-dark">
             {options.map((option) => (
               <button
                 key={option.id}
@@ -72,10 +72,10 @@ export default function LongSearchBox(props: {
                 tabIndex={0}
                 className={`option mx-1 my-0.5 flex gap-1 rounded hover:bg-brand-color-1st`}
               >
-                <div className=" basis-1/4 self-stretch break-all bg-transtion-color-8 p-2 text-start dark:bg-transtion-color-8-dark">
+                <div className=" basis-1/4 self-stretch break-all bg-transition-color-8 p-2 text-start dark:bg-transition-color-8-dark">
                   {option.name}
                 </div>
-                <div className=" flex basis-3/4 flex-wrap gap-x-4 self-stretch break-all bg-transtion-color-8 p-2 text-start text-accent-color-70 dark:bg-transtion-color-8-dark dark:text-accent-color-70-dark">
+                <div className=" flex basis-3/4 flex-wrap gap-x-4 self-stretch break-all bg-transition-color-8 p-2 text-start text-accent-color-70 dark:bg-transition-color-8-dark dark:text-accent-color-70-dark">
                   {option.related.map((attr) => {
                     if (attr[0] === "name") return;
                     return (

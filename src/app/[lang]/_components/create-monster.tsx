@@ -1,15 +1,13 @@
 "use client";
 import React, { type FormEvent, useState } from "react";
-import Image from "next/image";
 
 import { api } from "~/trpc/react";
 import type { getDictionary } from "get-dictionary";
 
-import CloudUpload from "~/../public/app-image/icons/Cloud upload.svg";
-import type { StaticImport } from "next/dist/shared/lib/get-img-props";
 import { type Monster } from "@prisma/client";
 import type { Session } from "next-auth";
 import { useRouter } from "next/navigation";
+import { IconCloudUpload } from "./iconsList";
 
 // 怪物数据的初始值
 const monsterInput: Monster = {
@@ -101,7 +99,7 @@ export default function CreateMonster(props: {
                 return (
                   <label
                     key={key + option}
-                    className="hover:dark:border-transtion-color-20-dark0 flex cursor-pointer justify-between gap-2 rounded-full border-1.5 border-transtion-color-8 p-2 px-4 hover:border-transtion-color-20 dark:border-transtion-color-8-dark lg:flex-row-reverse lg:justify-end"
+                    className="hover:dark:border-transition-color-20-dark0 flex cursor-pointer justify-between gap-2 rounded-full border-1.5 border-transition-color-8 p-2 px-4 hover:border-transition-color-20 dark:border-transition-color-8-dark lg:flex-row-reverse lg:justify-end"
                   >
                     {
                       dictionary.db.enums[key as keyof typeof enumsObject][
@@ -148,7 +146,7 @@ export default function CreateMonster(props: {
                     : undefined
                 }
                 onChange={(e) => inputHandleChange(e, key)}
-                className=" mt-1 w-full rounded bg-transtion-color-8 px-4 py-2 dark:bg-transtion-color-8-dark"
+                className=" mt-1 w-full rounded bg-transition-color-8 px-4 py-2 dark:bg-transition-color-8-dark"
               />
             </label>
           </fieldset>
@@ -195,30 +193,24 @@ export default function CreateMonster(props: {
     <React.Fragment>
       <button
         onClick={handleUploadClick}
-        className={`cloudUpload hover:bg-transtion-color-20 dark:hover: flex w-12 flex-none cursor-pointer items-center justify-center rounded-full ${session?.user ? "" : "hidden"}`}
+        className={`cloudUpload hover:bg-transition-color-20 flex w-12 flex-none cursor-pointer items-center justify-center rounded-full ${session?.user ? "" : "hidden"}`}
       >
-        <Image
-          src={CloudUpload as StaticImport}
-          alt="Logo"
-          height={24}
-          width={24}
-          style={{ width: "24px", height: "auto" }}
-        />
+        <IconCloudUpload />
       </button>
       <div
-        className={`FormBoxBg bg-bg-dark-50 fixed left-0 top-0 flex h-dvh w-dvw flex-col ${open}`}
+        className={`FormBoxBg bg-transition-color-20 backdrop-blur fixed left-0 top-0 flex h-dvh w-dvw flex-col ${open}`}
       >
         <div
           onClick={handleUploadClick}
           className="FormCloseBtn h-24 cursor-pointer"
         ></div>
-        <div className="FormBoxContent bg-bg-white-100 flex h-[91dvh] flex-1 flex-col lg:items-center">
+        <div className="FormBoxContent bg-primary-color flex h-[91dvh] flex-1 flex-col lg:items-center">
           <form
             onSubmit={(e) => handleSubmit(e)}
             className={`CreateMonsterFrom flex min-h-full max-w-7xl flex-col gap-4 overflow-y-auto rounded p-4 lg:w-4/5 ${bottom}`}
           >
-            <div className="title border-brand-color-blue text-main-color-100 flex justify-between border-b-1.5 p-3 text-lg font-semibold">
-              <span className=" text-main-color-100">
+            <div className="title border-brand-color-1st flex justify-between border-b-1.5 p-3 text-lg font-semibold">
+              <span>
                 {dictionary.ui.monster.upload}
               </span>
             </div>
@@ -229,11 +221,11 @@ export default function CreateMonster(props: {
                 )}
               </fieldset>
             </div>
-            <div className="functionArea border-brand-color-blue flex justify-end border-t-1.5 py-3">
+            <div className="functionArea border-brand-color-1st flex justify-end border-t-1.5 py-3">
               <div className="btnGroup flex gap-5">
                 <button
                   type="submit"
-                  className={`cloudUpload text-bg-white-100 flex h-12 items-center justify-center rounded-full px-6 ${submitBtnState ? " bg-main-color-100 hover:bg-bg-grey-20 hover:text-main-color-100" : " bg-main-color-50 cursor-no-drop"}`}
+                  className={`cloudUpload flex h-12 items-center justify-center rounded-full px-6 ${submitBtnState ? " bg-accent-color text-primary-color hover:bg-accent-color-80" : " bg-accent-color-30 cursor-no-drop"}`}
                   disabled={createMonster.isLoading || !submitBtnState}
                 >
                   {createMonster.isLoading

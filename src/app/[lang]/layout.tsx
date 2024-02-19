@@ -139,14 +139,14 @@ export default async function RootLayout({
       <body
         className={
           `font-sans ${inter.variable}` +
-          " flex min-h-dvh flex-col text-accent-color dark:text-accent-color-dark lg:flex-row"
+          " flex min-h-dvh flex-col lg:flex-row"
         }
       >
         <TRPCReactProvider cookies={cookies().toString()}>
           <ThemeProvider>
             <div
               id="rootNav"
-              className="Nav fixed -left-full flex h-dvh w-4/5 flex-none flex-col items-center gap-3 backdrop-blur lg:left-0 lg:w-24 lg:-translate-x-3/4 lg:bg-transtion-color-8 lg:py-5 lg:opacity-0 lg:hover:translate-x-0 lg:hover:opacity-100 lg:dark:bg-transtion-color-8-dark"
+              className="Nav fixed -left-full flex h-dvh w-4/5 flex-none flex-col items-center gap-3 backdrop-blur lg:left-0 lg:w-24 lg:-translate-x-3/4 lg:bg-transition-color-8 lg:py-5 lg:opacity-0 lg:hover:translate-x-0 lg:hover:opacity-100"
             >
               <div className="Top flex h-full w-full flex-1 flex-col gap-10 overflow-hidden">
                 <Link
@@ -171,7 +171,7 @@ export default async function RootLayout({
                             " group flex w-full flex-row items-center gap-8 py-2 active:bg-brand-color-1st lg:flex-col lg:gap-1 lg:py-0 lg:active:bg-transparent"
                           }
                         >
-                          <div className="iconArea rounded-full px-4 py-1 lg:group-hover:bg-brand-color-1st dark:lg:group-hover:bg-accent-color-30-dark">
+                          <div className="iconArea rounded-full px-4 py-1 lg:group-hover:bg-brand-color-1st">
                             {icon}
                           </div>
                           <div className="text-main-color-100 text-base lg:text-xs">
@@ -200,7 +200,7 @@ export default async function RootLayout({
             {children}
             <div
               id="bottomNav"
-              className=" flex items-center backdrop-blur justify-between overflow-x-auto bg-transtion-color-8 dark:bg-transtion-color-8-dark lg:hidden"
+              className=" flex items-center backdrop-blur justify-between overflow-x-auto bg-transition-color-8 lg:hidden"
             >
               {bNav.map(([btnName, icon, url]) => {
                 if (icon !== undefined && url !== undefined) {
@@ -235,6 +235,9 @@ export default async function RootLayout({
                   );
                 }
               })}
+            </div>
+            <div className="BG fixed -z-10 w-full h-full">
+              <div className="BGMask w-full h-full"></div>
             </div>
           </ThemeProvider>
         </TRPCReactProvider>

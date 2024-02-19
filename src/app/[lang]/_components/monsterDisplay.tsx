@@ -39,7 +39,7 @@ export default function MonsterDialog(props: {
     <React.Fragment>
       <div
         onClick={handleCancel}
-        className={`DialogBg fixed left-0 top-0 flex h-dvh w-dvw flex-col items-stretch justify-center overflow-y-auto bg-bg-dark-20 backdrop-blur ${monsterDialogState ? " visible opacity-100" : " invisible opacity-0"}`}
+        className={`DialogBg fixed left-0 top-0 flex h-dvh w-dvw flex-col items-stretch justify-center overflow-y-auto bg-transition-color-20 backdrop-blur ${monsterDialogState ? " visible opacity-100" : " invisible opacity-0"}`}
       >
         <div className="DialogContent flex max-h-dvh min-h-[70dvh] flex-col gap-3 bg-bg-white-90 p-4 lg:px-[15%]">
           <div className="DialogTitle border-b-1.5 border-brand-color-1st p-3 text-lg font-semibold text-main-color-100">
