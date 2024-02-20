@@ -139,7 +139,7 @@ export default async function RootLayout({
       <body
         className={
           `font-sans ${inter.variable}` +
-          " flex min-h-dvh flex-col lg:flex-row"
+          " flex h-dvh w-dvw flex-none flex-col overflow-visible lg:flex-row lg:overflow-hidden"
         }
       >
         <TRPCReactProvider cookies={cookies().toString()}>
@@ -148,7 +148,7 @@ export default async function RootLayout({
               id="rootNav"
               className="Nav fixed -left-full flex h-dvh w-4/5 flex-none flex-col items-center gap-3 backdrop-blur lg:left-0 lg:w-24 lg:-translate-x-3/4 lg:bg-transition-color-8 lg:py-5 lg:opacity-0 lg:hover:translate-x-0 lg:hover:opacity-100"
             >
-              <div className="Top flex h-full w-full flex-1 flex-col gap-10 overflow-hidden">
+              <div className="Top flex flex-1 flex-col gap-10 overflow-hidden">
                 <Link
                   href={"/"}
                   className="LOGO my-12 flex flex-none items-center gap-4 px-4 lg:top-5 lg:my-0 lg:justify-center"
@@ -157,7 +157,7 @@ export default async function RootLayout({
                   <IconLogo />
                   <span className=" text-2xl lg:hidden">ToramCalculator</span>
                 </Link>
-                <div className="NavBtnList flex h-full w-full shrink flex-col items-center gap-2 overflow-y-auto lg:gap-4">
+                <div className="NavBtnList flex shrink flex-col items-center gap-2 overflow-y-auto lg:gap-4">
                   {rNav.map(([btnName, icon, url]) => {
                     if (icon !== undefined && url !== undefined) {
                       return (
@@ -168,7 +168,7 @@ export default async function RootLayout({
                           className={
                             "btn-" +
                             btnName +
-                            " group flex w-full flex-row items-center gap-8 py-2 active:bg-brand-color-1st lg:flex-col lg:gap-1 lg:py-0 lg:active:bg-transparent"
+                            " group flex flex-row items-center gap-8 py-2 active:bg-brand-color-1st lg:flex-col lg:gap-1 lg:py-0 lg:active:bg-transparent"
                           }
                         >
                           <div className="iconArea rounded-full px-4 py-1 lg:group-hover:bg-brand-color-1st">
@@ -184,7 +184,7 @@ export default async function RootLayout({
                         <div
                           key={btnName}
                           className={
-                            "Line bg-bg-grey-20 h-line w-full lg:w-12 lg:bg-brand-color-1st"
+                            "Line bg-bg-grey-20 h-line lg:w-12 lg:bg-brand-color-1st"
                           }
                         ></div>
                       );
@@ -192,7 +192,7 @@ export default async function RootLayout({
                   })}
                 </div>
               </div>
-              <div className="NavFunctionBtnList hidden w-full flex-none flex-col items-center justify-center gap-3 lg:flex">
+              <div className="NavFunctionBtnList hidden flex-none flex-col items-center justify-center gap-3 lg:flex">
                 <SignInOrOut session={session} />
                 <ThemeSwitch />
               </div>
@@ -200,7 +200,7 @@ export default async function RootLayout({
             {children}
             <div
               id="bottomNav"
-              className=" flex items-center backdrop-blur justify-between overflow-x-auto bg-transition-color-8 lg:hidden"
+              className="fixed bottom-0 flex w-dvw items-center justify-between overflow-x-auto bg-transition-color-8 backdrop-blur lg:hidden"
             >
               {bNav.map(([btnName, icon, url]) => {
                 if (icon !== undefined && url !== undefined) {
@@ -236,8 +236,8 @@ export default async function RootLayout({
                 }
               })}
             </div>
-            <div className="BG fixed -z-10 w-full h-full">
-              <div className="BGMask w-full h-full"></div>
+            <div className="BG fixed -z-10 h-dvh w-dvw">
+              <div className="BGMask h-dvh w-dvw"></div>
             </div>
           </ThemeProvider>
         </TRPCReactProvider>

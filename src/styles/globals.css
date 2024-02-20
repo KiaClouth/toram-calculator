@@ -68,7 +68,7 @@
 
 .BG {
   display: flex;
-  background: url(./../../public/app-image/bg.jpg) no-repeat center;
+  /* background: url(./../../public/app-image/bg.jpg) no-repeat center; */
   background-size: cover;
 }
 
@@ -78,7 +78,7 @@
 }
 
 .light .BGMask {
-  background-color: rgba(255,255,255,0.5);
+  background-color: rgba(255,255,255,0.3);
   background-blend-mode: multiply;
 }
 

@@ -32,7 +32,7 @@ export function CreatePost() {
         placeholder="Title"
         value={content}
         onChange={(e) => setContent(e.target.value)}
-        className="w-full rounded-full px-4 py-2 text-black"
+        className="rounded-full px-4 py-2 text-black"
       />
       <button
         type="submit"

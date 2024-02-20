@@ -28,7 +28,7 @@ export function CreateCharacter() {
         placeholder="机体名称"
         value={name}
         onChange={(e) => setName(e.target.value)}
-        className="w-full rounded-full px-4 py-2 text-primary-color bg-transition-color-8"
+        className=" rounded-full px-4 py-2 text-primary-color bg-transition-color-8"
       />
       <button
         type="submit"

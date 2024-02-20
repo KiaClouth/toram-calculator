@@ -500,6 +500,35 @@ export const IconCalculactor = () => {
   );
 };
 
+export const IconSearch = () => {
+  return (
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <circle
+        cx="11"
+        cy="11"
+        r="8"
+        stroke="currentColor"
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M16.5 16.9579L21.5 21.958"
+        stroke="currentColor"
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </svg>
+  );
+};
+
 export const IconLogo = () => {
   return (
     <svg
@@ -517,7 +546,7 @@ export const IconLogo = () => {
         height="48.5"
         rx="24.25"
         strokeWidth="1.5"
-        className=" stroke-accent-color dark:stroke-accent-color-dark"
+        className=" stroke-accent-color"
       />
       <rect
         x="12.3611"
@@ -525,7 +554,7 @@ export const IconLogo = () => {
         width="8.61111"
         height="27.7778"
         rx="4.30556"
-        className=" fill-accent-color dark:fill-accent-color-dark"
+        className=" fill-accent-color"
       />
       <rect
         x="23.2077"

@@ -32,6 +32,7 @@ export function middleware(request: NextRequest) {
   // // If you have one
   if (
     [
+      // Your other files in `public`
       '/manifest.json',
       '/icons/32.ico',
       '/icons/48.ico',
@@ -52,10 +53,10 @@ export function middleware(request: NextRequest) {
       '/icons/256.ico',
       '/icons/384.png',
       '/icons/512.png',
+      '/app-image/screenShotPC.jpg',
+      '/app-image/screenShotMobile.jpg',
       '/next-auth/provider/icon-svg/QQ.svg',
-      // '/sw.ts',
       '/sw.js'
-      // Your other files in `public`
     ].includes(pathname)
   )
     return

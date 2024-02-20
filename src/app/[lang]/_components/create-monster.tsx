@@ -99,7 +99,7 @@ export default function CreateMonster(props: {
                 return (
                   <label
                     key={key + option}
-                    className="hover:dark:border-transition-color-20-dark0 flex cursor-pointer justify-between gap-2 rounded-full border-1.5 border-transition-color-8 p-2 px-4 hover:border-transition-color-20 dark:border-transition-color-8-dark lg:flex-row-reverse lg:justify-end"
+                    className=" flex cursor-pointer justify-between gap-2 rounded-full border-1.5 border-transition-color-8 p-2 px-4 hover:border-transition-color-20 lg:flex-row-reverse lg:justify-end"
                   >
                     {
                       dictionary.db.enums[key as keyof typeof enumsObject][
@@ -146,7 +146,7 @@ export default function CreateMonster(props: {
                     : undefined
                 }
                 onChange={(e) => inputHandleChange(e, key)}
-                className=" mt-1 w-full rounded bg-transition-color-8 px-4 py-2 dark:bg-transition-color-8-dark"
+                className=" mt-1 rounded bg-transition-color-8 px-4 py-2"
               />
             </label>
           </fieldset>
@@ -198,7 +198,7 @@ export default function CreateMonster(props: {
         <IconCloudUpload />
       </button>
       <div
-        className={`FormBoxBg bg-transition-color-20 backdrop-blur fixed left-0 top-0 flex h-dvh w-dvw flex-col ${open}`}
+        className={`FormBoxBg bg-transition-color-20 backdrop-blur fixed z-10 left-0 top-0 flex h-dvh w-dvw flex-col ${open}`}
       >
         <div
           onClick={handleUploadClick}
@@ -207,7 +207,7 @@ export default function CreateMonster(props: {
         <div className="FormBoxContent bg-primary-color flex h-[91dvh] flex-1 flex-col lg:items-center">
           <form
             onSubmit={(e) => handleSubmit(e)}
-            className={`CreateMonsterFrom flex min-h-full max-w-7xl flex-col gap-4 overflow-y-auto rounded p-4 lg:w-4/5 ${bottom}`}
+            className={`CreateMonsterFrom flex max-w-7xl flex-col gap-4 overflow-y-auto rounded p-4 lg:w-4/5 ${bottom}`}
           >
             <div className="title border-brand-color-1st flex justify-between border-b-1.5 p-3 text-lg font-semibold">
               <span>

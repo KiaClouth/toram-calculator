@@ -32,6 +32,9 @@ dependencies:
   '@tanstack/react-table':
     specifier: ^8.12.0
     version: 8.12.0(react-dom@18.2.0)(react@18.2.0)
+  '@tanstack/react-virtual':
+    specifier: ^3.1.1
+    version: 3.1.1(react-dom@18.2.0)(react@18.2.0)
   '@trpc/client':
     specifier: ^10.43.6
     version: 10.45.0(@trpc/server@10.45.0)
@@ -981,9 +984,24 @@ packages:
       react-dom: 18.2.0(react@18.2.0)
     dev: false
 
+  /@tanstack/react-virtual@3.1.1(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-9tW9xwEW7exSa/8bxu29IPCcB5c9Xlq+whETixIIgYZYKuUY4ZOr000q3oLpL4bkOkolQbB4WXM0MoQGgJXqDg==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
+    dependencies:
+      '@tanstack/virtual-core': 3.1.1
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+    dev: false
+
   /@tanstack/table-core@8.12.0:
     resolution: {integrity: sha512-cq/ylWVrOwixmwNXQjgZaQw1Izf7+nPxjczum7paAnMtwPg1S2qRAJU+Jb8rEBUWm69voC/zcChmePlk2hc6ug==}
     engines: {node: '>=12'}
+    dev: false
+
+  /@tanstack/virtual-core@3.1.1:
+    resolution: {integrity: sha512-I5lerX+RWxLM+zw35gwwQIoLvtkOm0ecuQUlEjNey+Ga6TnR66WKLBnSHre59onugxhpDLT2nofRYzxf+izDFQ==}
     dev: false
 
   /@trpc/client@10.45.0(@trpc/server@10.45.0):
