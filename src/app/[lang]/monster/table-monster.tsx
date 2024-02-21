@@ -16,8 +16,10 @@ import React from "react";
 export default function Table(props: {
   tableData: Monster[];
   session: Session | null;
+  setMonsteData: (m: Monster) => void;
+  setMonsterDialogState: (state: boolean) => void;
 }) {
-  const { tableData } = props;
+  const { tableData, setMonsteData, setMonsterDialogState } = props;
 
   // 以下注释内容的作用是往数据里添加一个tId字段，由于数据库中的模型都具备此字段，因此跳过
   //   const range = (len: number) => {
@@ -49,6 +51,12 @@ export default function Table(props: {
 
   const columns = React.useMemo<ColumnDef<Monster>[]>(
     () => [
+      {
+        accessorKey: "id",
+        header: () => "ID",
+        cell: (info) => info.getValue(),
+        size: 300,
+      },
       {
         accessorKey: "name",
         header: () => "名字",
@@ -105,32 +113,32 @@ export default function Table(props: {
     overscan: 5,
   });
 
+  const handleTrClick = (id: string) => {
+    tableData.forEach((monster) => {
+      if (monster.id !== id) return;
+      setMonsteData(monster);
+      setMonsterDialogState(true);
+    });
+  };
+
   return (
     <div
       ref={tableContainerRef}
-      className="TableBox z-0 flex-col flex-1 overflow-auto p-4"
+      className="TableBox z-0 flex-col overflow-auto p-4"
     >
-      <table className="Table flex-1 grid">
-        <thead
-          style={{
-            display: "grid",
-            position: "sticky",
-          }}
-        >
+      <table className="Table grid">
+        <thead className=" sticky grid border-b-2 bg-transition-color-8 p-2">
           {table.getHeaderGroups().map((headerGroup) => {
             return (
-              <tr
-                key={headerGroup.id}
-                style={{ display: "flex", width: "100%" }}
-              >
+              <tr key={headerGroup.id} className="flex">
                 {headerGroup.headers.map((header) => {
                   return (
                     <th
                       key={header.id}
                       style={{
-                        display: "flex",
                         width: header.getSize(),
                       }}
+                      className="flex"
                     >
                       <div
                         {...{
@@ -171,20 +179,20 @@ export default function Table(props: {
                 ref={(node) => rowVirtualizer.measureElement(node)} //measure dynamic row height
                 key={row.id}
                 style={{
-                  display: "flex",
                   position: "absolute",
                   transform: `translateY(${virtualRow.start}px)`, //this should always be a `style` as it changes on scroll
-                  width: "100%",
                 }}
+                className=" flex hover:bg-brand-color-1st"
+                onClick={() => handleTrClick(row.getValue("id"))}
               >
                 {row.getVisibleCells().map((cell) => {
                   return (
                     <td
                       key={cell.id}
                       style={{
-                        display: "flex",
                         width: cell.column.getSize(),
                       }}
+                      className="flex border-1 border-transition-color-8 p-2 hover:bg-primary-color-40"
                     >
                       {flexRender(
                         cell.column.columnDef.cell,

@@ -7,39 +7,7 @@ import type { getDictionary } from "get-dictionary";
 import { type Monster } from "@prisma/client";
 import type { Session } from "next-auth";
 import { useRouter } from "next/navigation";
-import { IconCloudUpload } from "./iconsList";
-
-// 怪物数据的初始值
-const monsterInput: Monster = {
-  id: "",
-  updatedAt: new Date(),
-  updatedById: "",
-  state: "PRIVATE",
-  name: "",
-  type: "COMMON_BOSS",
-  baseLv: 0,
-  experience: 0,
-  address: "",
-  element: "NO_ELEMENT",
-  radius: 1,
-  maxhp: 0,
-  physicalDefense: 0,
-  physicalResistance: 0,
-  magicalDefense: 0,
-  magicalResistance: 0,
-  criticalResistance: 0,
-  avoidance: 0,
-  dodge: 0,
-  block: 0,
-  normalAttackResistanceModifier: 0,
-  physicalAttackResistanceModifier: 0,
-  magicalAttackResistanceModifier: 0,
-  difficultyOfTank: 0,
-  difficultyOfMelee: 0,
-  difficultyOfRanged: 0,
-  possibilityOfRunningAround: 0,
-  specialBehavior: "",
-};
+import { IconCloudUpload } from "../_components/iconsList";
 
 // 非string的属性配置
 const inputOption = {
@@ -68,9 +36,10 @@ const inputOption = {
 export default function CreateMonster(props: {
   dictionary: ReturnType<typeof getDictionary>;
   session: Session | null;
+  defaultMonster: Monster;
 }) {
   const router = useRouter();
-  const { dictionary, session } = props;
+  const { dictionary, session, defaultMonster } = props;
   const monsterEnums = dictionary.db.enums;
   const [open, setOpen] = useState("invisible");
   const [bottom, setBottom] = useState("translate-y-1/2");
@@ -82,7 +51,7 @@ export default function CreateMonster(props: {
     },
   });
 
-  const inputAttr = (key: keyof typeof monsterInput) => {
+  const inputAttr = (key: keyof typeof defaultMonster) => {
     if (["id", "updatedAt", "updatedById", "state"].includes(key)) {
       return;
     } else {
@@ -93,7 +62,7 @@ export default function CreateMonster(props: {
             key={key}
             className="flex flex-1 basis-full flex-col gap-1 p-2 lg:basis-full"
           >
-            {dictionary.db.models.monster[key as keyof typeof monsterInput]}
+            {dictionary.db.models.monster[key as keyof typeof defaultMonster]}
             <fieldset className="flex flex-1 flex-col flex-wrap gap-4 lg:flex-row">
               {Object.keys(enumsObject).map((option) => {
                 return (
@@ -125,10 +94,10 @@ export default function CreateMonster(props: {
             className="flex basis-1/2 flex-col gap-1 p-2 lg:basis-1/4"
           >
             <label className="flex basis-1/4 flex-col gap-1 p-2">
-              {dictionary.db.models.monster[key as keyof typeof monsterInput]}
+              {dictionary.db.models.monster[key as keyof typeof defaultMonster]}
               <input
                 type={
-                  typeof monsterInput[key] === "number"
+                  typeof defaultMonster[key] === "number"
                     ? Object.keys(inputOption).includes(key)
                       ? inputOption[key as keyof typeof inputOption].type
                       : "number"
@@ -157,21 +126,21 @@ export default function CreateMonster(props: {
 
   const inputHandleChange = (
     e: React.ChangeEvent<HTMLInputElement>,
-    key: keyof typeof monsterInput,
+    key: keyof typeof defaultMonster,
   ) => {
-    (monsterInput[key] as typeof e.target.value | number) = [
+    (defaultMonster[key] as typeof e.target.value | number) = [
       "number",
       "range",
     ].includes(e.target.type)
       ? parseInt(e.target.value)
       : e.target.value;
-    // console.log(typeof monsterInput[key])
+    // console.log(typeof defaultMonster[key])
     if (e.target.name === "name" && e.target.value === "") {
       setSubmitState(false);
     } else {
-      monsterInput.name !== "" && setSubmitState(true);
+      defaultMonster.name !== "" && setSubmitState(true);
     }
-    // console.log(e.target.name, monsterInput[key], monsterInput);
+    // console.log(e.target.name, defaultMonster[key], defaultMonster);
   };
 
   const handleUploadClick = () => {
@@ -186,7 +155,7 @@ export default function CreateMonster(props: {
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    createMonster.mutate(monsterInput);
+    createMonster.mutate(defaultMonster);
   };
 
   return (
@@ -216,8 +185,8 @@ export default function CreateMonster(props: {
             </div>
             <div className="inputArea flex-1 overflow-y-auto">
               <fieldset className="dataKinds flex flex-wrap lg:flex-row">
-                {Object.keys(monsterInput).map((key) =>
-                  inputAttr(key as keyof typeof monsterInput),
+                {Object.keys(defaultMonster).map((key) =>
+                  inputAttr(key as keyof typeof defaultMonster),
                 )}
               </fieldset>
             </div>

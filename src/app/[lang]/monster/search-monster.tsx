@@ -1,7 +1,7 @@
 "use client";
 import * as React from "react";
 import { type Monster } from "@prisma/client";
-import MonsterDialog from "./monsterDisplay";
+import MonsterDialog from "./display-monster";
 import { type getDictionary } from "get-dictionary";
 
 interface Film {
@@ -13,10 +13,10 @@ interface Film {
 export default function LongSearchBox(props: {
   dictionary: ReturnType<typeof getDictionary>;
   monsterList: Monster[];
+  setMonsteData: (m: Monster) => void;
+  setMonsterDialogState: (state: boolean) => void;
 }) {
-  const { dictionary, monsterList } = props;
-  const [monsterData, setMonsteData] = React.useState(monsterList[0]);
-  const [monsterDialogState, setMonsterDialogState] = React.useState(false);
+  const { dictionary, monsterList, setMonsteData, setMonsterDialogState } = props;
   const closeClass = " hidden ";
   const openClass = " flex ";
   const [open, setOpen] = React.useState(closeClass);
@@ -102,13 +102,6 @@ export default function LongSearchBox(props: {
           </div>
         </div>
       </div>
-
-      <MonsterDialog
-        dictionary={dictionary}
-        monsterData={monsterData}
-        monsterDialogState={monsterDialogState}
-        setMonsterDialogState={setMonsterDialogState}
-      />
     </React.Fragment>
   );
 }

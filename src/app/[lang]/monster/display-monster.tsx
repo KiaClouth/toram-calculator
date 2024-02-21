@@ -5,27 +5,27 @@ import { type getDictionary } from "get-dictionary";
 
 export default function MonsterDialog(props: {
   dictionary: ReturnType<typeof getDictionary>;
-  monsterData: Monster | undefined;
-  monsterDialogState: boolean;
-  setMonsterDialogState: (state: boolean) => void;
+  data: Monster | undefined;
+  open: boolean;
+  setOpen?: (state: boolean) => void;
 }) {
-  const { dictionary, monsterData, monsterDialogState, setMonsterDialogState } =
+  const { dictionary, data, open, setOpen } =
     props;
 
-  // const User = await api.monster.getUserByMonsterId.query(monsterData ? monsterData.updatedById : "")
+  // const User = await api.monster.getUserByMonsterId.query(data ? data.updatedById : "")
 
   function handleCancel(): void {
-    setMonsterDialogState(false);
+    setOpen && setOpen(false);
   }
 
   function handleModify(): void {
-    setMonsterDialogState(false);
+    setOpen && setOpen(false);
   }
 
   const renderContent = (): [string, string | undefined][] => {
     const attrList: [string, string | undefined][] = [];
-    for (const attr in monsterData) {
-      const monsterAttr = monsterData[attr as keyof Monster]?.toString();
+    for (const attr in data) {
+      const monsterAttr = data[attr as keyof Monster]?.toString();
       if (attr === "updatedById") {
         attrList.push([attr, "~"]);
       } else if (!["id", "updatedAt", "state"].includes(attr ? attr : "")) {
@@ -39,11 +39,11 @@ export default function MonsterDialog(props: {
     <React.Fragment>
       <div
         onClick={handleCancel}
-        className={`DialogBg fixed left-0 top-0 flex h-dvh w-dvw flex-col items-stretch justify-center overflow-y-auto bg-transition-color-20 backdrop-blur ${monsterDialogState ? " visible opacity-100" : " invisible opacity-0"}`}
+        className={`DialogBg z-20 fixed left-0 top-0 flex h-dvh w-dvw flex-col items-stretch justify-center overflow-y-auto bg-primary-color backdrop-blur ${open ? " visible opacity-100" : " invisible opacity-0"}`}
       >
         <div className="DialogContent flex max-h-dvh min-h-[70dvh] flex-col gap-3 bg-bg-white-90 p-4 lg:px-[15%]">
           <div className="DialogTitle border-b-1.5 border-brand-color-1st p-3 text-lg font-semibold text-main-color-100">
-            {monsterData?.name}
+            {data?.name}
           </div>
           <div className="DialogContent overflow-y-auto">
             <div
