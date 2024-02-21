@@ -55,13 +55,19 @@ export default function Table(props: {
         accessorKey: "id",
         header: () => "ID",
         cell: (info) => info.getValue(),
-        size: 300,
+        size: 250,
       },
       {
         accessorKey: "name",
         header: () => "名字",
         cell: (info) => info.getValue(),
-        size: 250,
+        size: 120,
+      },
+      {
+        accessorKey: "type",
+        header: () => "类型",
+        cell: (info) => info.getValue(),
+        size: 180,
       },
       //   {
       //     accessorFn: (row) => row.lastName,
@@ -70,9 +76,54 @@ export default function Table(props: {
       //     header: () => <span>Last Name</span>,
       //   },
       {
+        accessorKey: "element",
+        header: () => "元素属性",
+        size: 120,
+      },
+      {
         accessorKey: "baseLv",
         header: () => "基础等级",
-        size: 250,
+        size: 120,
+      },
+      {
+        accessorKey: "physicalDefense",
+        header: () => "物理防御",
+        size: 120,
+      },
+      {
+        accessorKey: "physicalResistance",
+        header: () => "物理抗性",
+        size: 120,
+      },
+      {
+        accessorKey: "magicalDefense",
+        header: () => "魔法防御",
+        size: 120,
+      },
+      {
+        accessorKey: "magicalResistance",
+        header: () => "魔法抗性",
+        size: 120,
+      },
+      {
+        accessorKey: "criticalResistance",
+        header: () => "暴击抗性",
+        size: 120,
+      },
+      {
+        accessorKey: "avoidance",
+        header: () => "回避值",
+        size: 120,
+      },
+      {
+        accessorKey: "dodge",
+        header: () => "闪躲率",
+        size: 120,
+      },
+      {
+        accessorKey: "block",
+        header: () => "格挡率",
+        size: 120,
       },
       {
         accessorKey: "updatedAt",
@@ -126,11 +177,11 @@ export default function Table(props: {
       ref={tableContainerRef}
       className="TableBox z-0 flex-col overflow-auto p-4"
     >
-      <table className="Table grid">
-        <thead className=" sticky grid border-b-2 bg-transition-color-8 p-2">
+      <table className="Table grid bg-primary-color-30 backdrop-blur-xl">
+        <thead className="sticky grid border-b-2 bg-transition-color-8 px-2">
           {table.getHeaderGroups().map((headerGroup) => {
             return (
-              <tr key={headerGroup.id} className="flex">
+              <tr key={headerGroup.id} className="flex gap-0">
                 {headerGroup.headers.map((header) => {
                   return (
                     <th
@@ -138,15 +189,17 @@ export default function Table(props: {
                       style={{
                         width: header.getSize(),
                       }}
-                      className="flex"
+                      className="flex "
                     >
                       <div
                         {...{
-                          className: header.column.getCanSort()
-                            ? "cursor-pointer select-none"
-                            : "",
                           onClick: header.column.getToggleSortingHandler(),
                         }}
+                        className={`flex-1 text-left p-2 border-1 border-transition-color-8 ${
+                          header.column.getCanSort()
+                            ? "cursor-pointer select-none"
+                            : ""
+                        }`}
                       >
                         {flexRender(
                           header.column.columnDef.header,
@@ -166,10 +219,9 @@ export default function Table(props: {
         </thead>
         <tbody
           style={{
-            display: "grid",
             height: `${rowVirtualizer.getTotalSize()}px`, //tells scrollbar how big the table is
-            position: "relative", //needed for absolute positioning of rows
           }}
+          className="px-2"
         >
           {rowVirtualizer.getVirtualItems().map((virtualRow) => {
             const row = rows[virtualRow.index]!;
@@ -182,7 +234,7 @@ export default function Table(props: {
                   position: "absolute",
                   transform: `translateY(${virtualRow.start}px)`, //this should always be a `style` as it changes on scroll
                 }}
-                className=" flex hover:bg-brand-color-1st"
+                className=" flex hover:bg-brand-color-1st transition-none"
                 onClick={() => handleTrClick(row.getValue("id"))}
               >
                 {row.getVisibleCells().map((cell) => {

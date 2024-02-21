@@ -6,6 +6,7 @@ import { type Monster } from "@prisma/client";
 import { type Session } from "next-auth";
 import MonsterDialog from "./display-monster";
 import { useState } from "react";
+import CreateMonster from "./create-monster";
 
 export default function MonserPageClient(props: {
   dictionary: ReturnType<typeof getDictionary>;
@@ -51,8 +52,9 @@ export default function MonserPageClient(props: {
       {/* <div className="Module1 hidden max-w-60 flex-shrink flex-col bg-bg-grey-20 "></div> */}
       <div className="Module2 flex flex-1">
         <div className="LeftArea flex-1"></div>
-        <div className="ModuleContent flex h-dvh max-w-[100dvw] flex-1 basis-full flex-col-reverse lg:flex-col 2xl:basis-[1440px]">
+        <div className="ModuleContent flex h-dvh max-w-[100dvw] flex-1 basis-full flex-col-reverse lg:flex-col 2xl:basis-[1536px] 2xl:max-w-[1536px]">
           <LongSearchBox dictionary={dictionary} monsterList={monsterList} setMonsteData={setMonser} setMonsterDialogState={setMonsterDialogState} />
+          <CreateMonster dictionary={dictionary} session={session} defaultMonster={defaultMonster} />
           <Table tableData={monsterList} session={session} setMonsteData={setMonser} setMonsterDialogState={setMonsterDialogState} />
         </div>
         <div className="RightArea flex-1"></div>

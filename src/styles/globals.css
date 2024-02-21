@@ -68,7 +68,10 @@
 
 .BG {
   display: flex;
-  /* background: url(./../../public/app-image/bg.jpg) no-repeat center; */
+}
+
+.dark .BG{
+  background: url(./../../public/app-image/bg.jpg) no-repeat center;
   background-size: cover;
 }
 
