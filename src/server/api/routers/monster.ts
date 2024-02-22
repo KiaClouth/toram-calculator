@@ -36,9 +36,7 @@ export const monsterRouter = createTRPCRouter({
       return ctx.db.monster.create({
         data: {
           ...input,
-          updatedBy: {
-            connect: { id: ctx.session ? ctx.session?.user.id : "" },
-          },
+          createdByUserId: ctx.session?.user ? ctx.session.user.id : ""
         },
       });
     }),

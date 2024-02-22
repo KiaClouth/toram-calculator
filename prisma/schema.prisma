@@ -78,7 +78,8 @@ enum MonsterType {
 
 model Monster {
     id                               String       @id @default(cuid()) /// @zod.custom.omit(["model","input"])
-    updatedAt                        DateTime     @updatedAt /// @zod.custom.omit(["model","input"])
+    updatedAt                        DateTime?     @updatedAt /// @zod.custom.omit(["model","input"])
+    updatedById                      String?
     state                            State        @default(PRIVATE)
     name                             String       @default("一只没有名字的怪物")
     type                             MonsterType? @default(COMMON_BOSS)

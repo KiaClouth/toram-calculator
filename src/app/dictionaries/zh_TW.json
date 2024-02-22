@@ -52,6 +52,7 @@
     "models":{
       "monster": {
         "id": "ID",
+        "createdByUserId":"创建者",
         "updatedAt": "更新时间",
         "updatedById": "更新者",
         "state": "状态",

@@ -53,7 +53,7 @@ export default function CreateMonster(props: {
   });
 
   const inputAttr = (key: keyof typeof defaultMonster) => {
-    if (["id", "updatedAt", "updatedById", "state"].includes(key)) {
+    if (["id", "updatedAt", "updatedById", "createdByUserId", "state"].includes(key)) {
       return;
     } else {
       if (Object.keys(monsterEnums).includes(key)) {
@@ -156,6 +156,7 @@ export default function CreateMonster(props: {
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    console.log(defaultMonster)
     createMonster.mutate(defaultMonster);
   };
 
