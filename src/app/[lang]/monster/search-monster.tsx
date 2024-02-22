@@ -66,7 +66,6 @@ export default function LongSearchBox(props: {
         <div
           id="options"
           className={`Options h-0 flex-col-reverse rounded lg:flex-col ${open}`}
-          onMouseLeave={() => setMonsterDialogState(false)}
         >
           <div className="OptionsContent mb-4 flex max-h-[60dvh] flex-shrink-0 flex-col overflow-y-auto rounded bg-primary-color p-1 shadow-xl shadow-transition-color-20 backdrop-blur lg:mb-0 lg:mt-4 lg:p-2">
             {options.map((option) => (
