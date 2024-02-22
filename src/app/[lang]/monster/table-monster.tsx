@@ -12,14 +12,25 @@ import {
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { type Session } from "next-auth";
 import React from "react";
+import CreateMonster from "./create-monster";
+import { type getDictionary } from "get-dictionary";
 
 export default function Table(props: {
+  defaultMonster: Monster;
+  dictionary: ReturnType<typeof getDictionary>;
   tableData: Monster[];
   session: Session | null;
   setMonsteData: (m: Monster) => void;
   setMonsterDialogState: (state: boolean) => void;
 }) {
-  const { tableData, setMonsteData, setMonsterDialogState } = props;
+  const {
+    dictionary,
+    tableData,
+    defaultMonster,
+    session,
+    setMonsteData,
+    setMonsterDialogState,
+  } = props;
 
   // 以下注释内容的作用是往数据里添加一个tId字段，由于数据库中的模型都具备此字段，因此跳过
   //   const range = (len: number) => {
@@ -175,10 +186,45 @@ export default function Table(props: {
   return (
     <div
       ref={tableContainerRef}
-      className="TableBox z-0 flex-col overflow-auto p-4"
+      className="TableBox z-0 flex flex-1 flex-col overflow-auto bg-primary-color-30"
     >
-      <table className="Table grid bg-primary-color-30 backdrop-blur-xl">
-        <thead className="sticky grid border-b-2 bg-transition-color-8 px-2">
+      <div className="Filter flex py- bg-primary-color gap-1">
+        <CreateMonster
+          dictionary={dictionary}
+          session={session}
+          defaultMonster={defaultMonster}
+        />
+        <div className="px-1 flex bg-transition-color-8 items-center">
+          <label className="flex gap-1 text-nowrap">
+            <input
+              {...{
+                type: "checkbox",
+                checked: table.getIsAllColumnsVisible(),
+                onChange: table.getToggleAllColumnsVisibilityHandler(),
+              }}
+            />{" "}
+            All
+          </label>
+        </div>
+        {table.getAllLeafColumns().map((column) => {
+          return (
+            <div key={column.id} className="px-1 flex bg-transition-color-8 items-center">
+              <label className="flex gap-1 text-nowrap">
+                <input
+                  {...{
+                    type: "checkbox",
+                    checked: column.getIsVisible(),
+                    onChange: column.getToggleVisibilityHandler(),
+                  }}
+                />{" "}
+                {column.id}
+              </label>
+            </div>
+          );
+        })}
+      </div>
+      <table className="Table flex-1 backdrop-blur-xl">
+        <thead className=" sticky top-0 z-10 flex border-b-2 bg-primary-color">
           {table.getHeaderGroups().map((headerGroup) => {
             return (
               <tr key={headerGroup.id} className="flex gap-0">
@@ -195,7 +241,7 @@ export default function Table(props: {
                         {...{
                           onClick: header.column.getToggleSortingHandler(),
                         }}
-                        className={`flex-1 text-left p-2 border-1 border-transition-color-8 ${
+                        className={`flex-1 border-1 border-transition-color-8 p-2 text-left ${
                           header.column.getCanSort()
                             ? "cursor-pointer select-none"
                             : ""
@@ -221,7 +267,7 @@ export default function Table(props: {
           style={{
             height: `${rowVirtualizer.getTotalSize()}px`, //tells scrollbar how big the table is
           }}
-          className="px-2"
+          className="z-0 px-2 backdrop-blur-xl"
         >
           {rowVirtualizer.getVirtualItems().map((virtualRow) => {
             const row = rows[virtualRow.index]!;
@@ -234,7 +280,7 @@ export default function Table(props: {
                   position: "absolute",
                   transform: `translateY(${virtualRow.start}px)`, //this should always be a `style` as it changes on scroll
                 }}
-                className=" flex hover:bg-brand-color-1st transition-none"
+                className=" flex transition-none hover:bg-brand-color-1st"
                 onClick={() => handleTrClick(row.getValue("id"))}
               >
                 {row.getVisibleCells().map((cell) => {

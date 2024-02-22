@@ -8,6 +8,7 @@ import { type Monster } from "@prisma/client";
 import type { Session } from "next-auth";
 import { useRouter } from "next/navigation";
 import { IconCloudUpload } from "../_components/iconsList";
+import Button from "../_components/button";
 
 // 非string的属性配置
 const inputOption = {
@@ -160,28 +161,29 @@ export default function CreateMonster(props: {
 
   return (
     <React.Fragment>
-      <button
-        onClick={handleUploadClick}
-        className={`cloudUpload hover:bg-transition-color-20 flex w-12 flex-none cursor-pointer items-center justify-center rounded-full ${session?.user ? "" : "hidden"}`}
-      >
-        <IconCloudUpload />
-      </button>
+      {session?.user ? (
+        <Button
+          onClick={handleUploadClick}
+          content={dictionary.ui.monster.upload}
+          icon={<IconCloudUpload />}
+        />
+      ) : (
+        ""
+      )}
       <div
-        className={`FormBoxBg bg-transition-color-20 backdrop-blur fixed z-10 left-0 top-0 flex h-dvh w-dvw flex-col ${open}`}
+        className={`FormBoxBg fixed left-0 top-0 z-10 flex h-dvh w-dvw flex-col bg-transition-color-20 backdrop-blur ${open}`}
       >
         <div
           onClick={handleUploadClick}
           className="FormCloseBtn h-24 cursor-pointer"
         ></div>
-        <div className="FormBoxContent bg-primary-color flex h-[91dvh] flex-1 flex-col lg:items-center">
+        <div className="FormBoxContent flex h-[91dvh] flex-1 flex-col bg-primary-color lg:items-center">
           <form
             onSubmit={(e) => handleSubmit(e)}
             className={`CreateMonsterFrom flex max-w-7xl flex-col gap-4 overflow-y-auto rounded p-4 lg:w-4/5 ${bottom}`}
           >
-            <div className="title border-brand-color-1st flex justify-between border-b-1.5 p-3 text-lg font-semibold">
-              <span>
-                {dictionary.ui.monster.upload}
-              </span>
+            <div className="title flex justify-between border-b-1.5 border-brand-color-1st p-3 text-lg font-semibold">
+              <span>{dictionary.ui.monster.upload}</span>
             </div>
             <div className="inputArea flex-1 overflow-y-auto">
               <fieldset className="dataKinds flex flex-wrap lg:flex-row">
@@ -190,17 +192,17 @@ export default function CreateMonster(props: {
                 )}
               </fieldset>
             </div>
-            <div className="functionArea border-brand-color-1st flex justify-end border-t-1.5 py-3">
+            <div className="functionArea flex justify-end border-t-1.5 border-brand-color-1st py-3">
               <div className="btnGroup flex gap-5">
-                <button
+                <Button
                   type="submit"
-                  className={`cloudUpload flex h-12 items-center justify-center rounded-full px-6 ${submitBtnState ? " bg-accent-color text-primary-color hover:bg-accent-color-80" : " bg-accent-color-30 cursor-no-drop"}`}
+                  content={
+                    createMonster.isLoading
+                      ? `${dictionary.ui.monster.upload}...`
+                      : `${dictionary.ui.monster.upload}`
+                  }
                   disabled={createMonster.isLoading || !submitBtnState}
-                >
-                  {createMonster.isLoading
-                    ? `${dictionary.ui.monster.upload}...`
-                    : `${dictionary.ui.monster.upload}`}
-                </button>
+                />
               </div>
             </div>
           </form>

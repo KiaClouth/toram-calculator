@@ -22,7 +22,8 @@
       "reset":"Reset",
       "save":"save",
       "modify":"modify",
-      "cancel":"cancel"
+      "cancel":"cancel",
+      "close": "关闭"
     }
   },
   "db": {

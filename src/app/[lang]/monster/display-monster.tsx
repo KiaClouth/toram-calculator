@@ -38,12 +38,17 @@ export default function MonsterDialog(props: {
   return (
     <React.Fragment>
       <div
-        onClick={handleCancel}
-        className={`DialogBg z-20 fixed left-0 top-0 flex h-dvh w-dvw flex-col items-stretch justify-center overflow-y-auto bg-primary-color backdrop-blur ${open ? " visible opacity-100" : " invisible opacity-0"}`}
+        className={`DialogBg z-20 fixed left-0 top-0 flex h-dvh w-dvw justify-center flex-col overflow-y-auto bg-accent-color-10 backdrop-blur ${open ? " visible opacity-100" : " invisible opacity-0"}`}
       >
-        <div className="DialogContent flex max-h-dvh min-h-[70dvh] flex-col gap-3 bg-bg-white-90 p-4 lg:px-[15%]">
-          <div className="DialogTitle border-b-1.5 border-brand-color-1st p-3 text-lg font-semibold text-main-color-100">
-            {data?.name}
+        <div className="DialogContent flex max-h-dvh min-h-[70dvh] flex-col gap-3 bg-primary-color p-4 lg:px-[15%]">
+          <div className="DialogTitle border-b-1.5 border-brand-color-1st py-3 flex justify-between">
+            <span className="text-lg font-semibold">{data?.name}</span>
+            <button
+              className="Button flex px-8 py-2 flex-none cursor-pointer items-center justify-center rounded bg-transition-color-8 hover:bg-transition-color-20"
+              onClick={handleCancel}
+            >
+              {dictionary.ui.monster.close}
+            </button>
           </div>
           <div className="DialogContent overflow-y-auto">
             <div
@@ -66,13 +71,13 @@ export default function MonsterDialog(props: {
           </div>
           <div className="DialogActions flex gap-4 justify-end border-t-1.5 border-brand-color-1st py-3">
             <button
-              className="Button flex px-4 py-1 flex-none cursor-pointer items-center justify-center rounded-full text-bg-white-100 bg-main-color-100 hover:bg-main-color-70"
+              className="Button flex px-8 py-2 flex-none cursor-pointer items-center justify-center rounded-full text-bg-white-100 bg-main-color-100 hover:bg-main-color-70"
               onClick={handleCancel}
             >
               {dictionary.ui.monster.cancel}
             </button>
             <button
-              className="Button flex px-4 py-2 flex-none cursor-pointer items-center justify-center rounded-full text-main-color-100 bg-bg-grey-8 hover:bg-bg-grey-20"
+              className="Button flex px-8 py-2 flex-none cursor-pointer items-center justify-center rounded-full text-main-color-100 bg-bg-grey-8 hover:bg-bg-grey-20"
               onClick={handleModify}
             >
               {dictionary.ui.monster.modify}

@@ -22,33 +22,35 @@
       "save": "保存",
       "reset": "清空",
       "modify": "修改",
-      "cancel": "取消"
+      "cancel": "取消",
+      "close": "关闭"
     }
   },
   "db": {
     "enums": {
       "state": {
-        "PRIVATE":"自用", "PUBLIC":"公开"
+        "PRIVATE": "自用",
+        "PUBLIC": "公开"
       },
       "type": {
-        "COMMON_BOSS":"定点王",
-        "COMMON_MINI_BOSS":"野王",
-        "COMMON_MOBS":"小怪",
-        "EVENT_BOSS":"活动定点王",
-        "EVENT_MINI_BOSS":"活动野王",
-        "EVENT_MOBS":"活动小怪"
+        "COMMON_BOSS": "定点王",
+        "COMMON_MINI_BOSS": "野王",
+        "COMMON_MOBS": "小怪",
+        "EVENT_BOSS": "活动定点王",
+        "EVENT_MINI_BOSS": "活动野王",
+        "EVENT_MOBS": "活动小怪"
       },
       "element": {
-        "NO_ELEMENT":"无属性",
-        "DARK":"暗属性",
-        "EARTH":"地属性",
-        "FIRE":"火属性",
-        "LIGHT":"光属性",
-        "WATER":"水属性",
-        "WIND":"风属性"
+        "NO_ELEMENT": "无属性",
+        "DARK": "暗属性",
+        "EARTH": "地属性",
+        "FIRE": "火属性",
+        "LIGHT": "光属性",
+        "WATER": "水属性",
+        "WIND": "风属性"
       }
     },
-    "models":{
+    "models": {
       "monster": {
         "id": "ID",
         "updatedAt": "更新时间",

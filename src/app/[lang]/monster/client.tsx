@@ -54,8 +54,7 @@ export default function MonserPageClient(props: {
         <div className="LeftArea flex-1"></div>
         <div className="ModuleContent flex h-dvh max-w-[100dvw] flex-1 basis-full flex-col-reverse lg:flex-col 2xl:basis-[1536px] 2xl:max-w-[1536px]">
           <LongSearchBox dictionary={dictionary} monsterList={monsterList} setMonsteData={setMonser} setMonsterDialogState={setMonsterDialogState} />
-          <CreateMonster dictionary={dictionary} session={session} defaultMonster={defaultMonster} />
-          <Table tableData={monsterList} session={session} setMonsteData={setMonser} setMonsterDialogState={setMonsterDialogState} />
+          <Table defaultMonster={defaultMonster} dictionary={dictionary} tableData={monsterList} session={session} setMonsteData={setMonser} setMonsterDialogState={setMonsterDialogState} />
         </div>
         <div className="RightArea flex-1"></div>
       </div>

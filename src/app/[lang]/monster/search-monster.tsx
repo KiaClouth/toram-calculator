@@ -55,7 +55,7 @@ export default function LongSearchBox(props: {
 
   return (
     <React.Fragment>
-      <div className="SearchBox z-10 mb-20 lg:mb-0 flex flex-none flex-col-reverse p-4 lg:flex-col">
+      <div className="SearchBox z-10 mb-20 lg:mb-0 flex flex-none flex-col-reverse py-4 lg:flex-col">
         <input
           type="search"
           placeholder={"✌" + dictionary.ui.monster.searchPlaceholder}
@@ -66,8 +66,9 @@ export default function LongSearchBox(props: {
         <div
           id="options"
           className={`Options h-0 flex-col-reverse rounded lg:flex-col ${open}`}
+          onMouseLeave={() => setMonsterDialogState(false)}
         >
-          <div className="OptionsContent mb-4 flex max-h-[60dvh] flex-shrink-0 flex-col overflow-y-auto rounded bg-primary-color p-1 shadow-xl shadow-transition-color-20 backdrop-blur lg:mb-0 lg:mt-4 lg:bg-primary-color-50 lg:p-2 lg:shadow-2xl">
+          <div className="OptionsContent mb-4 flex max-h-[60dvh] flex-shrink-0 flex-col overflow-y-auto rounded bg-primary-color p-1 shadow-xl shadow-transition-color-20 backdrop-blur lg:mb-0 lg:mt-4 lg:p-2">
             {options.map((option) => (
               <button
                 key={option.id}
