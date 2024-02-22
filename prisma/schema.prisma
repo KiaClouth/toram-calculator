@@ -274,10 +274,10 @@ model Character {
     consumable      Consumable?
     skill           SkillList?
     pet             Pet?            @relation(fields: [petId], references: [id])
-    petId           String
     othersModifiers ModifiersList[]
     belongTo        UserCreate?     @relation(fields: [createdByUserId], references: [userId])
     createdByUserId String?
+    petId           String?
 }
 
 model BaseAbi {
