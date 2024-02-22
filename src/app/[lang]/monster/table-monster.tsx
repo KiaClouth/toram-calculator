@@ -1,6 +1,6 @@
 "use client";
 
-import { type Monster } from "@prisma/client";
+import { type $Enums, type Monster } from "@prisma/client";
 import {
   type ColumnDef,
   flexRender,
@@ -33,32 +33,32 @@ export default function Table(props: {
   } = props;
 
   // 以下注释内容的作用是往数据里添加一个tId字段，由于数据库中的模型都具备此字段，因此跳过
-  //   const range = (len: number) => {
-  //     const arr: number[] = [];
-  //     for (let i = 0; i < len; i++) {
-  //       arr.push(i);
-  //     }
-  //     return arr;
-  //   };
+    // const range = (len: number) => {
+    //   const arr: number[] = [];
+    //   for (let i = 0; i < len; i++) {
+    //     arr.push(i);
+    //   }
+    //   return arr;
+    // };
 
-  //   const newRow = (index: number): T & { tId: number } => {
-  //     return {
-  //       tId: index + 1,
-  //       ...(tableData[index] as T),
-  //     };
-  //   };
+    // const newRow = (index: number): Monster & { tId: number } => {
+    //   return {
+    //     tId: index + 1,
+    //     ...(tableData[index]!),
+    //   };
+    // };
 
-  //   function makeData(...lens: number[]) {
-  //     const makeDataLevel = (depth = 0): T[] => {
-  //       const len = lens[depth]!;
-  //       return range(len).map((d): T => {
-  //         return {
-  //           ...newRow(d),
-  //         };
-  //       });
-  //       };
-  //     return makeDataLevel();
-  //   }
+    // function makeData(...lens: number[]) {
+    //   const makeDataLevel = (depth = 0): Monster[] => {
+    //     const len = lens[depth]!;
+    //     return range(len).map((d): Monster => {
+    //       return {
+    //         ...newRow(d),
+    //       };
+    //     });
+    //     };
+    //   return makeDataLevel();
+    // }
 
   const columns = React.useMemo<ColumnDef<Monster>[]>(
     () => [
@@ -77,7 +77,7 @@ export default function Table(props: {
       {
         accessorKey: "type",
         header: () => "类型",
-        cell: (info) => info.getValue(),
+        cell: (info) => dictionary.db.enums.type[info.getValue<$Enums.MonsterType>()],
         size: 180,
       },
       //   {
@@ -89,6 +89,7 @@ export default function Table(props: {
       {
         accessorKey: "element",
         header: () => "元素属性",
+        cell: (info) => dictionary.db.enums.element[info.getValue<$Enums.Element>()],
         size: 120,
       },
       {
@@ -143,10 +144,11 @@ export default function Table(props: {
         size: 250,
       },
     ],
-    [],
+    [dictionary.db.enums.element, dictionary.db.enums.type],
   );
 
-  //   const [data, _setData] = React.useState(() => makeData(20));
+    // const [data, _setData] = React.useState(() => makeData(20));
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [data, _setData] = React.useState(() => tableData);
 
   const table = useReactTable({

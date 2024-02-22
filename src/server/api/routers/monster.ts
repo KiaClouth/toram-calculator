@@ -11,7 +11,7 @@ import {
 
 export const monsterRouter = createTRPCRouter({
   getList: publicProcedure.query(({ ctx }) => {
-    console.log('获取了一次怪物数据')
+    console.log(ctx.session?.user.name + '获取了一次怪物数据')
     return ctx.db.monster.findMany();
   }),
   getUserByMonsterId: publicProcedure

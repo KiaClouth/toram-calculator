@@ -145,8 +145,7 @@ export default async function RootLayout({
         <TRPCReactProvider cookies={cookies().toString()}>
           <ThemeProvider>
             <div
-              id="rootNav"
-              className="Nav fixed -left-full z-50 flex h-dvh w-4/5 flex-none flex-col items-center gap-3 backdrop-blur lg:left-0 lg:w-24 lg:-translate-x-3/4 lg:bg-transition-color-8 lg:py-5 lg:opacity-0 lg:hover:translate-x-0 lg:hover:opacity-100"
+              className="RootNav fixed -left-full z-50 flex h-dvh w-4/5 flex-none flex-col items-center gap-3 backdrop-blur lg:left-0 lg:w-24 lg:-translate-x-3/4 lg:bg-transition-color-8 lg:py-5 lg:opacity-0 lg:hover:translate-x-0 lg:hover:opacity-100"
             >
               <div className="Top flex flex-1 flex-col gap-10 overflow-hidden">
                 <Link

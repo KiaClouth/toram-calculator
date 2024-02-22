@@ -55,7 +55,7 @@ export default function LongSearchBox(props: {
 
   return (
     <React.Fragment>
-      <div className="SearchBox z-10 mb-20 lg:mb-0 flex flex-none flex-col-reverse py-4 lg:flex-col">
+      <div className="SearchBox z-10 mb-20 lg:mb-0 flex flex-none flex-col-reverse lg:pt-4 lg:flex-col">
         <input
           type="search"
           placeholder={"✌" + dictionary.ui.monster.searchPlaceholder}

@@ -51,19 +51,19 @@
   outline-color: rgba(105, 145, 214, 0.7);
 }
 
-#rootNav *,
-#bottomNav * {
+.RootNav *,
+.BottomNav * {
   outline: none;
 }
 
 @media (min-width: 1024px) {
-  #rootNav *:focus .iconArea {
-    background-color: #95cfd5;
+  .RootNav *:focus .iconArea {
+    background-color: rgb(var(--brand-1st));
   }
 }
 
-#bottomNav *:focus .iconArea {
-  background-color: #95cfd5;
+.BottomNav *:focus .iconArea {
+  background-color: rgb(var(--brand-1st));
 }
 
 .BG {
