@@ -1,4 +1,4 @@
-export const IconBasketball = () => {
+export const IconBasketball = (props:React.SVGAttributes<SVGElement>) => {
   return (
     <svg
       width="24"
@@ -6,6 +6,7 @@ export const IconBasketball = () => {
       viewBox="0 0 24 25"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      {...props}
     >
       <rect
         x="2"
@@ -42,7 +43,7 @@ export const IconBasketball = () => {
   );
 };
 
-export const IconBox2 = () => {
+export const IconBox2 = (props:React.SVGAttributes<SVGElement>) => {
   return (
     <svg
       width="24"
@@ -50,6 +51,7 @@ export const IconBox2 = () => {
       viewBox="0 0 24 25"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      {...props}
     >
       <path
         d="M2 6.66667V17.6667C2 18.0704 2.24274 18.4345 2.61538 18.5897L12 22.5M2 6.66667L11.2308 2.82051C11.7231 2.61538 12.2769 2.61538 12.7692 2.82051L17 4.58333M2 6.66667L7 8.75M12 10.8333V22.5M12 10.8333L22 6.66667M12 10.8333L7 8.75M12 22.5L21.3846 18.5897C21.7573 18.4345 22 18.0704 22 17.6667V6.66667M22 6.66667L17 4.58333M7 8.75L17 4.58333"
@@ -61,7 +63,7 @@ export const IconBox2 = () => {
   );
 };
 
-export const IconCalendar = () => {
+export const IconCalendar = (props:React.SVGAttributes<SVGElement>) => {
   return (
     <svg
       width="24"
@@ -69,6 +71,7 @@ export const IconCalendar = () => {
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      {...props}
     >
       <rect
         x="3"
@@ -145,7 +148,7 @@ export const IconCalendar = () => {
   );
 };
 
-export const IconCategory2 = () => {
+export const IconCategory2 = (props:React.SVGAttributes<SVGElement>) => {
   return (
     <svg
       width="24"
@@ -153,6 +156,7 @@ export const IconCategory2 = () => {
       viewBox="0 0 24 25"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      {...props}
     >
       <rect
         x="4"
@@ -194,7 +198,7 @@ export const IconCategory2 = () => {
   );
 };
 
-export const IconCloudUpload = () => {
+export const IconCloudUpload = (props:React.SVGAttributes<SVGElement>) => {
   return (
     <svg
       width="24"
@@ -202,6 +206,7 @@ export const IconCloudUpload = () => {
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      {...props}
     >
       <path
         d="M18 18.2003C20.2459 17.9773 22 16.0824 22 13.7778C22 11.1049 19.5452 9.00249 16.9198 9.37847C16.9155 9.37908 16.9113 9.3769 16.9093 9.37305C15.9052 7.37277 13.8351 6 11.4444 6C8.25974 6 5.64402 8.43609 5.35907 11.5465C5.3586 11.5516 5.35421 11.5556 5.34902 11.5556C3.52707 11.554 2 13.0606 2 14.8889C2 16.7298 3.49238 18.2222 5.33333 18.2222H6"
@@ -225,7 +230,7 @@ export const IconCloudUpload = () => {
   );
 };
 
-export const IconCoins = () => {
+export const IconCoins = (props:React.SVGAttributes<SVGElement>) => {
   return (
     <svg
       width="24"
@@ -233,6 +238,7 @@ export const IconCoins = () => {
       viewBox="0 0 24 25"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      {...props}
     >
       <path
         d="M19 7C19 8.38071 15.866 9.5 12 9.5C8.13401 9.5 5 8.38071 5 7M19 7C19 5.61929 15.866 4.5 12 4.5C8.13401 4.5 5 5.61929 5 7M19 7V19C19 20.3807 15.866 21.5 12 21.5C8.13401 21.5 5 20.3807 5 19V7M19 11C19 12.3807 15.866 13.5 12 13.5C8.13401 13.5 5 12.3807 5 11M19 15C19 16.3807 15.866 17.5 12 17.5C8.13401 17.5 5 16.3807 5 15"
@@ -243,7 +249,7 @@ export const IconCoins = () => {
   );
 };
 
-export const IconFilter = () => {
+export const IconFilter = (props:React.SVGAttributes<SVGElement>) => {
   return (
     <svg
       width="24"
@@ -251,6 +257,7 @@ export const IconFilter = () => {
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      {...props}
     >
       <path
         d="M2 4C2 2.89543 2.89543 2 4 2H20C21.1046 2 22 2.89543 22 4V4.81751C22 5.57739 21.7116 6.30895 21.1932 6.86447L15.5379 12.9237C15.1922 13.294 15 13.7817 15 14.2883V18.382C15 18.7607 14.786 19.107 14.4472 19.2764L10.4472 21.2764C9.78231 21.6088 9 21.1253 9 20.382V14.2883C9 13.7817 8.80776 13.294 8.46211 12.9237L2.80683 6.86446C2.28836 6.30895 2 5.57739 2 4.81751V4Z"
@@ -261,7 +268,7 @@ export const IconFilter = () => {
   );
 };
 
-export const IconGamepad = () => {
+export const IconGamepad = (props:React.SVGAttributes<SVGElement>) => {
   return (
     <svg
       width="24"
@@ -269,6 +276,7 @@ export const IconGamepad = () => {
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      {...props}
     >
       <path
         d="M2 10.0005C2 7.04241 4.55409 4.73099 7.49752 5.02533L11.403 5.41588C11.8 5.45558 12.2 5.45558 12.597 5.41588L16.5025 5.02533C19.4459 4.73099 22 7.04241 22 10.0005V16C22 19.5933 17.3041 20.9552 15.3815 17.9196C14.0112 15.7559 10.8803 15.6836 9.4116 17.7818L9.12736 18.1878C6.93073 21.3259 2 19.7716 2 15.9411V10.0005Z"
@@ -295,7 +303,7 @@ export const IconGamepad = () => {
   );
 };
 
-export const IconHome = () => {
+export const IconHome = (props:React.SVGAttributes<SVGElement>) => {
   return (
     <svg
       width="24"
@@ -303,6 +311,7 @@ export const IconHome = () => {
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      {...props}
     >
       <path
         d="M2.5 10.9384C2.5 9.71422 3.06058 8.55744 4.02142 7.79888L9.52142 3.45677C10.9747 2.30948 13.0253 2.30948 14.4786 3.45677L19.9786 7.79888C20.9394 8.55744 21.5 9.71422 21.5 10.9384V17.5C21.5 19.7091 19.7091 21.5 17.5 21.5H16C15.4477 21.5 15 21.0523 15 20.5V17.5C15 16.3954 14.1046 15.5 13 15.5H11C9.89543 15.5 9 16.3954 9 17.5V20.5C9 21.0523 8.55228 21.5 8 21.5H6.5C4.29086 21.5 2.5 19.7091 2.5 17.5L2.5 10.9384Z"
@@ -313,7 +322,7 @@ export const IconHome = () => {
   );
 };
 
-export const IconLoading = () => {
+export const IconLoading = (props:React.SVGAttributes<SVGElement>) => {
   return (
     <svg
       width="24"
@@ -321,6 +330,7 @@ export const IconLoading = () => {
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      {...props}
     >
       <path
         d="M12 2L12 5"
@@ -382,7 +392,7 @@ export const IconLoading = () => {
   );
 };
 
-export const IconMoney = () => {
+export const IconMoney = (props:React.SVGAttributes<SVGElement>) => {
   return (
     <svg
       width="24"
@@ -390,6 +400,7 @@ export const IconMoney = () => {
       viewBox="0 0 24 25"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      {...props}
     >
       <g clipPath="url(#clip0_359_732)">
         <path
@@ -445,7 +456,7 @@ export const IconMoney = () => {
   );
 };
 
-export const IconCalculactor = () => {
+export const IconCalculactor = (props:React.SVGAttributes<SVGElement>) => {
   return (
     <svg
       width="24"
@@ -453,6 +464,7 @@ export const IconCalculactor = () => {
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      {...props}
     >
       <rect
         x="4"
@@ -500,7 +512,7 @@ export const IconCalculactor = () => {
   );
 };
 
-export const IconSearch = () => {
+export const IconSearch = (props:React.SVGAttributes<SVGElement>) => {
   return (
     <svg
       width="24"
@@ -508,6 +520,7 @@ export const IconSearch = () => {
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      {...props}
     >
       <circle
         cx="11"
@@ -529,7 +542,7 @@ export const IconSearch = () => {
   );
 };
 
-export const IconLogo = () => {
+export const IconLogo = (props:React.SVGAttributes<SVGElement>) => {
   return (
     <svg
       width="50"
@@ -537,6 +550,7 @@ export const IconLogo = () => {
       viewBox="0 0 50 50"
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
+      {...props}
     >
       <rect x="0.75" y="0.75" width="48.5" height="48.5" rx="24.25" />
       <rect

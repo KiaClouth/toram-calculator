@@ -1,7 +1,6 @@
 "use client";
 import * as React from "react";
 import { type Monster } from "@prisma/client";
-import MonsterDialog from "./display-monster";
 import { type getDictionary } from "get-dictionary";
 
 interface Film {
@@ -55,19 +54,19 @@ export default function LongSearchBox(props: {
 
   return (
     <React.Fragment>
-      <div className="SearchBox z-10 mb-20 lg:mb-0 flex flex-none flex-col-reverse lg:pt-4 lg:flex-col">
+      <div className="SearchBox z-10 flex flex-none flex-col-reverse lg:pt-4 lg:flex-col">
         <input
           type="search"
           placeholder={"✌" + dictionary.ui.monster.searchPlaceholder}
           list="options"
-          className="Search  bg-transition-color-8 backdrop-blur-xl border-b-2 border-transition-color-20 px-5 py-3 placeholder:text-accent-color-50 hover:bg-transition-color-20 hover:border-accent-color-70 focus:border-accent-color-70 focus:outline-none"
+          className="Search text-xl lg:text-lg lg:font-normal font-bold backdrop-blur-xl border-b-2 border-transition-color-20 px-5 py-3 placeholder:text-accent-color-50 hover:bg-transition-color-20 hover:border-accent-color-70 focus:border-accent-color-70 focus:outline-none"
           onChange={(e) => handleChange(e.target.value)}
         />
         <div
           id="options"
           className={`Options h-0 flex-col-reverse rounded lg:flex-col ${open}`}
         >
-          <div className="OptionsContent mb-4 flex max-h-[60dvh] flex-shrink-0 flex-col overflow-y-auto rounded bg-primary-color p-1 shadow-xl shadow-transition-color-20 backdrop-blur lg:mb-0 lg:mt-4 lg:p-2">
+          <div className="OptionsContent flex max-h-[70dvh] flex-shrink-0 flex-col overflow-y-auto rounded bg-primary-color p-1 lg:shadow-xl shadow-transition-color-20 backdrop-blur lg:p-2">
             {options.map((option) => (
               <button
                 key={option.id}

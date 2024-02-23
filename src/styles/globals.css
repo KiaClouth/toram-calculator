@@ -51,28 +51,25 @@
   outline-color: rgba(105, 145, 214, 0.7);
 }
 
-.RootNav *,
-.BottomNav * {
+.Nav * {
   outline: none;
 }
 
-@media (min-width: 1024px) {
-  .RootNav *:focus .iconArea {
-    background-color: rgb(var(--brand-1st));
-  }
-}
-
-.BottomNav *:focus .iconArea {
-  background-color: rgb(var(--brand-1st));
-}
+/* 导航栏按钮的hover和focus效果，已由tailwindcss实现 */
+/* .NavBtn *:focus .iconArea,
+.NavBtn *:hover .iconArea {
+  background-color: rgb(var(--brand-2nd));
+} */
 
 .BG {
   display: flex;
+  background: url(./../../public/app-image/bg.jpg) no-repeat center;
+  background-size: cover;
+  opacity: 0;
 }
 
 .dark .BG{
-  background: url(./../../public/app-image/bg.jpg) no-repeat center;
-  background-size: cover;
+  opacity: 1;
 }
 
 .BGMask {

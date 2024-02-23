@@ -1,4 +1,5 @@
 import Link from "next/link";
+import React from "react";
 
 const variableBonus = {
   strR: 0,
@@ -44,7 +45,14 @@ type permanentSkill = {
   state: boolean;
   effectList: Partial<Record<bonus, number>>;
 };
-type element = "无属性" | "水属性" | "火属性" | "地属性" | "风属性" | "光属性" | "暗属性";
+type element =
+  | "无属性"
+  | "水属性"
+  | "火属性"
+  | "地属性"
+  | "风属性"
+  | "光属性"
+  | "暗属性";
 type abi = {
   str: number;
   int: number;
@@ -251,7 +259,12 @@ class Character {
   abi: abi;
   wea: wea;
   permanentSkillList: permanentSkillList;
-  constructor(lv: number, abi: abi, wea: wea, permanentSkillList: permanentSkillList) {
+  constructor(
+    lv: number,
+    abi: abi,
+    wea: wea,
+    permanentSkillList: permanentSkillList,
+  ) {
     this.lv = lv;
     this.abi = abi;
     this.wea = wea;
@@ -294,17 +307,9 @@ export default function CharacterPage() {
   ];
   const character = new Character(cLv, cAbi, cWeapon, cPermanentSkillList);
   return (
-    <div className="Character flex flex-1 flex-col bg-brand-color-2nd">
-      <div id="Character">
-        <div id="title">
-          <div id="mianTitle">Character</div>
-          <div id="subTitle">= =</div>
-        </div>
-        <div id="content">
-          <div id="inputModule"></div>
-          <div id="outModule"></div>
-        </div>
-      </div>
-    </div>
+    <React.Fragment>
+      <div id="mianTitle">Character</div>
+      <div id="subTitle">= =</div>
+    </React.Fragment>
   );
 }

@@ -22,37 +22,30 @@ export default function PetPageClient(props: {
     },
   });
   return (
-    <main className="Main flex flex-1">
-      {/* <div className="Module1 hidden max-w-60 flex-shrink flex-col bg-bg-grey-20 "></div> */}
-      <div className="Module2 flex flex-1">
-        <div className="LeftArea flex-1"></div>
-        <div className="ModuleContent flex h-dvh max-w-[100dvw] flex-1 basis-full flex-col-reverse lg:flex-col 2xl:max-w-[1536px] 2xl:basis-[1536px]">
-          <form.Provider>
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                void form.handleSubmit();
-              }}
-            >
-              <div>
-                <form.Field name="fullName">
-                  {(field) => (
-                    <input
-                      name={field.name}
-                      value={field.state.value}
-                      onBlur={field.handleBlur}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                    />
-                  )}
-                </form.Field>
-              </div>
-              <button type="submit">Submit</button>
-            </form>
-          </form.Provider>
-        </div>
-        <div className="RightArea flex-1"></div>
-      </div>
-    </main>
+    <React.Fragment>
+      <form.Provider>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            void form.handleSubmit();
+          }}
+        >
+          <div>
+            <form.Field name="fullName">
+              {(field) => (
+                <input
+                  name={field.name}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                />
+              )}
+            </form.Field>
+          </div>
+          <button type="submit">Submit</button>
+        </form>
+      </form.Provider>
+    </React.Fragment>
   );
 }

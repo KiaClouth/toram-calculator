@@ -12,7 +12,6 @@ import {
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { type Session } from "next-auth";
 import React from "react";
-import CreateMonster from "./create-monster";
 import { type getDictionary } from "get-dictionary";
 
 export default function Table(props: {
@@ -26,8 +25,6 @@ export default function Table(props: {
   const {
     dictionary,
     tableData,
-    defaultMonster,
-    session,
     setMonsteData,
     setMonsterDialogState,
   } = props;
@@ -191,11 +188,6 @@ export default function Table(props: {
       className="TableBox z-0 flex flex-1 flex-col overflow-auto bg-primary-color-30"
     >
       <div className="Filter flex py- bg-primary-color gap-1">
-        <CreateMonster
-          dictionary={dictionary}
-          session={session}
-          defaultMonster={defaultMonster}
-        />
         <div className="px-1 flex bg-transition-color-8 items-center">
           <label className="flex gap-1 text-nowrap">
             <input

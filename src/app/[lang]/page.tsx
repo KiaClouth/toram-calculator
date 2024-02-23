@@ -1,5 +1,7 @@
 import { getDictionary } from "get-dictionary";
 import { type Locale } from "i18n-config";
+import ImageBackground from "./_components/bg";
+import React from "react";
 
 export default async function Index({
   params: { lang },
@@ -15,7 +17,8 @@ export default async function Index({
     greetings = dictionary.ui.index.goodEvening;
   }
   return (
-    <div className="Index flex flex-1 flex-col overflow-x-hidden">
+    <React.Fragment>
+      <ImageBackground />
       <div className="jumbo fixed left-0 top-0 -z-50 h-dvh w-dvw opacity-50"></div>
       <div className="Top flex flex-1 flex-col items-center justify-center">
         <h1 className="Title border-bg-white-30 mx-8 -translate-y-1/3 border-b-2 p-10 text-center text-5xl font-extrabold tracking-tight lg:text-9xl">
@@ -28,6 +31,6 @@ export default async function Index({
       <div className="Bottom flex flex-initial flex-col">
         <div className="Content flex flex-1 flex-col p-5"></div>
       </div>
-    </div>
+    </React.Fragment>
   );
 }

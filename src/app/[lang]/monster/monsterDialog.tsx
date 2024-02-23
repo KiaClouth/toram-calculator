@@ -38,7 +38,7 @@ export default function MonsterDialog(props: {
   return (
     <React.Fragment>
       <div
-        className={`DialogBg z-20 fixed left-0 top-0 flex h-dvh w-dvw justify-center flex-col overflow-y-auto bg-accent-color-10 backdrop-blur ${open ? " visible opacity-100" : " invisible opacity-0"}`}
+        className={`DialogBg z-50 fixed left-0 top-0 flex h-dvh w-dvw justify-center flex-col overflow-y-auto bg-accent-color-10 backdrop-blur ${open ? " visible opacity-100" : " invisible opacity-0"}`}
       >
         <div className="DialogContent flex max-h-dvh min-h-[70dvh] flex-col gap-3 bg-primary-color p-4 lg:px-[15%]">
           <div className="DialogTitle border-b-1.5 border-brand-color-1st py-3 flex justify-between">
@@ -58,10 +58,10 @@ export default function MonsterDialog(props: {
               {renderContent().map(([key, value]) => {
                 return (
                   <div key={key + value} className="Name&Attr basis-1/2 lg:basis-1/4 px-2 pb-2 rounded hover:bg-bg-grey-8">
-                    <div className="Name p-2 text-main-color-100">
+                    <div className="Name p-2 ">
                       {dictionary.db.models.monster[key as keyof Monster]}:
                     </div>
-                    <div className="Attr border-bg-grey-20 border-1.5 p-2 text-main-color-100 rounded">
+                    <div className="Attr border-bg-grey-20 border-1.5 p-2 rounded">
                       {value}
                     </div>
                   </div>
@@ -77,7 +77,7 @@ export default function MonsterDialog(props: {
               {dictionary.ui.monster.cancel}
             </button>
             <button
-              className="Button flex px-8 py-2 flex-none cursor-pointer items-center justify-center rounded-full text-main-color-100 bg-bg-grey-8 hover:bg-bg-grey-20"
+              className="Button flex px-8 py-2 flex-none cursor-pointer items-center justify-center rounded-full bg-bg-grey-8 hover:bg-bg-grey-20"
               onClick={handleModify}
             >
               {dictionary.ui.monster.modify}
