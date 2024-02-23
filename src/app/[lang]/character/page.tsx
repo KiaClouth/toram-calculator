@@ -1,5 +1,9 @@
-import Link from "next/link";
 import React from "react";
+import CharacterPageClient from "./client";
+import { Locale } from "i18n-config";
+import { getDictionary } from "get-dictionary";
+import { getServerAuthSession } from "~/server/auth";
+import { api } from "~/trpc/server";
 
 const variableBonus = {
   strR: 0,
@@ -272,7 +276,14 @@ class Character {
   }
 }
 
-export default function CharacterPage() {
+export default async function CharacterPage({
+  params: { lang },
+}: {
+  params: { lang: Locale };
+}) {
+  const dictionary = getDictionary(lang);
+  const session = await getServerAuthSession();
+  const monsterList = await api.monster.getList.query();
   const cLv = 1;
   const cAbi: abi = {
     str: 1,
@@ -307,9 +318,10 @@ export default function CharacterPage() {
   ];
   const character = new Character(cLv, cAbi, cWeapon, cPermanentSkillList);
   return (
-    <React.Fragment>
-      <div id="mianTitle">Character</div>
-      <div id="subTitle">= =</div>
-    </React.Fragment>
+    <CharacterPageClient
+      dictionary={dictionary}
+      session={session}
+      monsterList={monsterList}
+    />
   );
 }

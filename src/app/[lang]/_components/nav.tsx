@@ -32,23 +32,27 @@ export default function Nav(props: {
       [
         dictionary.ui.root.skills,
         <IconBasketball key={"IconBasketball"} />,
-        "",
+        "/building",
       ],
       [
         dictionary.ui.root.equipments,
         <IconCategory2 key={"IconCategory2"} />,
-        "",
+        "/building",
       ],
-      [dictionary.ui.root.crystas, <IconBox2 key={"IconBox2"} />, ""],
+      [dictionary.ui.root.crystas, <IconBox2 key={"IconBox2"} />, "/building"],
       [dictionary.ui.root.pets, <IconMoney key={"IconMoney"} />, "/pet"],
-      [dictionary.ui.root.items, <IconCoins key={"IconCoins"} />, ""],
+      [dictionary.ui.root.items, <IconCoins key={"IconCoins"} />, "/building"],
       ["LineB", , ,],
       [
         dictionary.ui.root.character,
         <IconGamepad key={"IconGamepad"} />,
-        "/character",
+        "/building",
       ],
-      [dictionary.ui.root.comboAnalyze, <IconFilter key={"IconFilter"} />, ""],
+      [
+        dictionary.ui.root.comboAnalyze,
+        <IconFilter key={"IconFilter"} />,
+        "/building",
+      ],
     ];
   return (
     <div className="Nav z-30 flex w-dvw flex-shrink-0 overflow-x-auto border-t-1 border-transition-color-20 backdrop-blur lg:fixed lg:left-0 lg:h-dvh lg:w-24 lg:-translate-x-3/4 lg:flex-col lg:gap-10 lg:border-none lg:bg-transition-color-8 lg:py-5 lg:opacity-0 lg:hover:translate-x-0 lg:hover:opacity-100">
@@ -85,9 +89,7 @@ export default function Nav(props: {
                 <div className="iconArea rounded-full px-4 py-1 group-hover:bg-brand-color-1st group-focus:bg-brand-color-1st">
                   {icon}
                 </div>
-                <div className="text-base lg:text-xs">
-                  {btnName}
-                </div>
+                <div className="text-base lg:text-xs">{btnName}</div>
               </Link>
             );
           } else {
@@ -95,7 +97,7 @@ export default function Nav(props: {
               <div
                 key={btnName}
                 className={
-                  "Line flex-none h-line lg:w-12 lg:bg-brand-color-1st"
+                  "Line h-line flex-none lg:w-12 lg:bg-brand-color-1st"
                 }
               ></div>
             );

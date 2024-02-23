@@ -55,6 +55,7 @@ export function middleware(request: NextRequest) {
       '/icons/512.png',
       '/app-image/screenShotPC.jpg',
       '/app-image/screenShotMobile.jpg',
+      '/app-image/bg.jpg',
       '/next-auth/provider/icon-svg/QQ.svg',
       '/sw.js'
     ].includes(pathname)

@@ -37,6 +37,9 @@ export default {
         10: {
           DEFAULT: "rgb(var(--primary) / .1)",
         },
+        0: {
+          DEFAULT: "rgb(var(--primary) / 0)",
+        },
       },
       "accent-color": {
         DEFAULT: "rgb(var(--accent) / <alpha-value>)",
@@ -67,6 +70,9 @@ export default {
         10: {
           DEFAULT: "rgb(var(--accent) / .1)",
         },
+        0: {
+          DEFAULT: "rgb(var(--accent) / 0)",
+        },
       },
       "transition-color": {
         DEFAULT: "rgb(var(--transition) / <alpha-value>)",
@@ -89,7 +95,6 @@ export default {
         line: "1px",
       },
       borderWidth: {
-        "1": "1px",
         "1.5": "1.5px",
       },
       visible: {
@@ -98,6 +103,9 @@ export default {
       fontFamily: {
         sans: ["var(--font-sans)", ...fontFamily.sans],
       },
+      backgroundImage: {
+        'aeskl': "url('/app-image/bg.jpg')",
+      }
     },
   },
   plugins: [],

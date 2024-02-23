@@ -34,7 +34,7 @@
   }
 }
 
-:root{
+:root {
   color: rgb(var(--accent));
   background-color: rgb(var(--primary));
 }
@@ -55,35 +55,47 @@
   outline: none;
 }
 
-/* 导航栏按钮的hover和focus效果，已由tailwindcss实现 */
-/* .NavBtn *:focus .iconArea,
-.NavBtn *:hover .iconArea {
-  background-color: rgb(var(--brand-2nd));
-} */
+@keyframes loading {
+  from {
+    left: 0;
+  }
+  to {
+    left: 100%;
+  }
+}
 
+/* Loading组件的动画参数 */
+.Loading .dot1 {
+  animation: loading 4s infinite;
+}
+.Loading .dot2 {
+  animation: loading 4s 1s infinite;
+}
+.Loading .dot3 {
+  animation: loading 4s 2s infinite;
+}
+
+/* index的图片背景 */
 .BG {
-  display: flex;
-  background: url(./../../public/app-image/bg.jpg) no-repeat center;
-  background-size: cover;
   opacity: 0;
 }
 
-.dark .BG{
+.dark .BG {
   opacity: 1;
 }
 
 .BGMask {
-  content: '';
+  content: "";
   z-index: -9;
 }
 
 .light .BGMask {
-  background-color: rgba(255,255,255,0.3);
+  background-color: rgba(255, 255, 255, 0.3);
   background-blend-mode: multiply;
 }
 
 .dark .BGMask {
-  background-color: rgba(0,0,0,0.7);
+  background-color: rgba(0, 0, 0, 0.7);
   background-blend-mode: multiply;
 }
 

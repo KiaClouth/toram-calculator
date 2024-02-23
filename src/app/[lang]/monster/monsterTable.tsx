@@ -64,6 +64,7 @@ export default function Table(props: {
         header: () => "ID",
         cell: (info) => info.getValue(),
         size: 250,
+        enableHiding: true,
       },
       {
         accessorKey: "name",
