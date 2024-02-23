@@ -59,7 +59,7 @@ export default function LongSearchBox(props: {
           type="search"
           placeholder={"✌" + dictionary.ui.monster.searchPlaceholder}
           list="options"
-          className="Search text-xl lg:text-lg lg:font-normal font-bold backdrop-blur-xl border-b-2 border-transition-color-20 px-5 py-3 placeholder:text-accent-color-50 hover:bg-transition-color-20 hover:border-accent-color-70 focus:border-accent-color-70 focus:outline-none"
+          className="Search lg:font-normal backdrop-blur-xl border-b-2 border-transition-color-20 px-5 py-3 placeholder:text-accent-color-50 hover:bg-transition-color-20 hover:border-accent-color-70 focus:border-accent-color-70 focus:outline-none"
           onChange={(e) => handleChange(e.target.value)}
         />
         <div
