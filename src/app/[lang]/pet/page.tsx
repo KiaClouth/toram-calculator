@@ -1,6 +1,6 @@
 import { api } from "~/trpc/server";
-import { getDictionary } from "get-dictionary";
-import { type Locale } from "i18n-config";
+import { getDictionary } from "~/app/get-dictionary";
+import { type Locale } from "~/app/i18n-config";
 import { getServerAuthSession } from "~/server/auth";
 import PetPageClient from "./client";
 

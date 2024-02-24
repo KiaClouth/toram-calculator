@@ -1,5 +1,5 @@
-import { getDictionary } from "get-dictionary";
-import { type Locale } from "i18n-config";
+import { getDictionary } from "~/app/get-dictionary";
+import { type Locale } from "~/app/i18n-config";
 import ImageBackground from "./_components/bg";
 import React from "react";
 import LoadingBox from "./_components/loadingBox";

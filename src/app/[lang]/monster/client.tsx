@@ -1,5 +1,5 @@
 "use client";
-import { type getDictionary } from "get-dictionary";
+import { type getDictionary } from "~/app/get-dictionary";
 import LongSearchBox from "./monsterSearchBox";
 import Table from "./monsterTable";
 import { type Monster } from "@prisma/client";

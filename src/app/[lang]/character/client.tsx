@@ -1,5 +1,5 @@
 "use client";
-import { type getDictionary } from "get-dictionary";
+import { type getDictionary } from "~/app/get-dictionary";
 import { type Monster } from "@prisma/client";
 import { type Session } from "next-auth";
 import React, { useState } from "react";

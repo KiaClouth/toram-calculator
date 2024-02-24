@@ -1,7 +1,7 @@
 import React from "react";
 import CharacterPageClient from "./client";
-import { Locale } from "i18n-config";
-import { getDictionary } from "get-dictionary";
+import { Locale } from "~/app/i18n-config";
+import { getDictionary } from "~/app/get-dictionary";
 import { getServerAuthSession } from "~/server/auth";
 import { api } from "~/trpc/server";
 

@@ -12,7 +12,7 @@ import {
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { type Session } from "next-auth";
 import React from "react";
-import { type getDictionary } from "get-dictionary";
+import { type getDictionary } from "~/app/get-dictionary";
 
 export default function Table(props: {
   defaultMonster: Monster;

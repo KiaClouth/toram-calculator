@@ -1,7 +1,7 @@
 "use client";
 import * as React from "react";
 import { type Monster } from "@prisma/client";
-import { type getDictionary } from "get-dictionary";
+import { type getDictionary } from "~/app/get-dictionary";
 
 interface Film {
   id: string;

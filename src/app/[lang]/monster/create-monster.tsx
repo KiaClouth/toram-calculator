@@ -2,7 +2,7 @@
 import React, { type FormEvent, useState } from "react";
 
 import { api } from "~/trpc/react";
-import type { getDictionary } from "get-dictionary";
+import type { getDictionary } from "~/app/get-dictionary";
 
 import { type Monster } from "@prisma/client";
 import type { Session } from "next-auth";

@@ -4,10 +4,10 @@ import { Inter } from "next/font/google";
 import { cookies } from "next/headers";
 import { TRPCReactProvider } from "~/trpc/react";
 import type { Metadata, Viewport } from "next";
-import type { Locale } from "~/../i18n-config";
+import type { Locale } from "~/app/i18n-config";
 import { getServerAuthSession } from "~/server/auth";
 
-import { getDictionary } from "get-dictionary";
+import { getDictionary } from "~/app/get-dictionary";
 import ThemeProvider from "./_components/themeProvider";
 import Nav from "./_components/nav";
 import DefaultPageProvider from "./_components/defaultPageProvider";

@@ -13,7 +13,7 @@ import {
 } from "./iconsList";
 import SignInOrOut from "./signInOrOut";
 import ThemeSwitch from "./themeSwitch";
-import { type getDictionary } from "get-dictionary";
+import { type getDictionary } from "~/app/get-dictionary";
 import { type Session } from "next-auth";
 
 export default function Nav(props: {

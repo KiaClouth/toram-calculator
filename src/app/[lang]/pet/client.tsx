@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { useForm } from "@tanstack/react-form";
-import { type getDictionary } from "get-dictionary";
+import { type getDictionary } from "~/app/get-dictionary";
 import { type Monster } from "@prisma/client";
 import { type Session } from "next-auth";
 import { useState } from "react";
