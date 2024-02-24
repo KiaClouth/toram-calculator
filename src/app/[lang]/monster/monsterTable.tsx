@@ -64,7 +64,6 @@ export default function Table(props: {
         header: () => "ID",
         cell: (info) => info.getValue(),
         size: 250,
-        enableHiding: true,
       },
       {
         accessorKey: "name",
@@ -76,7 +75,7 @@ export default function Table(props: {
         accessorKey: "type",
         header: () => "类型",
         cell: (info) => dictionary.db.enums.type[info.getValue<$Enums.MonsterType>()],
-        size: 180,
+        size: 80,
       },
       //   {
       //     accessorFn: (row) => row.lastName,
@@ -86,60 +85,60 @@ export default function Table(props: {
       //   },
       {
         accessorKey: "element",
-        header: () => "元素属性",
+        header: () => "属性",
         cell: (info) => dictionary.db.enums.element[info.getValue<$Enums.Element>()],
-        size: 120,
+        size: 80,
       },
       {
         accessorKey: "baseLv",
-        header: () => "基础等级",
-        size: 120,
+        header: () => "等级",
+        size: 80,
       },
       {
         accessorKey: "physicalDefense",
         header: () => "物理防御",
-        size: 120,
+        size: 110,
       },
       {
         accessorKey: "physicalResistance",
         header: () => "物理抗性",
-        size: 120,
+        size: 110,
       },
       {
         accessorKey: "magicalDefense",
         header: () => "魔法防御",
-        size: 120,
+        size: 110,
       },
       {
         accessorKey: "magicalResistance",
         header: () => "魔法抗性",
-        size: 120,
+        size: 110,
       },
       {
         accessorKey: "criticalResistance",
         header: () => "暴击抗性",
-        size: 120,
+        size: 110,
       },
       {
         accessorKey: "avoidance",
         header: () => "回避值",
-        size: 120,
+        size: 100,
       },
       {
         accessorKey: "dodge",
         header: () => "闪躲率",
-        size: 120,
+        size: 100,
       },
       {
         accessorKey: "block",
         header: () => "格挡率",
-        size: 120,
+        size: 100,
       },
       {
         accessorKey: "updatedAt",
         header: "最近一次更新于",
         cell: (info) => info.getValue<Date>().toLocaleString(),
-        size: 250,
+        size: 180,
       },
     ],
     [dictionary.db.enums.element, dictionary.db.enums.type],
@@ -150,6 +149,11 @@ export default function Table(props: {
   const [data, _setData] = React.useState(() => tableData);
 
   const table = useReactTable({
+    state: {
+      columnVisibility: {
+        "id": false
+      }
+    },
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
@@ -188,7 +192,7 @@ export default function Table(props: {
       ref={tableContainerRef}
       className="TableBox z-0 flex flex-1 flex-col overflow-auto bg-primary-color-30"
     >
-      <div className="Filter flex py- bg-primary-color gap-1">
+      <div className="Filter flex py- bg-primary-color gap-1 invisible opacity-0">
         <div className="px-1 flex bg-transition-color-8 items-center">
           <label className="flex gap-1 text-nowrap">
             <input

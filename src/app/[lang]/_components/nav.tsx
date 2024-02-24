@@ -59,7 +59,7 @@ export default function Nav(props: {
       <div>
         <Link
           href={"/"}
-          className="Home lgpx-4 group flex flex-col items-center justify-center gap-0.5 px-2 py-1.5 lg:gap-4"
+          className="Home lgpx-4 group flex flex-col items-center justify-center gap-0.5 px-1 py-2 lg:gap-4"
           tabIndex={1}
           scroll={false}
         >
@@ -67,7 +67,7 @@ export default function Nav(props: {
             <IconHome />
           </div>
           <IconLogo className="hidden lg:block" />
-          <div className="text-base lg:hidden lg:text-xs">
+          <div className="lg:hidden text-xs">
             {dictionary.ui.root.home}
           </div>
         </Link>
@@ -83,13 +83,13 @@ export default function Nav(props: {
                 className={
                   "NavBtn btn-" +
                   btnName +
-                  " group flex flex-shrink-0 flex-col items-center gap-0.5 px-2 py-1.5 lg:gap-1 lg:p-0"
+                  " group flex flex-shrink-0 flex-col items-center gap-0.5 px-1 py-2 lg:gap-1 lg:p-0"
                 }
               >
                 <div className="iconArea rounded-full px-4 py-1 group-hover:bg-brand-color-1st group-focus:bg-brand-color-1st">
                   {icon}
                 </div>
-                <div className="text-base lg:text-xs">{btnName}</div>
+                <div className="text-xs">{btnName}</div>
               </Link>
             );
           } else {

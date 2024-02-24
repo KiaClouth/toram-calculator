@@ -83,9 +83,9 @@ export default {
           DEFAULT: "rgb(var(--transition) / .08)",
         },
       },
-      "brand-color-1st": "rgb(var(--greenBlue) / <alpha-value>)",
-      "brand-color-2nd": "rgb(var(--orange) / <alpha-value>)",
-      "brand-color-3rd": "rgb(var(--yellow) / <alpha-value>)",
+      "brand-color-1st": "rgb(var(--brand-1st) / <alpha-value>)",
+      "brand-color-2nd": "rgb(var(--brand-2nd) / <alpha-value>)",
+      "brand-color-3rd": "rgb(var(--brand-3rd) / <alpha-value>)",
     },
     extend: {
       maxWidth: {
