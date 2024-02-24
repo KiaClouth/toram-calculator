@@ -31,7 +31,7 @@ export default function LongSearchBox(props: {
     monsterList.forEach((monster) => {
       const related: [string, string | undefined][] = [];
       for (const attr in monster) {
-        if (!["id", "updatedAt", "updatedById", "state"].includes(attr)) {
+        if (!["id", "updatedAt", "updatedById", "state",].includes(attr)) {
           const monsterAttr = monster[attr as keyof Monster]?.toString();
           if (monsterAttr?.match(value)?.input !== undefined) {
             related.push([attr, monsterAttr?.match(value)?.input]);

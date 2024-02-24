@@ -192,7 +192,7 @@ export default function Table(props: {
       ref={tableContainerRef}
       className="TableBox z-0 flex flex-1 flex-col overflow-auto bg-primary-color-30"
     >
-      <div className="Filter flex py- bg-primary-color gap-1 invisible opacity-0">
+      <div className="Filter flex py- bg-primary-color gap-1 collapse opacity-0">
         <div className="px-1 flex bg-transition-color-8 items-center">
           <label className="flex gap-1 text-nowrap">
             <input
