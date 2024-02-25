@@ -14,8 +14,6 @@ export default function PetPageClient(props: {
 }) {
   // 怪物数据的初始值
   const defaultMonster: Monster = {
-    id: "",
-    updatedAt: new Date(),
     updatedById: "",
     state: "PRIVATE",
     name: "",
@@ -47,16 +45,16 @@ export default function PetPageClient(props: {
 
   MonsterSchema.parse(defaultMonster)
   const { dictionary, session } = props;
-  function FieldInfo({ field }: { field: FieldApi<any, any, any, any> }) {
-    return (
-      <>
-        {field.state.meta.touchedErrors ? (
-          <em>{field.state.meta.touchedErrors}</em>
-        ) : null}
-        {field.state.meta.isValidating ? "Validating..." : null}
-      </>
-    );
-  }
+  // function FieldInfo({ field }: { field: FieldApi<any, any, any, any> }) {
+  //   return (
+  //     <>
+  //       {field.state.meta.touchedErrors ? (
+  //         <em>{field.state.meta.touchedErrors}</em>
+  //       ) : null}
+  //       {field.state.meta.isValidating ? "Validating..." : null}
+  //     </>
+  //   );
+  // }
   const form = useForm({
     defaultValues: defaultMonster,
     onSubmit: async ({ value }) => {
@@ -112,7 +110,7 @@ export default function PetPageClient(props: {
                         )
                       }
                     />
-                    <FieldInfo field={field} />
+                    {/* <FieldInfo field={field} /> */}
                   </>
                 );
               }}
