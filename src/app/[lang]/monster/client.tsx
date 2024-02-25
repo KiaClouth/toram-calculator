@@ -45,6 +45,7 @@ export default function MonserPageClient(props: {
     specialBehavior: "",
     createdByUserId: "",
   };
+
   const [monster, setMonser] = useState<Monster>(defaultMonster);
   const [monsterDialogState, setMonsterDialogState] = useState(false);
   return (
