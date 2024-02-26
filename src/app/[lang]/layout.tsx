@@ -57,6 +57,10 @@ export const metadata: Metadata = {
     description: APP_DESCRIPTION,
   },
   metadataBase: new URL(env.NEXTAUTH_URL),
+  other: {
+    // 百度HTML标签验证字段
+    "baidu-site-verification":"codeva-RFvyQ61tbi"
+  }
 };
 
 export const viewport: Viewport = {
