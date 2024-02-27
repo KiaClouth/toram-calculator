@@ -1,6 +1,5 @@
-import { Profile, TokenSet } from "next-auth";
+import { type Profile, type TokenSet } from "next-auth";
 import type { OAuthConfig, OAuthUserConfig } from "next-auth/providers/oauth";
-import { use } from "react";
 import { env } from "~/env";
 
 
@@ -63,7 +62,6 @@ export default function QQProvider<P extends QQProfile>(
         url.searchParams.append("code", params.code!);
         console.log("params.code is:", params.code);
         const res = await fetch(url).then((res) => res.text());
-        // access_token=48B33CDC5810FFE17A14D48903A5411C&expires_in=7776000&refresh_token=744DD8284E0D277A74BF030B94236887
         const accessToken = new URLSearchParams(res).get("access_token") ?? "";
         const tokens: TokenSet = {
           access_token: accessToken

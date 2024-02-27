@@ -77,16 +77,16 @@ enum MonsterType {
 }
 
 model Monster {
-    id                               String       @id @default(cuid()) /// @zod.custom.omit(["model","input"])
-    updatedAt                        DateTime?     @updatedAt /// @zod.custom.omit(["model","input"])
+    id                               String      @id @default(cuid()) /// @zod.custom.omit(["model","input"])
+    updatedAt                        DateTime    @updatedAt /// @zod.custom.omit(["model","input"])
     updatedById                      String?
-    state                            State        @default(PRIVATE)
-    name                             String       @default("一只没有名字的怪物")
-    type                             MonsterType? @default(COMMON_BOSS)
+    state                            State       @default(PRIVATE)
+    name                             String      @default("一只没有名字的怪物")
+    type                             MonsterType @default(COMMON_BOSS)
     baseLv                           Int?
     experience                       Int?
-    address                          String?      @db.TinyText
-    element                          Element?     @default(DARK)
+    address                          String?     @db.TinyText
+    element                          Element     @default(DARK)
     radius                           Int?
     maxhp                            Int?
     physicalDefense                  Int?
@@ -100,12 +100,12 @@ model Monster {
     normalAttackResistanceModifier   Int?
     physicalAttackResistanceModifier Int?
     magicalAttackResistanceModifier  Int?
-    difficultyOfTank                 Int          @default(5)
-    difficultyOfMelee                Int          @default(5)
-    difficultyOfRanged               Int          @default(5)
-    possibilityOfRunningAround       Int          @default(5)
-    specialBehavior                  String?      @db.TinyText
-    bolongTo                         UserCreate?  @relation(fields: [createdByUserId], references: [userId])
+    difficultyOfTank                 Int         @default(5)
+    difficultyOfMelee                Int         @default(5)
+    difficultyOfRanged               Int         @default(5)
+    possibilityOfRunningAround       Int         @default(5)
+    specialBehavior                  String?     @db.TinyText
+    bolongTo                         UserCreate? @relation(fields: [createdByUserId], references: [userId])
     createdByUserId                  String?
 
     @@index([name])
