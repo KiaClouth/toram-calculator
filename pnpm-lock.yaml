@@ -53,6 +53,12 @@ dependencies:
   '@trpc/server':
     specifier: ^10.43.6
     version: 10.45.0
+  babylonjs:
+    specifier: ^6.44.0
+    version: 6.44.0
+  babylonjs-loaders:
+    specifier: ^6.44.0
+    version: 6.44.0
   negotiator:
     specifier: 0.6.3
     version: 0.6.3
@@ -1644,6 +1650,22 @@ packages:
     dependencies:
       dequal: 2.0.3
     dev: true
+
+  /babylonjs-gltf2interface@6.44.0:
+    resolution: {integrity: sha512-9sHU8pa8p6Virh/I4bNGCP1f4BNWEdtD53fkcqWfLaFxT2/bRDPFCvRHxwyM6jxlsMUJQTgEzWaLBQqbFGFQ1Q==}
+    dev: false
+
+  /babylonjs-loaders@6.44.0:
+    resolution: {integrity: sha512-HyIZEGkJt1b8LpCXHZfhfZqy8F9P9lfin+eibBdPG9h49cyBZD2+aCapUULoqs1hWuY3/McLVubUX6CsQUsQlQ==}
+    dependencies:
+      babylonjs: 6.44.0
+      babylonjs-gltf2interface: 6.44.0
+    dev: false
+
+  /babylonjs@6.44.0:
+    resolution: {integrity: sha512-d7Uq5bCW+CJQ6+hWrIRbKssqZMAVh337uh+1Dcga/Fc5aOXdMja+BlszfJ8KItGyqz0qgtwZ0tQdnR5miS/Ykw==}
+    requiresBuild: true
+    dev: false
 
   /balanced-match@1.0.2:
     resolution: {integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==}

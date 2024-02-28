@@ -217,11 +217,15 @@ export default function CreateMonster(props: {
                                   <input
                                     id={field.name}
                                     name={field.name}
-                                    value={typeof field.state.value === "string" ? field.state.value : undefined}
+                                    value={typeof field.state.value !== "object" ? field.state.value : undefined}
                                     type={inputType}
                                     onBlur={field.handleBlur}
                                     onChange={(e) =>
-                                      field.handleChange(e.target.value)
+                                      field.handleChange(
+                                        inputType === "number"
+                                          ? parseFloat(e.target.value)
+                                          : e.target.value
+                                      )
                                     }
                                     className=" mt-1 rounded bg-transition-color-8 px-4 py-2"
                                   />
