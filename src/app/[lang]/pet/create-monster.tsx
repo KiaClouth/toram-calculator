@@ -8,10 +8,11 @@ import type { Session } from "next-auth";
 import { useRouter } from "next/navigation";
 import { IconCloudUpload } from "../_components/iconsList";
 import Button from "../_components/button";
-import { MonsterSchema, type Monster } from "prisma/generated/zod";
+import { type Monster as zMonster, MonsterSchema } from "prisma/generated/zod";
 import { type FieldApi, useForm } from "@tanstack/react-form";
 import { zodValidator } from "@tanstack/zod-form-adapter";
-import { z } from "zod";
+import { ZodFirstPartyTypeKind, type z } from "zod";
+import { type Monster, type $Enums } from "@prisma/client";
 
 export default function CreateMonster(props: {
   dictionary: ReturnType<typeof getDictionary>;
@@ -58,10 +59,32 @@ export default function CreateMonster(props: {
     }
   };
 
-  // function makeSchemaOptional<T extends z.ZodTypeAny>(schema: T) {
-  //   return schema.optional();
-  // }
-  
+  const getZodType = <T extends z.ZodTypeAny>(
+    schema: T,
+  ): ZodFirstPartyTypeKind => {
+    if (schema === undefined || schema == null) {
+      return ZodFirstPartyTypeKind.ZodUndefined;
+    }
+    if ("_def" in schema) {
+      if ("innerType" in schema._def) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        return getZodType(schema._def.innerType);
+      } else {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        return schema._def.typeName as ZodFirstPartyTypeKind;
+      }
+    }
+    return ZodFirstPartyTypeKind.ZodUndefined;
+  };
+
+  // 定义不需要手动输入的值
+  const hiddenData: Array<keyof Monster> = [
+    "id",
+    "updatedById",
+    "bolongToUserId",
+    "updatedAt"
+  ];
+
   return (
     <React.Fragment>
       {session?.user ? (
@@ -93,46 +116,123 @@ export default function CreateMonster(props: {
               </div>
               <div className="inputArea flex-1 overflow-y-auto">
                 <fieldset className="dataKinds flex flex-wrap lg:flex-row">
-                  {Object.entries(MonsterSchema.shape).map(([key, value]) => { 
-                    return <form.Field
-                    key={key}
-                    name={key as keyof Monster}
-                    validators={{
-                      onChangeAsyncDebounceMs: 500,
-                      onChangeAsync:
-                        MonsterSchema.shape[key as keyof Monster],
-                    }}
-                  >
-                    {(field) => (
-                      <fieldset
+                  {Object.entries(MonsterSchema.shape).map(([key, value]) => {
+                    if (hiddenData.includes(key as keyof Monster))
+                      return undefined;
+                    return (
+                      <form.Field
                         key={key}
-                        className="flex basis-1/2 flex-col gap-1 p-2 lg:basis-1/4"
+                        name={key as keyof Monster}
+                        validators={{
+                          onChangeAsyncDebounceMs: 500,
+                          onChangeAsync:
+                            MonsterSchema.shape[key as keyof zMonster],
+                        }}
                       >
-                        <label
-                          htmlFor={field.name}
-                          className="flex basis-1/4 flex-col gap-1 p-2"
-                        >
-                          {
-                            dictionary.db.models.monster[
-                              key as keyof typeof defaultMonster
-                            ]
-                          }
-                          <input
-                            id={field.name}
-                            name={field.name}
-                            value={field.state.value ?? ""}
-                            onBlur={field.handleBlur}
-                            onChange={(e) =>
-                              field.handleChange(e.target.value)
+                        {(field) => {
+                          const type =
+                            "options" in value
+                              ? (value.options as string[])
+                              : getZodType(value);
+                          if (Array.isArray(type)) {
+                            // 枚举类型的输入框以单选框的形式创建
+                            return (
+                              <fieldset
+                                key={key}
+                                className="flex basis-full flex-col gap-1 p-2"
+                              >
+                                <span>
+                                  {
+                                    dictionary.db.models.monster[
+                                      key as keyof Monster
+                                    ]
+                                  }
+                                </span>
+                                <div className="inputContianer flex flex-col lg:flex-row">
+                                  {type.map((option) => {
+                                    return (
+                                      <label
+                                        key={key + option}
+                                        className=" flex cursor-pointer justify-between gap-2 rounded-full border-1.5 border-transition-color-8 p-2 px-4 hover:border-transition-color-20 lg:flex-row-reverse lg:justify-end"
+                                      >
+                                        {
+                                          dictionary.db.enums[
+                                            (key.charAt(0).toLocaleUpperCase() +
+                                              key.slice(
+                                                1,
+                                              )) as keyof typeof $Enums
+                                          ][
+                                            option as keyof (typeof $Enums)[keyof typeof $Enums]
+                                          ]
+                                        }
+                                        <input
+                                          id={field.name + option}
+                                          name={field.name}
+                                          value={option}
+                                          type="radio"
+                                          onBlur={field.handleBlur}
+                                          onChange={(e) =>
+                                            field.handleChange(e.target.value)
+                                          }
+                                          className=" mt-1 rounded bg-transition-color-8 px-4 py-2"
+                                        />
+                                      </label>
+                                    );
+                                  })}
+                                </div>
+                                <FieldInfo field={field} />
+                              </fieldset>
+                            );
+                          } else if (typeof type === "string") {
+                            let inputType: React.HTMLInputTypeAttribute;
+                            switch (type) {
+                              case ZodFirstPartyTypeKind.ZodNumber:
+                                inputType = "number";
+
+                                break;
+                              case ZodFirstPartyTypeKind.ZodBoolean:
+                                inputType = "checkbox";
+
+                                break;
+
+                              default:
+                                inputType = "text";
+                                break;
                             }
-                            className=" mt-1 rounded bg-transition-color-8 px-4 py-2"
-                          />
-                        </label>
-                        {"options" in value ? "是枚举" : value._def.typeName}
-                        <FieldInfo field={field} />
-                      </fieldset>
-                    )}
-                  </form.Field>
+                            // 普通输入框
+                            return (
+                              <fieldset
+                                key={key}
+                                className="flex basis-1/2 flex-col gap-1 p-2 lg:basis-1/4"
+                              >
+                                <label
+                                  htmlFor={field.name}
+                                  className="flex basis-1/4 flex-col gap-1 p-2"
+                                >
+                                  {
+                                    dictionary.db.models.monster[
+                                      key as keyof Monster
+                                    ]
+                                  }
+                                  <input
+                                    id={field.name}
+                                    name={field.name}
+                                    value={typeof field.state.value === "string" ? field.state.value : undefined}
+                                    type={inputType}
+                                    onBlur={field.handleBlur}
+                                    onChange={(e) =>
+                                      field.handleChange(e.target.value)
+                                    }
+                                    className=" mt-1 rounded bg-transition-color-8 px-4 py-2"
+                                  />
+                                </label>
+                                <FieldInfo field={field} />
+                              </fieldset>
+                            );
+                          }
+                        }}
+                      </form.Field>
+                    );
                   })}
                 </fieldset>
               </div>

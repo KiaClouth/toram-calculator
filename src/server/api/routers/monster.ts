@@ -1,6 +1,4 @@
-import {
-  MonsterSchema,
-} from "prisma/generated/zod";
+import { MonsterSchema } from "prisma/generated/zod";
 import { z } from "zod";
 
 import {
@@ -11,7 +9,7 @@ import {
 
 export const monsterRouter = createTRPCRouter({
   getList: publicProcedure.query(({ ctx }) => {
-    console.log(ctx.session?.user.name + '获取了一次怪物数据')
+    console.log(ctx.session?.user.name + "获取了一次怪物数据");
     return ctx.db.monster.findMany();
   }),
   getUserByMonsterId: publicProcedure
@@ -33,10 +31,28 @@ export const monsterRouter = createTRPCRouter({
   create: protectedProcedure
     .input(MonsterSchema)
     .mutation(async ({ ctx, input }) => {
+      console.log(
+        "上传者：" + ctx.session.user.name + ",用户ID:" + ctx.session.user.id,
+      );
+      // 检查用户是否存在关联的 UserCreate
+      let userCreate = await ctx.db.userCreate.findUnique({
+        where: { userId: ctx.session?.user.id },
+      });
+
+      // 如果不存在，创建一个新的 UserCreate
+      if (!userCreate) {
+        userCreate = await ctx.db.userCreate.create({
+          data: {
+            userId: ctx.session?.user.id ?? "",
+            // 其他 UserCreate 的属性，根据实际情况填写
+          },
+        });
+      }
       return ctx.db.monster.create({
         data: {
           ...input,
-          createdByUserId: ctx.session?.user ? ctx.session.user.id : ""
+          updatedById: ctx.session?.user.id ?? "",
+          bolongToUserId: ctx.session?.user.id ?? "",
         },
       });
     }),

@@ -15,7 +15,6 @@ import { type Session } from "next-auth";
 import React, { type CSSProperties } from "react";
 import { type getDictionary } from "~/app/get-dictionary";
 import CreateMonster from "./create-monster";
-import { MonsterSchema } from "prisma/generated/zod";
 
 export default function Table(props: {
   defaultMonster: Monster;
@@ -108,14 +107,14 @@ export default function Table(props: {
         accessorKey: "type",
         header: () => "类型",
         cell: (info) =>
-          dictionary.db.enums.type[info.getValue<$Enums.MonsterType>()],
+          dictionary.db.enums.MonsterType[info.getValue<$Enums.MonsterType>()],
         size: 80,
       },
       {
         accessorKey: "element",
         header: () => "属性",
         cell: (info) =>
-          dictionary.db.enums.element[info.getValue<$Enums.Element>()],
+          dictionary.db.enums.Element[info.getValue<$Enums.Element>()],
         size: 80,
       },
       {
@@ -180,7 +179,7 @@ export default function Table(props: {
         size: 180,
       },
     ],
-    [dictionary.db.enums.element, dictionary.db.enums.type],
+    [dictionary.db.enums.Element, dictionary.db.enums.MonsterType],
   );
 
   // const [data, _setData] = React.useState(() => makeData(20));

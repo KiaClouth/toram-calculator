@@ -15,20 +15,28 @@ datasource db {
 }
 
 model User {
-    id            String      @id @default(cuid()) /// @zod.custom.omit(["model","input"])
-    name          String?
-    email         String?     @unique
-    emailVerified DateTime?
-    image         String?
-    accounts      Account[]
-    sessions      Session[]
-    posts         Post[]
-    creates       UserCreate?
+    id                   String                @id @default(cuid()) /// @zod.custom.omit(["model","input"])
+    name                 String?
+    email                String?               @unique
+    emailVerified        DateTime?
+    image                String?
+    accounts             Account[]
+    sessions             Session[]
+    posts                Post[]
+    creates              UserCreate?
+    monsters             Monster[]
+    mainWeapons          MainWeapon[]
+    subWeapons           SubWeapon[]
+    bodyArmors           BodyArmor[]
+    additionalEquipments AdditionalEquipment[]
+    specialEquipments    SpecialEquipment[]
+    pets                 Pet[]
+    skills               Skill[]
 }
 
 model UserCreate {
     belongTo             User                  @relation(fields: [userId], references: [id])
-    userId               String                @id /// @zod.custom.omit(["model","input"])
+    userId               String                @id
     characters           Character[]
     monsters             Monster[]
     mainWeapons          MainWeapon[]
@@ -41,12 +49,12 @@ model UserCreate {
 }
 
 model Post {
-    id          Int      @id @default(autoincrement()) /// @zod.custom.omit(["model","input"])
+    id          Int      @id @default(autoincrement())
     name        String
-    createdAt   DateTime @default(now()) /// @zod.custom.omit(["model","input"])
-    updatedAt   DateTime @updatedAt /// @zod.custom.omit(["model","input"])
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
     createdBy   User     @relation(fields: [createdById], references: [id])
-    createdById String /// @zod.custom.omit(["model","input"])
+    createdById String
 
     @@index([name])
 }
@@ -77,12 +85,11 @@ enum MonsterType {
 }
 
 model Monster {
-    id                               String      @id @default(cuid()) /// @zod.custom.omit(["model","input"])
-    updatedAt                        DateTime    @updatedAt /// @zod.custom.omit(["model","input"])
-    updatedById                      String?
+    id                               String      @id @default(cuid()) /// @zod.custom.omit(["model","input"]) 
+    updatedAt                        DateTime    @updatedAt
     state                            State       @default(PRIVATE)
     name                             String      @default("一只没有名字的怪物")
-    type                             MonsterType @default(COMMON_BOSS)
+    monsterType                      MonsterType @default(COMMON_BOSS)
     baseLv                           Int?
     experience                       Int?
     address                          String?     @db.TinyText
@@ -105,8 +112,12 @@ model Monster {
     difficultyOfRanged               Int         @default(5)
     possibilityOfRunningAround       Int         @default(5)
     specialBehavior                  String?     @db.TinyText
-    bolongTo                         UserCreate? @relation(fields: [createdByUserId], references: [userId])
-    createdByUserId                  String?
+    viewCount                        Int         @default(0)
+    usageCount                       Int         @default(0)
+    bolongTo                         UserCreate? @relation(fields: [bolongToUserId], references: [userId])
+    bolongToUserId                   String? /// @zod.custom.omit(["model","input"])
+    updatedBy                        User?       @relation(fields: [updatedById], references: [id])
+    updatedById                      String? /// @zod.custom.omit(["model","input"])
 
     @@index([name])
 }
@@ -237,19 +248,19 @@ enum ModifiersName {
 }
 
 model Modifier {
-    id        String             @id @default(cuid()) /// @zod.custom.omit(["model","input"])
-    name      ModifiersName      @default(ITEM_COOLDOWN)
-    valueType ModifiersValueType @default(PERCENTAGE_BONUS)
-    Type      ModifierType       @default(BASIC)
-    value     Float              @default(0)
-    usedBy    ModifiersList?     @relation(fields: [usedById], references: [id])
-    usedById  String?
+    id                 String             @id @default(cuid()) /// @zod.custom.omit(["model","input"]) 
+    modifiersName      ModifiersName      @default(ITEM_COOLDOWN)
+    modifiersValueType ModifiersValueType @default(PERCENTAGE_BONUS)
+    modifierType       ModifierType       @default(BASIC)
+    value              Float              @default(0)
+    usedBy             ModifiersList?     @relation(fields: [usedById], references: [id])
+    usedById           String?
 }
 
 model ModifiersList {
-    id                        String                @id @default(cuid()) /// @zod.custom.omit(["model","input"])
-    createdAt                 DateTime              @default(now()) /// @zod.custom.omit(["model","input"])
-    updatedAt                 DateTime              @updatedAt /// @zod.custom.omit(["model","input"])
+    id                        String                @id @default(cuid()) /// @zod.custom.omit(["model","input"]) 
+    createdAt                 DateTime              @default(now())
+    updatedAt                 DateTime              @updatedAt
     name                      String?               @default("传说中的加成项列表")
     modifiers                 Modifier[]
     usedByMainWeapon          MainWeapon[]
@@ -261,9 +272,9 @@ model ModifiersList {
 }
 
 model Character {
-    id              String          @id @default(cuid()) /// @zod.custom.omit(["model","input"])
-    createdAt       DateTime        @default(now()) /// @zod.custom.omit(["model","input"])
-    updatedAt       DateTime        @updatedAt /// @zod.custom.omit(["model","input"])
+    id              String          @id @default(cuid()) /// @zod.custom.omit(["model","input"]) 
+    createdAt       DateTime        @default(now())
+    updatedAt       DateTime        @updatedAt
     state           State           @default(PRIVATE)
     name            String          @default("取不起名字的机体")
     lv              Int             @default(1)
@@ -282,9 +293,9 @@ model Character {
 }
 
 model BaseAbi {
-    updatedAt   DateTime  @updatedAt /// @zod.custom.omit(["model","input"])
+    updatedAt   DateTime  @updatedAt
     bolongTo    Character @relation(fields: [characterId], references: [id])
-    characterId String    @id /// @zod.custom.omit(["model","input"])
+    characterId String    @id
     baseStr     Int       @default(1)
     baseInt     Int       @default(1)
     baseVit     Int       @default(1)
@@ -293,11 +304,11 @@ model BaseAbi {
 }
 
 model SpecialAbi {
-    updatedAt   DateTime       @updatedAt /// @zod.custom.omit(["model","input"])
-    bolongTo    Character      @relation(fields: [characterId], references: [id])
-    characterId String         @id /// @zod.custom.omit(["model","input"])
-    type        SpecialAbiType @default(NULL)
-    value       Int            @default(0)
+    updatedAt      DateTime       @updatedAt
+    bolongTo       Character      @relation(fields: [characterId], references: [id])
+    characterId    String         @id
+    specialAbiType SpecialAbiType @default(NULL)
+    value          Int            @default(0)
 }
 
 enum SpecialAbiType {
@@ -309,9 +320,9 @@ enum SpecialAbiType {
 }
 
 model EquipmentList {
-    updatedAt             DateTime             @updatedAt /// @zod.custom.omit(["model","input"])
+    updatedAt             DateTime             @updatedAt
     belongTo              Character            @relation(fields: [characterId], references: [id])
-    characterId           String               @id /// @zod.custom.omit(["model","input"])
+    characterId           String               @id
     mainWeapon            MainWeapon?          @relation(fields: [mainWeaponId], references: [id])
     subWeapon             SubWeapon?           @relation(fields: [subWeaponId], references: [id])
     bodyArmor             BodyArmor?           @relation(fields: [bodyArmorId], references: [id])
@@ -349,39 +360,43 @@ enum SubWeaType {
 }
 
 model MainWeapon {
-    id              String          @id @default(cuid()) /// @zod.custom.omit(["model","input"])
-    createdAt       DateTime        @default(now()) /// @zod.custom.omit(["model","input"])
-    updatedAt       DateTime        @updatedAt /// @zod.custom.omit(["model","input"])
+    id              String          @id @default(cuid()) /// @zod.custom.omit(["model","input"]) 
+    createdAt       DateTime        @default(now())
+    updatedAt       DateTime        @updatedAt
     state           State           @default(PRIVATE)
     name            String          @default("传说中的武器")
     mainWeaType     MainWeaType     @default(ONE_HAND_SWORD)
     baseAtk         Int             @default(0)
     refinement      Int             @default(0)
     stability       Int             @default(60)
-    dte             Element         @default(NO_ELEMENT)
+    element         Element         @default(NO_ELEMENT)
     belongTo        UserCreate?     @relation(fields: [createdByUserId], references: [userId])
     createdByUserId String?
     usedBy          EquipmentList[]
     ModifiersList   ModifiersList?  @relation(fields: [modifiersListId], references: [id])
     modifiersListId String?
+    User            User?           @relation(fields: [userId], references: [id])
+    userId          String?
 }
 
 model SubWeapon {
-    id              String          @id @default(cuid()) /// @zod.custom.omit(["model","input"])
-    createdAt       DateTime        @default(now()) /// @zod.custom.omit(["model","input"])
-    updatedAt       DateTime        @updatedAt /// @zod.custom.omit(["model","input"])
+    id              String          @id @default(cuid()) /// @zod.custom.omit(["model","input"]) 
+    createdAt       DateTime        @default(now())
+    updatedAt       DateTime        @updatedAt
     state           State           @default(PRIVATE)
     name            String          @default("传说中的的副武器")
     subWeaType      SubWeaType      @default(NO_WEAPOEN)
     baseAtk         Int             @default(0)
     refinement      Int             @default(0)
     stability       Int             @default(60)
-    dte             Element         @default(NO_ELEMENT)
+    element         Element         @default(NO_ELEMENT)
     belongTo        UserCreate?     @relation(fields: [createdByUserId], references: [userId])
     createdByUserId String?
     usedBy          EquipmentList[]
     ModifiersList   ModifiersList?  @relation(fields: [modifiersListId], references: [id])
     modifiersListId String?
+    User            User?           @relation(fields: [userId], references: [id])
+    userId          String?
 }
 
 enum BodyArmorType {
@@ -391,11 +406,11 @@ enum BodyArmorType {
 }
 
 model BodyArmor {
-    id              String          @id @default(cuid()) /// @zod.custom.omit(["model","input"])
-    createdAt       DateTime        @default(now()) /// @zod.custom.omit(["model","input"])
-    updatedAt       DateTime        @updatedAt /// @zod.custom.omit(["model","input"])
+    id              String          @id @default(cuid()) /// @zod.custom.omit(["model","input"]) 
+    createdAt       DateTime        @default(now())
+    updatedAt       DateTime        @updatedAt
     state           State           @default(PRIVATE)
-    type            BodyArmorType   @default(NORMAL)
+    bodyArmorType   BodyArmorType   @default(NORMAL)
     name            String          @default("传说中的的身体装备")
     refinement      Int             @default(0)
     belongTo        UserCreate?     @relation(fields: [createdByUserId], references: [userId])
@@ -403,12 +418,14 @@ model BodyArmor {
     usedBy          EquipmentList[]
     ModifiersList   ModifiersList?  @relation(fields: [modifiersListId], references: [id])
     modifiersListId String?
+    User            User?           @relation(fields: [userId], references: [id])
+    userId          String?
 }
 
 model AdditionalEquipment {
-    id              String          @id @default(cuid()) /// @zod.custom.omit(["model","input"])
-    createdAt       DateTime        @default(now()) /// @zod.custom.omit(["model","input"])
-    updatedAt       DateTime        @updatedAt /// @zod.custom.omit(["model","input"])
+    id              String          @id @default(cuid()) /// @zod.custom.omit(["model","input"]) 
+    createdAt       DateTime        @default(now())
+    updatedAt       DateTime        @updatedAt
     state           State           @default(PRIVATE)
     name            String          @default("传说中的追加装备")
     refinement      Int             @default(0)
@@ -417,70 +434,78 @@ model AdditionalEquipment {
     usedBy          EquipmentList[]
     ModifiersList   ModifiersList?  @relation(fields: [modifiersListId], references: [id])
     modifiersListId String?
+    User            User?           @relation(fields: [userId], references: [id])
+    userId          String?
 }
 
 model SpecialEquipment {
-    id              String          @id @default(cuid()) /// @zod.custom.omit(["model","input"])
-    createdAt       DateTime        @default(now()) /// @zod.custom.omit(["model","input"])
-    updatedAt       DateTime        @updatedAt /// @zod.custom.omit(["model","input"])
+    id              String          @id @default(cuid()) /// @zod.custom.omit(["model","input"]) 
+    createdAt       DateTime        @default(now())
+    updatedAt       DateTime        @updatedAt
     state           State           @default(PRIVATE)
     belongTo        UserCreate?     @relation(fields: [createdByUserId], references: [userId])
     createdByUserId String?
     usedBy          EquipmentList[]
     ModifiersList   ModifiersList?  @relation(fields: [modifiersListId], references: [id])
     modifiersListId String?
+    User            User?           @relation(fields: [userId], references: [id])
+    userId          String?
 }
 
 model Fashion {
-    updatedAt   DateTime   @updatedAt /// @zod.custom.omit(["model","input"])
+    updatedAt   DateTime   @updatedAt
     belongTo    Character? @relation(fields: [characterId], references: [id])
     characterId String     @id
 }
 
 model Cuisine {
-    updatedAt   DateTime   @updatedAt /// @zod.custom.omit(["model","input"])
+    updatedAt   DateTime   @updatedAt
     belongTo    Character? @relation(fields: [characterId], references: [id])
     characterId String     @id
 }
 
 model Consumable {
-    updatedAt   DateTime   @updatedAt /// @zod.custom.omit(["model","input"])
+    updatedAt   DateTime   @updatedAt
     belongTo    Character? @relation(fields: [characterId], references: [id])
     characterId String     @id
 }
 
 model SkillList {
-    updatedAt   DateTime   @updatedAt /// @zod.custom.omit(["model","input"])
+    updatedAt   DateTime   @updatedAt
     belongTo    Character? @relation(fields: [characterId], references: [id])
     characterId String     @id
     skill       Skill[]
 }
 
 model Skill {
-    id              String      @id @default(cuid()) /// @zod.custom.omit(["model","input"])
-    createdAt       DateTime    @default(now()) /// @zod.custom.omit(["model","input"])
-    updatedAt       DateTime    @updatedAt /// @zod.custom.omit(["model","input"])
+    id              String      @id @default(cuid()) /// @zod.custom.omit(["model","input"]) 
+    createdAt       DateTime    @default(now())
+    updatedAt       DateTime    @updatedAt
     state           State       @default(PRIVATE)
     name            String?     @default("传说中的技能")
     belongTo        UserCreate? @relation(fields: [createdByUserId], references: [userId])
     createdByUserId String?
     usedBy          SkillList[]
+    User            User?       @relation(fields: [userId], references: [id])
+    userId          String?
 }
 
 model Pet {
-    id              String      @id @default(cuid()) /// @zod.custom.omit(["model","input"])
-    createdAt       DateTime    @default(now()) /// @zod.custom.omit(["model","input"])
-    updatedAt       DateTime    @updatedAt /// @zod.custom.omit(["model","input"])
+    id              String      @id @default(cuid()) /// @zod.custom.omit(["model","input"]) 
+    createdAt       DateTime    @default(now())
+    updatedAt       DateTime    @updatedAt
     state           State       @default(PRIVATE)
     name            String?     @default("传说中的宠物")
     belongTo        UserCreate? @relation(fields: [createdByUserId], references: [userId])
     createdByUserId String?
     usedBy          Character[]
+    User            User?       @relation(fields: [userId], references: [id])
+    userId          String?
 }
 
 // Next-auth的必要模型
 model Account {
-    id                String  @id @default(cuid()) /// @zod.custom.omit(["model","input"])
+    id                String  @id @default(cuid()) /// @zod.custom.omit(["model","input"]) 
     userId            String
     type              String
     provider          String
@@ -498,7 +523,7 @@ model Account {
 }
 
 model Session {
-    id           String   @id @default(cuid()) /// @zod.custom.omit(["model","input"])
+    id           String   @id @default(cuid()) /// @zod.custom.omit(["model","input"]) 
     sessionToken String   @unique
     userId       String
     expires      DateTime

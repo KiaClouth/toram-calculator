@@ -1,9 +1,9 @@
 import "server-only";
 import type { Locale } from "./i18n-config";
-import zh_CN from "~/app/dictionaries/zh_CN.json"
-import zh_TW from "~/app/dictionaries/zh_TW.json"
-import en from "~/app/dictionaries/en.json"
-import ja from "~/app/dictionaries/ja.json"
+import zh_CN from "~/app/dictionaries/zh_CN"
+import zh_TW from "~/app/dictionaries/zh_TW"
+import en from "~/app/dictionaries/en"
+import ja from "~/app/dictionaries/ja"
 
 // We enumerate all dictionaries here for better linting and typescript support
 // We also get the default import for cleaner types
@@ -13,13 +13,13 @@ const dictionaries = {
   en: en,
   ja: ja,
   // zh_CN: () =>
-  //   import("~/app/dictionaries/zh_CN.json").then((module) => module.default),
+  //   import("~/app/dictionaries/zh_CN").then((module) => module.default),
   // zh_TW: () =>
-  //   import("~/app/dictionaries/zh_TW.json").then((module) => module.default),
+  //   import("~/app/dictionaries/zh_TW").then((module) => module.default),
   // en: () =>
-  //   import("~/app/dictionaries/en.json").then((module) => module.default),
+  //   import("~/app/dictionaries/en").then((module) => module.default),
   // ja: () =>
-  //   import("~/app/dictionaries/ja.json").then((module) => module.default),
+  //   import("~/app/dictionaries/ja").then((module) => module.default),
 };
 
 export const getDictionary = (locale: Locale) => {

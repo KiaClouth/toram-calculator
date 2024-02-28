@@ -1,11 +1,8 @@
 "use client";
 import React from "react";
-import { type FieldApi, useForm } from "@tanstack/react-form";
 import { type getDictionary } from "~/app/get-dictionary";
-import { type $Enums } from "@prisma/client";
 import { type Session } from "next-auth";
-import { type Monster, MonsterSchema } from "prisma/generated/zod";
-import { zodValidator } from "@tanstack/zod-form-adapter";
+import { type Monster } from "@prisma/client";
 import CreateMonster from "./create-monster";
 
 export default function PetPageClient(props: {
@@ -17,7 +14,7 @@ export default function PetPageClient(props: {
     updatedById: "",
     state: "PRIVATE",
     name: "",
-    type: "COMMON_BOSS",
+    monsterType: "COMMON_BOSS",
     baseLv: 0,
     experience: 0,
     address: "",
@@ -40,20 +37,23 @@ export default function PetPageClient(props: {
     difficultyOfRanged: 0,
     possibilityOfRunningAround: 0,
     specialBehavior: "",
-    createdByUserId: "",
+    bolongToUserId: "",
+    id: "",
+    updatedAt: new Date(),
+    viewCount: 0,
+    usageCount: 0,
   };
   const { dictionary, session } = props;
 
   return (
     <div>
-      
-    <React.Fragment>
+      <React.Fragment>
         <CreateMonster
           dictionary={dictionary}
           session={session}
           defaultMonster={defaultMonster}
         />
-    </React.Fragment>
+      </React.Fragment>
     </div>
   );
 }

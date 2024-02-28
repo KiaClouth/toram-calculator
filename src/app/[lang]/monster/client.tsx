@@ -20,7 +20,7 @@ export default function MonserPageClient(props: {
     updatedById: "",
     state: "PRIVATE",
     name: "",
-    type: "COMMON_BOSS",
+    monsterType: "COMMON_BOSS",
     baseLv: 0,
     experience: 0,
     address: "",
@@ -43,7 +43,9 @@ export default function MonserPageClient(props: {
     difficultyOfRanged: 0,
     possibilityOfRunningAround: 0,
     specialBehavior: "",
-    createdByUserId: "",
+    viewCount: 0,
+    usageCount: 0,
+    bolongToUserId: ""
   };
 
   const [monster, setMonser] = useState<Monster>(defaultMonster);
