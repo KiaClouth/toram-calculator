@@ -17,7 +17,7 @@ export default function CharacterPageClient(props: {
     updatedById: "",
     state: "PRIVATE",
     name: "",
-    type: "COMMON_BOSS",
+    monsterType: "COMMON_BOSS",
     baseLv: 0,
     experience: 0,
     address: "",
@@ -40,7 +40,9 @@ export default function CharacterPageClient(props: {
     difficultyOfRanged: 0,
     possibilityOfRunningAround: 0,
     specialBehavior: "",
-    createdByUserId: "",
+    viewCount: 0,
+    usageCount: 0,
+    bolongToUserId: null
   };
   const [monster, setMonser] = useState<Monster>(defaultMonster);
   const [monsterDialogState, setMonsterDialogState] = useState(false);
