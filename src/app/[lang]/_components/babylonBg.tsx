@@ -42,7 +42,7 @@ export default function BabylonBg(props: {
       Math.PI / 2,
       Math.PI / 1.97,
       12.7,
-      new BABYLON.Vector3(0, 3.3, 3),
+      new BABYLON.Vector3(0, 0, 3),
       scene,
     );
     camera.attachControl(canvas, false);
@@ -61,7 +61,7 @@ export default function BabylonBg(props: {
     // 加载model
     void BABYLON.SceneLoader.AppendAsync(
       "/models/",
-      "bg.glb",
+      "rocket.glb",
       scene,
       function (event) {
         // 加载进度计算
@@ -71,7 +71,8 @@ export default function BabylonBg(props: {
         console.log(percentage);
       },
     ).then(() => {
-      setTimeout(() => setLoaderState(true), 500);
+      setLoaderState(true)
+      // setTimeout(() => setLoaderState(true), 500);
     });
 
     // 世界坐标轴显示

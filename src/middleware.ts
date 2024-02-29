@@ -31,6 +31,7 @@ export function middleware(request: NextRequest) {
   if (
     [
       // Your other files in `public`
+      "/models/rocket.glb",
       "/models/bg.glb",
       "/manifest.json",
       "/icons/32.ico",
