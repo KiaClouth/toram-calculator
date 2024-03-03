@@ -105,6 +105,7 @@ export default {
       },
       backgroundImage: {
         'aeskl': "url('/app-image/bg.jpg')",
+        'test': "url('/app-image/test.jpg')",
       }
     },
   },

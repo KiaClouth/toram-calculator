@@ -32,22 +32,22 @@ export default function BabylonBg(props: {
     scene.clearColor = new BABYLON.Color4(0, 0, 0, 0);
 
     // 是否开启inspector ///////////////////////////////////////////////////////////////////////////////////////////////////
-    // Inspector.Show(scene, {
-    //   // embedMode: true
-    // })
+    void scene.debugLayer.show({
+      // embedMode: true
+    });
 
     // 摄像机
     const camera = new BABYLON.ArcRotateCamera(
       "Camera",
-      Math.PI / 2,
-      Math.PI / 1.97,
-      12.7,
-      new BABYLON.Vector3(0, 0, 3),
+      1.57,
+      1.3,
+      0.38,
+      new BABYLON.Vector3(0, 0, 0),
       scene,
     );
     camera.attachControl(canvas, false);
     camera.minZ = 0.1;
-    camera.fov = 0.26;
+    camera.fov = 1;
 
     const cameraControl = (event: MouseEvent): void => {
       if (event.buttons === 0) {
@@ -61,7 +61,7 @@ export default function BabylonBg(props: {
     // 加载model
     void BABYLON.SceneLoader.AppendAsync(
       "/models/",
-      "rocket.glb",
+      "bg.glb",
       scene,
       function (event) {
         // 加载进度计算
@@ -71,8 +71,52 @@ export default function BabylonBg(props: {
         console.log(percentage);
       },
     ).then(() => {
-      setLoaderState(true)
-      // setTimeout(() => setLoaderState(true), 500);
+      // 调整模型位置
+      const mainMesh = scene.getMeshById("Cube")
+      if (mainMesh) {
+        mainMesh.position = new BABYLON.Vector3(-0.3,-0.58,0)
+      }
+      // -------------------------光照设置-------------------------
+      // 设置顶部锥形光
+      const mainSpotLight = new BABYLON.SpotLight(
+        "mainSpotLight",
+        new BABYLON.Vector3(1, 2, 4.5),
+        new BABYLON.Vector3(-0.19, -0.38, -1),
+        Math.PI * (1 / 3),
+        2,
+        scene,
+      );
+      mainSpotLight.id = "mainSpotLight";
+      mainSpotLight.intensity = 40;
+      mainSpotLight.radius = 10;
+      mainSpotLight.angle = 0.2;
+      
+      // 设置舞台锥形光
+      const stageSpotLight = new BABYLON.SpotLight(
+        "stageSpotLight",
+        new BABYLON.Vector3(0.83, 2, 4.5),
+        new BABYLON.Vector3(-0.19, -0.38, -1),
+        Math.PI * (1 / 3),
+        2,
+        scene,
+      );
+      stageSpotLight.id = "stageSpotLight";
+      stageSpotLight.intensity = 40;
+      stageSpotLight.radius = 10;
+      stageSpotLight.angle = 0.2;
+
+      // 锥形光的阴影发生器---------------------
+      const generator = new BABYLON.ShadowGenerator(
+        1024,
+        stageSpotLight,
+      );
+      generator.usePoissonSampling = true;
+      generator.bias = 0.000001;
+      generator.blurScale = 1;
+      generator.transparencyShadow = true;
+      generator.darkness = 0;
+
+      setLoaderState(true);
     });
 
     // 世界坐标轴显示

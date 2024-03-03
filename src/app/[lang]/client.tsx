@@ -10,7 +10,7 @@ export default function IndexPageClient(props: { greetings: string }) {
     <React.Fragment>
       <BabylonBg setLoaderState={setLoaderState} />
       {/* <ImageBackground /> */}
-      <div className="jumbo fixed left-0 top-0 -z-0 h-dvh w-dvw opacity-50"></div>
+      {/* <div className=" fixed left-0 top-0 -z-0 h-dvh w-dvw opacity-10 bg-test bg-cover"></div> */}
       <div className="Top flex flex-1 flex-col items-center justify-center">
         <h1 className="Title mx-8 -translate-y-1/4 border-b-2 p-10 text-center text-5xl font-extrabold tracking-tight lg:text-9xl">
           Toram <span className=" text-brand-color-1st">の</span> Calculactor
