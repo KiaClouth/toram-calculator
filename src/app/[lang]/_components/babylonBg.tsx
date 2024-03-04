@@ -31,10 +31,15 @@ export default function BabylonBg(props: {
     const scene = new BABYLON.Scene(engine);
     scene.clearColor = new BABYLON.Color4(0, 0, 0, 0);
 
-    // 是否开启inspector ///////////////////////////////////////////////////////////////////////////////////////////////////
-    void scene.debugLayer.show({
-      // embedMode: true
-    });
+    function testModelOpen() {
+      // 是否开启inspector ///////////////////////////////////////////////////////////////////////////////////////////////////
+      void scene.debugLayer.show({
+        // embedMode: true
+      });
+      // 世界坐标轴显示
+      new BABYLON.AxesViewer(scene, 0.1);
+    }
+    testModelOpen();
 
     // 摄像机
     const camera = new BABYLON.ArcRotateCamera(
@@ -49,14 +54,49 @@ export default function BabylonBg(props: {
     camera.minZ = 0.1;
     camera.fov = 1;
 
+    const lensEffect = new BABYLON.LensRenderingPipeline(
+      "lens",
+      {
+        edge_blur: 1.0,
+        chromatic_aberration: 1.0,
+        distortion: 1.0,
+        dof_focus_distance: 50,
+        dof_aperture: 0.05,
+        grain_amount: 1.0,
+        dof_pentagon: true,
+        dof_gain: 1.0,
+        dof_threshold: 1.0,
+        dof_darken: 0.125,
+      },
+      scene,
+      1.0,
+      [camera],
+    );
+
     const cameraControl = (event: MouseEvent): void => {
       if (event.buttons === 0) {
-        camera.alpha += event.movementX / 100000;
-        camera.beta += event.movementY / 100000;
+        camera.alpha -= event.movementX / 100000;
+        camera.beta -= event.movementY / 100000;
       }
     };
     // 注册鼠标移动事件来触发相机控制
     canvas.addEventListener("mousemove", cameraControl);
+
+    // 功能型信息PBR材质
+    const stagePbrMaterial = new BABYLON.PBRMaterial("stagePbrMaterial", scene);
+    stagePbrMaterial.backFaceCulling = false;
+    stagePbrMaterial.albedoColor = new BABYLON.Color3(
+      255 / 255,
+      255 / 255,
+      255 / 255,
+    );
+    stagePbrMaterial.metallic = 1;
+    stagePbrMaterial.roughness = 0.9;
+    stagePbrMaterial.emissiveColor = new BABYLON.Color3(
+      255 / 255,
+      255 / 255,
+      255 / 255,
+    );
 
     // 加载model
     void BABYLON.SceneLoader.AppendAsync(
@@ -72,9 +112,10 @@ export default function BabylonBg(props: {
       },
     ).then(() => {
       // 调整模型位置
-      const mainMesh = scene.getMeshById("Cube")
+      const mainMesh = scene.getMeshById("Cube");
       if (mainMesh) {
-        mainMesh.position = new BABYLON.Vector3(-0.3,-0.58,0)
+        mainMesh.position = new BABYLON.Vector3(-0.3, -0.58, 0);
+        mainMesh.material = stagePbrMaterial;
       }
       // -------------------------光照设置-------------------------
       // 设置顶部锥形光
@@ -90,7 +131,7 @@ export default function BabylonBg(props: {
       mainSpotLight.intensity = 40;
       mainSpotLight.radius = 10;
       mainSpotLight.angle = 0.2;
-      
+
       // 设置舞台锥形光
       const stageSpotLight = new BABYLON.SpotLight(
         "stageSpotLight",
@@ -106,36 +147,13 @@ export default function BabylonBg(props: {
       stageSpotLight.angle = 0.2;
 
       // 锥形光的阴影发生器---------------------
-      const generator = new BABYLON.ShadowGenerator(
-        1024,
-        stageSpotLight,
-      );
+      const generator = new BABYLON.ShadowGenerator(1024, stageSpotLight);
       generator.usePoissonSampling = true;
       generator.bias = 0.000001;
       generator.blurScale = 1;
       generator.transparencyShadow = true;
       generator.darkness = 0;
-
-      setLoaderState(true);
     });
-
-    // 世界坐标轴显示
-    // new AxesViewer(scene, 1)
-
-    // 功能型信息PBR材质
-    const infoPbrMaterial = new BABYLON.PBRMaterial("infoPbrMaterial", scene);
-    infoPbrMaterial.albedoColor = new BABYLON.Color3(
-      255 / 255,
-      255 / 255,
-      255 / 255,
-    );
-    infoPbrMaterial.metallic = 1;
-    infoPbrMaterial.roughness = 0.9;
-    infoPbrMaterial.emissiveColor = new BABYLON.Color3(
-      255 / 255,
-      255 / 255,
-      255 / 255,
-    );
 
     // 当场景中资源加载和初始化完成后
     scene.executeWhenReady(() => {
@@ -143,6 +161,8 @@ export default function BabylonBg(props: {
       engine.runRenderLoop(() => {
         scene.render();
       });
+      // 通知loading组件
+      setLoaderState(true);
     });
 
     //组件卸载时
