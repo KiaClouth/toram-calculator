@@ -11,6 +11,7 @@ import { getDictionary } from "~/app/get-dictionary";
 import ThemeProvider from "./_components/themeProvider";
 import Nav from "./_components/nav";
 import DefaultPageProvider from "./_components/defaultPageProvider";
+import BabylonBg from "./_components/babylonBg";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -87,6 +88,7 @@ export default async function RootLayout({
       >
         <TRPCReactProvider cookies={cookies().toString()}>
           <ThemeProvider>
+            <BabylonBg />
             <Nav dictionary={dictionary} session={session} />
             <DefaultPageProvider>{children}</DefaultPageProvider>
           </ThemeProvider>

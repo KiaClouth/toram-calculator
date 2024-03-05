@@ -248,7 +248,7 @@ export default function Table(props: {
   return (
     <div
       ref={tableContainerRef}
-      className="TableBox z-0 flex flex-1 flex-col overflow-auto bg-primary-color-30"
+      className="TableBox z-0 flex flex-1 flex-col overflow-auto"
     >
       <div className="Filter flex gap-1 bg-primary-color py-2">
         <CreateMonster

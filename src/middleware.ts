@@ -25,43 +25,12 @@ function getLocale(request: NextRequest): string | undefined {
 
 export function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
-
-  // // `/_next/` and `/api/` are ignored by the watcher, but we need to ignore files in `public` manually.
-  // // If you have one
-  if (
-    [
-      // Your other files in `public`
-      "/models/rocket.glb",
-      "/models/bg.glb",
-      "/manifest.json",
-      "/icons/32.ico",
-      "/icons/48.ico",
-      "/icons/48.png",
-      "/icons/48.ico",
-      "/icons/72.ico",
-      "/icons/72.png",
-      "/icons/96.ico",
-      "/icons/96.png",
-      "/icons/128.ico",
-      "/icons/128.png",
-      "/icons/144.ico",
-      "/icons/144.png",
-      "/icons/152.ico",
-      "/icons/152.png",
-      "/icons/192.ico",
-      "/icons/192.png",
-      "/icons/256.ico",
-      "/icons/384.png",
-      "/icons/512.png",
-      "/app-image/screenShotPC.jpg",
-      "/app-image/screenShotMobile.jpg",
-      "/app-image/bg.jpg",
-      "/app-image/test.jpg",
-      "/next-auth/provider/icon-svg/QQ.svg",
-      "/sw.js",
-    ].includes(pathname)
-  )
-    return;
+  // 将public中所有的文件扩展名登记，以跳过重定向
+  const supportedExtensions = ["js","json", "svg", "jpg", "png", "ico", "glb"];
+  const isSupportedExtension = supportedExtensions.some((ext) =>
+    new RegExp(`\\.${ext}$`, "i").test(pathname),
+  );
+  if (isSupportedExtension) return;
 
   // Check if there is any supported locale in the pathname
   const pathnameIsMissingLocale = i18n.locales.every(
