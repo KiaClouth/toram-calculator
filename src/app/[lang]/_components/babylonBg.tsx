@@ -52,6 +52,16 @@ export default function BabylonBg(): JSX.Element {
     camera.attachControl(canvas, false);
     camera.minZ = 0.1;
     camera.fov = 1;
+    camera.wheelDeltaPercentage = 0.05
+    camera.inputs.clear();
+    const cameraControl = (event: MouseEvent): void => {
+      if (event.buttons === 0) {
+        camera.alpha -= event.movementX / 100000;
+        camera.beta -= event.movementY / 100000;
+      }
+    };
+    // 注册鼠标移动事件来触发相机控制
+    canvas.addEventListener("mousemove", cameraControl);
 
     // 后期处理
     const lensEffect = new BABYLON.LensRenderingPipeline(
@@ -72,15 +82,6 @@ export default function BabylonBg(): JSX.Element {
       1.0,
       [camera],
     );
-
-    const cameraControl = (event: MouseEvent): void => {
-      if (event.buttons === 0) {
-        camera.alpha -= event.movementX / 100000;
-        camera.beta -= event.movementY / 100000;
-      }
-    };
-    // 注册鼠标移动事件来触发相机控制
-    canvas.addEventListener("mousemove", cameraControl);
 
     // ----------------------------------------预设内容-----------------------------------
     // 旋转动画
