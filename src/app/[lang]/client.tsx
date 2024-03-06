@@ -23,11 +23,11 @@ export default function IndexPageClient(props: { greetings: string }) {
         }}
       />
       <div
-        className={
+        className={`flex flex-1 flex-col ${
           contentState
             ? "pointer-events-auto visible opacity-100"
             : "pointer-events-none invisible opacity-0"
-        }
+        }`}
       >
         <div className="Top flex flex-1 flex-col items-center justify-center">
           <h1 className="Title mx-8 -translate-y-1/4 border-b-2 p-10 text-center text-5xl font-extrabold tracking-tight lg:text-9xl">
