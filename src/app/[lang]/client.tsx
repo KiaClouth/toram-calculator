@@ -9,6 +9,7 @@ export default function IndexPageClient(props: { greetings: string }) {
   useEffect(() => {
     const bgImageCachedStatus = localStorage.getItem('isImageCached');
     bgImageCachedStatus && setImageCached(bgImageCachedStatus)
+    console.log(localStorage)
   },[])
 
   const imageRender = () => {
