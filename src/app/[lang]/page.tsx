@@ -1,10 +1,6 @@
 import { getDictionary } from "~/app/get-dictionary";
 import { type Locale } from "~/app/i18n-config";
-import ImageBackground from "./_components/bg";
-import React, { useState } from "react";
-import BabylonBg from "./_components/babylonBg";
-import LoadingBox from "./_components/loadingBox";
-import IndexClientOage from "./client";
+import React from "react";
 import IndexPageClient from "./client";
 
 export default async function Index({

@@ -1,30 +1,41 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 
 export default function IndexPageClient(props: { greetings: string }) {
   const { greetings } = props;
-  const [contentState, setContentStat] = useState(false);
+  const [isImageCached,setImageCached] = useState('false')
+  
+  useEffect(() => {
+    const bgImageCachedStatus = localStorage.getItem('isImageCached');
+    bgImageCachedStatus && setImageCached(bgImageCachedStatus)
+  },[])
+
+  const imageRender = () => {
+    if (isImageCached !== 'true') {
+      return;
+    } else {
+      return (
+        <Image // 配合loading页面实现在loading图片加载完成前不展示页面内容，防止闪烁
+          src={"/app-image/bg.jpg"}
+          alt="背景图片"
+          width={0}
+          height={0}
+          className={`fixed left-0 top-0 z-10 h-dvh w-dvw invisible opacity-0`}
+          onLoad={() => {
+            localStorage.setItem('isImageCached', 'true');
+          }}
+        />
+      );
+    }
+  };
+
   return (
     <React.Fragment>
-      <Image // 配合loading页面实现在loading图片加载完成前不展示页面内容，防止闪烁
-        src={"/app-image/bg.jpg"}
-        alt="背景图片"
-        width={0}
-        height={0}
-        className={`fixed left-0 top-0 z-10 h-dvh w-dvw ${
-          !contentState
-            ? "pointer-events-auto visible opacity-100"
-            : "pointer-events-none invisible opacity-0"
-        }`}
-        onLoad={() => {
-          console.log("图片加载完毕");
-          setContentStat(true);
-        }}
-      />
+      {imageRender()}
       <div
         className={`flex flex-1 flex-col ${
-          contentState
+          isImageCached === 'true'
             ? "pointer-events-auto visible opacity-100"
             : "pointer-events-none invisible opacity-0"
         }`}
