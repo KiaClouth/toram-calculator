@@ -24,6 +24,7 @@ export default function IndexPageClient(props: { greetings: string }) {
           height={0}
           className={`fixed left-0 top-0 z-10 h-dvh w-dvw invisible opacity-0`}
           onLoad={() => {
+            console.log("尝试写入localstorage")
             localStorage.setItem('isImageCached', 'true');
           }}
         />
