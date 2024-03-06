@@ -4,7 +4,6 @@ import * as BABYLON from "babylonjs";
 import "babylonjs-loaders";
 import React from "react";
 import LoadingBox from "./loadingBox";
-// import "babylonjs-inspector";
 
 export default function BabylonBg(): JSX.Element {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -27,8 +26,17 @@ export default function BabylonBg(): JSX.Element {
       loadingUIText: "Loading...",
     };
 
+    const mainColor = new BABYLON.Color3(
+      234 / 255,
+      249 / 255,
+      254 / 255,
+    ).toLinearSpace();
     const scene = new BABYLON.Scene(engine);
-    scene.clearColor = new BABYLON.Color4(0, 0, 0, 0);
+    scene.clearColor = new BABYLON.Color4(0, 0, 0, 1);
+    scene.ambientColor = mainColor;
+    // scene.fogMode = BABYLON.Scene.FOGMODE_EXP2;
+    // scene.fogDensity = 0.01;
+    // scene.fogColor = mainColor;
 
     function testModelOpen() {
       // 是否开启inspector ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -43,16 +51,16 @@ export default function BabylonBg(): JSX.Element {
     // 摄像机
     const camera = new BABYLON.ArcRotateCamera(
       "Camera",
-      1.57,
-      1.3,
-      0.38,
-      new BABYLON.Vector3(0, 0, 0),
+      1.58,
+      1.6,
+      3.12,
+      new BABYLON.Vector3(0, 0.43, 0),
       scene,
     );
     camera.attachControl(canvas, false);
     camera.minZ = 0.1;
     camera.fov = 1;
-    camera.wheelDeltaPercentage = 0.05
+    camera.wheelDeltaPercentage = 0.05;
     camera.inputs.clear();
     const cameraControl = (event: MouseEvent): void => {
       if (event.buttons === 0) {
@@ -64,7 +72,7 @@ export default function BabylonBg(): JSX.Element {
     canvas.addEventListener("mousemove", cameraControl);
 
     // 后期处理
-    const lensEffect = new BABYLON.LensRenderingPipeline(
+    new BABYLON.LensRenderingPipeline(
       "lens",
       {
         edge_blur: 1.0,
@@ -84,34 +92,25 @@ export default function BabylonBg(): JSX.Element {
     );
 
     // ----------------------------------------预设内容-----------------------------------
-    // 旋转动画
-    const frameRate = 10;
+    // y旋转动画
     const yRot = new BABYLON.Animation(
       "yRot",
       "rotation.y",
-      frameRate,
+      1,
       BABYLON.Animation.ANIMATIONTYPE_FLOAT,
       BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE,
     );
-
-    const keyFramesR = [];
-
-    keyFramesR.push({
-      frame: 0,
-      value: 0,
-    });
-
-    keyFramesR.push({
-      frame: 48 * frameRate,
-      value: Math.PI,
-    });
-
-    keyFramesR.push({
-      frame: 96 * frameRate,
-      value: 2 * Math.PI,
-    });
-
-    yRot.setKeys(keyFramesR);
+    yRot.setKeys([
+      // 由于是匀速旋转动画，只有起始帧和终点帧
+      {
+        frame: 0,
+        value: 0,
+      },
+      {
+        frame: 96,
+        value: 2 * Math.PI,
+      },
+    ]);
 
     // 房间PBR材质
     const stagePbrMaterial = new BABYLON.PBRMaterial("stagePbrMaterial", scene);
@@ -131,37 +130,34 @@ export default function BabylonBg(): JSX.Element {
     stagePbrMaterial.reflectionTexture = stageTexture;
     stagePbrMaterial.metallic = 0.5;
     stagePbrMaterial.roughness = 0.5;
-    stagePbrMaterial.albedoColor = new BABYLON.Color3(
-      234 / 255,
-      249 / 255,
-      254 / 255,
-    ).toLinearSpace();
+    stagePbrMaterial.albedoColor = mainColor;
+    stagePbrMaterial.ambientColor = new BABYLON.Color3(0.008, 0.01, 0.01);
 
     // -------------------------光照设置-------------------------
     // 设置顶部锥形光
     const mainSpotLight = new BABYLON.SpotLight(
       "mainSpotLight",
-      new BABYLON.Vector3(-0.7, 1.8, 2.2),
-      new BABYLON.Vector3(0.4, -1, -2),
-      Math.PI / 9,
+      new BABYLON.Vector3(0, 30, 0),
+      new BABYLON.Vector3(0, -1, 0),
+      Math.PI / 3,
       2,
       scene,
     );
     mainSpotLight.id = "mainSpotLight";
-    mainSpotLight.intensity = 40;
+    mainSpotLight.intensity = 250;
     mainSpotLight.radius = 10;
 
     // 设置椭圆形舞台锥形光
     const stageSpotLight = new BABYLON.SpotLight(
       "stageSpotLight",
-      new BABYLON.Vector3(0, 2, 0),
+      new BABYLON.Vector3(0, 4.5, 2.5),
       new BABYLON.Vector3(0, -1, 0),
       Math.PI / 4,
       2,
       scene,
     );
     stageSpotLight.id = "stageSpotLight";
-    stageSpotLight.intensity = 20;
+    stageSpotLight.intensity = 40;
     stageSpotLight.radius = 10;
 
     // 锥形光的阴影发生器---------------------
@@ -175,7 +171,7 @@ export default function BabylonBg(): JSX.Element {
     // 加载model
     void BABYLON.SceneLoader.AppendAsync(
       "/models/",
-      "bg.glb",
+      "bg1.glb",
       scene,
       function (event) {
         // 加载进度计算
@@ -184,49 +180,40 @@ export default function BabylonBg(): JSX.Element {
           : "";
       },
     ).then(() => {
-      // 调整模型位置
-      const mainMesh = scene.getMeshById("Cube");
-      if (mainMesh) {
-        mainMesh.position = new BABYLON.Vector3(-0.3, -0.58, 0);
-        mainMesh.material = stagePbrMaterial;
-        mainMesh.receiveShadows = true;
-        generator.addShadowCaster(mainMesh, true);
-      }
+      // 材质添加
+      scene.meshes.forEach((mesh) => {
+        mesh.material = stagePbrMaterial;
+        mesh.receiveShadows = true;
+        generator.addShadowCaster(mesh, true);
+      });
     });
-
-    // 中央四边形
-    const testBox = BABYLON.MeshBuilder.CreatePolyhedron("tetra", {
-      sizeX: 0.1,
-      sizeY: 0.1,
-      sizeZ: 0.1,
-    });
-    testBox.position = new BABYLON.Vector3(0, 0, -0.3);
-    testBox.material = stagePbrMaterial;
-    generator.addShadowCaster(testBox, true);
 
     // 两侧柱状粒子系统
-    const spsPositionL = { x: -0.8, y: 0, z: -0.5 }; // 左侧粒子柱中心坐标
-    const spsPositionR = { x: 0.8, y: 0, z: -0.5 }; // 右侧粒子柱中心坐标
-    const spsSizeXZ = 0.25; // 粒子柱宽度和厚度
+    const spsPositionL = { x: -7, y: 3, z: -6 }; // 左侧粒子柱中心坐标
+    const spsPositionR = { x: 7, y: 3, z: -6 }; // 右侧粒子柱中心坐标
+    const spsSizeXZ = 2; // 粒子柱宽度和厚度
+    const spsSizeY = 10; // 粒子柱高度
+    const spsNumber = 1000; // 粒子数
+
     const SPS = new BABYLON.SolidParticleSystem("SPS", scene);
     const tetra = BABYLON.MeshBuilder.CreateBox("tetra", {});
-    SPS.addShape(tetra, 1500);
+    SPS.addShape(tetra, spsNumber);
     tetra.dispose();
     const spsMesh = SPS.buildMesh();
+    spsMesh.rotation = new BABYLON.Vector3(Math.PI * -1 / 12,0,0)
     spsMesh.material = stagePbrMaterial;
     generator.addShadowCaster(spsMesh, true);
+    const particlePosY: number[] = [];
 
     SPS.initParticles = () => {
       for (let p = 0; p < SPS.nbParticles; p++) {
         const particle = SPS.particles[p]!;
+        const currY = BABYLON.Scalar.RandomRange(0, spsPositionL.y + spsSizeY);
+        particlePosY.push(currY);
         if (p % 2 === 0) {
           particle.position.x = BABYLON.Scalar.RandomRange(
             spsPositionL.x - spsSizeXZ,
             spsPositionL.x + spsSizeXZ,
-          );
-          particle.position.y = BABYLON.Scalar.RandomRange(
-            spsPositionL.y - 1,
-            spsPositionL.y + 1,
           );
           particle.position.z = BABYLON.Scalar.RandomRange(
             spsPositionL.z - spsSizeXZ,
@@ -237,17 +224,14 @@ export default function BabylonBg(): JSX.Element {
             spsPositionR.x - spsSizeXZ,
             spsPositionR.x + spsSizeXZ,
           );
-          particle.position.y = BABYLON.Scalar.RandomRange(
-            spsPositionR.y - 1,
-            spsPositionR.y + 1,
-          );
           particle.position.z = BABYLON.Scalar.RandomRange(
             spsPositionR.z - spsSizeXZ,
             spsPositionR.z + spsSizeXZ,
           );
         }
+        particle.position.y = currY - 0.35;
 
-        const scale = BABYLON.Scalar.RandomRange(0.0075, 0.02);
+        const scale = BABYLON.Scalar.RandomRange(0.1, 0.2);
         particle.scale.x = scale;
         particle.scale.y = scale;
         particle.scale.z = scale;
@@ -260,10 +244,24 @@ export default function BabylonBg(): JSX.Element {
 
     SPS.initParticles(); //call the initialising function
     SPS.setParticles(); //apply the properties and display the mesh
+    SPS.updateParticle = (particle) => {
+      if (particle.position.y >= spsSizeY) {
+        particle.position.y = - Math.random() * spsSizeY * 1 / 2;
+      } else {
+        particle.position.y +=
+          (0.04 * particlePosY[particle.idx]!) / engine.getFps();
+        particle.rotation.y +=
+          (0.1 * particlePosY[particle.idx]!) / engine.getFps();
+      }
+      return particle;
+    };
+
+    scene.registerAfterRender(() => {
+      SPS.setParticles();
+    });
 
     // 当场景中资源加载和初始化完成后
     scene.executeWhenReady(() => {
-      scene.beginDirectAnimation(testBox, [yRot], 0, 96 * frameRate, true);
       // 注册循环渲染函数
       engine.runRenderLoop(() => {
         scene.render();
