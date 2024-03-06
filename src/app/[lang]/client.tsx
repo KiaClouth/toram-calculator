@@ -6,7 +6,7 @@ export default function IndexPageClient(props: { greetings: string }) {
   const { greetings } = props;
   const [isImageCached,setImageCached] = useState('false')
   
-  useEffect(() => {
+  useEffect(() => { // 从localstorage读取图片缓存状态
     const bgImageCachedStatus = localStorage.getItem('isImageCached');
     bgImageCachedStatus && setImageCached(bgImageCachedStatus)
     console.log(localStorage)
