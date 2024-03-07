@@ -275,7 +275,7 @@ export default function BabylonBg(): JSX.Element {
       // 世界坐标轴显示
       new BABYLON.AxesViewer(scene, 0.1);
     }
-    testModelOpen();
+    // testModelOpen();
 
     // 摄像机
     const camera = new BABYLON.ArcRotateCamera(
@@ -290,7 +290,7 @@ export default function BabylonBg(): JSX.Element {
     camera.minZ = 0.1;
     camera.fov = 1;
     camera.wheelDeltaPercentage = 0.05;
-    // camera.inputs.clear();
+    camera.inputs.clear();
     const cameraControl = (event: MouseEvent): void => {
       if (event.buttons === 0) {
         camera.alpha -= event.movementX / 100000;
