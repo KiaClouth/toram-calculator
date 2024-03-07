@@ -6,19 +6,242 @@ import React from "react";
 import Image from "next/image";
 import LoadingBox from "./loadingBox";
 
+declare module "babylonjs" {
+  interface Material {
+    fogofwar?: FogOfWarPluginMaterial;
+    volumetricFog?: VolumetricFogPluginMaterial
+  }
+}
+
+class FogOfWarPluginMaterial extends BABYLON.MaterialPluginBase {
+  constructor(material: BABYLON.Material) {
+    // last parameter is a priority, which lets you define the order multiple plugins are run.
+    super(material, "FogOfWar", 200, { FogOfWar: false });
+
+    // let's enable it by default
+    this.isEnabled = true;
+  }
+
+  static fogCenter = new BABYLON.Vector3(1, 1, 0);
+
+  get isEnabled() {
+    return this._isEnabled;
+  }
+
+  set isEnabled(enabled) {
+    if (this._isEnabled === enabled) {
+      return;
+    }
+    this._isEnabled = enabled;
+    this.markAllDefinesAsDirty();
+    this._enable(this._isEnabled);
+  }
+
+  _isEnabled = false;
+
+  // Also, you should always associate a define with your plugin because the list of defines (and their values)
+  // is what triggers a recompilation of the shader: a shader is recompiled only if a value of a define changes.
+  prepareDefines(
+    defines: Record<string, boolean>,
+    scene: BABYLON.Scene,
+    mesh: BABYLON.Mesh,
+  ) {
+    defines.FogOfWar = this._isEnabled;
+  }
+
+  getClassName() {
+    return "FogOfWarPluginMaterial";
+  }
+
+  getUniforms() {
+    return {
+      ubo: [{ name: "fogCenter", size: 3, type: "vec3" }],
+      fragment: `#ifdef FogOfWar
+                uniform vec3 fogCenter;
+                #endif`,
+    };
+  }
+
+  bindForSubMesh(
+    uniformBuffer: {
+      updateVector3: (arg0: string, arg1: BABYLON.Vector3) => void;
+    },
+    scene: BABYLON.Scene,
+    engine: BABYLON.Engine,
+    subMesh: BABYLON.SubMesh,
+  ) {
+    if (this._isEnabled) {
+      uniformBuffer.updateVector3(
+        "fogCenter",
+        FogOfWarPluginMaterial.fogCenter,
+      );
+    }
+  }
+
+  getCustomCode = (
+    shaderType: string,
+  ):
+    | {
+        // 不知道为什么不主动声明返回值类型就会推断错误
+        CUSTOM_VERTEX_DEFINITIONS: string;
+        CUSTOM_VERTEX_MAIN_END: string;
+      }
+    | {
+        CUSTOM_FRAGMENT_MAIN_END: string;
+        CUSTOM_FRAGMENT_DEFINITIONS: string;
+      }
+    | null => {
+    if (shaderType === "vertex") {
+      return {
+        CUSTOM_VERTEX_DEFINITIONS: `
+                  varying vec3 vWorldPos;
+              `,
+        CUSTOM_VERTEX_MAIN_END: `
+                  vWorldPos = worldPos.xyz; 
+              `,
+      };
+    }
+    if (shaderType === "fragment") {
+      // we're adding this specific code at the end of the main() function
+      return {
+        CUSTOM_FRAGMENT_MAIN_END: `
+                  float d = length(vWorldPos.xyz - fogCenter);
+                  d = (10.0 - d)/10.0;
+                  gl_FragColor.rgb *= vec3(d);
+              `,
+        CUSTOM_FRAGMENT_DEFINITIONS: `
+                  varying vec3 vWorldPos;
+              `,
+      };
+    }
+    // for other shader types we're not doing anything, return null
+    return null;
+  };
+}
+
+class VolumetricFogPluginMaterial extends BABYLON.MaterialPluginBase {
+  center = new BABYLON.Vector3(0, 0, 0);
+  radius = 3;
+  color = new BABYLON.Color3(1, 1, 1);
+  density = 4.5;
+  _varColorName: string;
+
+  get isEnabled() {
+    return this._isEnabled;
+  }
+
+  set isEnabled(enabled) {
+    if (this._isEnabled === enabled) {
+      return;
+    }
+    this._isEnabled = enabled;
+    this.markAllDefinesAsDirty();
+    this._enable(this._isEnabled);
+  }
+
+  _isEnabled = false;
+
+  constructor(material: BABYLON.Material) {
+    super(material, "VolumetricFog", 500, { VOLUMETRIC_FOG: false });
+
+    this._varColorName =
+      material instanceof BABYLON.PBRBaseMaterial ? "finalColor" : "color";
+  }
+
+  prepareDefines(
+    defines: BABYLON.MaterialDefines,
+    scene: BABYLON.Scene,
+    mesh: BABYLON.Mesh,
+  ) {
+    defines.VOLUMETRIC_FOG = this._isEnabled;
+  }
+
+  getUniforms() {
+    return {
+      ubo: [
+        { name: "volFogCenter", size: 3, type: "vec3" },
+        { name: "volFogRadius", size: 1, type: "float" },
+        { name: "volFogColor", size: 3, type: "vec3" },
+        { name: "volFogDensity", size: 1, type: "float" },
+      ],
+      fragment: `#ifdef VOLUMETRIC_FOG
+                  uniform vec3 volFogCenter;
+                  uniform float volFogRadius;
+                  uniform vec3 volFogColor;
+                  uniform float volFogDensity;
+              #endif`,
+    };
+  }
+
+  bindForSubMesh(
+    uniformBuffer: {
+      updateVector3: (arg0: string, arg1: BABYLON.Vector3) => void;
+      updateFloat: (arg0: string, arg1: number) => void;
+      updateColor3: (arg0: string, arg1: BABYLON.Color3) => void;
+    },
+    scene: BABYLON.Scene,
+    engine: BABYLON.Engine,
+    subMesh: BABYLON.SubMesh,
+  ) {
+    if (this._isEnabled) {
+      uniformBuffer.updateVector3("volFogCenter", this.center);
+      uniformBuffer.updateFloat("volFogRadius", this.radius);
+      uniformBuffer.updateColor3("volFogColor", this.color);
+      uniformBuffer.updateFloat("volFogDensity", this.density);
+    }
+  }
+
+  getClassName() {
+    return "VolumetricFogPluginMaterial";
+  }
+
+  getCustomCode(shaderType: string) {
+    return shaderType === "vertex"
+      ? null
+      : {
+          CUSTOM_FRAGMENT_BEFORE_FRAGCOLOR: `
+              #ifdef VOLUMETRIC_FOG
+                  float volFogRadius2 = volFogRadius * volFogRadius;
+                  float distCamToPos = distance(vPositionW.xyz, vEyePosition.xyz);
+                  vec3 dir = normalize(vPositionW.xyz - vEyePosition.xyz);
+                  vec3 L = volFogCenter - vEyePosition.xyz;
+                  float tca = dot(L, dir);
+                  float d2 = dot(L, L) - tca * tca;
+                  if (d2 < volFogRadius2) {
+                      float thc = sqrt(volFogRadius2 - d2);
+                      float t0 = tca - thc;
+                      float t1 = tca + thc;
+                      float dist = 0.0;
+                      if (t0 < 0.0 && t1 > 0.0) {
+                          dist = min(distCamToPos, t1);
+                      } else if (t0 > 0.0 && t1 > 0.0 && t0 < distCamToPos) {
+                          dist = min(t1, distCamToPos) - t0;
+                      }
+                      float distToCenter = length(cross(volFogCenter - vEyePosition.xyz, dir));
+                      float fr = distToCenter < volFogRadius ? smoothstep(0.0, 1.0, cos(distToCenter/volFogRadius*3.141592/2.0)) : 0.0;
+                      float e = dist/(volFogRadius*2.0);
+                      e = 1.0 - exp(-e * volFogDensity);
+                      ${this._varColorName} = mix(${this._varColorName}, vec4(volFogColor, ${this._varColorName}.a), clamp(e*fr, 0.0, 1.0));
+                  }
+              #endif
+          `,
+        };
+  }
+}
+
 export default function BabylonBg(): JSX.Element {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [loaderState, setLoaderState] = useState(false);
   const [docSize, setDocSize] = useState({
     w: 0,
-    h:0
-  })
+    h: 0,
+  });
 
   useEffect(() => {
     setDocSize({
       w: document.body.clientWidth,
-      h: document.body.clientHeight
-    })
+      h: document.body.clientHeight,
+    });
     const canvas = canvasRef.current;
     if (!canvas) return;
     const engine = new BABYLON.Engine(canvas, true);
@@ -43,9 +266,6 @@ export default function BabylonBg(): JSX.Element {
     const scene = new BABYLON.Scene(engine);
     scene.clearColor = new BABYLON.Color4(0, 0, 0, 1);
     scene.ambientColor = mainColor;
-    // scene.fogMode = BABYLON.Scene.FOGMODE_EXP2;
-    // scene.fogDensity = 0.01;
-    // scene.fogColor = mainColor;
 
     function testModelOpen() {
       // 是否开启inspector ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -55,7 +275,7 @@ export default function BabylonBg(): JSX.Element {
       // 世界坐标轴显示
       new BABYLON.AxesViewer(scene, 0.1);
     }
-    // testModelOpen();
+    testModelOpen();
 
     // 摄像机
     const camera = new BABYLON.ArcRotateCamera(
@@ -70,7 +290,7 @@ export default function BabylonBg(): JSX.Element {
     camera.minZ = 0.1;
     camera.fov = 1;
     camera.wheelDeltaPercentage = 0.05;
-    camera.inputs.clear();
+    // camera.inputs.clear();
     const cameraControl = (event: MouseEvent): void => {
       if (event.buttons === 0) {
         camera.alpha -= event.movementX / 100000;
@@ -123,20 +343,6 @@ export default function BabylonBg(): JSX.Element {
 
     // 房间PBR材质
     const stagePbrMaterial = new BABYLON.PBRMaterial("stagePbrMaterial", scene);
-    const stageTexture = new BABYLON.MirrorTexture(
-      "stageTexture",
-      512,
-      scene,
-      true,
-    );
-    stageTexture.mirrorPlane = BABYLON.Plane.FromPositionAndNormal(
-      BABYLON.Vector3.Zero(),
-      BABYLON.Vector3.Forward(),
-    );
-    stageTexture.lodGenerationOffset = 0;
-    stageTexture.lodGenerationScale = 0.8;
-
-    stagePbrMaterial.reflectionTexture = stageTexture;
     stagePbrMaterial.metallic = 0.5;
     stagePbrMaterial.roughness = 0.5;
     stagePbrMaterial.albedoColor = mainColor;
@@ -153,7 +359,7 @@ export default function BabylonBg(): JSX.Element {
       scene,
     );
     mainSpotLight.id = "mainSpotLight";
-    mainSpotLight.intensity = 250;
+    mainSpotLight.intensity = 300;
     mainSpotLight.radius = 10;
 
     // 设置椭圆形舞台锥形光
@@ -170,31 +376,25 @@ export default function BabylonBg(): JSX.Element {
     stageSpotLight.radius = 10;
 
     // 锥形光的阴影发生器---------------------
-    const generator = new BABYLON.ShadowGenerator(1024, stageSpotLight);
-    generator.usePoissonSampling = true;
-    generator.bias = 0.000001;
-    generator.blurScale = 1;
-    generator.transparencyShadow = true;
-    generator.darkness = 0;
+    const shadowGenerator = new BABYLON.ShadowGenerator(1024, mainSpotLight);
+    shadowGenerator.usePoissonSampling = true;
+    shadowGenerator.bias = 0.000001;
+    shadowGenerator.blurScale = 2;
+    shadowGenerator.transparencyShadow = true;
+    shadowGenerator.darkness = 0.5;
+    shadowGenerator.useContactHardeningShadow = true;
+    shadowGenerator.contactHardeningLightSizeUVRatio = 0.05;
 
-    // 加载model
-    void BABYLON.SceneLoader.AppendAsync(
-      "/models/",
-      "bg1.glb",
-      scene,
-      function (event) {
-        // 加载进度计算
-        const percentage = event.lengthComputable
-          ? " " + Math.floor((event.loaded / event.total) * 100) + "%"
-          : "";
-      },
-    ).then(() => {
-      // 材质添加
-      scene.meshes.forEach((mesh) => {
-        mesh.material = stagePbrMaterial;
-        mesh.receiveShadows = true;
-        generator.addShadowCaster(mesh, true);
-      });
+    // 迷雾
+    // BABYLON.RegisterMaterialPlugin("FogOfWar", (material) => {
+    //   material.fogofwar = new FogOfWarPluginMaterial(material);
+    //   return material.fogofwar;
+    // });
+
+    // 体积雾
+    BABYLON.RegisterMaterialPlugin("VolumetricFog", (material) => {
+      material.volumetricFog = new VolumetricFogPluginMaterial(material);
+      return material.volumetricFog;
     });
 
     // 两侧柱状粒子系统
@@ -209,9 +409,8 @@ export default function BabylonBg(): JSX.Element {
     SPS.addShape(tetra, spsNumber);
     tetra.dispose();
     const spsMesh = SPS.buildMesh();
-    spsMesh.rotation = new BABYLON.Vector3(Math.PI * -1 / 12,0,0)
-    spsMesh.material = stagePbrMaterial;
-    generator.addShadowCaster(spsMesh, true);
+    spsMesh.material = stagePbrMaterial
+    spsMesh.rotation = new BABYLON.Vector3((Math.PI * -1) / 12, 0, 0);
     const particlePosY: number[] = [];
 
     SPS.initParticles = () => {
@@ -240,7 +439,7 @@ export default function BabylonBg(): JSX.Element {
         }
         particle.position.y = currY - 0.35;
 
-        const scale = BABYLON.Scalar.RandomRange(0.1, 0.2);
+        const scale = BABYLON.Scalar.RandomRange(0.15, 0.2);
         particle.scale.x = scale;
         particle.scale.y = scale;
         particle.scale.z = scale;
@@ -255,12 +454,12 @@ export default function BabylonBg(): JSX.Element {
     SPS.setParticles(); //apply the properties and display the mesh
     SPS.updateParticle = (particle) => {
       if (particle.position.y >= spsSizeY) {
-        particle.position.y = - Math.random() * spsSizeY * 1 / 2;
+        particle.position.y = (-Math.random() * spsSizeY * 1) / 2;
       } else {
         particle.position.y +=
           (0.04 * particlePosY[particle.idx]!) / engine.getFps();
         particle.rotation.y +=
-          (0.1 * particlePosY[particle.idx]!) / engine.getFps();
+          (0.05 * particlePosY[particle.idx]!) / engine.getFps();
       }
       return particle;
     };
@@ -269,6 +468,33 @@ export default function BabylonBg(): JSX.Element {
       SPS.setParticles();
     });
 
+    // 加载model
+    void BABYLON.SceneLoader.AppendAsync(
+      "/models/",
+      "bg1.glb",
+      scene,
+      function (event) {
+        // 加载进度计算
+        const percentage = event.lengthComputable
+          ? " " + Math.floor((event.loaded / event.total) * 100) + "%"
+          : "";
+      },
+    ).then(() => {
+      // 材质添加
+      scene.meshes.forEach((mesh) => {
+        // mesh.material = stagePbrMaterial;
+        mesh.receiveShadows = true;
+        mesh.material &&  (mesh.material.backFaceCulling = false)
+        shadowGenerator.addShadowCaster(mesh, true);
+        const mat: VolumetricFogPluginMaterial | undefined | null = mesh.material?.pluginManager?.getPlugin("VolumetricFog")
+        if (mat !== undefined && mat !== null) {
+          mat.isEnabled = true
+          mat.color = mainColor
+          mat.radius = 4
+          mat.density = 0.5
+        }
+      });
+    });
     // 当场景中资源加载和初始化完成后
     scene.executeWhenReady(() => {
       // 注册循环渲染函数
