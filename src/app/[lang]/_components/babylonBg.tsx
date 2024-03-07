@@ -3,13 +3,22 @@ import { useEffect, useRef, useState } from "react";
 import * as BABYLON from "babylonjs";
 import "babylonjs-loaders";
 import React from "react";
+import Image from "next/image";
 import LoadingBox from "./loadingBox";
 
 export default function BabylonBg(): JSX.Element {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [loaderState, setLoaderState] = useState(false);
+  const [docSize, setDocSize] = useState({
+    w: 0,
+    h:0
+  })
 
   useEffect(() => {
+    setDocSize({
+      w: document.body.clientWidth,
+      h: document.body.clientHeight
+    })
     const canvas = canvasRef.current;
     if (!canvas) return;
     const engine = new BABYLON.Engine(canvas, true);
@@ -296,6 +305,16 @@ export default function BabylonBg(): JSX.Element {
             : "pointer-events-none invisible opacity-0"
         }`}
       >
+        <Image // 此组件只用作判断图片是否缓存完毕，不展示
+          src={"/app-image/bg.jpg"}
+          alt="背景图片"
+          width={docSize.w}
+          height={docSize.h}
+          className={`invisible fixed left-0 top-0 z-10 h-dvh w-dvw opacity-0`}
+          onLoad={() => {
+            localStorage.setItem("isImageCached", "true");
+          }}
+        />
         <div className="LoadingMask fixed left-0 top-0 h-full w-full bg-gradient-to-b from-primary-color from-10% to-primary-color-0 to-25% lg:bg-gradient-to-t lg:from-5% lg:to-[25%]"></div>
         <div className="LoadingState fixed left-[4dvw] top-[2%] flex flex-col gap-3 lg:left-[10dvw] lg:top-[97%] lg:-translate-y-full">
           <h1 className="animate-pulse">加载中...</h1>
