@@ -361,7 +361,7 @@ export default function BabylonBg(): JSX.Element {
       "mainSpotLight",
       new BABYLON.Vector3(0, 30, 0),
       new BABYLON.Vector3(0, -1, 0),
-      Math.PI / 3,
+      Math.PI / 4,
       2,
       scene,
     );
@@ -401,8 +401,8 @@ export default function BabylonBg(): JSX.Element {
     });
 
     // 两侧柱状粒子系统
-    const spsPositionL = { x: -7, y: 3, z: -6 }; // 左侧粒子柱中心坐标
-    const spsPositionR = { x: 7, y: 3, z: -6 }; // 右侧粒子柱中心坐标
+    const spsPositionL = { x: -7, y: 0, z: -6 }; // 左侧粒子柱中心坐标
+    const spsPositionR = { x: 7, y: 0, z: -6 }; // 右侧粒子柱中心坐标
     const spsSizeXZ = 2; // 粒子柱宽度和厚度
     const spsSizeY = 10; // 粒子柱高度
     const spsNumber = 1000; // 粒子数
@@ -419,6 +419,7 @@ export default function BabylonBg(): JSX.Element {
     SPS.initParticles = () => {
       for (let p = 0; p < SPS.nbParticles; p++) {
         const particle = SPS.particles[p]!;
+        // 产生随机初始y坐标
         const currY = BABYLON.Scalar.RandomRange(0, spsPositionL.y + spsSizeY);
         particlePosY.push(currY);
         if (p % 2 === 0) {
@@ -440,7 +441,7 @@ export default function BabylonBg(): JSX.Element {
             spsPositionR.z + spsSizeXZ,
           );
         }
-        particle.position.y = currY - 0.35;
+        particle.position.y = currY;
 
         const scale = BABYLON.Scalar.RandomRange(0.15, 0.2);
         particle.scale.x = scale;
@@ -460,7 +461,7 @@ export default function BabylonBg(): JSX.Element {
         particle.position.y = (-Math.random() * spsSizeY * 1) / 2;
       } else {
         particle.position.y +=
-          (0.04 * particlePosY[particle.idx]!) / engine.getFps();
+          (0.04 * particlePosY[spsNumber - particle.idx]! + 0.025) / engine.getFps();
         particle.rotation.y +=
           (0.05 * particlePosY[particle.idx]!) / engine.getFps();
       }
@@ -531,13 +532,13 @@ export default function BabylonBg(): JSX.Element {
 
   return (
     <React.Fragment>
-      {/* <div className=" fixed left-0 top-0 -z-0 h-dvh w-dvw bg-test bg-cover opacity-20"></div> */}
       <canvas
         ref={canvasRef}
         className="pointer-events-none invisible fixed left-0 top-0 -z-0 h-dvh w-dvw bg-transparent opacity-0 dark:pointer-events-auto dark:visible dark:opacity-100"
       >
         当前浏览器不支持canvas，尝试更换Google Chrome浏览器尝试
       </canvas>
+      <div className=" fixed left-0 top-0 -z-0 h-dvh w-dvw bg-test bg-cover opacity-10"></div>
       <div
         className={`LoadingPage fixed left-0 top-0 z-20 flex h-dvh w-dvw items-center justify-center bg-aeskl bg-cover bg-center ${
           !loaderState

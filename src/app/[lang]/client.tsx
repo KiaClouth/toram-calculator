@@ -13,7 +13,7 @@ export default function IndexPageClient(props: { greetings: string }) {
 
   return (
     <React.Fragment>
-      <div
+      {/* <div
         className={`flex flex-1 flex-col ${
           isImageCached === "true"
             ? "pointer-events-auto visible opacity-100"
@@ -31,7 +31,7 @@ export default function IndexPageClient(props: { greetings: string }) {
         <div className="Bottom flex flex-initial flex-col">
           <div className="Content flex flex-1 flex-col p-5"></div>
         </div>
-      </div>
+      </div> */}
     </React.Fragment>
   );
 }
