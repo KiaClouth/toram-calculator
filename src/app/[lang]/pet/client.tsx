@@ -37,11 +37,11 @@ export default function PetPageClient(props: {
     difficultyOfRanged: 0,
     possibilityOfRunningAround: 0,
     specialBehavior: "",
-    bolongToUserId: "",
     id: "",
     updatedAt: new Date(),
     viewCount: 0,
     usageCount: 0,
+    createdById: null
   };
   const { dictionary, session } = props;
 

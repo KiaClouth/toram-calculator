@@ -159,13 +159,6 @@ const dictionary: dictionary = {
         FLAT_BONUS: "",
         PERCENTAGE_BONUS: ""
       },
-      ModifierType: {
-        BASIC: "",
-        OFFENSIVE: "",
-        DEFENSIVE: "",
-        SPEED: "",
-        OTHERS: ""
-      },
       SpecialAbiType: {
         NULL: "",
         LUC: "",
@@ -233,7 +226,7 @@ const dictionary: dictionary = {
         specialBehavior: "特殊说明",
         viewCount: "被查看次数",
         usageCount: "被使用次数",
-        bolongToUserId: "属于[ID]"
+        createdById: "属于[ID]"
       },
     },
   },

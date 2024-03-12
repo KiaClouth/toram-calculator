@@ -12,7 +12,7 @@ export const characterRouter = createTRPCRouter({
       return ctx.db.character.create({
         data: {
           name: input.name,
-          createdByUserId: ctx.session.user.id
+          createdById: ctx.session.user.id
         }
       })
     }),

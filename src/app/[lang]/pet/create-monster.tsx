@@ -81,7 +81,7 @@ export default function CreateMonster(props: {
   const hiddenData: Array<keyof Monster> = [
     "id",
     "updatedById",
-    "bolongToUserId",
+    "createdById",
     "updatedAt"
   ];
 
