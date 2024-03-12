@@ -42,7 +42,7 @@ export default function CharacterPageClient(props: {
     specialBehavior: "",
     viewCount: 0,
     usageCount: 0,
-    bolongToUserId: null
+    createdById: null
   };
   const [monster, setMonser] = useState<Monster>(defaultMonster);
   const [monsterDialogState, setMonsterDialogState] = useState(false);
