@@ -60,13 +60,13 @@ export const authOptions: NextAuthOptions = {
         timeout: 50000
       }
     }),
-    DiscordProvider({
-      clientId: env.DISCORD_CLIENT_ID,
-      clientSecret: env.DISCORD_CLIENT_SECRET,
-      httpOptions: {
-        timeout: 50000
-      }
-    }),
+    // DiscordProvider({
+    //   clientId: env.DISCORD_CLIENT_ID,
+    //   clientSecret: env.DISCORD_CLIENT_SECRET,
+    //   httpOptions: {
+    //     timeout: 50000
+    //   }
+    // }),
     GithubProvider({
       clientId: env.GITHUB_ID,
       clientSecret: env.GITHUB_SECRET,

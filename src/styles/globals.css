@@ -7,7 +7,7 @@
   :root {
     --white: 255 255 255;
     --grey: 55 55 55;
-    /* --dark: 0 0 0; */
+    --black: 0 0 0;
     --brown: 47 26 73;
     --navyBlue: 105 145 214;
     --greenBlue: 149 207 213;
@@ -26,7 +26,7 @@
 
   .dark {
     --accent: var(--white);
-    --primary: var(--grey);
+    --primary: var(--black);
     --transition: var(--white);
     --brand-1st: var(--greenBlue);
     --brand-2nd: var(--orange);

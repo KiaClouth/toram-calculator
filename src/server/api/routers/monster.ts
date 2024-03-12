@@ -52,7 +52,7 @@ export const monsterRouter = createTRPCRouter({
         data: {
           ...input,
           updatedById: ctx.session?.user.id ?? "",
-          bolongToUserId: ctx.session?.user.id ?? "",
+          createdById: ctx.session?.user.id ?? "",
         },
       });
     }),

@@ -538,7 +538,7 @@ export default function BabylonBg(): JSX.Element {
       >
         当前浏览器不支持canvas，尝试更换Google Chrome浏览器尝试
       </canvas>
-      <div className=" fixed left-0 top-0 -z-0 h-dvh w-dvw bg-test bg-cover opacity-10"></div>
+      {/* <div className=" fixed left-0 top-0 -z-0 h-dvh w-dvw bg-test bg-cover opacity-10"></div> */}
       <div
         className={`LoadingPage fixed left-0 top-0 z-20 flex h-dvh w-dvw items-center justify-center bg-aeskl bg-cover bg-center ${
           !loaderState

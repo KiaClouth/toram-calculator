@@ -45,7 +45,7 @@ export default function MonserPageClient(props: {
     specialBehavior: "",
     viewCount: 0,
     usageCount: 0,
-    bolongToUserId: ""
+    createdById: ""
   };
 
   const [monster, setMonser] = useState<Monster>(defaultMonster);

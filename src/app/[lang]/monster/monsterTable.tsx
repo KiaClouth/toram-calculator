@@ -33,34 +33,6 @@ export default function Table(props: {
     setMonsterDialogState,
   } = props;
 
-  // 以下注释内容的作用是往数据里添加一个tId字段，由于数据库中的模型都具备此字段，因此跳过
-  // const range = (len: number) => {
-  //   const arr: number[] = [];
-  //   for (let i = 0; i < len; i++) {
-  //     arr.push(i);
-  //   }
-  //   return arr;
-  // };
-
-  // const newRow = (index: number): Monster & { tId: number } => {
-  //   return {
-  //     tId: index + 1,
-  //     ...(tableData[index]!),
-  //   };
-  // };
-
-  // function makeData(...lens: number[]) {
-  //   const makeDataLevel = (depth = 0): Monster[] => {
-  //     const len = lens[depth]!;
-  //     return range(len).map((d): Monster => {
-  //       return {
-  //         ...newRow(d),
-  //       };
-  //     });
-  //     };
-  //   return makeDataLevel();
-  // }
-
   
   // 列配置
   const clounmDefine: ColumnDef<Monster>[] = [];
@@ -93,78 +65,78 @@ export default function Table(props: {
     () => [
       {
         accessorKey: "id",
-        header: () => "ID",
+        header: () => dictionary.db.models.monster.id,
         cell: (info) => info.getValue(),
         size: 250,
       },
       {
         accessorKey: "name",
-        header: () => "名字",
+        header: () => dictionary.db.models.monster.name,
         cell: (info) => info.getValue(),
         size: 120,
       },
       {
-        accessorKey: "type",
-        header: () => "类型",
+        accessorKey: "monsterType",
+        header: () => dictionary.db.models.monster.monsterType,
         cell: (info) =>
           dictionary.db.enums.MonsterType[info.getValue<$Enums.MonsterType>()],
         size: 80,
       },
       {
         accessorKey: "element",
-        header: () => "属性",
+        header: () => dictionary.db.models.monster.element,
         cell: (info) =>
           dictionary.db.enums.Element[info.getValue<$Enums.Element>()],
-        size: 80,
+        size: 120,
       },
       {
         accessorKey: "baseLv",
-        header: () => "等级",
-        size: 80,
+        header: () => dictionary.db.models.monster.baseLv,
+        size: 120,
       },
       {
         accessorKey: "physicalDefense",
-        header: () => "物理防御",
+        header: () => dictionary.db.models.monster.physicalDefense,
         size: 110,
       },
       {
         accessorKey: "physicalResistance",
-        header: () => "物理抗性",
+        header: () => dictionary.db.models.monster.physicalResistance,
         size: 110,
       },
       {
         accessorKey: "magicalDefense",
-        header: () => "魔法防御",
+        header: () => dictionary.db.models.monster.magicalDefense,
         size: 110,
       },
       {
         accessorKey: "magicalResistance",
-        header: () => "魔法抗性",
+        header: () => dictionary.db.models.monster.magicalResistance,
         size: 110,
       },
       {
         accessorKey: "criticalResistance",
-        header: () => "暴击抗性",
+        header: () => dictionary.db.models.monster.criticalResistance,
         size: 110,
       },
       {
         accessorKey: "avoidance",
-        header: () => "回避值",
+        header: () => dictionary.db.models.monster.avoidance,
         size: 100,
       },
       {
         accessorKey: "dodge",
-        header: () => "闪躲率",
+        header: () => dictionary.db.models.monster.dodge,
         size: 100,
       },
       {
         accessorKey: "block",
-        header: () => "格挡率",
+        header: () => dictionary.db.models.monster.block,
         size: 100,
       },
       {
         accessorKey: "updatedAt",
-        header: "距离上一次更新(天)",
+        header: dictionary.db.models.monster.updatedAt,
         cell: (info) => {
           const currentDate = new Date();
           // 计算更新时间和当前时间的时间差（毫秒）
@@ -179,18 +151,12 @@ export default function Table(props: {
         size: 180,
       },
     ],
-    [dictionary.db.enums.Element, dictionary.db.enums.MonsterType],
+    [dictionary.db.enums.Element, dictionary.db.enums.MonsterType, dictionary.db.models.monster.avoidance, dictionary.db.models.monster.baseLv, dictionary.db.models.monster.block, dictionary.db.models.monster.criticalResistance, dictionary.db.models.monster.dodge, dictionary.db.models.monster.element, dictionary.db.models.monster.id, dictionary.db.models.monster.magicalDefense, dictionary.db.models.monster.magicalResistance, dictionary.db.models.monster.monsterType, dictionary.db.models.monster.name, dictionary.db.models.monster.physicalDefense, dictionary.db.models.monster.physicalResistance, dictionary.db.models.monster.updatedAt],
   );
 
-  // const [data, _setData] = React.useState(() => makeData(20));
   const [data, _setData] = React.useState(() => tableData);
 
   const table = useReactTable({
-    // state: {
-    //   columnVisibility: {
-    //     id: false,
-    //   },
-    // },
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
@@ -224,26 +190,27 @@ export default function Table(props: {
     });
   };
 
-  // 列粘性布局样式计算函数
-  const getCommonPinningStyles = (column: Column<Monster>): CSSProperties => {
-    const isPinned = column.getIsPinned();
-    const isLastLeftPinnedColumn =
-      isPinned === "left" && column.getIsLastColumn("left");
-    const isFirstRightPinnedColumn =
-      isPinned === "right" && column.getIsFirstColumn("right");
-    return {
-      borderWidth: isLastLeftPinnedColumn
-        ? "0px 2px 0px 0px"
-        : isFirstRightPinnedColumn
-          ? "0px 0px 0px 2px"
-          : undefined,
-      left: isPinned === "left" ? `${column.getStart("left")}px` : undefined,
-      right: isPinned === "right" ? `${column.getAfter("right")}px` : undefined,
-      position: isPinned ? "sticky" : "relative",
-      width: column.getSize(),
-      zIndex: isPinned ? 1 : 0,
-    };
+// 列粘性布局样式计算函数
+const getCommonPinningStyles = (column: Column<Monster>): CSSProperties => {
+  const isPinned = column.getIsPinned();
+  const isLastLeft = isPinned === "left" && column.getIsLastColumn("left");
+  const isFirstRight = isPinned === "right" && column.getIsFirstColumn("right");
+  const styles: CSSProperties = {
+    position: isPinned ? "sticky" : "relative",
+    width: column.getSize(),
+    zIndex: isPinned ? 1 : 0,
   };
+  if (isPinned) {
+    styles.left = isLastLeft ? `${column.getStart("left")}px` : undefined;
+    styles.right = isFirstRight ? `${column.getAfter("right")}px` : undefined;
+    styles.borderWidth = isLastLeft
+      ? "0px 2px 0px 0px"
+      : isFirstRight
+        ? "0px 0px 0px 2px"
+        : undefined;
+  }
+  return styles;
+};
 
   return (
     <div
@@ -269,14 +236,13 @@ export default function Table(props: {
           </label>
         </div>
         {table.getAllLeafColumns().map((column) => {
-          // 默认隐藏的数据
-          if (hiddenData.includes(column.id as keyof Monster)) {
+          if (hiddenData.includes(column.id as keyof Monster)) { // 默认隐藏的数据
             return;
           }
           return (
             <div
               key={column.id}
-              className="flex items-center bg-transition-color-8 px-1"
+              className="flex items-center bg-transition-color-8 px-2"
             >
               <label className="flex gap-1 text-nowrap">
                 <input
@@ -286,7 +252,7 @@ export default function Table(props: {
                     onChange: column.getToggleVisibilityHandler(),
                   }}
                 />{" "}
-                {column.id}
+                {dictionary.db.models.monster[column.id as keyof Monster]}
               </label>
             </div>
           );
@@ -299,8 +265,7 @@ export default function Table(props: {
               <tr key={headerGroup.id} className="flex gap-0">
                 {headerGroup.headers.map((header) => {
                   const { column } = header;
-                  // 默认隐藏的数据
-                  if (["id", "updateAt"].includes(column.id)) {
+                  if (hiddenData.includes(column.id as keyof Monster)) { // 默认隐藏的数据
                     return;
                   }
                   return (
@@ -330,7 +295,7 @@ export default function Table(props: {
                           desc: " 🔽",
                         }[header.column.getIsSorted() as string] ?? null}
                       </div>
-                      {!header.isPlaceholder && header.column.getCanPin() && (
+                      {/* {!header.isPlaceholder && header.column.getCanPin() && ( // 固定列
                         <div className="flex gap-1 p-2">
                           {header.column.getIsPinned() !== "left" ? (
                             <button
@@ -363,7 +328,7 @@ export default function Table(props: {
                             </button>
                           ) : null}
                         </div>
-                      )}
+                      )} */}
                     </th>
                   );
                 })}
@@ -388,13 +353,12 @@ export default function Table(props: {
                   position: "absolute",
                   transform: `translateY(${virtualRow.start}px)`, //this should always be a `style` as it changes on scroll
                 }}
-                className=" group flex transition-none"
+                className=" group flex transition-none cursor-pointer"
                 onClick={() => handleTrClick(row.getValue("id"))}
               >
                 {row.getVisibleCells().map((cell) => {
                   const { column } = cell;
-                  // 默认隐藏的数据
-                  if (hiddenData.includes(column.id as keyof Monster)) {
+                  if (hiddenData.includes(column.id as keyof Monster)) { // 默认隐藏的数据
                     return;
                   }
                   return (
