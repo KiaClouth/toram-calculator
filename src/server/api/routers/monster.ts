@@ -38,9 +38,9 @@ export const monsterRouter = createTRPCRouter({
       let userCreate = await ctx.db.userCreate.findUnique({
         where: { userId: ctx.session?.user.id },
       });
-
       // 如果不存在，创建一个新的 UserCreate
       if (!userCreate) {
+        console.log("初次上传，自动创建对应userCreate");
         userCreate = await ctx.db.userCreate.create({
           data: {
             userId: ctx.session?.user.id ?? "",
@@ -51,7 +51,7 @@ export const monsterRouter = createTRPCRouter({
       return ctx.db.monster.create({
         data: {
           ...input,
-          updatedById: ctx.session?.user.id ?? "",
+          // updatedById: ctx.session?.user.id ?? "",
           createdById: ctx.session?.user.id ?? "",
         },
       });
