@@ -78,9 +78,7 @@ export default function CreateMonster(props: {
   };
 
   // 定义不需要手动输入的值
-  const hiddenData: Array<keyof Monster> = [
-    "updatedAt"
-  ];
+  const hiddenData: Array<keyof Monster> = ["updatedAt"];
 
   return (
     <React.Fragment>
@@ -114,6 +112,7 @@ export default function CreateMonster(props: {
               <div className="inputArea flex-1 overflow-y-auto">
                 <fieldset className="dataKinds flex flex-col flex-wrap lg:flex-row">
                   {Object.entries(MonsterSchema.shape).map(([key, value]) => {
+                    // 遍历怪物zod模型
                     if (hiddenData.includes(key as keyof Monster))
                       return undefined;
                     return (
@@ -214,14 +213,18 @@ export default function CreateMonster(props: {
                                   <input
                                     id={field.name}
                                     name={field.name}
-                                    value={typeof field.state.value !== "object" ? field.state.value : undefined}
+                                    value={
+                                      typeof field.state.value !== "object"
+                                        ? field.state.value
+                                        : undefined
+                                    }
                                     type={inputType}
                                     onBlur={field.handleBlur}
                                     onChange={(e) =>
                                       field.handleChange(
                                         inputType === "number"
                                           ? parseFloat(e.target.value)
-                                          : e.target.value
+                                          : e.target.value,
                                       )
                                     }
                                     className=" mt-1 rounded bg-transition-color-8 px-4 py-2"

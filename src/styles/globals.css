@@ -26,7 +26,7 @@
 
   .dark {
     --accent: var(--white);
-    --primary: var(--black);
+    --primary: var(--grey);
     --transition: var(--white);
     --brand-1st: var(--greenBlue);
     --brand-2nd: var(--orange);
