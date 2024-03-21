@@ -77,7 +77,7 @@ export default function Table(props: {
   return (
     <div
       ref={tableContainerRef}
-      className="TableBox z-0 flex flex-1 flex-col px-6 overflow-auto"
+      className="TableBox z-0 flex flex-1 flex-col overflow-auto"
     >
       <table className="Table flex-1 backdrop-blur-xl">
         <thead className=" sticky top-0 z-10 flex border-b-2 bg-primary-color">

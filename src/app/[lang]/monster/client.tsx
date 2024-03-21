@@ -264,12 +264,12 @@ export default function MonserPageClient(props: {
           </div>
         </div>
       </div>
-      <div className="Module2 flex flex-1">
+      <div className="Module2 flex flex-1 px-6">
         <div className="LeftArea flex-1"></div>
         <div className="ModuleContent flex basis-full flex-col-reverse lg:flex-col 2xl:basis-[1536px]">
           <div className="Title flex flex-col justify-between lg:flex-row lg:py-10">
             <h1 className="Text hidden text-center font-bold lg:block lg:bg-transparent lg:text-left lg:text-4xl lg:text-accent-color">
-              {dictionary.ui.monster.save}
+              {dictionary.ui.monster.pageTitle}
             </h1>
             <div className="Control flex gap-1 bg-primary-color">
               <LongSearchBox
