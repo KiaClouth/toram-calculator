@@ -86,6 +86,7 @@ export default function CreateMonster(props: {
         <Button
           onClick={toggleState}
           content={dictionary.ui.monster.upload}
+          level="primary"
           icon={<IconCloudUpload />}
         />
       ) : undefined}

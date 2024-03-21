@@ -55,7 +55,7 @@ export default function Nav(props: {
       ],
     ];
   return (
-    <div className="Nav z-30 flex w-dvw flex-shrink-0 overflow-x-auto border-t-1 border-transition-color-20 backdrop-blur lg:fixed lg:left-0 lg:h-dvh lg:w-24 lg:-translate-x-1/4 lg:flex-col lg:gap-10 lg:border-none lg:bg-transition-color-8 lg:py-5 lg:opacity-0 lg:hover:translate-x-0 lg:hover:opacity-100">
+    <div className="Nav flex w-dvw flex-shrink-0 overflow-x-auto border-t-1 border-transition-color-20 backdrop-blur lg:h-dvh lg:w-24 lg:flex-col lg:gap-10 lg:border-none lg:bg-transition-color-8 lg:py-5">
       <div>
         <Link
           href={"/"}

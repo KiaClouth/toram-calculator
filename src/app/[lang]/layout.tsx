@@ -10,7 +10,6 @@ import { getServerAuthSession } from "~/server/auth";
 import { getDictionary } from "~/app/get-dictionary";
 import ThemeProvider from "./_components/themeProvider";
 import Nav from "./_components/nav";
-import DefaultPageProvider from "./_components/defaultPageProvider";
 import BabylonBg from "./_components/babylonBg";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
@@ -83,14 +82,14 @@ export default async function RootLayout({
       <body
         className={
           `font-sans ${inter.variable}` +
-          " flex h-dvh w-dvw flex-none flex-col-reverse lg:flex-col"
+          " flex h-dvh w-dvw flex-none flex-col-reverse lg:flex-row"
         }
       >
         <TRPCReactProvider cookies={cookies().toString()}>
           <ThemeProvider>
             <BabylonBg />
             <Nav dictionary={dictionary} session={session} />
-            <DefaultPageProvider>{children}</DefaultPageProvider>
+            {children}
           </ThemeProvider>
         </TRPCReactProvider>
       </body>

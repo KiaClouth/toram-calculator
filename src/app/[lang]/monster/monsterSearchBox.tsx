@@ -12,10 +12,10 @@ interface Film {
 export default function LongSearchBox(props: {
   dictionary: ReturnType<typeof getDictionary>;
   monsterList: Monster[];
-  setMonsteData: (m: Monster) => void;
+  setMonster: (m: Monster) => void;
   setMonsterDialogState: (state: boolean) => void;
 }) {
-  const { dictionary, monsterList, setMonsteData, setMonsterDialogState } = props;
+  const { dictionary, monsterList, setMonster, setMonsterDialogState } = props;
   const closeClass = " hidden ";
   const openClass = " flex ";
   const [open, setOpen] = React.useState(closeClass);
@@ -47,19 +47,19 @@ export default function LongSearchBox(props: {
   const handleClick = (id: string) => {
     monsterList.forEach((monster) => {
       if (monster.id !== id) return;
-      setMonsteData(monster);
+      setMonster(monster);
       setMonsterDialogState(true);
     });
   };
 
   return (
     <React.Fragment>
-      <div className="SearchBox z-10 flex flex-none flex-col-reverse lg:pt-4 lg:flex-col">
+      <div className="SearchBox z-10 flex flex-none flex-col-reverse lg:flex-col">
         <input
           type="search"
-          placeholder={"✌" + dictionary.ui.monster.searchPlaceholder}
+          placeholder={dictionary.ui.monster.searchPlaceholder}
           list="options"
-          className="Search lg:font-normal backdrop-blur-xl border-b-2 border-transition-color-20 px-5 py-3 placeholder:text-accent-color-50 hover:bg-transition-color-20 hover:border-accent-color-70 focus:border-accent-color-70 focus:outline-none"
+          className="Search lg:font-normal backdrop-blur-xl border-b-2 border-transition-color-20 px-5 py-2 placeholder:text-accent-color-50 hover:bg-transition-color-20 hover:border-accent-color-70 focus:border-accent-color-70 focus:outline-none"
           onChange={(e) => handleChange(e.target.value)}
         />
         <div

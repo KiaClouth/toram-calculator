@@ -25,6 +25,8 @@ interface dictionary {
       goodEvening: string,
     },
     monster: {
+      pageTitle: string,
+      discription: string,
       searchPlaceholder: string,
       upload: string,
       save: string,
