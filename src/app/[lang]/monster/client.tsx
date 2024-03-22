@@ -219,39 +219,27 @@ export default function MonserPageClient(props: {
               {dictionary.ui.monster.close}
             </div>
             <div className="content flex flex-wrap gap-2 ">
-              <div className="flex items-center rounded bg-transition-color-8 px-4 py-2">
-                <label className="flex gap-1 text-nowrap">
-                  <input
-                    {...{
-                      type: "checkbox",
-                      checked: table.getIsAllColumnsVisible(),
-                      onChange: table.getToggleAllColumnsVisibilityHandler(),
-                    }}
-                  />{" "}
-                  All
-                </label>
-              </div>
+              <Button
+                size="sm"
+                level={table.getIsAllColumnsVisible() ? "tertiary" : "primary"}
+                onClick={table.getToggleAllColumnsVisibilityHandler()}
+              >
+                ALL
+              </Button>
               {table.getAllLeafColumns().map((column) => {
                 if (hiddenData.includes(column.id as keyof Monster)) {
                   // 默认隐藏的数据
                   return;
                 }
                 return (
-                  <div
+                  <Button
                     key={column.id}
-                    className="flex items-center rounded bg-transition-color-8 px-4 py-2"
+                    size="sm"
+                    level={column.getIsVisible() ? "tertiary" : "primary"}
+                    onClick={column.getToggleVisibilityHandler()}
                   >
-                    <label className="flex gap-1 text-nowrap">
-                      <input
-                        {...{
-                          type: "checkbox",
-                          checked: column.getIsVisible(),
-                          onChange: column.getToggleVisibilityHandler(),
-                        }}
-                      />{" "}
-                      {dictionary.db.models.monster[column.id as keyof Monster]}
-                    </label>
-                  </div>
+                    {dictionary.db.models.monster[column.id as keyof Monster]}
+                  </Button>
                 );
               })}
             </div>
@@ -281,10 +269,11 @@ export default function MonserPageClient(props: {
               {session?.user ? (
                 <Button
                   onClick={() => setMonsterDialogState(true)}
-                  content={dictionary.ui.monster.upload}
                   level="primary"
                   icon={<IconCloudUpload />}
-                />
+                >
+                  {dictionary.ui.monster.upload}
+                </Button>
               ) : undefined}
               <div className="Filter relative flex gap-1">
                 <Button

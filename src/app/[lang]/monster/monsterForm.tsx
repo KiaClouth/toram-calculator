@@ -205,13 +205,12 @@ export default function MonsterForm(props: {
               {([canSubmit]) => (
                 <Button
                   type="submit"
-                  content={
-                    createMonster.isLoading
-                      ? `${dictionary.ui.monster.upload}...`
-                      : `${dictionary.ui.monster.upload}`
-                  }
                   disabled={createMonster.isLoading || !canSubmit}
-                />
+                >
+                  {createMonster.isLoading
+                    ? `${dictionary.ui.monster.upload}...`
+                    : `${dictionary.ui.monster.upload}`}
+                </Button>
               )}
             </form.Subscribe>
           </div>
