@@ -12,9 +12,10 @@ import Table from "./monsterTable";
 import { type Session } from "next-auth";
 import React, { useState } from "react";
 import LongSearchBox from "./monsterSearchBox";
-import CreateMonster from "./create-monster";
+import MonsterForm from "./monsterForm";
 import Button from "../_components/button";
-import { IconFilter } from "../_components/iconsList";
+import { IconCloudUpload, IconFilter } from "../_components/iconsList";
+import Dialog from "../_components/dialog";
 
 export default function MonserPageClient(props: {
   dictionary: ReturnType<typeof getDictionary>;
@@ -198,21 +199,21 @@ export default function MonserPageClient(props: {
     ],
   );
 
-  const [data, _setData] = React.useState(() => monsterList);
+  const [data] = React.useState(monsterList);
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     debugTable: true,
-  })
+  });
 
   return (
     <main className="flex flex-1 overflow-y-auto">
       <div
-        className={`Module1 relative flex-none bg-accent-color-10 ${filterState ? " pointer-events-auto visible basis-[260px] opacity-100 " : " pointer-events-none invisible basis-[0px] opacity-0 "}`}
+        className={`Module1 relative flex-none bg-accent-color-10 backdrop-blur-xl ${filterState ? " pointer-events-auto visible basis-[260px] opacity-100 " : " pointer-events-none invisible basis-[0px] opacity-0 "}`}
       >
-        <div className="content absolute right-0 top-0 w-[260px] p-3 pt-10 flex flex-col gap-6">
+        <div className="content absolute right-0 top-0 flex w-[260px] flex-col gap-6 p-3 pt-10">
           <div className="module flex flex-col gap-3">
             <div className="title text-lg font-bold">
               {dictionary.ui.monster.close}
@@ -259,30 +260,32 @@ export default function MonserPageClient(props: {
             <div className="title text-lg font-bold">
               {dictionary.ui.monster.cancel}
             </div>
-            <div className="content flex flex-wrap gap-2 ">
-            </div>
+            <div className="content flex flex-wrap gap-2 "></div>
           </div>
         </div>
       </div>
-      <div className="Module2 flex flex-1 px-6">
+      <div className="Module2 flex flex-1 px-6 backdrop-blur-xl">
         <div className="LeftArea flex-1"></div>
         <div className="ModuleContent flex basis-full flex-col-reverse lg:flex-col 2xl:basis-[1536px]">
           <div className="Title flex flex-col justify-between lg:flex-row lg:py-10">
             <h1 className="Text hidden text-center font-bold lg:block lg:bg-transparent lg:text-left lg:text-4xl lg:text-accent-color">
               {dictionary.ui.monster.pageTitle}
             </h1>
-            <div className="Control flex gap-1 bg-primary-color">
+            <div className="Control flex gap-1">
               <LongSearchBox
                 dictionary={dictionary}
                 monsterList={monsterList}
                 setMonster={setMonster}
                 setMonsterDialogState={setMonsterDialogState}
               />
-              <CreateMonster
-                dictionary={dictionary}
-                session={session}
-                defaultMonster={defaultMonster}
-              />
+              {session?.user ? (
+                <Button
+                  onClick={() => setMonsterDialogState(true)}
+                  content={dictionary.ui.monster.upload}
+                  level="primary"
+                  icon={<IconCloudUpload />}
+                />
+              ) : undefined}
               <div className="Filter relative flex gap-1">
                 <Button
                   className="switch"
@@ -292,7 +295,7 @@ export default function MonserPageClient(props: {
               </div>
             </div>
           </div>
-          <p className="discription hidden bg-accent-color-10 p-3 lg:block">
+          <p className="discription hidden rounded-sm bg-transition-color-8 p-3 lg:block">
             {dictionary.ui.monster.discription}
           </p>
           <Table
@@ -305,6 +308,13 @@ export default function MonserPageClient(props: {
         </div>
         <div className="RightArea flex-1"></div>
       </div>
+      {monsterDialogState ? (
+        <Dialog state={monsterDialogState} setState={setMonsterDialogState}>
+          {<MonsterForm dictionary={dictionary} defaultMonster={monster} />}
+        </Dialog>
+      ) : (
+        ""
+      )}
     </main>
   );
 }

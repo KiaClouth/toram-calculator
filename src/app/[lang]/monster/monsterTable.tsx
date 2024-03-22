@@ -79,8 +79,8 @@ export default function Table(props: {
       ref={tableContainerRef}
       className="TableBox z-0 flex flex-1 flex-col overflow-auto"
     >
-      <table className="Table flex-1 backdrop-blur-xl">
-        <thead className=" sticky top-0 z-10 flex border-b-2 bg-primary-color">
+      <table className="Table flex-1">
+        <thead className=" sticky top-0 z-10 flex border-b-2">
           {table.getHeaderGroups().map((headerGroup) => {
             return (
               <tr key={headerGroup.id} className="flex gap-0">
@@ -96,7 +96,7 @@ export default function Table(props: {
                       style={{
                         ...getCommonPinningStyles(column),
                       }}
-                      className="flex flex-col bg-primary-color"
+                      className="flex flex-col"
                     >
                       <div
                         {...{
@@ -162,7 +162,7 @@ export default function Table(props: {
           style={{
             height: `${rowVirtualizer.getTotalSize()}px`, //tells scrollbar how big the table is
           }}
-          className="z-0 px-2 backdrop-blur-xl"
+          className="z-0 px-2"
         >
           {rowVirtualizer.getVirtualItems().map((virtualRow) => {
             const row = rows[virtualRow.index]!;
@@ -190,7 +190,7 @@ export default function Table(props: {
                       style={{
                         ...getCommonPinningStyles(column),
                       }}
-                      className="border-1 flex border-transition-color-8 bg-primary-color p-2 group-hover:bg-brand-color-1st"
+                      className="border-1 flex border-transition-color-8 p-2 group-hover:bg-brand-color-1st"
                     >
                       {flexRender(
                         cell.column.columnDef.cell,
