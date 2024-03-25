@@ -1,3 +1,4 @@
+'use client';
 import Link from "next/link";
 import {
   IconBasketball,
@@ -15,6 +16,7 @@ import SignInOrOut from "./signInOrOut";
 import ThemeSwitch from "./themeSwitch";
 import { type getDictionary } from "~/app/get-dictionary";
 import { type Session } from "next-auth";
+import { useEffect, useState } from "react";
 
 export default function Nav(props: {
   dictionary: ReturnType<typeof getDictionary>;
@@ -54,8 +56,24 @@ export default function Nav(props: {
         "/building",
       ],
     ];
+
+  const [isImageCached, setImageCached] = useState("false");
+
+  useEffect(() => {
+    // 从localstorage读取图片缓存状态
+    const bgImageCachedStatus = localStorage.getItem("isImageCached");
+    bgImageCachedStatus && setImageCached(bgImageCachedStatus);
+  }, []);
+
   return (
-    <div className="Nav flex w-dvw flex-shrink-0 overflow-x-auto border-t-1 border-transition-color-20 backdrop-blur lg:h-dvh lg:w-24 lg:flex-col lg:gap-10 lg:border-none lg:bg-transition-color-8 lg:py-5">
+    <div 
+    // 为了防止图片尚未加载出来而出现的闪烁，只有在localstorage中存在isImageCached时导航栏才显示
+      className={`Nav border-t-1 flex w-dvw flex-shrink-0 overflow-x-auto border-transition-color-20 backdrop-blur lg:h-dvh lg:w-24 lg:flex-col lg:gap-10 lg:border-none lg:bg-transition-color-8 lg:py-5 ${
+        isImageCached === "true"
+          ? "pointer-events-auto visible opacity-100"
+          : "pointer-events-none invisible opacity-0"
+      }`}
+    >
       <div>
         <Link
           href={"/"}
@@ -67,9 +85,7 @@ export default function Nav(props: {
             <IconHome />
           </div>
           <IconLogo className="hidden lg:block" />
-          <div className="lg:hidden text-xs">
-            {dictionary.ui.root.home}
-          </div>
+          <div className="text-xs lg:hidden">{dictionary.ui.root.home}</div>
         </Link>
       </div>
       <div className="NavBtnList flex flex-1 items-center lg:flex-col lg:gap-4 lg:overflow-y-auto">

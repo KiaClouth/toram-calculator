@@ -1,24 +1,13 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 export default function IndexPageClient(props: { greetings: string }) {
   const { greetings } = props;
-  const [isImageCached, setImageCached] = useState("false");
-
-  useEffect(() => {
-    // 从localstorage读取图片缓存状态
-    const bgImageCachedStatus = localStorage.getItem("isImageCached");
-    bgImageCachedStatus && setImageCached(bgImageCachedStatus);
-  }, []);
 
   return (
     <React.Fragment>
       <div
-        className={`flex flex-1 flex-col ${
-          isImageCached === "true"
-            ? "pointer-events-auto visible opacity-100"
-            : "pointer-events-none invisible opacity-0"
-        }`}
+        className={`flex flex-1 flex-col`}
       >
         <div className="Top flex flex-1 flex-col items-center justify-center">
           <h1 className="Title mx-8 -translate-y-1/4 border-b-2 p-10 text-center text-5xl font-extrabold tracking-tight lg:text-9xl">
