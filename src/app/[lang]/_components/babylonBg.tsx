@@ -246,7 +246,6 @@ function isPBRMaterial(
 export default function BabylonBg(): JSX.Element {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [loaderState, setLoaderState] = useState(false);
-  const updatedBBLBackgroundState = useAppStore((state) => state.global.updatedBBLBackgroundState);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -510,7 +509,6 @@ export default function BabylonBg(): JSX.Element {
         scene.render();
       });
       // 通知loading组件
-      updatedBBLBackgroundState();
       setLoaderState(true);
     });
 
@@ -522,7 +520,7 @@ export default function BabylonBg(): JSX.Element {
       canvas.removeEventListener("mousemove", cameraControl);
       console.log("内存已清理");
     };
-  }, [updatedBBLBackgroundState]);
+  }, []);
 
   return (
     <React.Fragment>
