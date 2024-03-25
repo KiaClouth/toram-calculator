@@ -453,7 +453,8 @@ export default function BabylonBg(): JSX.Element {
         particle.position.y = (-Math.random() * spsSizeY * 1) / 2;
       } else {
         particle.position.y +=
-          (0.04 * particlePosY[spsNumber - particle.idx]! + 0.025) / engine.getFps();
+          (0.04 * particlePosY[spsNumber - particle.idx]! + 0.025) /
+          engine.getFps();
         particle.rotation.y +=
           (0.05 * particlePosY[particle.idx]!) / engine.getFps();
       }
@@ -531,13 +532,15 @@ export default function BabylonBg(): JSX.Element {
         当前浏览器不支持canvas，尝试更换Google Chrome浏览器尝试
       </canvas>
       {/* <div className=" fixed left-0 top-0 -z-0 h-dvh w-dvw bg-test bg-cover opacity-10"></div> */}
-      <div className={`LoadingBG fixed left-0 top-0 h-full w-full bg-primary-color ${
+      <div
+        className={`LoadingBG fixed left-0 top-0 z-50 h-full w-full bg-primary-color ${
           !loaderState
             ? "pointer-events-auto visible opacity-100"
             : "pointer-events-none invisible opacity-0"
-        }`}></div>
+        }`}
+      ></div>
       <div
-        className={`LoadingPage fixed left-0 top-0 z-20 flex h-dvh w-dvw items-center justify-center bg-aeskl bg-cover bg-center ${
+        className={`LoadingPage fixed left-0 top-0 z-50 flex h-dvh w-dvw items-center justify-center bg-aeskl bg-cover bg-center ${
           !loaderState
             ? "pointer-events-auto visible opacity-100"
             : "pointer-events-none invisible opacity-0"
