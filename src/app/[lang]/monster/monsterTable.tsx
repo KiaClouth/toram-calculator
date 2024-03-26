@@ -77,13 +77,13 @@ export default function Table(props: {
   return (
     <div
       ref={tableContainerRef}
-      className="TableBox z-0 flex flex-1 flex-col overflow-auto"
+      className="TableBox z-0 flex-1 overflow-auto"
     >
-      <table className="Table flex-1">
-        <thead className=" sticky top-0 z-10 flex border-b-2">
+      <table className="Table grid">
+        <thead className="sticky top-0 z-10 flex">
           {table.getHeaderGroups().map((headerGroup) => {
             return (
-              <tr key={headerGroup.id} className="flex gap-0">
+              <tr key={headerGroup.id} className=" absolute flex min-w-full gap-0 bg-primary-color border-b-2">
                 {headerGroup.headers.map((header) => {
                   const { column } = header;
                   if (hiddenData.includes(column.id as keyof Monster)) {
@@ -102,7 +102,7 @@ export default function Table(props: {
                         {...{
                           onClick: header.column.getToggleSortingHandler(),
                         }}
-                        className={`border-1 flex-1 border-transition-color-8 px-2 py-2 lg:py-8 text-left ${
+                        className={`border-1 flex-1 border-transition-color-8 px-2 py-4 text-left hover:bg-transition-color-8 ${
                           header.column.getCanSort()
                             ? "cursor-pointer select-none"
                             : ""
@@ -162,7 +162,7 @@ export default function Table(props: {
           style={{
             height: `${rowVirtualizer.getTotalSize()}px`, //tells scrollbar how big the table is
           }}
-          className="z-0 px-2"
+          className="grid relative z-0 px-2 lg:mt-16"
         >
           {rowVirtualizer.getVirtualItems().map((virtualRow) => {
             const row = rows[virtualRow.index]!;
@@ -175,7 +175,7 @@ export default function Table(props: {
                   position: "absolute",
                   transform: `translateY(${virtualRow.start}px)`, //this should always be a `style` as it changes on scroll
                 }}
-                className=" group flex cursor-pointer transition-none"
+                className={`group min-w-full flex cursor-pointer transition-none  ${virtualRow.index % 2 === 0 ? "" : "bg-transition-color-8"}`}
                 onClick={() => handleTrClick(row.getValue("id"))}
               >
                 {row.getVisibleCells().map((cell) => {
@@ -190,7 +190,7 @@ export default function Table(props: {
                       style={{
                         ...getCommonPinningStyles(column),
                       }}
-                      className="border-1 flex border-transition-color-8 p-2 group-hover:bg-brand-color-1st"
+                      className={`border-1 flex border-transition-color-8 px-2 py-4 group-hover:bg-brand-color-1st}`}
                     >
                       {flexRender(
                         cell.column.columnDef.cell,

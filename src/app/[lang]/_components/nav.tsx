@@ -74,10 +74,10 @@ export default function Nav(props: {
           : "pointer-events-none invisible opacity-0"
       }`}
     >
-      <div>
+      <div className="flex flex-1 lg:flex-none items-center justify-center">
         <Link
           href={"/"}
-          className="Home lgpx-4 group flex flex-col items-center justify-center gap-0.5 px-1 py-2 lg:gap-4"
+          className="Home lgpx-4 group flex flex-shrink-0 flex-col items-center gap-0.5 px-1 py-2 lg:gap-4"
           tabIndex={1}
           scroll={false}
         >

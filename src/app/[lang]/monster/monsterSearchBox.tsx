@@ -54,12 +54,12 @@ export default function LongSearchBox(props: {
 
   return (
     <React.Fragment>
-      <div className="SearchBox z-10 flex flex-none flex-col-reverse lg:flex-col">
+      <div className="SearchBox hidden z-10 lg:flex flex-none flex-col-reverse lg:flex-col">
         <input
           type="search"
           placeholder={dictionary.ui.monster.searchPlaceholder}
           list="options"
-          className="Search lg:font-normal backdrop-blur-xl border-b-2 border-transition-color-20 px-5 py-2 placeholder:text-accent-color-50 hover:bg-transition-color-20 hover:border-accent-color-70 focus:border-accent-color-70 focus:outline-none"
+          className=" lg:flex-1 lg:font-normal backdrop-blur-xl border-b-2 border-transition-color-20 px-5 py-2 placeholder:text-accent-color-50 hover:bg-transition-color-20 hover:border-accent-color-70 focus:border-accent-color-70 focus:outline-none"
           onChange={(e) => handleChange(e.target.value)}
         />
         <div

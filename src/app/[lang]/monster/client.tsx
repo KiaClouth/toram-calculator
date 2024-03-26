@@ -101,7 +101,7 @@ export default function MonserPageClient(props: {
         accessorKey: "name",
         header: () => dictionary.db.models.monster.name,
         cell: (info) => info.getValue(),
-        size: 120,
+        size: 250,
       },
       {
         accessorKey: "monsterType",
@@ -211,12 +211,21 @@ export default function MonserPageClient(props: {
   return (
     <main className="flex flex-1 overflow-y-auto">
       <div
-        className={`Module1 relative flex-none bg-accent-color-10 backdrop-blur-xl ${filterState ? " pointer-events-auto visible basis-[260px] opacity-100 " : " pointer-events-none invisible basis-[0px] opacity-0 "}`}
+        className={`Module1 fixed left-0 top-0 z-50 lg:z-0 ${filterState ? " translate-x-0 " : " -translate-x-full "} flex-none bg-primary-color backdrop-blur-xl lg:sticky lg:translate-x-0 lg:border-l-1.5 border-brand-color-1st lg:bg-transition-color-8 ${filterState ? " pointer-events-auto visible basis-[260px] opacity-100 " : " pointer-events-none invisible basis-[0px] opacity-0 "}`}
       >
-        <div className="content absolute right-0 top-0 flex w-[260px] flex-col gap-6 p-3 pt-10">
+        <div className="content flex h-dvh w-dvw flex-col-reverse gap-4 overflow-y-auto px-6 pt-8 lg:absolute lg:right-0 lg:top-0 lg:w-[260px] lg:flex-col">
+          <div className="module flex flex-col gap-3">
+            <Button
+              level="tertiary"
+              onClick={() => setFilterState(!filterState)}
+            >
+              {dictionary.ui.monster.close}
+            </Button>
+            <div className="content flex flex-wrap gap-2 "></div>
+          </div>
           <div className="module flex flex-col gap-3">
             <div className="title text-lg font-bold">
-              {dictionary.ui.monster.close}
+              {dictionary.ui.monster.columnsHidden}
             </div>
             <div className="content flex flex-wrap gap-2 ">
               <Button
@@ -246,20 +255,20 @@ export default function MonserPageClient(props: {
           </div>
           <div className="module flex flex-col gap-3">
             <div className="title text-lg font-bold">
-              {dictionary.ui.monster.cancel}
+              {dictionary.ui.monster.columnsHidden}
             </div>
             <div className="content flex flex-wrap gap-2 "></div>
           </div>
         </div>
       </div>
-      <div className="Module2 flex flex-1 px-6 backdrop-blur-xl">
+      <div className="Module2 flex flex-1 px-2 backdrop-blur-xl lg:px-6">
         <div className="LeftArea flex-1"></div>
-        <div className="ModuleContent flex basis-full flex-col-reverse lg:flex-col 2xl:basis-[1536px]">
-          <div className="Title flex flex-col justify-between lg:flex-row lg:py-10">
+        <div className="ModuleContent flex flex-1 basis-full flex-col 2xl:basis-[1536px]">
+          <div className="Title flex flex-col justify-between lg:flex-row lg:pb-[4dvh] lg:pt-8">
             <h1 className="Text hidden text-center font-bold lg:block lg:bg-transparent lg:text-left lg:text-4xl lg:text-accent-color">
               {dictionary.ui.monster.pageTitle}
             </h1>
-            <div className="Control flex gap-1">
+            <div className="Control absolute bottom-2 right-2 z-10 flex flex-col gap-1 lg:static lg:flex-row">
               <LongSearchBox
                 dictionary={dictionary}
                 monsterList={monsterList}
@@ -267,26 +276,34 @@ export default function MonserPageClient(props: {
                 setMonsterDialogState={setMonsterDialogState}
               />
               {session?.user ? (
-                <Button
-                  onClick={() => setMonsterDialogState(true)}
-                  level="primary"
-                  icon={<IconCloudUpload />}
-                >
-                  {dictionary.ui.monster.upload}
-                </Button>
+                <React.Fragment>
+                  <Button
+                    onClick={() => setMonsterDialogState(true)}
+                    level="primary"
+                    icon={<IconCloudUpload />}
+                    className="hidden lg:flex"
+                  >
+                    {dictionary.ui.monster.upload}
+                  </Button>
+                  <Button
+                    onClick={() => setMonsterDialogState(true)}
+                    icon={<IconCloudUpload />}
+                    className="flex lg:hidden rounded-full px-3 py-3"
+                  ></Button>
+                </React.Fragment>
               ) : undefined}
               <div className="Filter relative flex gap-1">
                 <Button
-                  className="switch"
+                  className="switch rounded-full px-3 py-3 lg:rounded"
                   icon={<IconFilter />}
                   onClick={() => setFilterState(!filterState)}
                 ></Button>
               </div>
             </div>
           </div>
-          <p className="discription hidden rounded-sm bg-transition-color-8 p-3 lg:block">
+          {/* <p className="discription hidden rounded-sm bg-transition-color-8 p-3 lg:block">
             {dictionary.ui.monster.discription}
-          </p>
+          </p> */}
           <Table
             table={table}
             hiddenData={hiddenData}

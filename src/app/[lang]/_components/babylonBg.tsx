@@ -4,7 +4,6 @@ import * as BABYLON from "babylonjs";
 import "babylonjs-loaders";
 import React from "react";
 import LoadingBox from "./loadingBox";
-import { useAppStore } from "~/app/store";
 
 declare module "babylonjs" {
   interface Material {
@@ -533,7 +532,7 @@ export default function BabylonBg(): JSX.Element {
       </canvas>
       {/* <div className=" fixed left-0 top-0 -z-0 h-dvh w-dvw bg-test bg-cover opacity-10"></div> */}
       <div
-        className={`LoadingBG fixed left-0 top-0 z-50 h-full w-full bg-primary-color ${
+        className={`LoadingBG fixed left-0 top-0 z-50 h-dvh w-dvw bg-primary-color ${
           !loaderState
             ? "pointer-events-auto visible opacity-100"
             : "pointer-events-none invisible opacity-0"
@@ -546,7 +545,7 @@ export default function BabylonBg(): JSX.Element {
             : "pointer-events-none invisible opacity-0"
         }`}
       >
-        <div className="LoadingMask fixed left-0 top-0 h-full w-full bg-gradient-to-b from-primary-color from-10% to-primary-color-0 to-25% lg:bg-gradient-to-t lg:from-5% lg:to-[25%]"></div>
+        <div className="LoadingMask fixed left-0 top-0 h-dvh w-dvw bg-gradient-to-b from-primary-color from-10% to-primary-color-0 to-25% lg:bg-gradient-to-t lg:from-5% lg:to-[25%]"></div>
         <div className="LoadingState fixed left-[4dvw] top-[2%] flex flex-col gap-3 lg:left-[10dvw] lg:top-[97%] lg:-translate-y-full">
           <h1 className="animate-pulse">加载中...</h1>
           <LoadingBox className="w-[92dvw] lg:w-[80dvw]" />
