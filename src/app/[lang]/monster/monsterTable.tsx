@@ -175,7 +175,7 @@ export default function Table(props: {
                   position: "absolute",
                   transform: `translateY(${virtualRow.start}px)`, //this should always be a `style` as it changes on scroll
                 }}
-                className={`group min-w-full flex cursor-pointer transition-none  ${virtualRow.index % 2 === 0 ? "" : "bg-transition-color-8"}`}
+                className={`group min-w-full flex cursor-pointer transition-none ${virtualRow.index % 2 === 0 ? "" : "bg-transition-color-8"}`}
                 onClick={() => handleTrClick(row.getValue("id"))}
               >
                 {row.getVisibleCells().map((cell) => {
@@ -190,7 +190,7 @@ export default function Table(props: {
                       style={{
                         ...getCommonPinningStyles(column),
                       }}
-                      className={`border-1 flex border-transition-color-8 px-2 py-4 group-hover:bg-brand-color-1st}`}
+                      className={`border-1 flex border-transition-color-8 px-2 py-4 group-hover:bg-brand-color-1st`}
                     >
                       {flexRender(
                         cell.column.columnDef.cell,
