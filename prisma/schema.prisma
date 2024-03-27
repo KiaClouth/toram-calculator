@@ -77,7 +77,7 @@ model Post {
 model UserCreate {
     characters           Character[]
     monsters             Monster[]
-    crystal              Crystal[]
+    crystals             Crystal[]
     mainWeapons          MainWeapon[]
     subWeapons           SubWeapon[]
     bodyArmors           BodyArmor[]
@@ -85,13 +85,16 @@ model UserCreate {
     specialEquipments    SpecialEquipment[]
     pets                 Pet[]
     skills               Skill[]
-    belongTo             User                  @relation(fields: [userId], references: [id])
+    consumables          Consumable[]
+    combos               Combo[]
+    analyzers            Analyzer[]
+    belongToUser         User                  @relation(fields: [userId], references: [id])
     userId               String                @id
 }
 
 model UserUpdate {
     monsters             Monster[]
-    crystal              Crystal[]
+    crystals             Crystal[]
     mainWeapons          MainWeapon[]
     subWeapons           SubWeapon[]
     bodyArmors           BodyArmor[]
@@ -99,7 +102,8 @@ model UserUpdate {
     specialEquipments    SpecialEquipment[]
     pets                 Pet[]
     skills               Skill[]
-    belongTo             User                  @relation(fields: [userId], references: [id])
+    consumables          Consumable[]
+    belongToUser         User                  @relation(fields: [userId], references: [id])
     userId               String                @id
 }
 
@@ -155,6 +159,7 @@ model Monster {
     possibilityOfRunningAround       Int         @default(5)
     specialBehavior                  String?     @db.TinyText
     viewCount                        Int         @default(0)
+    belongToAnalyzers                Analyzer[]
     usageCount                       Int         @default(0)
     updatedAt                        DateTime    @updatedAt
     updatedBy                        UserUpdate? @relation(fields: [updatedById], references: [userId])
@@ -298,6 +303,7 @@ model ModifiersList {
     usedBySpecialEquipment    SpecialEquipment[]
     usedByCrystal             Crystal[]
     usedByCharacter           Character[]
+    userdByConsumable         Consumable[]
 }
 
 model ModifierOnModifiersList {
@@ -312,43 +318,44 @@ model ModifierOnModifiersList {
 }
 
 model Character {
-    id              String         @id @default(cuid()) /// @zod.custom.omit(["model","input"]) 
-    state           State          @default(PRIVATE)
-    name            String         @default("SYSTEM")
-    lv              Int            @default(1)
-    baseAbi         BaseAbi?
-    specialAbi      SpecialAbi?
-    equipment       EquipmentList?
-    fashion         Fashion?
-    cuisine         Cuisine?
-    consumable      Consumable?
-    skill           SkillList?
-    viewCount       Int            @default(0)
-    usageCount      Int            @default(0)
-    updatedAt       DateTime       @updatedAt
-    pet             Pet?           @relation(fields: [petId], references: [id])
-    petId           String?
-    modifiersList   ModifiersList? @relation(fields: [modifiersListId], references: [id])
-    modifiersListId String?
-    createdBy       UserCreate?    @relation(fields: [createdById], references: [userId])
-    createdById     String? /// @zod.custom.omit(["model","input"])
+    id                String                  @id @default(cuid()) /// @zod.custom.omit(["model","input"]) 
+    state             State                   @default(PRIVATE)
+    name              String                  @default("SYSTEM")
+    lv                Int                     @default(1)
+    baseAbi           BaseAbi?
+    specialAbi        SpecialAbi?
+    equipmentList     EquipmentList?
+    fashion           Fashion?
+    cuisine           Cuisine?
+    consumableList    ConsumableOnCharacter[]
+    skill             SkillList?
+    viewCount         Int                     @default(0)
+    usageCount        Int                     @default(0)
+    updatedAt         DateTime                @updatedAt
+    pet               Pet?                    @relation(fields: [petId], references: [id])
+    petId             String?
+    modifiersList     ModifiersList?          @relation(fields: [modifiersListId], references: [id])
+    modifiersListId   String?
+    belongToAnalyzers Analyzer[]
+    createdBy         UserCreate?             @relation(fields: [createdById], references: [userId])
+    createdById       String? /// @zod.custom.omit(["model","input"])
 }
 
 model BaseAbi {
-    baseStr     Int       @default(1)
-    baseInt     Int       @default(1)
-    baseVit     Int       @default(1)
-    baseAgi     Int       @default(1)
-    baseDex     Int       @default(1)
-    belongTo    Character @relation(fields: [characterId], references: [id])
-    characterId String    @id
+    baseStr           Int       @default(1)
+    baseInt           Int       @default(1)
+    baseVit           Int       @default(1)
+    baseAgi           Int       @default(1)
+    baseDex           Int       @default(1)
+    belongToCharacter Character @relation(fields: [characterId], references: [id])
+    characterId       String    @id
 }
 
 model SpecialAbi {
-    specialAbiType SpecialAbiType @default(NULL)
-    value          Int            @default(0)
-    belongTo       Character      @relation(fields: [characterId], references: [id])
-    characterId    String         @id
+    specialAbiType    SpecialAbiType @default(NULL)
+    value             Int            @default(0)
+    belongToCharacter Character      @relation(fields: [characterId], references: [id])
+    characterId       String         @id
 }
 
 enum SpecialAbiType {
@@ -423,7 +430,7 @@ model CrystalOnSpecialEquipment {
 
 model EquipmentList {
     updatedAt             DateTime             @updatedAt
-    belongTo              Character            @relation(fields: [characterId], references: [id])
+    belongToCharacter     Character            @relation(fields: [characterId], references: [id])
     characterId           String               @id
     mainWeapon            MainWeapon?          @relation(fields: [mainWeaponId], references: [id])
     mainWeaponId          String?
@@ -559,28 +566,22 @@ model SpecialEquipment {
 }
 
 model Fashion {
-    updatedAt   DateTime   @updatedAt
-    belongTo    Character? @relation(fields: [characterId], references: [id])
-    characterId String     @id
+    updatedAt         DateTime   @updatedAt
+    belongToCharacter Character? @relation(fields: [characterId], references: [id])
+    characterId       String     @id
 }
 
 model Cuisine {
-    updatedAt   DateTime   @updatedAt
-    belongTo    Character? @relation(fields: [characterId], references: [id])
-    characterId String     @id
-}
-
-model Consumable {
-    updatedAt   DateTime   @updatedAt
-    belongTo    Character? @relation(fields: [characterId], references: [id])
-    characterId String     @id
+    updatedAt         DateTime   @updatedAt
+    belongToCharacter Character? @relation(fields: [characterId], references: [id])
+    characterId       String     @id
 }
 
 model SkillList {
-    updatedAt   DateTime           @updatedAt
-    belongTo    Character?         @relation(fields: [characterId], references: [id])
-    characterId String             @id
-    skill       SkillOnSkillList[]
+    updatedAt         DateTime           @updatedAt
+    belongToCharacter Character?         @relation(fields: [characterId], references: [id])
+    characterId       String             @id
+    skill             SkillOnSkillList[]
 }
 
 model Skill {
@@ -588,6 +589,7 @@ model Skill {
     state           State              @default(PRIVATE)
     name            String?            @default("SYSTEM")
     usedBy          SkillOnSkillList[]
+    usedByStep      Step[]
     createdAt       DateTime           @default(now())
     createdBy       UserCreate?        @relation(fields: [createdByUserId], references: [userId])
     createdByUserId String?
@@ -607,6 +609,17 @@ model SkillOnSkillList {
     @@id([skillListId, skillId])
 }
 
+model ConsumableOnCharacter {
+    assignedAt   DateTime   @default(now())
+    assignedBy   String     @default("SYSTEM")
+    consumable   Consumable @relation(fields: [consumableId], references: [id])
+    consumableId String
+    character    Character  @relation(fields: [characterId], references: [id])
+    characterId  String
+
+    @@id([consumableId, characterId])
+}
+
 model Pet {
     id              String      @id @default(cuid()) /// @zod.custom.omit(["model","input"]) 
     createdAt       DateTime    @default(now())
@@ -618,4 +631,83 @@ model Pet {
     state           State       @default(PRIVATE)
     name            String?     @default("SYSTEM")
     usedBy          Character[]
+}
+
+enum ConsumableType {
+    HP
+    MP
+    ATK
+    MATK
+    SPEED
+    CSPEED
+    STRONGER
+    HIT
+    AVO
+}
+
+model Consumable {
+    id              String                  @id @default(cuid()) /// @zod.custom.omit(["model","input"]) 
+    state           State                   @default(PRIVATE)
+    name            String                  @default("SYSTEM")
+    usedBy          ConsumableOnCharacter[]
+    modifiersList   ModifiersList?          @relation(fields: [modifiersListId], references: [id])
+    modifiersListId String?
+    createdAt       DateTime                @default(now())
+    createdBy       UserCreate?             @relation(fields: [createdByUserId], references: [userId])
+    createdByUserId String?
+    updatedAt       DateTime                @updatedAt
+    updatedBy       UserUpdate?             @relation(fields: [updatedByUserId], references: [userId])
+    updatedByUserId String?
+}
+
+model Analyzer {
+    id              String            @id @default(cuid()) /// @zod.custom.omit(["model","input"])
+    state           State             @default(PRIVATE)
+    name            String?           @default("SYSTEM")
+    createdAt       DateTime          @default(now())
+    createdBy       UserCreate?       @relation(fields: [createdByUserId], references: [userId])
+    createdByUserId String?
+    monster         Monster?          @relation(fields: [monsterId], references: [id])
+    monsterId       String?
+    character       Character?        @relation(fields: [characterId], references: [id])
+    characterId     String?
+    combos          ComboOnAnalyzer[]
+    processes       Process[]
+}
+
+model Combo {
+    id              String            @id @default(cuid()) /// @zod.custom.omit(["model","input"])
+    createdAt       DateTime          @default(now())
+    createdBy       UserCreate?       @relation(fields: [createdByUserId], references: [userId])
+    createdByUserId String?
+    state           State             @default(PRIVATE)
+    name            String?           @default("SYSTEM")
+    usedBy          ComboOnAnalyzer[]
+}
+
+model ComboOnAnalyzer {
+    assignedAt DateTime @default(now())
+    assignedBy String   @default("SYSTEM")
+    combo      Combo    @relation(fields: [comboId], references: [id])
+    comboId    String
+    analyzer   Analyzer @relation(fields: [analyzerId], references: [id])
+    analyzerId String
+
+    @@id([comboId, analyzerId])
+}
+
+model Process {
+    id               String   @id @default(cuid()) /// @zod.custom.omit(["model","input"])
+    steps            Step[]
+    belongToAnalyzer Analyzer @relation(fields: [analyzerId], references: [id])
+    analyzerId       String
+}
+
+model Step {
+    id              String            @id @default(cuid()) /// @zod.custom.omit(["model","input"])
+    order           Int
+    skill           Skill @relation(fields: [skillId], references: [id])
+    skillId         String
+    belongToProcess Process @relation(fields: [processId], references: [id])
+    processId       String
 }
