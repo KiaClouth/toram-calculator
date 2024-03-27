@@ -1,6 +1,5 @@
 import "~/styles/globals.css";
 import { env } from "~/env";
-import { Inter } from "next/font/google";
 import { cookies } from "next/headers";
 import { TRPCReactProvider } from "~/trpc/react";
 import type { Metadata, Viewport } from "next";
@@ -12,7 +11,6 @@ import ThemeProvider from "./_components/themeProvider";
 import Nav from "./_components/nav";
 import BabylonBg from "./_components/babylonBg";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
 const APP_NAME = "托拉姆计算器-ToramCalculator:一个简单的托拉姆数值计算器";
 const APP_DEFAULT_TITLE = "托拉姆计算器-ToramCalculator";
@@ -59,8 +57,8 @@ export const metadata: Metadata = {
   metadataBase: new URL(env.NEXTAUTH_URL),
   other: {
     // 百度HTML标签验证字段
-    "baidu-site-verification":"codeva-RFvyQ61tbi"
-  }
+    "baidu-site-verification": "codeva-RFvyQ61tbi",
+  },
 };
 
 export const viewport: Viewport = {
@@ -79,12 +77,7 @@ export default async function RootLayout({
 
   return (
     <html lang={lang} suppressHydrationWarning>
-      <body
-        className={
-          `font-sans ${inter.variable}` +
-          " flex h-dvh w-dvw flex-col-reverse lg:flex-row"
-        }
-      >
+      <body className={`flex h-dvh w-dvw flex-col-reverse`}>
         <TRPCReactProvider cookies={cookies().toString()}>
           <ThemeProvider>
             <BabylonBg />
