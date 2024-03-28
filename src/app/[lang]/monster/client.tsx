@@ -6,16 +6,19 @@ import {
   getCoreRowModel,
   getSortedRowModel,
   useReactTable,
+  type Column,
+  flexRender,
 } from "@tanstack/react-table";
 import { type getDictionary } from "~/app/get-dictionary";
-import Table from "./monsterTable";
 import { type Session } from "next-auth";
-import React, { useState } from "react";
+import React, { type CSSProperties } from "react";
 import LongSearchBox from "./monsterSearchBox";
 import MonsterForm from "./monsterForm";
 import Button from "../_components/button";
 import { IconCloudUpload, IconFilter } from "../_components/iconsList";
 import Dialog from "../_components/dialog";
+import { useVirtualizer } from "@tanstack/react-virtual";
+import { useBearStore } from "~/app/store";
 
 export default function MonserPageClient(props: {
   dictionary: ReturnType<typeof getDictionary>;
@@ -23,71 +26,19 @@ export default function MonserPageClient(props: {
   monsterList: Monster[];
 }) {
   const { dictionary, session, monsterList } = props;
-  // 怪物数据的初始值
-  const defaultMonster: Monster = {
-    id: "",
-    updatedAt: new Date(),
-    updatedById: "",
-    state: "PRIVATE",
-    name: "",
-    monsterType: "COMMON_BOSS",
-    baseLv: 0,
-    experience: 0,
-    address: "",
-    element: "NO_ELEMENT",
-    radius: 1,
-    maxhp: 0,
-    physicalDefense: 0,
-    physicalResistance: 0,
-    magicalDefense: 0,
-    magicalResistance: 0,
-    criticalResistance: 0,
-    avoidance: 0,
-    dodge: 0,
-    block: 0,
-    normalAttackResistanceModifier: 0,
-    physicalAttackResistanceModifier: 0,
-    magicalAttackResistanceModifier: 0,
-    difficultyOfTank: 0,
-    difficultyOfMelee: 0,
-    difficultyOfRanged: 0,
-    possibilityOfRunningAround: 0,
-    specialBehavior: "",
-    viewCount: 0,
-    usageCount: 0,
-    createdById: "",
-  };
 
-  const [monster, setMonster] = useState<Monster>(defaultMonster);
-  const [monsterDialogState, setMonsterDialogState] = useState(false);
-  const [filterState, setFilterState] = React.useState(false);
+  // 状态管理参数
+  const {
+    monster,
+    setMonster,
+    monsterDialogState,
+    setMonsterDialogState,
+    filterState,
+    setFilterState,
+  } = useBearStore((state) => state.monsterPage);
 
   // 定义不需要展示的列
   const hiddenData: Array<keyof Monster> = ["id", "updatedAt", "updatedById"];
-  // // 实验性内容
-  // 列配置
-  // const clounmDefine: ColumnDef<Monster>[] = [];
-  // const inputSchema = <T,>(obj: T) => {
-  //   const schema: {
-  //     attrName: keyof T;
-  //     value: T[keyof T][] | string;
-  //   }[] = [];
-  //   for (const key in obj) {
-  //     const value = obj[key];
-  //     if (Object.keys($Enums).includes(key)) {
-  //       console.log(key);
-  //     }
-  //     schema.push({
-  //       attrName: key,
-  //       value: Object.keys($Enums).includes(key)
-  //         ? (Object.keys($Enums[key as keyof typeof $Enums]) as T[keyof T][])
-  //         : typeof value,
-  //     });
-  //   }
-  //   // console.log(schema)
-  //   return schema;
-  // };
-  // inputSchema(defaultMonster);
 
   const columns = React.useMemo<ColumnDef<Monster>[]>(
     () => [
@@ -108,7 +59,7 @@ export default function MonserPageClient(props: {
         header: () => dictionary.db.models.monster.monsterType,
         cell: (info) =>
           dictionary.db.enums.MonsterType[info.getValue<$Enums.MonsterType>()],
-        size: 80,
+        size: 120,
       },
       {
         accessorKey: "element",
@@ -125,22 +76,22 @@ export default function MonserPageClient(props: {
       {
         accessorKey: "physicalDefense",
         header: () => dictionary.db.models.monster.physicalDefense,
-        size: 110,
+        size: 120,
       },
       {
         accessorKey: "physicalResistance",
         header: () => dictionary.db.models.monster.physicalResistance,
-        size: 110,
+        size: 120,
       },
       {
         accessorKey: "magicalDefense",
         header: () => dictionary.db.models.monster.magicalDefense,
-        size: 110,
+        size: 120,
       },
       {
         accessorKey: "magicalResistance",
         header: () => dictionary.db.models.monster.magicalResistance,
-        size: 110,
+        size: 120,
       },
       {
         accessorKey: "criticalResistance",
@@ -150,17 +101,17 @@ export default function MonserPageClient(props: {
       {
         accessorKey: "avoidance",
         header: () => dictionary.db.models.monster.avoidance,
-        size: 100,
+        size: 120,
       },
       {
         accessorKey: "dodge",
         header: () => dictionary.db.models.monster.dodge,
-        size: 100,
+        size: 120,
       },
       {
         accessorKey: "block",
         header: () => dictionary.db.models.monster.block,
-        size: 100,
+        size: 120,
       },
       {
         accessorKey: "updatedAt",
@@ -208,10 +159,59 @@ export default function MonserPageClient(props: {
     debugTable: true,
   });
 
+  const { rows } = table.getRowModel();
+
+  // The virtualizer needs to know the scrollable container element
+  const tableContainerRef = React.useRef<HTMLDivElement>(null);
+
+  const rowVirtualizer = useVirtualizer({
+    count: rows.length,
+    estimateSize: () => 33, // estimate row height for accurate scrollbar dragging
+    getScrollElement: () => tableContainerRef.current,
+    // measure dynamic row height, except in firefox because it measures table border height incorrectly
+    measureElement:
+      typeof window !== "undefined" &&
+      navigator.userAgent.indexOf("Firefox") === -1
+        ? (element) => element?.getBoundingClientRect().height
+        : undefined,
+    overscan: 5,
+  });
+
+  const handleTrClick = (id: string) => {
+    monsterList.forEach((monster) => {
+      if (monster.id !== id) return;
+      setMonster(monster);
+      setMonsterDialogState(true);
+    });
+  };
+
+  // 列粘性布局样式计算函数
+  const getCommonPinningStyles = (column: Column<Monster>): CSSProperties => {
+    const isPinned = column.getIsPinned();
+    const isLastLeft = isPinned === "left" && column.getIsLastColumn("left");
+    const isFirstRight =
+      isPinned === "right" && column.getIsFirstColumn("right");
+    const styles: CSSProperties = {
+      position: isPinned ? "sticky" : "relative",
+      width: column.getSize(),
+      zIndex: isPinned ? 1 : 0,
+    };
+    if (isPinned) {
+      styles.left = isLastLeft ? `${column.getStart("left")}px` : undefined;
+      styles.right = isFirstRight ? `${column.getAfter("right")}px` : undefined;
+      styles.borderWidth = isLastLeft
+        ? "0px 2px 0px 0px"
+        : isFirstRight
+          ? "0px 0px 0px 2px"
+          : undefined;
+    }
+    return styles;
+  };
+
   return (
-    <main className="flex flex-1 overflow-y-auto">
+    <main className="flex flex-1 flex-col overflow-auto lg:flex-row">
       <div
-        className={`Module1 fixed left-0 top-0 z-50 lg:z-0 ${filterState ? " translate-x-0 " : " -translate-x-full "} flex-none border-brand-color-1st bg-primary-color backdrop-blur-xl lg:sticky lg:translate-x-0 lg:border-x-1.5 lg:bg-transition-color-8 ${filterState ? " pointer-events-auto visible basis-[260px] opacity-100 " : " pointer-events-none invisible basis-[0px] opacity-0 "}`}
+        className={`Module1 fixed left-0 top-0 z-50 lg:z-0 ${filterState ? " translate-x-0 " : " -translate-x-full "} flex-none border-transition-color-8 bg-primary-color backdrop-blur-xl lg:sticky lg:translate-x-0 lg:border-x-1.5 lg:bg-transparent ${filterState ? " pointer-events-auto visible basis-[260px] opacity-100 " : " pointer-events-none invisible basis-[0px] opacity-0 "}`}
       >
         <div className="content flex h-dvh w-dvw flex-col-reverse gap-4 overflow-y-auto px-6 pt-8 lg:absolute lg:right-0 lg:top-0 lg:w-[260px] lg:flex-col">
           <div className="module flex flex-col gap-3">
@@ -261,14 +261,18 @@ export default function MonserPageClient(props: {
           </div>
         </div>
       </div>
-      <div className="Module2 flex flex-1 px-2 backdrop-blur-xl lg:px-6">
+      <div
+        ref={tableContainerRef}
+        className="Module2 flex flex-1 overflow-y-auto backdrop-blur-xl lg:px-6"
+      >
         <div className="LeftArea flex-1"></div>
-        <div className="ModuleContent flex flex-1 basis-full flex-col 2xl:basis-[1536px]">
-          <div className="Title flex- flex justify-between gap-9 lg:flex-row lg:pb-[4dvh] lg:pt-20">
-            <h1 className="Text hidden text-center font-bold lg:block lg:bg-transparent lg:text-left lg:text-4xl lg:text-accent-color">
+        <div className="ModuleContent flex flex-1 flex-col 2xl:basis-[1536px]">
+          <div className="Title flex flex-1 flex-col gap-9 p-2 pt-20">
+            <div className="row flex flex-col lg:flex-row">
+            <h1 className="Text text-center text-2xl font-bold lg:block lg:bg-transparent lg:text-left lg:text-4xl">
               {dictionary.ui.monster.pageTitle}
             </h1>
-            <div className="Control absolute bottom-2 right-2 z-10 flex flex-1 flex-col gap-1 lg:static lg:flex-row">
+            <div className="Control bottom-2 right-2 z-10 flex flex-1 flex-col gap-1 lg:static lg:flex-row">
               <LongSearchBox
                 dictionary={dictionary}
                 monsterList={monsterList}
@@ -276,15 +280,15 @@ export default function MonserPageClient(props: {
                 setMonsterDialogState={setMonsterDialogState}
               />
               <Button
-                  className="switch rounded-full px-2 py-2 lg:rounded w-fit lg:px-4 lg:py-2"
-                  icon={<IconFilter />}
-                  onClick={() => setFilterState(!filterState)}
-                ></Button>
+                className="switch w-fit rounded-full px-2 py-2 lg:rounded lg:px-4 lg:py-2"
+                icon={<IconFilter />}
+                onClick={() => setFilterState(!filterState)}
+              ></Button>
               {session?.user ? (
                 <React.Fragment>
                   <Button
                     onClick={() => setMonsterDialogState(true)}
-                    level="primary"
+                    // level="primary"
                     icon={<IconCloudUpload />}
                     className="hidden lg:flex"
                   >
@@ -298,21 +302,139 @@ export default function MonserPageClient(props: {
                 </React.Fragment>
               ) : undefined}
             </div>
+            </div>
+            <p className="discription my-3 hidden rounded-sm bg-transition-color-8 p-3 lg:block">
+              {dictionary.ui.monster.discription}
+            </p>
           </div>
-          <p className="discription hidden rounded-sm bg-transition-color-8 p-3 my-3 lg:block">
-            {dictionary.ui.monster.discription}
-          </p>
-          <Table
-            table={table}
-            hiddenData={hiddenData}
-            monsterList={monsterList}
-            setMonster={setMonster}
-            setMonsterDialogState={setMonsterDialogState}
-            session={session}
-            dictionary={dictionary}
-            filterState={filterState}
-            setFilterState={setFilterState}
-          />
+          <table className="Table w-[200px] flex-none bg-transition-color-8 px-2 lg:bg-transparent overflow-x-hidden">
+            <thead className="sticky top-0 z-10 flex">
+              {table.getHeaderGroups().map((headerGroup) => {
+                return (
+                  <tr
+                    key={headerGroup.id}
+                    className=" flex min-w-full gap-0 border-b-2 bg-primary-color px-2"
+                  >
+                    {headerGroup.headers.map((header) => {
+                      const { column } = header;
+                      if (hiddenData.includes(column.id as keyof Monster)) {
+                        // 默认隐藏的数据
+                        return;
+                      }
+                      return (
+                        <th
+                          key={header.id}
+                          style={{
+                            ...getCommonPinningStyles(column),
+                          }}
+                          className="flex flex-col"
+                        >
+                          <div
+                            {...{
+                              onClick: header.column.getToggleSortingHandler(),
+                            }}
+                            className={`border-1 flex-1 border-transition-color-8 py-3 text-left hover:bg-transition-color-8 lg:py-7 ${
+                              header.column.getCanSort()
+                                ? "cursor-pointer select-none"
+                                : ""
+                            }`}
+                          >
+                            {flexRender(
+                              header.column.columnDef.header,
+                              header.getContext(),
+                            )}
+                            {{
+                              asc: " 🔼",
+                              desc: " 🔽",
+                            }[header.column.getIsSorted() as string] ?? null}
+                          </div>
+                          {/* {!header.isPlaceholder &&
+                            header.column.getCanPin() && ( // 固定列
+                              <div className="flex gap-1 p-2">
+                                {header.column.getIsPinned() !== "left" ? (
+                                  <button
+                                    className="flex-1 rounded bg-transition-color-8 px-1"
+                                    onClick={() => {
+                                      header.column.pin("left");
+                                    }}
+                                  >
+                                    {"<"}
+                                  </button>
+                                ) : null}
+                                {header.column.getIsPinned() ? (
+                                  <button
+                                    className="flex-1 rounded bg-transition-color-8 px-1"
+                                    onClick={() => {
+                                      header.column.pin(false);
+                                    }}
+                                  >
+                                    X
+                                  </button>
+                                ) : null}
+                                {header.column.getIsPinned() !== "right" ? (
+                                  <button
+                                    className="flex-1 rounded bg-transition-color-8 px-1"
+                                    onClick={() => {
+                                      header.column.pin("right");
+                                    }}
+                                  >
+                                    {">"}
+                                  </button>
+                                ) : null}
+                              </div>
+                            )} */}
+                        </th>
+                      );
+                    })}
+                  </tr>
+                );
+              })}
+            </thead>
+            <tbody
+              style={{
+                height: `${rowVirtualizer.getTotalSize()}px`, //tells scrollbar how big the table is
+              }}
+              className="relative z-0 mt-[54px] px-2 lg:mt-[84px]"
+            >
+              {rowVirtualizer.getVirtualItems().map((virtualRow) => {
+                const row = rows[virtualRow.index]!;
+                return (
+                  <tr
+                    data-index={virtualRow.index} //needed for dynamic row height measurement
+                    ref={(node) => rowVirtualizer.measureElement(node)} //measure dynamic row height
+                    key={row.id}
+                    style={{
+                      position: "absolute",
+                      transform: `translateY(${virtualRow.start}px)`, //this should always be a `style` as it changes on scroll
+                    }}
+                    className={`group flex cursor-pointer border-y-1.5 border-transition-color-8 px-2 py-6 transition-none hover:border-brand-color-1st`}
+                    onClick={() => handleTrClick(row.getValue("id"))}
+                  >
+                    {row.getVisibleCells().map((cell) => {
+                      const { column } = cell;
+                      if (hiddenData.includes(column.id as keyof Monster)) {
+                        // 默认隐藏的数据
+                        return;
+                      }
+                      return (
+                        <td
+                          key={cell.id}
+                          style={{
+                            ...getCommonPinningStyles(column),
+                          }}
+                        >
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext(),
+                          )}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
         </div>
         <div className="RightArea flex-1"></div>
       </div>

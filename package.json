@@ -32,6 +32,7 @@
     "@trpc/server": "^10.43.6",
     "babylonjs": "^6.44.0",
     "babylonjs-loaders": "^6.44.0",
+    "immer": "^10.0.4",
     "negotiator": "0.6.3",
     "next": "latest",
     "next-auth": "^4.24.5",

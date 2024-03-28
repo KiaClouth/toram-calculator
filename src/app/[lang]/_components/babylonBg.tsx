@@ -245,6 +245,7 @@ function isPBRMaterial(
 export default function BabylonBg(): JSX.Element {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [loaderState, setLoaderState] = useState(false);
+  const percentageRef = React.useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -469,11 +470,9 @@ export default function BabylonBg(): JSX.Element {
       "/models/",
       "bg1.glb",
       scene,
-      function (event) {
+      (event) => {
         // 加载进度计算
-        const percentage = event.lengthComputable
-          ? " " + Math.floor((event.loaded / event.total) * 100) + "%"
-          : "";
+        if(percentageRef.current) percentageRef.current.innerHTML = "加载中..." +  Math.floor((event.loaded / event.total) * 100).toString()
       },
     ).then(() => {
       // 材质添加
@@ -547,7 +546,7 @@ export default function BabylonBg(): JSX.Element {
       >
         <div className="LoadingMask fixed left-0 top-0 h-dvh w-dvw bg-gradient-to-b from-primary-color from-10% to-primary-color-0 to-25% lg:bg-gradient-to-t lg:from-5% lg:to-[25%]"></div>
         <div className="LoadingState fixed left-[4dvw] top-[2%] flex flex-col gap-3 lg:left-[10dvw] lg:top-[97%] lg:-translate-y-full">
-          <h1 className="animate-pulse">加载中...</h1>
+          <h1 ref={percentageRef} className="animate-pulse">加载中...</h1>
           <LoadingBox className="w-[92dvw] lg:w-[80dvw]" />
         </div>
       </div>
