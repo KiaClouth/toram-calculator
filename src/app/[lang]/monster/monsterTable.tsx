@@ -1,19 +1,24 @@
 "use client";
 
 import { type Monster } from "@prisma/client";
-import {
-  flexRender,
-  type Column,
-  type Table,
-} from "@tanstack/react-table";
+import { flexRender, type Column, type Table } from "@tanstack/react-table";
 
 import { useVirtualizer } from "@tanstack/react-virtual";
 import React, { type CSSProperties } from "react";
+import Button from "../_components/button";
+import { IconCloudUpload, IconFilter } from "../_components/iconsList";
+import LongSearchBox from "./monsterSearchBox";
+import { type getDictionary } from "~/app/get-dictionary";
+import { type Session } from "next-auth";
 
 export default function Table(props: {
   table: Table<Monster>;
   hiddenData: Array<keyof Monster>;
   monsterList: Monster[];
+  session: Session | null;
+  dictionary: ReturnType<typeof getDictionary>;
+  filterState: boolean;
+  setFilterState: (state: boolean) => void;
   setMonster: (m: Monster) => void;
   setMonsterDialogState: (state: boolean) => void;
 }) {
@@ -21,6 +26,10 @@ export default function Table(props: {
     table,
     hiddenData,
     monsterList,
+    session,
+    dictionary,
+    filterState,
+    setFilterState,
     setMonster,
     setMonsterDialogState,
   } = props;
@@ -77,13 +86,16 @@ export default function Table(props: {
   return (
     <div
       ref={tableContainerRef}
-      className="TableBox z-0 flex-1 overflow-auto"
+      className="TableBox z-0 flex-1 overflow-auto lg:overflow-visible"
     >
       <table className="Table grid">
         <thead className="sticky top-0 z-10 flex">
           {table.getHeaderGroups().map((headerGroup) => {
             return (
-              <tr key={headerGroup.id} className=" absolute flex min-w-full gap-0 bg-primary-color border-b-2">
+              <tr
+                key={headerGroup.id}
+                className=" absolute flex min-w-full gap-0 px-2 border-b-2 bg-primary-color"
+              >
                 {headerGroup.headers.map((header) => {
                   const { column } = header;
                   if (hiddenData.includes(column.id as keyof Monster)) {
@@ -102,7 +114,7 @@ export default function Table(props: {
                         {...{
                           onClick: header.column.getToggleSortingHandler(),
                         }}
-                        className={`border-1 flex-1 border-transition-color-8 px-2 py-4 text-left hover:bg-transition-color-8 ${
+                        className={`border-1 flex-1 border-transition-color-8 py-7 text-left hover:bg-transition-color-8 ${
                           header.column.getCanSort()
                             ? "cursor-pointer select-none"
                             : ""
@@ -162,7 +174,7 @@ export default function Table(props: {
           style={{
             height: `${rowVirtualizer.getTotalSize()}px`, //tells scrollbar how big the table is
           }}
-          className="grid relative z-0 px-2 lg:mt-16"
+          className="relative z-0 grid px-2 lg:mt-[86px]"
         >
           {rowVirtualizer.getVirtualItems().map((virtualRow) => {
             const row = rows[virtualRow.index]!;
@@ -175,7 +187,7 @@ export default function Table(props: {
                   position: "absolute",
                   transform: `translateY(${virtualRow.start}px)`, //this should always be a `style` as it changes on scroll
                 }}
-                className={`group min-w-full flex cursor-pointer transition-none ${virtualRow.index % 2 === 0 ? "" : "bg-transition-color-8"}`}
+                className={`group flex min-w-full px-2 cursor-pointer border-b-1.5 border-transition-color-8 py-6 transition-none hover:bg-transition-color-8 hover:border-brand-color-1st`}
                 onClick={() => handleTrClick(row.getValue("id"))}
               >
                 {row.getVisibleCells().map((cell) => {
@@ -190,7 +202,6 @@ export default function Table(props: {
                       style={{
                         ...getCommonPinningStyles(column),
                       }}
-                      className={`border-1 flex border-transition-color-8 px-2 py-4 group-hover:bg-brand-color-1st`}
                     >
                       {flexRender(
                         cell.column.columnDef.cell,

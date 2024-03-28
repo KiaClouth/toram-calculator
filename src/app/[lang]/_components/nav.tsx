@@ -60,10 +60,10 @@ export default function Nav(props: {
     <div 
       className={`Nav border-t-1 flex w-dvw flex-shrink-0 overflow-x-auto border-transition-color-20 backdrop-blur lg:h-dvh lg:w-24 lg:flex-col lg:gap-10 lg:border-none lg:bg-transition-color-8 lg:py-5`}
     >
-      <div className="flex flex-1 lg:flex-none items-center justify-center">
+      <div className="flex lg:flex-none items-center justify-center">
         <Link
           href={"/"}
-          className="Home lgpx-4 group flex flex-shrink-0 flex-col items-center gap-0.5 px-1 py-2 lg:gap-4"
+          className="Home group flex flex-shrink-0 flex-col items-center gap-0.5 px-1 py-2 lg:gap-4"
           tabIndex={1}
           scroll={false}
         >

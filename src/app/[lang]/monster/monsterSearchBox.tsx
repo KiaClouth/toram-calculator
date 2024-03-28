@@ -28,10 +28,11 @@ export default function LongSearchBox(props: {
     }
     setOpen(openClass);
     const tempFilm: Film[] = [];
+    const hiddenData: Array<keyof Monster> = ["id", "updatedAt", "updatedById", "state", "createdById"]
     monsterList.forEach((monster) => {
       const related: [string, string | undefined][] = [];
       for (const attr in monster) {
-        if (!["id", "updatedAt", "updatedById", "state",].includes(attr)) {
+        if (!hiddenData.includes(attr as keyof Monster)) {
           const monsterAttr = monster[attr as keyof Monster]?.toString();
           if (monsterAttr?.match(value)?.input !== undefined) {
             related.push([attr, monsterAttr?.match(value)?.input]);
@@ -54,7 +55,7 @@ export default function LongSearchBox(props: {
 
   return (
     <React.Fragment>
-      <div className="SearchBox hidden z-10 lg:flex flex-none flex-col-reverse lg:flex-col">
+      <div className="SearchBox hidden z-10 lg:flex flex-1 flex-col-reverse lg:flex-col">
         <input
           type="search"
           placeholder={dictionary.ui.monster.searchPlaceholder}
