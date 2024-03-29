@@ -87,6 +87,17 @@ export default {
       "brand-color-2nd": "rgb(var(--brand-2nd) / <alpha-value>)",
       "brand-color-3rd": "rgb(var(--brand-3rd) / <alpha-value>)",
     },
+    borderRadius: {
+      none: "0px",
+      sm: "0.25rem",
+      DEFAULT: "0.5rem",
+      md: "0.75rem",
+      lg: "1rem",
+      xl: "1.5rem",
+      "2xl": "2rem",
+      "3xl": "3rem",
+      full: "9999px",
+    },
     extend: {
       maxWidth: {
         "8xl": "96rem",

@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 
 import { api } from "~/trpc/react";
 import type { getDictionary } from "~/app/get-dictionary";
@@ -20,9 +20,7 @@ export default function MonsterForm(props: {
   const router = useRouter();
   const { dictionary, defaultMonster } = props;
   // 状态管理参数
-  const {
-    setMonsterDialogState
-  } = useBearStore((state) => state.monsterPage);
+  const { monsterDialogState, setMonsterDialogState } = useBearStore((state) => state.monsterPage);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function FieldInfo({ field }: { field: FieldApi<any, any, any, any> }) {
@@ -69,6 +67,18 @@ export default function MonsterForm(props: {
 
   // 定义不需要手动输入的值
   const hiddenData: Array<keyof Monster> = ["updatedAt"];
+  useEffect(() => {
+    // escape键监听
+    const handleEscapeKeyPress = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setMonsterDialogState(!monsterDialogState);
+      }
+    };
+    document.addEventListener("keydown", handleEscapeKeyPress);
+    return () => {
+      document.removeEventListener("keydown", handleEscapeKeyPress);
+    };
+  }, [monsterDialogState, setMonsterDialogState]);
 
   return (
     <form.Provider>
@@ -78,7 +88,7 @@ export default function MonsterForm(props: {
           e.stopPropagation();
           void form.handleSubmit();
         }}
-        className={`CreateMonsterFrom flex max-w-7xl flex-col gap-4 overflow-y-auto rounded p-4 lg:w-4/5`}
+        className={`CreateMonsterFrom flex w-full max-w-7xl flex-col gap-4 overflow-y-auto rounded px-3 lg:w-4/5`}
       >
         <div className="title flex justify-between border-b-1.5 border-brand-color-1st p-3 text-lg font-semibold">
           <span>{dictionary.ui.monster.upload}</span>
@@ -203,14 +213,17 @@ export default function MonsterForm(props: {
           </fieldset>
         </div>
         <div className="functionArea flex justify-end border-t-1.5 border-brand-color-1st py-3">
-          <div className="btnGroup flex gap-5">
-            <Button onClick={() => setMonsterDialogState(false)}>{dictionary.ui.monster.close}</Button>
+          <div className="btnGroup flex gap-2">
+            <Button onClick={() => setMonsterDialogState(!monsterDialogState)}>
+              {dictionary.ui.monster.close}
+            </Button>
             <form.Subscribe
               selector={(state) => [state.canSubmit, state.isSubmitting]}
             >
               {([canSubmit]) => (
                 <Button
                   type="submit"
+                  level="primary"
                   disabled={createMonster.isLoading || !canSubmit}
                 >
                   {createMonster.isLoading

@@ -76,42 +76,42 @@ export default function MonserPageClient(props: {
       {
         accessorKey: "physicalDefense",
         header: () => dictionary.db.models.monster.physicalDefense,
-        size: 100,
+        size: 120,
       },
       {
         accessorKey: "physicalResistance",
         header: () => dictionary.db.models.monster.physicalResistance,
-        size: 100,
+        size: 120,
       },
       {
         accessorKey: "magicalDefense",
         header: () => dictionary.db.models.monster.magicalDefense,
-        size: 100,
+        size: 120,
       },
       {
         accessorKey: "magicalResistance",
         header: () => dictionary.db.models.monster.magicalResistance,
-        size: 100,
+        size: 120,
       },
       {
         accessorKey: "criticalResistance",
         header: () => dictionary.db.models.monster.criticalResistance,
-        size: 100,
+        size: 120,
       },
       {
         accessorKey: "avoidance",
         header: () => dictionary.db.models.monster.avoidance,
-        size: 80,
+        size: 100,
       },
       {
         accessorKey: "dodge",
         header: () => dictionary.db.models.monster.dodge,
-        size: 80,
+        size: 100,
       },
       {
         accessorKey: "block",
         header: () => dictionary.db.models.monster.block,
-        size: 80,
+        size: 100,
       },
       {
         accessorKey: "updatedAt",
@@ -127,7 +127,7 @@ export default function MonserPageClient(props: {
           );
           return daysDifference;
         },
-        size: 180,
+        size: 150,
       },
     ],
     [
@@ -211,10 +211,12 @@ export default function MonserPageClient(props: {
   return (
     <main className="flex h-[calc(100dvh-67px)] flex-col lg:h-dvh lg:w-[calc(100dvw-96px)] lg:flex-row">
       <div
-        className={`Module1 fixed left-0 top-0 z-50 lg:z-0 ${filterState ? " translate-x-0 " : " -translate-x-full "} flex-none border-transition-color-8 bg-primary-color backdrop-blur-xl lg:sticky lg:translate-x-0 lg:border-x-1.5 lg:bg-transparent ${filterState ? " pointer-events-auto visible basis-[260px] opacity-100 " : " pointer-events-none invisible basis-[0px] opacity-0 "}`}
+        className={`Module1 fixed left-0 top-0 z-50 lg:z-0 ${filterState ? " translate-x-0 " : " -translate-x-full "} flex-none border-transition-color-8 bg-primary-color backdrop-blur-xl lg:sticky lg:translate-x-0 lg:border-x-1.5 lg:bg-transition-color-8 ${filterState ? " pointer-events-auto visible basis-[260px] opacity-100 " : " pointer-events-none invisible basis-[0px] opacity-0 "}`}
       >
-        <div className="content flex h-dvh w-dvw flex-col-reverse gap-4 overflow-y-auto px-6 pt-8 lg:absolute lg:right-0 lg:top-0 lg:w-[260px] lg:flex-col">
-          <div className="module flex flex-col gap-3">
+        <div
+          className={`Content flex h-dvh w-dvw flex-col-reverse gap-4 overflow-y-auto px-6 pt-8 lg:absolute lg:left-full lg:top-0 lg:w-[260px] lg:flex-col ${filterState ? "lg:-translate-x-full" : "lg:translate-x-0"}`}
+        >
+          <div className="Module flex flex-col gap-3">
             <Button
               level="tertiary"
               onClick={() => setFilterState(!filterState)}
@@ -266,39 +268,48 @@ export default function MonserPageClient(props: {
         className="Module2 flex flex-1 overflow-y-auto backdrop-blur-xl"
       >
         <div className="LeftArea sticky top-0 z-10 flex-1"></div>
-        <div className="ModuleContent h-fit w-full flex-col px-6 2xl:w-[1536px]">
-          <div className="Title flex flex-col gap-9 p-2 pt-10 lg:pt-20">
-            <div className="Row flex flex-col lg:flex-row">
+        <div className="ModuleContent h-fit w-full flex-col px-3 2xl:w-[1536px]">
+          <div className="Title flex flex-col gap-9 py-10 lg:pt-20">
+            <div className="Row flex flex-row items-center justify-between lg:justify-start gap-4">
               <h1 className="Text text-left text-2xl font-bold lg:block lg:bg-transparent lg:text-4xl">
                 {dictionary.ui.monster.pageTitle}
               </h1>
-              <div className="Control bottom-2 right-2 z-10 flex flex-1 flex-col gap-1 lg:static lg:flex-row">
+              <div className="Control flex flex-row gap-2 lg:flex-1">
                 <LongSearchBox
                   dictionary={dictionary}
                   monsterList={monsterList}
                   setMonster={setMonster}
                   setMonsterDialogState={setMonsterDialogState}
                 />
-                <Button
-                  className="switch w-fit rounded-full px-2 py-2 lg:rounded lg:px-4 lg:py-2"
+                <Button // 仅移动端显示
+                  size="sm"
+                  level="tertiary"
+                  className="switch lg:hidden"
+                  icon={<IconFilter />}
+                  onClick={() => setFilterState(!filterState)}
+                ></Button>
+                <Button // 仅PC端显示
+                  className="switch hidden lg:flex"
                   icon={<IconFilter />}
                   onClick={() => setFilterState(!filterState)}
                 ></Button>
                 {session?.user ? (
                   <React.Fragment>
-                    <Button
+                    <Button // 仅移动端显示
+                      size="sm"
+                      level="tertiary"
+                      icon={<IconCloudUpload />}
+                      className="flex lg:hidden"
                       onClick={() => setMonsterDialogState(true)}
-                      // level="primary"
+                    ></Button>
+                    <Button // 仅PC端显示
+                      level="primary"
                       icon={<IconCloudUpload />}
                       className="hidden lg:flex"
+                      onClick={() => setMonsterDialogState(true)}
                     >
                       {dictionary.ui.monster.upload}
                     </Button>
-                    <Button
-                      onClick={() => setMonsterDialogState(true)}
-                      icon={<IconCloudUpload />}
-                      className="flex rounded-full px-2 py-2 lg:hidden"
-                    ></Button>
                   </React.Fragment>
                 ) : undefined}
               </div>
@@ -311,12 +322,12 @@ export default function MonserPageClient(props: {
             {/* <div className="test sticky top-0 h-5 bg-brand-color-1st"></div> */}
             {/* <div className="test w-[200dvw] h-[200dvh] bg-brand-color-1st"></div> */}
             <table className="Table bg-transition-color-8 px-2 lg:bg-transparent">
-              <thead className="TableHead sticky top-0 z-10 flex">
+              <thead className="TableHead flex">
                 {table.getHeaderGroups().map((headerGroup) => {
                   return (
                     <tr
                       key={headerGroup.id}
-                      className=" flex min-w-full gap-0 border-b-2 bg-primary-color px-2"
+                      className=" flex min-w-full gap-0 border-b-2"
                     >
                       {headerGroup.headers.map((header) => {
                         const { column } = header;
@@ -337,7 +348,7 @@ export default function MonserPageClient(props: {
                                 onClick:
                                   header.column.getToggleSortingHandler(),
                               }}
-                              className={`border-1 flex-1 border-transition-color-8 py-3 text-left hover:bg-transition-color-8 lg:py-7 ${
+                              className={`border-1 flex-1 border-transition-color-8 px-3 py-3 text-left hover:bg-transition-color-8 lg:py-3 ${
                                 header.column.getCanSort()
                                   ? "cursor-pointer select-none"
                                   : ""
@@ -411,7 +422,7 @@ export default function MonserPageClient(props: {
                         position: "absolute",
                         transform: `translateY(${virtualRow.start}px)`, //this should always be a `style` as it changes on scroll
                       }}
-                      className={`group flex cursor-pointer border-y-1.5 border-transition-color-8 px-2 py-6 transition-none hover:border-brand-color-1st`}
+                      className={`group flex cursor-pointer border-y-1.5 border-transition-color-8 transition-none hover:border-brand-color-1st`}
                       onClick={() => handleTrClick(row.getValue("id"))}
                     >
                       {row.getVisibleCells().map((cell) => {
@@ -426,6 +437,7 @@ export default function MonserPageClient(props: {
                             style={{
                               ...getCommonPinningStyles(column),
                             }}
+                            className="px-3 py-6"
                           >
                             {flexRender(
                               cell.column.columnDef.cell,
