@@ -11,6 +11,7 @@ import { type FieldApi, useForm } from "@tanstack/react-form";
 import { zodValidator } from "@tanstack/zod-form-adapter";
 import { ZodFirstPartyTypeKind, type z } from "zod";
 import { type Monster, type $Enums } from "@prisma/client";
+import { useBearStore } from "~/app/store";
 
 export default function MonsterForm(props: {
   dictionary: ReturnType<typeof getDictionary>;
@@ -18,6 +19,10 @@ export default function MonsterForm(props: {
 }) {
   const router = useRouter();
   const { dictionary, defaultMonster } = props;
+  // 状态管理参数
+  const {
+    setMonsterDialogState
+  } = useBearStore((state) => state.monsterPage);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function FieldInfo({ field }: { field: FieldApi<any, any, any, any> }) {
@@ -199,6 +204,7 @@ export default function MonsterForm(props: {
         </div>
         <div className="functionArea flex justify-end border-t-1.5 border-brand-color-1st py-3">
           <div className="btnGroup flex gap-5">
+            <Button onClick={() => setMonsterDialogState(false)}>{dictionary.ui.monster.close}</Button>
             <form.Subscribe
               selector={(state) => [state.canSubmit, state.isSubmitting]}
             >
@@ -208,8 +214,8 @@ export default function MonsterForm(props: {
                   disabled={createMonster.isLoading || !canSubmit}
                 >
                   {createMonster.isLoading
-                    ? `${dictionary.ui.monster.upload}...`
-                    : `${dictionary.ui.monster.upload}`}
+                    ? `${dictionary.ui.monster.save}...`
+                    : `${dictionary.ui.monster.save}`}
                 </Button>
               )}
             </form.Subscribe>

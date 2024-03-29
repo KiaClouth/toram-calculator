@@ -200,7 +200,7 @@ const dictionary: dictionary = {
     models: {
       monster: {
         id: "ID",
-        updatedAt: "更新于",
+        updatedAt: "更新于(天前)",
         updatedById: "更新者",
         state: "状态",
         name: "名称",

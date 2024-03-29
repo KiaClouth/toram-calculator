@@ -472,7 +472,10 @@ export default function BabylonBg(): JSX.Element {
       scene,
       (event) => {
         // 加载进度计算
-        if(percentageRef.current) percentageRef.current.innerHTML = "加载中..." +  Math.floor((event.loaded / event.total) * 100).toString()
+        if (percentageRef.current)
+          percentageRef.current.innerHTML =
+            "加载中..." +
+            Math.floor((event.loaded / event.total) * 100).toString();
       },
     ).then(() => {
       // 材质添加
@@ -544,9 +547,11 @@ export default function BabylonBg(): JSX.Element {
             : "pointer-events-none invisible opacity-0"
         }`}
       >
-        <div className="LoadingMask fixed left-0 top-0 h-dvh w-dvw bg-gradient-to-b from-primary-color from-10% to-primary-color-0 to-25% lg:bg-gradient-to-t lg:from-5% lg:to-[25%]"></div>
-        <div className="LoadingState fixed left-[4dvw] top-[2%] flex flex-col gap-3 lg:left-[10dvw] lg:top-[97%] lg:-translate-y-full">
-          <h1 ref={percentageRef} className="animate-pulse">加载中...</h1>
+        <div className="LoadingMask fixed left-0 top-0 h-dvh w-dvw bg-gradient-to-t from-primary-color from-5% to-[25%]"></div>
+        <div className="LoadingState fixed left-[4dvw] top-[98%] flex -translate-y-full flex-col gap-3 lg:left-[10dvw] lg:top-[97%]">
+          <h1 ref={percentageRef} className="animate-pulse">
+            加载中...
+          </h1>
           <LoadingBox className="w-[92dvw] lg:w-[80dvw]" />
         </div>
       </div>

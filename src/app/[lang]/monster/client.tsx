@@ -2,11 +2,11 @@
 
 import { type $Enums, type Monster } from "@prisma/client";
 import {
+  type Column,
   type ColumnDef,
   getCoreRowModel,
   getSortedRowModel,
   useReactTable,
-  type Column,
   flexRender,
 } from "@tanstack/react-table";
 import { type getDictionary } from "~/app/get-dictionary";
@@ -38,7 +38,7 @@ export default function MonserPageClient(props: {
   } = useBearStore((state) => state.monsterPage);
 
   // 定义不需要展示的列
-  const hiddenData: Array<keyof Monster> = ["id", "updatedAt", "updatedById"];
+  const hiddenData: Array<keyof Monster> = ["id", "updatedById"];
 
   const columns = React.useMemo<ColumnDef<Monster>[]>(
     () => [
@@ -76,42 +76,42 @@ export default function MonserPageClient(props: {
       {
         accessorKey: "physicalDefense",
         header: () => dictionary.db.models.monster.physicalDefense,
-        size: 120,
+        size: 100,
       },
       {
         accessorKey: "physicalResistance",
         header: () => dictionary.db.models.monster.physicalResistance,
-        size: 120,
+        size: 100,
       },
       {
         accessorKey: "magicalDefense",
         header: () => dictionary.db.models.monster.magicalDefense,
-        size: 120,
+        size: 100,
       },
       {
         accessorKey: "magicalResistance",
         header: () => dictionary.db.models.monster.magicalResistance,
-        size: 120,
+        size: 100,
       },
       {
         accessorKey: "criticalResistance",
         header: () => dictionary.db.models.monster.criticalResistance,
-        size: 110,
+        size: 100,
       },
       {
         accessorKey: "avoidance",
         header: () => dictionary.db.models.monster.avoidance,
-        size: 120,
+        size: 80,
       },
       {
         accessorKey: "dodge",
         header: () => dictionary.db.models.monster.dodge,
-        size: 120,
+        size: 80,
       },
       {
         accessorKey: "block",
         header: () => dictionary.db.models.monster.block,
-        size: 120,
+        size: 80,
       },
       {
         accessorKey: "updatedAt",
@@ -209,7 +209,7 @@ export default function MonserPageClient(props: {
   };
 
   return (
-    <main className="flex flex-1 flex-col overflow-auto lg:flex-row">
+    <main className="flex h-[calc(100dvh-67px)] flex-col lg:h-dvh lg:w-[calc(100dvw-96px)] lg:flex-row">
       <div
         className={`Module1 fixed left-0 top-0 z-50 lg:z-0 ${filterState ? " translate-x-0 " : " -translate-x-full "} flex-none border-transition-color-8 bg-primary-color backdrop-blur-xl lg:sticky lg:translate-x-0 lg:border-x-1.5 lg:bg-transparent ${filterState ? " pointer-events-auto visible basis-[260px] opacity-100 " : " pointer-events-none invisible basis-[0px] opacity-0 "}`}
       >
@@ -263,180 +263,185 @@ export default function MonserPageClient(props: {
       </div>
       <div
         ref={tableContainerRef}
-        className="Module2 flex flex-1 overflow-y-auto backdrop-blur-xl lg:px-6"
+        className="Module2 flex flex-1 overflow-y-auto backdrop-blur-xl"
       >
-        <div className="LeftArea flex-1"></div>
-        <div className="ModuleContent flex flex-1 flex-col 2xl:basis-[1536px]">
-          <div className="Title flex flex-1 flex-col gap-9 p-2 pt-20">
-            <div className="row flex flex-col lg:flex-row">
-            <h1 className="Text text-center text-2xl font-bold lg:block lg:bg-transparent lg:text-left lg:text-4xl">
-              {dictionary.ui.monster.pageTitle}
-            </h1>
-            <div className="Control bottom-2 right-2 z-10 flex flex-1 flex-col gap-1 lg:static lg:flex-row">
-              <LongSearchBox
-                dictionary={dictionary}
-                monsterList={monsterList}
-                setMonster={setMonster}
-                setMonsterDialogState={setMonsterDialogState}
-              />
-              <Button
-                className="switch w-fit rounded-full px-2 py-2 lg:rounded lg:px-4 lg:py-2"
-                icon={<IconFilter />}
-                onClick={() => setFilterState(!filterState)}
-              ></Button>
-              {session?.user ? (
-                <React.Fragment>
-                  <Button
-                    onClick={() => setMonsterDialogState(true)}
-                    // level="primary"
-                    icon={<IconCloudUpload />}
-                    className="hidden lg:flex"
-                  >
-                    {dictionary.ui.monster.upload}
-                  </Button>
-                  <Button
-                    onClick={() => setMonsterDialogState(true)}
-                    icon={<IconCloudUpload />}
-                    className="flex rounded-full px-2 py-2 lg:hidden"
-                  ></Button>
-                </React.Fragment>
-              ) : undefined}
+        <div className="LeftArea sticky top-0 z-10 flex-1"></div>
+        <div className="ModuleContent h-fit w-full flex-col px-6 2xl:w-[1536px]">
+          <div className="Title flex flex-col gap-9 p-2 pt-10 lg:pt-20">
+            <div className="Row flex flex-col lg:flex-row">
+              <h1 className="Text text-left text-2xl font-bold lg:block lg:bg-transparent lg:text-4xl">
+                {dictionary.ui.monster.pageTitle}
+              </h1>
+              <div className="Control bottom-2 right-2 z-10 flex flex-1 flex-col gap-1 lg:static lg:flex-row">
+                <LongSearchBox
+                  dictionary={dictionary}
+                  monsterList={monsterList}
+                  setMonster={setMonster}
+                  setMonsterDialogState={setMonsterDialogState}
+                />
+                <Button
+                  className="switch w-fit rounded-full px-2 py-2 lg:rounded lg:px-4 lg:py-2"
+                  icon={<IconFilter />}
+                  onClick={() => setFilterState(!filterState)}
+                ></Button>
+                {session?.user ? (
+                  <React.Fragment>
+                    <Button
+                      onClick={() => setMonsterDialogState(true)}
+                      // level="primary"
+                      icon={<IconCloudUpload />}
+                      className="hidden lg:flex"
+                    >
+                      {dictionary.ui.monster.upload}
+                    </Button>
+                    <Button
+                      onClick={() => setMonsterDialogState(true)}
+                      icon={<IconCloudUpload />}
+                      className="flex rounded-full px-2 py-2 lg:hidden"
+                    ></Button>
+                  </React.Fragment>
+                ) : undefined}
+              </div>
             </div>
-            </div>
-            <p className="discription my-3 hidden rounded-sm bg-transition-color-8 p-3 lg:block">
+            <div className="Discription my-3 hidden rounded-sm bg-transition-color-8 p-3 lg:block">
               {dictionary.ui.monster.discription}
-            </p>
+            </div>
           </div>
-          <table className="Table w-[200px] flex-none bg-transition-color-8 px-2 lg:bg-transparent overflow-x-hidden">
-            <thead className="sticky top-0 z-10 flex">
-              {table.getHeaderGroups().map((headerGroup) => {
-                return (
-                  <tr
-                    key={headerGroup.id}
-                    className=" flex min-w-full gap-0 border-b-2 bg-primary-color px-2"
-                  >
-                    {headerGroup.headers.map((header) => {
-                      const { column } = header;
-                      if (hiddenData.includes(column.id as keyof Monster)) {
-                        // 默认隐藏的数据
-                        return;
-                      }
-                      return (
-                        <th
-                          key={header.id}
-                          style={{
-                            ...getCommonPinningStyles(column),
-                          }}
-                          className="flex flex-col"
-                        >
-                          <div
-                            {...{
-                              onClick: header.column.getToggleSortingHandler(),
+          <div className="Content overflow-x-auto">
+            {/* <div className="test sticky top-0 h-5 bg-brand-color-1st"></div> */}
+            {/* <div className="test w-[200dvw] h-[200dvh] bg-brand-color-1st"></div> */}
+            <table className="Table bg-transition-color-8 px-2 lg:bg-transparent">
+              <thead className="TableHead sticky top-0 z-10 flex">
+                {table.getHeaderGroups().map((headerGroup) => {
+                  return (
+                    <tr
+                      key={headerGroup.id}
+                      className=" flex min-w-full gap-0 border-b-2 bg-primary-color px-2"
+                    >
+                      {headerGroup.headers.map((header) => {
+                        const { column } = header;
+                        if (hiddenData.includes(column.id as keyof Monster)) {
+                          // 默认隐藏的数据
+                          return;
+                        }
+                        return (
+                          <th
+                            key={header.id}
+                            style={{
+                              ...getCommonPinningStyles(column),
                             }}
-                            className={`border-1 flex-1 border-transition-color-8 py-3 text-left hover:bg-transition-color-8 lg:py-7 ${
-                              header.column.getCanSort()
-                                ? "cursor-pointer select-none"
-                                : ""
-                            }`}
+                            className="flex flex-col"
+                          >
+                            <div
+                              {...{
+                                onClick:
+                                  header.column.getToggleSortingHandler(),
+                              }}
+                              className={`border-1 flex-1 border-transition-color-8 py-3 text-left hover:bg-transition-color-8 lg:py-7 ${
+                                header.column.getCanSort()
+                                  ? "cursor-pointer select-none"
+                                  : ""
+                              }`}
+                            >
+                              {flexRender(
+                                header.column.columnDef.header,
+                                header.getContext(),
+                              )}
+                              {{
+                                asc: " 🔼",
+                                desc: " 🔽",
+                              }[header.column.getIsSorted() as string] ?? null}
+                            </div>
+                            {/* {!header.isPlaceholder &&
+                              header.column.getCanPin() && ( // 固定列
+                                <div className="flex gap-1 p-2">
+                                  {header.column.getIsPinned() !== "left" ? (
+                                    <button
+                                      className="flex-1 rounded bg-transition-color-8 px-1"
+                                      onClick={() => {
+                                        header.column.pin("left");
+                                      }}
+                                    >
+                                      {"<"}
+                                    </button>
+                                  ) : null}
+                                  {header.column.getIsPinned() ? (
+                                    <button
+                                      className="flex-1 rounded bg-transition-color-8 px-1"
+                                      onClick={() => {
+                                        header.column.pin(false);
+                                      }}
+                                    >
+                                      X
+                                    </button>
+                                  ) : null}
+                                  {header.column.getIsPinned() !== "right" ? (
+                                    <button
+                                      className="flex-1 rounded bg-transition-color-8 px-1"
+                                      onClick={() => {
+                                        header.column.pin("right");
+                                      }}
+                                    >
+                                      {">"}
+                                    </button>
+                                  ) : null}
+                                </div>
+                              )} */}
+                          </th>
+                        );
+                      })}
+                    </tr>
+                  );
+                })}
+              </thead>
+              <tbody
+                style={{
+                  height: `${rowVirtualizer.getTotalSize()}px`, //tells scrollbar how big the table is
+                }}
+                className="TableBody relative z-0 mt-[54px] px-2 lg:mt-[84px]"
+              >
+                {rowVirtualizer.getVirtualItems().map((virtualRow) => {
+                  const row = rows[virtualRow.index]!;
+                  return (
+                    <tr
+                      data-index={virtualRow.index} //needed for dynamic row height measurement
+                      ref={(node) => rowVirtualizer.measureElement(node)} //measure dynamic row height
+                      key={row.id}
+                      style={{
+                        position: "absolute",
+                        transform: `translateY(${virtualRow.start}px)`, //this should always be a `style` as it changes on scroll
+                      }}
+                      className={`group flex cursor-pointer border-y-1.5 border-transition-color-8 px-2 py-6 transition-none hover:border-brand-color-1st`}
+                      onClick={() => handleTrClick(row.getValue("id"))}
+                    >
+                      {row.getVisibleCells().map((cell) => {
+                        const { column } = cell;
+                        if (hiddenData.includes(column.id as keyof Monster)) {
+                          // 默认隐藏的数据
+                          return;
+                        }
+                        return (
+                          <td
+                            key={cell.id}
+                            style={{
+                              ...getCommonPinningStyles(column),
+                            }}
                           >
                             {flexRender(
-                              header.column.columnDef.header,
-                              header.getContext(),
+                              cell.column.columnDef.cell,
+                              cell.getContext(),
                             )}
-                            {{
-                              asc: " 🔼",
-                              desc: " 🔽",
-                            }[header.column.getIsSorted() as string] ?? null}
-                          </div>
-                          {/* {!header.isPlaceholder &&
-                            header.column.getCanPin() && ( // 固定列
-                              <div className="flex gap-1 p-2">
-                                {header.column.getIsPinned() !== "left" ? (
-                                  <button
-                                    className="flex-1 rounded bg-transition-color-8 px-1"
-                                    onClick={() => {
-                                      header.column.pin("left");
-                                    }}
-                                  >
-                                    {"<"}
-                                  </button>
-                                ) : null}
-                                {header.column.getIsPinned() ? (
-                                  <button
-                                    className="flex-1 rounded bg-transition-color-8 px-1"
-                                    onClick={() => {
-                                      header.column.pin(false);
-                                    }}
-                                  >
-                                    X
-                                  </button>
-                                ) : null}
-                                {header.column.getIsPinned() !== "right" ? (
-                                  <button
-                                    className="flex-1 rounded bg-transition-color-8 px-1"
-                                    onClick={() => {
-                                      header.column.pin("right");
-                                    }}
-                                  >
-                                    {">"}
-                                  </button>
-                                ) : null}
-                              </div>
-                            )} */}
-                        </th>
-                      );
-                    })}
-                  </tr>
-                );
-              })}
-            </thead>
-            <tbody
-              style={{
-                height: `${rowVirtualizer.getTotalSize()}px`, //tells scrollbar how big the table is
-              }}
-              className="relative z-0 mt-[54px] px-2 lg:mt-[84px]"
-            >
-              {rowVirtualizer.getVirtualItems().map((virtualRow) => {
-                const row = rows[virtualRow.index]!;
-                return (
-                  <tr
-                    data-index={virtualRow.index} //needed for dynamic row height measurement
-                    ref={(node) => rowVirtualizer.measureElement(node)} //measure dynamic row height
-                    key={row.id}
-                    style={{
-                      position: "absolute",
-                      transform: `translateY(${virtualRow.start}px)`, //this should always be a `style` as it changes on scroll
-                    }}
-                    className={`group flex cursor-pointer border-y-1.5 border-transition-color-8 px-2 py-6 transition-none hover:border-brand-color-1st`}
-                    onClick={() => handleTrClick(row.getValue("id"))}
-                  >
-                    {row.getVisibleCells().map((cell) => {
-                      const { column } = cell;
-                      if (hiddenData.includes(column.id as keyof Monster)) {
-                        // 默认隐藏的数据
-                        return;
-                      }
-                      return (
-                        <td
-                          key={cell.id}
-                          style={{
-                            ...getCommonPinningStyles(column),
-                          }}
-                        >
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext(),
-                          )}
-                        </td>
-                      );
-                    })}
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         </div>
-        <div className="RightArea flex-1"></div>
+        <div className="RightArea sticky top-0 z-10 flex-1"></div>
       </div>
       {monsterDialogState ? (
         <Dialog state={monsterDialogState} setState={setMonsterDialogState}>
