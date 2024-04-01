@@ -20,7 +20,9 @@ export default function MonsterForm(props: {
   const router = useRouter();
   const { dictionary, defaultMonster } = props;
   // 状态管理参数
-  const { monsterDialogState, setMonsterDialogState } = useBearStore((state) => state.monsterPage);
+  const { monsterDialogState, setMonsterDialogState } = useBearStore(
+    (state) => state.monsterPage,
+  );
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function FieldInfo({ field }: { field: FieldApi<any, any, any, any> }) {

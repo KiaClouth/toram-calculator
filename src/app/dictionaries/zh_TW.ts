@@ -28,6 +28,7 @@ const dictionary: dictionary = {
       pageTitle: "怪物信息表",
       discription: "啊啦啦啦啦，这里是本页的描述信息。但是还没有想好写什么~",
       columnsHidden: "隐藏列",
+      filter: "过滤",
     },
   },
   db: {

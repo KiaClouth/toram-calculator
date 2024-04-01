@@ -248,7 +248,7 @@ export default function MonserPageClient(props: {
           className={`Content flex h-dvh w-dvw flex-col-reverse gap-4 overflow-y-auto px-6 pt-8 lg:absolute lg:left-0 lg:top-0 lg:w-[260px] lg:flex-col`}
         >
           <div className="Title flex items-center justify-between">
-            <h1 className="text-lg font-bold">{dictionary.ui.monster.save}</h1>
+            <h1 className="text-lg">{dictionary.ui.monster.filter}</h1>
             <Button
               level="tertiary"
               onClick={() => setFilterState(!filterState)}
@@ -257,7 +257,7 @@ export default function MonserPageClient(props: {
             </Button>
           </div>
           <div className="module flex flex-col gap-3">
-            <div className="title text-lg font-bold">
+            <div className="title">
               {dictionary.ui.monster.columnsHidden}
             </div>
             <div className="content flex flex-wrap gap-2 ">
@@ -287,7 +287,7 @@ export default function MonserPageClient(props: {
             </div>
           </div>
           <div className="module flex flex-col gap-3">
-            <div className="title text-lg font-bold">
+            <div className="title">
               {dictionary.ui.monster.columnsHidden}
             </div>
             <div className="content flex flex-wrap gap-2 "></div>

@@ -34,6 +34,7 @@ interface dictionary {
       modify: string,
       cancel: string,
       close: string,
+      filter: string,
       columnsHidden: string,
     },
   },
