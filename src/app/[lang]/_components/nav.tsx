@@ -58,7 +58,7 @@ export default function Nav(props: {
 
   return (
     <div 
-      className={`Nav border-t-1 flex w-dvw flex-shrink-0 overflow-x-auto border-transition-color-20 backdrop-blur lg:h-dvh lg:w-24 lg:flex-col lg:gap-10 lg:border-none lg:bg-transition-color-8 lg:py-5`}
+      className={`Nav border-t-1 z-10 flex w-dvw flex-shrink-0 overflow-x-auto border-transition-color-20 backdrop-blur lg:h-dvh lg:w-24 lg:flex-col lg:gap-10 lg:border-none lg:bg-transition-color-8 lg:py-5`}
     >
       <div className="flex lg:flex-none items-center justify-center">
         <Link

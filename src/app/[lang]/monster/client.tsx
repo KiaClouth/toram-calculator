@@ -300,7 +300,7 @@ export default function MonserPageClient(props: {
           ref={tableContainerRef}
           className="ModuleContent w-full flex-col overflow-auto 2xl:w-[1536px]"
         >
-          <div className="Title sticky left-0 flex flex-col gap-9 py-10 lg:pt-20">
+          <div className="Title sticky left-0 flex flex-col gap-9 py-5 lg:pb-10 lg:pt-20">
             <div className="Row flex flex-row items-center justify-between gap-4 lg:justify-start">
               <h1 className="Text hidden text-left text-2xl font-bold lg:block lg:bg-transparent lg:text-4xl">
                 {dictionary.ui.monster.pageTitle}
@@ -309,7 +309,7 @@ export default function MonserPageClient(props: {
                 <input
                   type="search"
                   placeholder={dictionary.ui.monster.searchPlaceholder}
-                  className="flex-1 border-b-1.5 border-transition-color-20 bg-transparent py-2 backdrop-blur-xl placeholder:px-2 
+                  className="flex-1 border-b-1.5 border-transition-color-20 bg-transparent py-2 backdrop-blur-xl lg:px-5
                   placeholder:text-accent-color-50 hover:border-accent-color-70 hover:bg-transition-color-8 focus:border-accent-color-70 focus:outline-none lg:flex-1 lg:font-normal"
                   onChange={(e) => handleSearchFilterChange(e.target.value)}
                 />
@@ -437,7 +437,7 @@ export default function MonserPageClient(props: {
               style={{
                 height: `${rowVirtualizer.getTotalSize()}px`, //tells scrollbar how big the table is
               }}
-              className="TableBody relative z-0 mt-[54px] px-2 lg:mt-[84px]"
+              className="TableBody relative mt-[54px] px-2 lg:mt-[84px]"
             >
               {rowVirtualizer.getVirtualItems().map((virtualRow) => {
                 const row = table.getRowModel().rows[virtualRow.index]!;
