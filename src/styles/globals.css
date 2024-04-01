@@ -55,6 +55,10 @@
   outline: none;
 }
 
+.ModuleContent::-webkit-scrollbar {
+  display: none;
+}
+
 /* babylonjs  */
 #embed-host,
 #scene-explorer-host,

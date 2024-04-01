@@ -263,14 +263,14 @@ export default function MonserPageClient(props: {
           </div>
         </div>
       </div>
-      <div
-        ref={tableContainerRef}
-        className="Module2 flex flex-1 overflow-y-auto backdrop-blur-xl"
-      >
+      <div className="Module2 flex flex-1 backdrop-blur-xl px-3">
         <div className="LeftArea sticky top-0 z-10 flex-1"></div>
-        <div className="ModuleContent h-fit w-full flex-col px-3 2xl:w-[1536px]">
-          <div className="Title flex flex-col gap-9 py-10 lg:pt-20">
-            <div className="Row flex flex-row items-center justify-between lg:justify-start gap-4">
+        <div
+          ref={tableContainerRef}
+          className="ModuleContent w-full flex-col overflow-auto 2xl:w-[1536px]"
+        >
+          <div className="Title sticky left-0 flex flex-col gap-9 py-10 lg:pt-20">
+            <div className="Row flex flex-row items-center justify-between gap-4 lg:justify-start">
               <h1 className="Text text-left text-2xl font-bold lg:block lg:bg-transparent lg:text-4xl">
                 {dictionary.ui.monster.pageTitle}
               </h1>
@@ -318,52 +318,48 @@ export default function MonserPageClient(props: {
               {dictionary.ui.monster.discription}
             </div>
           </div>
-          <div className="Content overflow-x-auto">
-            {/* <div className="test sticky top-0 h-5 bg-brand-color-1st"></div> */}
-            {/* <div className="test w-[200dvw] h-[200dvh] bg-brand-color-1st"></div> */}
-            <table className="Table bg-transition-color-8 px-2 lg:bg-transparent">
-              <thead className="TableHead flex">
-                {table.getHeaderGroups().map((headerGroup) => {
-                  return (
-                    <tr
-                      key={headerGroup.id}
-                      className=" flex min-w-full gap-0 border-b-2"
-                    >
-                      {headerGroup.headers.map((header) => {
-                        const { column } = header;
-                        if (hiddenData.includes(column.id as keyof Monster)) {
-                          // 默认隐藏的数据
-                          return;
-                        }
-                        return (
-                          <th
-                            key={header.id}
-                            style={{
-                              ...getCommonPinningStyles(column),
+          <table className="Table bg-transition-color-8 px-2 lg:bg-transparent">
+            <thead className="TableHead sticky top-0 z-10 flex bg-primary-color">
+              {table.getHeaderGroups().map((headerGroup) => {
+                return (
+                  <tr
+                    key={headerGroup.id}
+                    className=" flex min-w-full gap-0 border-b-2"
+                  >
+                    {headerGroup.headers.map((header) => {
+                      const { column } = header;
+                      if (hiddenData.includes(column.id as keyof Monster)) {
+                        // 默认隐藏的数据
+                        return;
+                      }
+                      return (
+                        <th
+                          key={header.id}
+                          style={{
+                            ...getCommonPinningStyles(column),
+                          }}
+                          className="flex flex-col"
+                        >
+                          <div
+                            {...{
+                              onClick: header.column.getToggleSortingHandler(),
                             }}
-                            className="flex flex-col"
+                            className={`border-1 flex-1 border-transition-color-8 px-3 py-3 text-left hover:bg-transition-color-8 lg:py-3 ${
+                              header.column.getCanSort()
+                                ? "cursor-pointer select-none"
+                                : ""
+                            }`}
                           >
-                            <div
-                              {...{
-                                onClick:
-                                  header.column.getToggleSortingHandler(),
-                              }}
-                              className={`border-1 flex-1 border-transition-color-8 px-3 py-3 text-left hover:bg-transition-color-8 lg:py-3 ${
-                                header.column.getCanSort()
-                                  ? "cursor-pointer select-none"
-                                  : ""
-                              }`}
-                            >
-                              {flexRender(
-                                header.column.columnDef.header,
-                                header.getContext(),
-                              )}
-                              {{
-                                asc: " 🔼",
-                                desc: " 🔽",
-                              }[header.column.getIsSorted() as string] ?? null}
-                            </div>
-                            {/* {!header.isPlaceholder &&
+                            {flexRender(
+                              header.column.columnDef.header,
+                              header.getContext(),
+                            )}
+                            {{
+                              asc: " 🔼",
+                              desc: " 🔽",
+                            }[header.column.getIsSorted() as string] ?? null}
+                          </div>
+                          {/* {!header.isPlaceholder &&
                               header.column.getCanPin() && ( // 固定列
                                 <div className="flex gap-1 p-2">
                                   {header.column.getIsPinned() !== "left" ? (
@@ -398,60 +394,59 @@ export default function MonserPageClient(props: {
                                   ) : null}
                                 </div>
                               )} */}
-                          </th>
-                        );
-                      })}
-                    </tr>
-                  );
-                })}
-              </thead>
-              <tbody
-                style={{
-                  height: `${rowVirtualizer.getTotalSize()}px`, //tells scrollbar how big the table is
-                }}
-                className="TableBody relative z-0 mt-[54px] px-2 lg:mt-[84px]"
-              >
-                {rowVirtualizer.getVirtualItems().map((virtualRow) => {
-                  const row = rows[virtualRow.index]!;
-                  return (
-                    <tr
-                      data-index={virtualRow.index} //needed for dynamic row height measurement
-                      ref={(node) => rowVirtualizer.measureElement(node)} //measure dynamic row height
-                      key={row.id}
-                      style={{
-                        position: "absolute",
-                        transform: `translateY(${virtualRow.start}px)`, //this should always be a `style` as it changes on scroll
-                      }}
-                      className={`group flex cursor-pointer border-y-1.5 border-transition-color-8 transition-none hover:border-brand-color-1st`}
-                      onClick={() => handleTrClick(row.getValue("id"))}
-                    >
-                      {row.getVisibleCells().map((cell) => {
-                        const { column } = cell;
-                        if (hiddenData.includes(column.id as keyof Monster)) {
-                          // 默认隐藏的数据
-                          return;
-                        }
-                        return (
-                          <td
-                            key={cell.id}
-                            style={{
-                              ...getCommonPinningStyles(column),
-                            }}
-                            className="px-3 py-6"
-                          >
-                            {flexRender(
-                              cell.column.columnDef.cell,
-                              cell.getContext(),
-                            )}
-                          </td>
-                        );
-                      })}
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+                        </th>
+                      );
+                    })}
+                  </tr>
+                );
+              })}
+            </thead>
+            <tbody
+              style={{
+                height: `${rowVirtualizer.getTotalSize()}px`, //tells scrollbar how big the table is
+              }}
+              className="TableBody relative z-0 mt-[54px] px-2 lg:mt-[84px]"
+            >
+              {rowVirtualizer.getVirtualItems().map((virtualRow) => {
+                const row = rows[virtualRow.index]!;
+                return (
+                  <tr
+                    data-index={virtualRow.index} //needed for dynamic row height measurement
+                    ref={(node) => rowVirtualizer.measureElement(node)} //measure dynamic row height
+                    key={row.id}
+                    style={{
+                      position: "absolute",
+                      transform: `translateY(${virtualRow.start}px)`, //this should always be a `style` as it changes on scroll
+                    }}
+                    className={`group flex cursor-pointer border-y-1.5 border-transition-color-8 transition-none hover:border-brand-color-1st`}
+                    onClick={() => handleTrClick(row.getValue("id"))}
+                  >
+                    {row.getVisibleCells().map((cell) => {
+                      const { column } = cell;
+                      if (hiddenData.includes(column.id as keyof Monster)) {
+                        // 默认隐藏的数据
+                        return;
+                      }
+                      return (
+                        <td
+                          key={cell.id}
+                          style={{
+                            ...getCommonPinningStyles(column),
+                          }}
+                          className="px-3 py-6"
+                        >
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext(),
+                          )}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
         </div>
         <div className="RightArea sticky top-0 z-10 flex-1"></div>
       </div>
