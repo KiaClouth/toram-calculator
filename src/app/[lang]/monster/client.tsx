@@ -53,7 +53,6 @@ export default function MonserPageClient(props: {
         }
       }
       filter ? newMonsterList.push(monster) : null;
-      console.log(monster);
     });
     setMonsterList(newMonsterList);
   };
@@ -246,16 +245,16 @@ export default function MonserPageClient(props: {
         className={`Module1 fixed left-0 top-0 z-50 lg:z-0 ${filterState ? " translate-x-0 " : " -translate-x-full "} flex-none border-transition-color-8 bg-primary-color backdrop-blur-xl lg:sticky lg:translate-x-0 lg:border-x-1.5 lg:bg-transition-color-8 ${filterState ? " pointer-events-auto visible basis-[260px] opacity-100 " : " pointer-events-none invisible basis-[0px] opacity-0 "}`}
       >
         <div
-          className={`Content flex h-dvh w-dvw flex-col-reverse gap-4 overflow-y-auto px-6 pt-8 lg:absolute lg:left-full lg:top-0 lg:w-[260px] lg:flex-col ${filterState ? "lg:-translate-x-full" : "lg:translate-x-0"}`}
+          className={`Content flex h-dvh w-dvw flex-col-reverse gap-4 overflow-y-auto px-6 pt-8 lg:absolute lg:left-0 lg:top-0 lg:w-[260px] lg:flex-col`}
         >
-          <div className="Module flex flex-col gap-3">
+          <div className="Title flex items-center justify-between">
+            <h1 className="text-lg font-bold">{dictionary.ui.monster.save}</h1>
             <Button
               level="tertiary"
               onClick={() => setFilterState(!filterState)}
             >
-              {dictionary.ui.monster.close}
+              X
             </Button>
-            <div className="content flex flex-wrap gap-2 "></div>
           </div>
           <div className="module flex flex-col gap-3">
             <div className="title text-lg font-bold">
@@ -303,15 +302,15 @@ export default function MonserPageClient(props: {
         >
           <div className="Title sticky left-0 flex flex-col gap-9 py-10 lg:pt-20">
             <div className="Row flex flex-row items-center justify-between gap-4 lg:justify-start">
-              <h1 className="Text text-left text-2xl font-bold lg:block lg:bg-transparent lg:text-4xl">
+              <h1 className="Text hidden text-left text-2xl font-bold lg:block lg:bg-transparent lg:text-4xl">
                 {dictionary.ui.monster.pageTitle}
               </h1>
-              <div className="Control flex flex-row gap-2 lg:flex-1">
+              <div className="Control flex flex-1 gap-2">
                 <input
                   type="search"
                   placeholder={dictionary.ui.monster.searchPlaceholder}
-                  list="options"
-                  className=" border-b-1.5 border-transition-color-20 bg-transparent px-5 py-2 backdrop-blur-xl placeholder:text-accent-color-50 hover:border-accent-color-70 hover:bg-transition-color-8 focus:border-accent-color-70 focus:outline-none lg:flex-1 lg:font-normal"
+                  className="flex-1 border-b-1.5 border-transition-color-20 bg-transparent py-2 backdrop-blur-xl placeholder:px-2 
+                  placeholder:text-accent-color-50 hover:border-accent-color-70 hover:bg-transition-color-8 focus:border-accent-color-70 focus:outline-none lg:flex-1 lg:font-normal"
                   onChange={(e) => handleSearchFilterChange(e.target.value)}
                 />
                 <Button // 仅移动端显示
