@@ -11,8 +11,7 @@ import {
 } from "@tanstack/react-table";
 import { type getDictionary } from "~/app/get-dictionary";
 import { type Session } from "next-auth";
-import React, { type CSSProperties } from "react";
-import LongSearchBox from "./monsterSearchBox";
+import React, { useState, type CSSProperties } from "react";
 import MonsterForm from "./monsterForm";
 import Button from "../_components/button";
 import { IconCloudUpload, IconFilter } from "../_components/iconsList";
@@ -25,7 +24,39 @@ export default function MonserPageClient(props: {
   session: Session | null;
   monsterList: Monster[];
 }) {
-  const { dictionary, session, monsterList } = props;
+  const { dictionary, session } = props;
+  const defaultMonsterList = props.monsterList;
+  const [monsterList, setMonsterList] = useState(defaultMonsterList);
+
+  // 搜索框行为函数
+  const handleSearchFilterChange = (value: string) => {
+    if (value === "" || value === null) {
+      setMonsterList(defaultMonsterList);
+    }
+    // 搜索时需要忽略的数据
+    const hiddenData: Array<keyof Monster> = [
+      "id",
+      "updatedAt",
+      "updatedById",
+      "state",
+      "createdById",
+    ];
+    const newMonsterList: Monster[] = [];
+    defaultMonsterList.forEach((monster) => {
+      let filter = false;
+      for (const attr in monster) {
+        if (!hiddenData.includes(attr as keyof Monster)) {
+          const monsterAttr = monster[attr as keyof Monster]?.toString();
+          if (monsterAttr?.match(value)?.input !== undefined) {
+            filter = true;
+          }
+        }
+      }
+      filter ? newMonsterList.push(monster) : null;
+      console.log(monster);
+    });
+    setMonsterList(newMonsterList);
+  };
 
   // 状态管理参数
   const {
@@ -40,6 +71,7 @@ export default function MonserPageClient(props: {
   // 定义不需要展示的列
   const hiddenData: Array<keyof Monster> = ["id", "updatedById"];
 
+  // 列定义
   const columns = React.useMemo<ColumnDef<Monster>[]>(
     () => [
       {
@@ -150,22 +182,21 @@ export default function MonserPageClient(props: {
     ],
   );
 
-  const [data] = React.useState(monsterList);
+  // 创建表格
   const table = useReactTable({
-    data,
-    columns,
+    data: monsterList,
+    columns: columns,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     debugTable: true,
   });
 
-  const { rows } = table.getRowModel();
-
-  // The virtualizer needs to know the scrollable container element
+  // 虚拟表格容器
   const tableContainerRef = React.useRef<HTMLDivElement>(null);
 
+  // 表格虚拟滚动
   const rowVirtualizer = useVirtualizer({
-    count: rows.length,
+    count: table.getRowModel().rows.length,
     estimateSize: () => 33, // estimate row height for accurate scrollbar dragging
     getScrollElement: () => tableContainerRef.current,
     // measure dynamic row height, except in firefox because it measures table border height incorrectly
@@ -177,6 +208,7 @@ export default function MonserPageClient(props: {
     overscan: 5,
   });
 
+  // 表格行点击事件
   const handleTrClick = (id: string) => {
     monsterList.forEach((monster) => {
       if (monster.id !== id) return;
@@ -185,7 +217,7 @@ export default function MonserPageClient(props: {
     });
   };
 
-  // 列粘性布局样式计算函数
+  // 表头固定
   const getCommonPinningStyles = (column: Column<Monster>): CSSProperties => {
     const isPinned = column.getIsPinned();
     const isLastLeft = isPinned === "left" && column.getIsLastColumn("left");
@@ -263,7 +295,7 @@ export default function MonserPageClient(props: {
           </div>
         </div>
       </div>
-      <div className="Module2 flex flex-1 backdrop-blur-xl px-3">
+      <div className="Module2 flex flex-1 px-3 backdrop-blur-xl">
         <div className="LeftArea sticky top-0 z-10 flex-1"></div>
         <div
           ref={tableContainerRef}
@@ -275,11 +307,12 @@ export default function MonserPageClient(props: {
                 {dictionary.ui.monster.pageTitle}
               </h1>
               <div className="Control flex flex-row gap-2 lg:flex-1">
-                <LongSearchBox
-                  dictionary={dictionary}
-                  monsterList={monsterList}
-                  setMonster={setMonster}
-                  setMonsterDialogState={setMonsterDialogState}
+                <input
+                  type="search"
+                  placeholder={dictionary.ui.monster.searchPlaceholder}
+                  list="options"
+                  className=" border-b-1.5 border-transition-color-20 bg-transparent px-5 py-2 backdrop-blur-xl placeholder:text-accent-color-50 hover:border-accent-color-70 hover:bg-transition-color-8 focus:border-accent-color-70 focus:outline-none lg:flex-1 lg:font-normal"
+                  onChange={(e) => handleSearchFilterChange(e.target.value)}
                 />
                 <Button // 仅移动端显示
                   size="sm"
@@ -408,7 +441,7 @@ export default function MonserPageClient(props: {
               className="TableBody relative z-0 mt-[54px] px-2 lg:mt-[84px]"
             >
               {rowVirtualizer.getVirtualItems().map((virtualRow) => {
-                const row = rows[virtualRow.index]!;
+                const row = table.getRowModel().rows[virtualRow.index]!;
                 return (
                   <tr
                     data-index={virtualRow.index} //needed for dynamic row height measurement
