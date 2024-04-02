@@ -11,7 +11,7 @@ import {
 } from "@tanstack/react-table";
 import { type getDictionary } from "~/app/get-dictionary";
 import { type Session } from "next-auth";
-import React, { useState, type CSSProperties } from "react";
+import React, { useState, type CSSProperties, useEffect } from "react";
 import MonsterForm from "./monsterForm";
 import Button from "../_components/button";
 import { IconCloudUpload, IconFilter } from "../_components/iconsList";
@@ -25,7 +25,9 @@ export default function MonserPageClient(props: {
   monsterList: Monster[];
 }) {
   const { dictionary, session } = props;
-  const [defaultMonsterList] = useState(props.monsterList);
+  const [defaultMonsterList, setDefaultMonsterList] = useState(
+    props.monsterList,
+  );
   const [monsterList, setMonsterList] = useState(defaultMonsterList);
   // 搜索框行为函数
   const handleSearchFilterChange = (value: string) => {
@@ -238,6 +240,21 @@ export default function MonserPageClient(props: {
     return styles;
   };
 
+  // 按键监听
+
+  useEffect(() => {
+    // u键监听
+    const handleEscapeKeyPress = (e: KeyboardEvent) => {
+      if (e.key === "u") {
+        setMonsterDialogState(!monsterDialogState);
+      }
+    };
+    document.addEventListener("keydown", handleEscapeKeyPress);
+    return () => {
+      document.removeEventListener("keydown", handleEscapeKeyPress);
+    };
+  }, [monsterDialogState, setMonsterDialogState]);
+
   return (
     <main className="flex h-[calc(100dvh-67px)] flex-col lg:h-dvh lg:w-[calc(100dvw-96px)] lg:flex-row">
       <div
@@ -256,9 +273,7 @@ export default function MonserPageClient(props: {
             </Button>
           </div>
           <div className="module flex flex-col gap-3">
-            <div className="title">
-              {dictionary.ui.monster.columnsHidden}
-            </div>
+            <div className="title">{dictionary.ui.monster.columnsHidden}</div>
             <div className="content flex flex-wrap gap-2 ">
               <Button
                 size="sm"
@@ -286,9 +301,7 @@ export default function MonserPageClient(props: {
             </div>
           </div>
           <div className="module flex flex-col gap-3">
-            <div className="title">
-              {dictionary.ui.monster.columnsHidden}
-            </div>
+            <div className="title">{dictionary.ui.monster.columnsHidden}</div>
             <div className="content flex flex-wrap gap-2 "></div>
           </div>
         </div>
@@ -308,8 +321,8 @@ export default function MonserPageClient(props: {
                 <input
                   type="search"
                   placeholder={dictionary.ui.monster.searchPlaceholder}
-                  className="flex-1 border-b-1.5 border-transition-color-20 bg-transparent py-2 backdrop-blur-xl lg:px-5
-                  placeholder:text-accent-color-50 hover:border-accent-color-70 hover:bg-transition-color-8 focus:border-accent-color-70 focus:outline-none lg:flex-1 lg:font-normal"
+                  className="flex-1 border-b-1.5 border-transition-color-20 bg-transparent py-2 backdrop-blur-xl placeholder:text-accent-color-50
+                  hover:border-accent-color-70 hover:bg-transition-color-8 focus:border-accent-color-70 focus:outline-none lg:flex-1 lg:px-5 lg:font-normal"
                   onChange={(e) => handleSearchFilterChange(e.target.value)}
                 />
                 <Button // 仅移动端显示
@@ -339,7 +352,7 @@ export default function MonserPageClient(props: {
                       className="hidden lg:flex"
                       onClick={() => setMonsterDialogState(true)}
                     >
-                      {dictionary.ui.monster.upload}
+                      {dictionary.ui.monster.upload} [u]
                     </Button>
                   </React.Fragment>
                 ) : undefined}
@@ -464,7 +477,32 @@ export default function MonserPageClient(props: {
                           style={{
                             ...getCommonPinningStyles(column),
                           }}
-                          className="px-3 py-6"
+                          className={
+                            `px-3 py-6 ` +
+                            ((key: string, value) => {
+                              switch (key) {
+                                case "element": // 元素
+                                  switch (value) {
+                                    case "WATER":
+                                      return "text-water";
+                                    case "FIRE":
+                                      return "text-fire";
+                                    case "EARTH":
+                                      return "text-earth";
+                                    case "WIND":
+                                      return "text-wind";
+                                    case "LIGHT":
+                                      return "text-light";
+                                    case "DARK":
+                                      return "text-dark";
+                                    default:
+                                      return "";
+                                  }
+                                default:
+                                  return "";
+                              }
+                            })(cell.column.id, cell.getValue())
+                          }
                         >
                           {flexRender(
                             cell.column.columnDef.cell,
@@ -483,7 +521,14 @@ export default function MonserPageClient(props: {
       </div>
       {monsterDialogState ? (
         <Dialog state={monsterDialogState} setState={setMonsterDialogState}>
-          {<MonsterForm dictionary={dictionary} defaultMonster={monster} />}
+          {
+            <MonsterForm
+              dictionary={dictionary}
+              defaultMonster={monster}
+              defaultMonsterList={defaultMonsterList}
+              setDefaultMonsterList={setDefaultMonsterList}
+            />
+          }
         </Dialog>
       ) : (
         ""

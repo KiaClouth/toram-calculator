@@ -86,6 +86,12 @@ export default {
       "brand-color-1st": "rgb(var(--brand-1st) / <alpha-value>)",
       "brand-color-2nd": "rgb(var(--brand-2nd) / <alpha-value>)",
       "brand-color-3rd": "rgb(var(--brand-3rd) / <alpha-value>)",
+      "water": "rgb(var(--water) / <alpha-value>)",
+      "fire": "rgb(var(--fire) / <alpha-value>)",
+      "earth": "rgb(var(--earth) / <alpha-value>)",
+      "wind": "rgb(var(--wind) / <alpha-value>)",
+      "light": "rgb(var(--light) / <alpha-value>)",
+      "dark": "rgb(var(--dark) / <alpha-value>)",
     },
     borderRadius: {
       none: "0px",

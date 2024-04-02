@@ -16,6 +16,8 @@ import { useBearStore } from "~/app/store";
 export default function MonsterForm(props: {
   dictionary: ReturnType<typeof getDictionary>;
   defaultMonster: Monster;
+  defaultMonsterList: Monster[];
+  setDefaultMonsterList: (list: Monster[]) => void;
 }) {
   const router = useRouter();
   const { dictionary, defaultMonster } = props;
@@ -23,6 +25,7 @@ export default function MonsterForm(props: {
   const { monsterDialogState, setMonsterDialogState } = useBearStore(
     (state) => state.monsterPage,
   );
+  let newMonster: Monster 
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function FieldInfo({ field }: { field: FieldApi<any, any, any, any> }) {
@@ -43,7 +46,7 @@ export default function MonsterForm(props: {
   const form = useForm({
     defaultValues: defaultMonster,
     onSubmit: async ({ value }) => {
-      createMonster.mutate({
+      newMonster = {
         ...value,
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -51,13 +54,15 @@ export default function MonsterForm(props: {
         viewCount: 0,
         usageTimestamps: [],
         viewTimestamps: [],
-      } satisfies Monster);
+      } satisfies Monster
+      createMonster.mutate(newMonster);
     },
     validatorAdapter: zodValidator,
   });
 
   const createMonster = api.monster.create.useMutation({
     onSuccess: () => {
+      setMonsterDialogState(!monsterDialogState);
       router.refresh();
     },
   });
@@ -87,11 +92,21 @@ export default function MonsterForm(props: {
         setMonsterDialogState(!monsterDialogState);
       }
     };
+
+    // enter键监听
+    const handleEnterKeyPress = (e: KeyboardEvent) => {
+      if (e.key === "Enter") {
+        // 移除默认事件
+        e.preventDefault();
+        void form.handleSubmit();
+      }
+    }
     document.addEventListener("keydown", handleEscapeKeyPress);
+    document.addEventListener("keydown", handleEnterKeyPress);
     return () => {
       document.removeEventListener("keydown", handleEscapeKeyPress);
     };
-  }, [monsterDialogState, setMonsterDialogState]);
+  }, [form, monsterDialogState, setMonsterDialogState]);
 
   return (
     <form.Provider>
@@ -228,7 +243,7 @@ export default function MonsterForm(props: {
         <div className="functionArea flex justify-end border-t-1.5 border-brand-color-1st py-3">
           <div className="btnGroup flex gap-2">
             <Button onClick={() => setMonsterDialogState(!monsterDialogState)}>
-              {dictionary.ui.monster.close}
+              {dictionary.ui.monster.close} [Esc]
             </Button>
             <form.Subscribe
               selector={(state) => [state.canSubmit, state.isSubmitting]}
@@ -241,7 +256,7 @@ export default function MonsterForm(props: {
                 >
                   {createMonster.isLoading
                     ? `${dictionary.ui.monster.save}...`
-                    : `${dictionary.ui.monster.save}`}
+                    : `${dictionary.ui.monster.save + " [Enter]"}`}
                 </Button>
               )}
             </form.Subscribe>
