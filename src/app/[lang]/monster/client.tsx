@@ -25,7 +25,7 @@ export default function MonserPageClient(props: {
   monsterList: Monster[];
 }) {
   const { dictionary, session } = props;
-  const defaultMonsterList = props.monsterList;
+  const [defaultMonsterList] = useState(props.monsterList);
   const [monsterList, setMonsterList] = useState(defaultMonsterList);
   // 搜索框行为函数
   const handleSearchFilterChange = (value: string) => {

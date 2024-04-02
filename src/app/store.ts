@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { produce } from "immer";
 
-import { type Monster } from "@prisma/client";
+import type { Monster } from "@prisma/client";
 
 // if you need middleware
 // import { devtools, persist } from 'zustand/middleware'
@@ -11,6 +11,8 @@ interface AppState {
   bears: number;
   increase: (by: number) => void;
   monsterPage: {
+    // monsterList: Monster[];
+    // setMonsterList: (newMonsterList: Monster[]) => void;
     monster: Monster;
     setMonster: (newMonster: Monster) => void;
     monsterDialogState: boolean;
@@ -25,6 +27,12 @@ export const useBearStore = create<AppState>()(
     bears: 0,
     increase: (by) => set((state) => ({ bears: state.bears + by })),
     monsterPage: {
+      // monsterList: [],
+      // setMonsterList:(newMonsterList: Monster[]) => set(
+      //   produce((state: AppState) => {
+      //     state.monsterPage.monsterList = newMonsterList
+      //   })
+      // ),
       monster: {
         id: "",
         updatedAt: new Date(),
@@ -57,33 +65,33 @@ export const useBearStore = create<AppState>()(
         viewCount: 0,
         usageCount: 0,
         createdById: "",
+        createdAt: new Date(),
+        usageTimestamps: [],
+        viewTimestamps: []
       },
-      setMonster: (newMonster: Monster) =>
-        set(
-          // (state) => ({ // 笨比写法
-          //   monsterPage: {
-          //     ...state.monsterPage,
-          //     monster: newMonster,
-          //   }
-          // })
-          produce((state: AppState) => {
-            state.monsterPage.monster = newMonster;
-          }),
-        ),
+      setMonster: (newMonster: Monster) => set(
+        // (state) => ({ // 笨比写法
+        //   monsterPage: {
+        //     ...state.monsterPage,
+        //     monster: newMonster,
+        //   }
+        // })
+        produce((state: AppState) => {
+          state.monsterPage.monster = newMonster;
+        })
+      ),
       monsterDialogState: false,
-      setMonsterDialogState: (newState: boolean) =>
-        set(
-          produce((state: AppState) => {
-            state.monsterPage.monsterDialogState = newState;
-          }),
-        ),
+      setMonsterDialogState: (newState: boolean) => set(
+        produce((state: AppState) => {
+          state.monsterPage.monsterDialogState = newState;
+        })
+      ),
       filterState: false,
-      setFilterState: (newState: boolean) =>
-        set(
-          produce((state: AppState) => {
-            state.monsterPage.filterState = newState;
-          }),
-        ),
+      setFilterState: (newState: boolean) => set(
+        produce((state: AppState) => {
+          state.monsterPage.filterState = newState;
+        })
+      ),
     },
   }),
 

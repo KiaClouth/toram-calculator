@@ -36,6 +36,9 @@ export default function MonsterForm(props: {
     );
   }
 
+  // 定义不需要手动输入的值
+  const hiddenData: Array<keyof Monster> = ["createdAt","updatedAt","viewCount","usageCount","viewTimestamps","usageTimestamps"];
+
   // 定义表单
   const form = useForm({
     defaultValues: defaultMonster,
@@ -43,11 +46,12 @@ export default function MonsterForm(props: {
       createMonster.mutate({
         ...value,
         createdAt: new Date(),
+        updatedAt: new Date(),
         usageCount: 0,
         viewCount: 0,
         usageTimestamps: [],
         viewTimestamps: [],
-      });
+      } satisfies Monster);
     },
     validatorAdapter: zodValidator,
   });
@@ -76,8 +80,6 @@ export default function MonsterForm(props: {
     return ZodFirstPartyTypeKind.ZodUndefined;
   };
 
-  // 定义不需要手动输入的值
-  const hiddenData: Array<keyof Monster> = ["createdAt","updatedAt","viewCount","usageCount","viewTimestamps","usageTimestamps"];
   useEffect(() => {
     // escape键监听
     const handleEscapeKeyPress = (e: KeyboardEvent) => {
