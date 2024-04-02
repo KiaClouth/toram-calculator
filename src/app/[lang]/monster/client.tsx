@@ -78,13 +78,13 @@ export default function MonserPageClient(props: {
         accessorKey: "id",
         header: () => dictionary.db.models.monster.id,
         cell: (info) => info.getValue(),
-        size: 250,
+        size: 200,
       },
       {
         accessorKey: "name",
         header: () => dictionary.db.models.monster.name,
         cell: (info) => info.getValue(),
-        size: 250,
+        size: 150,
       },
       {
         accessorKey: "monsterType",
@@ -256,7 +256,7 @@ export default function MonserPageClient(props: {
   }, [monsterDialogState, setMonsterDialogState]);
 
   return (
-    <main className="flex h-[calc(100dvh-67px)] flex-col lg:h-dvh lg:w-[calc(100dvw-96px)] lg:flex-row">
+    <main className="flex flex-col lg:w-[calc(100dvw-96px)] lg:flex-row">
       <div
         className={`Module1 fixed left-0 top-0 z-50 lg:z-0 ${filterState ? " translate-x-0 " : " -translate-x-full "} flex-none border-transition-color-8 bg-primary-color backdrop-blur-xl lg:sticky lg:translate-x-0 lg:border-x-1.5 lg:bg-transition-color-8 ${filterState ? " pointer-events-auto visible basis-[260px] opacity-100 " : " pointer-events-none invisible basis-[0px] opacity-0 "}`}
       >
@@ -310,7 +310,7 @@ export default function MonserPageClient(props: {
         <div className="LeftArea sticky top-0 z-10 flex-1"></div>
         <div
           ref={tableContainerRef}
-          className="ModuleContent w-full flex-col overflow-auto 2xl:w-[1536px]"
+          className="ModuleContent h-[calc(100dvh-67px)] w-full flex-col overflow-auto lg:h-dvh 2xl:w-[1536px]"
         >
           <div className="Title sticky left-0 flex flex-col gap-9 py-5 lg:pb-10 lg:pt-20">
             <div className="Row flex flex-row items-center justify-between gap-4 lg:justify-start">
@@ -520,19 +520,19 @@ export default function MonserPageClient(props: {
         <div className="RightArea sticky top-0 z-10 flex-1"></div>
       </div>
       {monsterDialogState ? (
-        <Dialog state={monsterDialogState} setState={setMonsterDialogState}>
-          {
-            <MonsterForm
-              dictionary={dictionary}
-              defaultMonster={monster}
-              defaultMonsterList={defaultMonsterList}
-              setDefaultMonsterList={setDefaultMonsterList}
-            />
-          }
-        </Dialog>
-      ) : (
-        ""
-      )}
+        session ? (
+          <Dialog state={monsterDialogState} setState={setMonsterDialogState}>
+            {
+              <MonsterForm
+                dictionary={dictionary}
+                defaultMonster={monster}
+                defaultMonsterList={defaultMonsterList}
+                setDefaultMonsterList={setDefaultMonsterList}
+              />
+            }
+          </Dialog>
+        ) : undefined
+      ) : undefined}
     </main>
   );
 }
