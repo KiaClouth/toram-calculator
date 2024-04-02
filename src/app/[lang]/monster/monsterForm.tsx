@@ -35,10 +35,19 @@ export default function MonsterForm(props: {
       </React.Fragment>
     );
   }
+
+  // 定义表单
   const form = useForm({
     defaultValues: defaultMonster,
     onSubmit: async ({ value }) => {
-      createMonster.mutate(value);
+      createMonster.mutate({
+        ...value,
+        createdAt: new Date(),
+        usageCount: 0,
+        viewCount: 0,
+        usageTimestamps: [],
+        viewTimestamps: [],
+      });
     },
     validatorAdapter: zodValidator,
   });
@@ -68,7 +77,7 @@ export default function MonsterForm(props: {
   };
 
   // 定义不需要手动输入的值
-  const hiddenData: Array<keyof Monster> = ["updatedAt"];
+  const hiddenData: Array<keyof Monster> = ["createdAt","updatedAt","viewCount","usageCount","viewTimestamps","usageTimestamps"];
   useEffect(() => {
     // escape键监听
     const handleEscapeKeyPress = (e: KeyboardEvent) => {

@@ -1,47 +1,51 @@
-import type { $Enums, Monster, Statistics } from "@prisma/client";
+import type { $Enums, Monster } from "@prisma/client";
 
-type ConvertToAllString<T> = T extends object
+// 为了方便编辑器自动补全，这个方法可以将数据库模型的值类型转换为字符串
+type ConvertToAllString<T> = T extends object | number
   ? {
-      [K in keyof T]: T[K] extends Date ? string : ConvertToAllString<T[K]>;
+      [K in keyof T]: T[K] extends Date | Date[]
+        ? string
+        : T[K] extends Array
+          ? string
+          : ConvertToAllString<T[K]>;
     }
   : string;
 
 interface dictionary {
   ui: {
     root: {
-      home: string,
-      monsters: string,
-      skills: string,
-      equipments: string,
-      crystas: string,
-      pets: string,
-      items: string,
-      character: string,
-      comboAnalyze: string,
-    },
+      home: string;
+      monsters: string;
+      skills: string;
+      equipments: string;
+      crystas: string;
+      pets: string;
+      items: string;
+      character: string;
+      comboAnalyze: string;
+    };
     index: {
-      goodMorning: string,
-      goodAfternoon: string,
-      goodEvening: string,
-    },
+      goodMorning: string;
+      goodAfternoon: string;
+      goodEvening: string;
+    };
     monster: {
-      pageTitle: string,
-      discription: string,
-      searchPlaceholder: string,
-      upload: string,
-      save: string,
-      reset: string,
-      modify: string,
-      cancel: string,
-      close: string,
-      filter: string,
-      columnsHidden: string,
-    },
-  },
+      pageTitle: string;
+      discription: string;
+      searchPlaceholder: string;
+      upload: string;
+      save: string;
+      reset: string;
+      modify: string;
+      cancel: string;
+      close: string;
+      filter: string;
+      columnsHidden: string;
+    };
+  };
   db: {
     enums: ConvertToAllString<typeof $Enums>;
     models: {
-      statistics: ConvertToAllString<Statistics>;
       monster: ConvertToAllString<Monster>;
     };
   };

@@ -239,15 +239,13 @@ const dictionary: dictionary = {
         possibilityOfRunningAround: "好动程度",
         specialBehavior: "特殊说明",
         createdById: "属于[ID]",
-        statisticsId: ""
-      },
-      statistics: {
-        id: "",
         viewCount: "被查看次数",
         usageCount: "被使用次数",
         createdAt: "创建于",
-        updatedAt: "更新于"
-      }
+        updatedAt: "更新于",
+        usageTimestamps: "被使用记录",
+        viewTimestamps: "被查看记录"
+      },
     },
   },
 };
