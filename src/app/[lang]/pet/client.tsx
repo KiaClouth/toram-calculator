@@ -41,7 +41,10 @@ export default function PetPageClient(props: {
     updatedAt: new Date(),
     viewCount: 0,
     usageCount: 0,
-    createdById: null
+    createdById: null,
+    createdAt: new Date(),
+    usageTimestamps: [],
+    viewTimestamps: []
   };
   const { dictionary, session } = props;
 
