@@ -196,12 +196,22 @@ const dictionary: dictionary = {
         NORMAL: "",
         LIGHT: "",
         HEAVY: ""
+      },
+      CrystalType: {
+        GENERAL: "",
+        WEAPONCRYSTAL: "",
+        BODYCRYSTAL: "",
+        ADDITIONALCRYSTAL: "",
+        SPECIALCRYSTAL: ""
+      },
+      SkillType: {
+        BUFF: "",
+        DAMAGE: ""
       }
     },
     models: {
       monster: {
         id: "ID",
-        updatedAt: "更新于(天前)",
         updatedById: "更新者",
         state: "状态",
         name: "名称",
@@ -228,10 +238,16 @@ const dictionary: dictionary = {
         difficultyOfRanged: "难度：远程",
         possibilityOfRunningAround: "好动程度",
         specialBehavior: "特殊说明",
+        createdById: "属于[ID]",
+        statisticsId: ""
+      },
+      statistics: {
+        id: "",
         viewCount: "被查看次数",
         usageCount: "被使用次数",
-        createdById: "属于[ID]"
-      },
+        createdAt: "创建于",
+        updatedAt: "更新于"
+      }
     },
   },
 };

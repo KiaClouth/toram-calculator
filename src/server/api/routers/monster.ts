@@ -12,12 +12,33 @@ export const monsterRouter = createTRPCRouter({
     console.log(ctx.session?.user.name + "获取了一次怪物数据");
     return ctx.db.monster.findMany();
   }),
+
+  getListIncludeStatistics: publicProcedure.query(({ ctx }) => {
+    console.log(ctx.session?.user.name + "获取了一次怪物数据");
+    return ctx.db.monster.findMany({
+      include: {
+        statistics: true
+      }
+    });
+  }),
+
   getUserByMonsterId: publicProcedure
     .input(z.string())
     .query(({ ctx, input }) => {
       return ctx.db.monster.findFirst({
         // orderBy: { createdAt: "desc" },
         where: { updatedById: input },
+      });
+    }),
+  
+  getStatisticsByMonsterId: publicProcedure
+    .input(z.string())
+    .query(({ ctx, input }) => {
+      return ctx.db.statistics.findFirst({
+        where: {
+          usedByMonster: {
+          id:input
+        } },
       });
     }),
 
@@ -34,10 +55,12 @@ export const monsterRouter = createTRPCRouter({
       console.log(
         "上传者：" + ctx.session.user.name + ",用户ID:" + ctx.session.user.id,
       );
+
       // 检查用户是否存在关联的 UserCreate
       let userCreate = await ctx.db.userCreate.findUnique({
         where: { userId: ctx.session?.user.id },
       });
+
       // 如果不存在，创建一个新的 UserCreate
       if (!userCreate) {
         console.log("初次上传，自动创建对应userCreate");
@@ -48,11 +71,18 @@ export const monsterRouter = createTRPCRouter({
           },
         });
       }
+
+      // 创建统计信息
+      const statistics = await ctx.db.statistics.create({
+        data: {}
+      })
+
+      // 创建怪物并关联创建者和统计信息
       return ctx.db.monster.create({
         data: {
           ...input,
-          // updatedById: ctx.session?.user.id ?? "",
-          createdById: ctx.session?.user.id ?? "",
+          createdById: userCreate.userId,
+          statisticsId: statistics.id,
         },
       });
     }),

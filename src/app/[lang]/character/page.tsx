@@ -1,9 +1,10 @@
 import React from "react";
 import CharacterPageClient from "./client";
-import { Locale } from "~/app/i18n-config";
+import { type Locale } from "~/app/i18n-config";
 import { getDictionary } from "~/app/get-dictionary";
 import { getServerAuthSession } from "~/server/auth";
 import { api } from "~/trpc/server";
+import { type Element } from "@prisma/client";
 
 const variableBonus = {
   strR: 0,
@@ -49,14 +50,6 @@ type permanentSkill = {
   state: boolean;
   effectList: Partial<Record<bonus, number>>;
 };
-type element =
-  | "无属性"
-  | "水属性"
-  | "火属性"
-  | "地属性"
-  | "风属性"
-  | "光属性"
-  | "暗属性";
 type abi = {
   str: number;
   int: number;
@@ -255,7 +248,7 @@ type wea = {
   baseAtk: number;
   stab: number;
   refv: number;
-  dte: element;
+  dte: Element;
 };
 type permanentSkillList = permanentSkill[];
 class Character {
@@ -283,7 +276,7 @@ export default async function CharacterPage({
 }) {
   const dictionary = getDictionary(lang);
   const session = await getServerAuthSession();
-  const monsterList = await api.monster.getList.query();
+  const characterList = await api.character.getList.query();
   const cLv = 1;
   const cAbi: abi = {
     str: 1,
@@ -297,7 +290,7 @@ export default async function CharacterPage({
     baseAtk: 320,
     stab: 60,
     refv: 15,
-    dte: "光属性",
+    dte: "LIGHT",
   };
   const cPermanentSkillList: permanentSkillList = [
     {
@@ -321,7 +314,7 @@ export default async function CharacterPage({
     <CharacterPageClient
       dictionary={dictionary}
       session={session}
-      monsterList={monsterList}
+      characterList={characterList}
     />
   );
 }

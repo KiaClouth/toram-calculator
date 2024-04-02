@@ -10,7 +10,7 @@ generator zod {
 }
 
 datasource db {
-    provider = "postgresql"
+    provider = "mysql"
     url      = env("DATABASE_URL")
 }
 
@@ -145,7 +145,7 @@ model Monster {
     monsterType                      MonsterType       @default(COMMON_BOSS)
     baseLv                           Int?
     experience                       Int?
-    address                          String?
+    address                          String?           @db.TinyText
     element                          Element           @default(DARK)
     radius                           Int?
     maxhp                            Int?
@@ -164,7 +164,7 @@ model Monster {
     difficultyOfMelee                Int               @default(5)
     difficultyOfRanged               Int               @default(5)
     possibilityOfRunningAround       Int               @default(5)
-    specialBehavior                  String?
+    specialBehavior                  String?           @db.TinyText
     belongToAnalyzers                Analyzer[]
     updatedBy                        UserUpdate?       @relation(fields: [updatedById], references: [userId])
     updatedById                      String? /// @zod.custom.omit(["model","input"])
@@ -174,8 +174,8 @@ model Monster {
     usageCount                       Int               @default(0)
     createdAt                        DateTime          @default(now())
     updatedAt                        DateTime          @updatedAt
-    usageTimestamps                  DateTime[]
-    viewTimestamps                   DateTime[]
+    usageTimestamps                  Json
+    viewTimestamps                   Json
 }
 
 // 加成值数据类型枚举
@@ -359,8 +359,8 @@ model Character {
     usageCount        Int                     @default(0)
     createdAt         DateTime                @default(now())
     updatedAt         DateTime                @updatedAt
-    usageTimestamps   DateTime[]
-    viewTimestamps    DateTime[]
+    usageTimestamps   Json
+    viewTimestamps    Json
 }
 
 // 机体基础能力值
@@ -420,8 +420,8 @@ model Crystal {
     usageCount                Int                            @default(0)
     createdAt                 DateTime                       @default(now())
     updatedAt                 DateTime                       @updatedAt
-    usageTimestamps           DateTime[]
-    viewTimestamps            DateTime[]
+    usageTimestamps           Json
+    viewTimestamps            Json
 }
 
 // 锻晶与主武器的多对多关系表
@@ -536,8 +536,8 @@ model MainWeapon {
     usageCount      Int                   @default(0)
     createdAt       DateTime              @default(now())
     updatedAt       DateTime              @updatedAt
-    usageTimestamps DateTime[]
-    viewTimestamps  DateTime[]
+    usageTimestamps Json
+    viewTimestamps  Json
 }
 
 // 副武器模型
@@ -561,8 +561,8 @@ model SubWeapon {
     usageCount      Int               @default(0)
     createdAt       DateTime          @default(now())
     updatedAt       DateTime          @updatedAt
-    usageTimestamps DateTime[]
-    viewTimestamps  DateTime[]
+    usageTimestamps Json
+    viewTimestamps  Json
 }
 
 // 身体装备轻重化类型枚举
@@ -591,8 +591,8 @@ model BodyArmor {
     usageCount      Int                  @default(0)
     createdAt       DateTime             @default(now())
     updatedAt       DateTime             @updatedAt
-    usageTimestamps DateTime[]
-    viewTimestamps  DateTime[]
+    usageTimestamps Json
+    viewTimestamps  Json
 }
 
 // 追加装备模型
@@ -613,8 +613,8 @@ model AdditionalEquipment {
     usageCount      Int                            @default(0)
     createdAt       DateTime                       @default(now())
     updatedAt       DateTime                       @updatedAt
-    usageTimestamps DateTime[]
-    viewTimestamps  DateTime[]
+    usageTimestamps Json
+    viewTimestamps  Json
 }
 
 // 特殊装备模型
@@ -633,8 +633,8 @@ model SpecialEquipment {
     usageCount      Int                         @default(0)
     createdAt       DateTime                    @default(now())
     updatedAt       DateTime                    @updatedAt
-    usageTimestamps DateTime[]
-    viewTimestamps  DateTime[]
+    usageTimestamps Json
+    viewTimestamps  Json
 }
 
 // 时装
@@ -689,8 +689,8 @@ model Skill {
     usageCount      Int                @default(0)
     createdAt       DateTime           @default(now())
     updatedAt       DateTime           @updatedAt
-    usageTimestamps DateTime[]
-    viewTimestamps  DateTime[]
+    usageTimestamps Json
+    viewTimestamps  Json
 }
 
 // 技能和技能树多对多关系
@@ -731,8 +731,8 @@ model Pet {
     usageCount      Int               @default(0)
     createdAt       DateTime          @default(now())
     updatedAt       DateTime          @updatedAt
-    usageTimestamps DateTime[]
-    viewTimestamps  DateTime[]
+    usageTimestamps Json
+    viewTimestamps  Json
 }
 
 // 消耗品类型枚举
@@ -764,8 +764,8 @@ model Consumable {
     usageCount      Int                     @default(0)
     createdAt       DateTime                @default(now())
     updatedAt       DateTime                @updatedAt
-    usageTimestamps DateTime[]
-    viewTimestamps  DateTime[]
+    usageTimestamps Json
+    viewTimestamps  Json
 }
 
 // 分析器模型

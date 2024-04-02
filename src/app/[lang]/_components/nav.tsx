@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import Link from "next/link";
 import {
   IconBasketball,
@@ -16,6 +16,7 @@ import SignInOrOut from "./signInOrOut";
 import ThemeSwitch from "./themeSwitch";
 import { type getDictionary } from "~/app/get-dictionary";
 import { type Session } from "next-auth";
+import { useBearStore } from "~/app/store";
 
 export default function Nav(props: {
   dictionary: ReturnType<typeof getDictionary>;
@@ -47,7 +48,7 @@ export default function Nav(props: {
       [
         dictionary.ui.root.character,
         <IconGamepad key={"IconGamepad"} />,
-        "/building",
+        "/character",
       ],
       [
         dictionary.ui.root.comboAnalyze,
@@ -57,10 +58,10 @@ export default function Nav(props: {
     ];
 
   return (
-    <div 
+    <div
       className={`Nav border-t-1 z-10 flex w-dvw flex-shrink-0 overflow-x-auto border-transition-color-20 backdrop-blur lg:h-dvh lg:w-24 lg:flex-col lg:gap-10 lg:border-none lg:bg-transition-color-8 lg:py-5`}
     >
-      <div className="flex lg:flex-none items-center justify-center">
+      <div className="flex items-center justify-center lg:flex-none">
         <Link
           href={"/"}
           className="Home group flex flex-shrink-0 flex-col items-center gap-0.5 px-1 py-2 lg:gap-4"

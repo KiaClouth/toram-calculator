@@ -1,4 +1,4 @@
-import { type $Enums, type Monster } from "@prisma/client";
+import type { $Enums, Monster, Statistics } from "@prisma/client";
 
 type ConvertToAllString<T> = T extends object
   ? {
@@ -41,6 +41,7 @@ interface dictionary {
   db: {
     enums: ConvertToAllString<typeof $Enums>;
     models: {
+      statistics: ConvertToAllString<Statistics>;
       monster: ConvertToAllString<Monster>;
     };
   };

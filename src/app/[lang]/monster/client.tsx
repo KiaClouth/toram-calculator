@@ -1,6 +1,6 @@
 "use client";
 
-import { type $Enums, type Monster } from "@prisma/client";
+import type { $Enums, Monster } from "@prisma/client";
 import {
   type Column,
   type ColumnDef,
@@ -18,6 +18,7 @@ import { IconCloudUpload, IconFilter } from "../_components/iconsList";
 import Dialog from "../_components/dialog";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { useBearStore } from "~/app/store";
+import { api } from "~/trpc/react";
 
 export default function MonserPageClient(props: {
   dictionary: ReturnType<typeof getDictionary>;
@@ -27,7 +28,6 @@ export default function MonserPageClient(props: {
   const { dictionary, session } = props;
   const defaultMonsterList = props.monsterList;
   const [monsterList, setMonsterList] = useState(defaultMonsterList);
-
   // 搜索框行为函数
   const handleSearchFilterChange = (value: string) => {
     if (value === "" || value === null) {
@@ -36,7 +36,7 @@ export default function MonserPageClient(props: {
     // 搜索时需要忽略的数据
     const hiddenData: Array<keyof Monster> = [
       "id",
-      "updatedAt",
+      // "updatedAt",
       "updatedById",
       "state",
       "createdById",
@@ -144,22 +144,24 @@ export default function MonserPageClient(props: {
         header: () => dictionary.db.models.monster.block,
         size: 100,
       },
-      {
-        accessorKey: "updatedAt",
-        header: dictionary.db.models.monster.updatedAt,
-        cell: (info) => {
-          const currentDate = new Date();
-          // 计算更新时间和当前时间的时间差（毫秒）
-          const timeDifference =
-            currentDate.getTime() - info.getValue<Date>().getTime();
-          // 将时间差转换为天数
-          const daysDifference = Math.ceil(
-            timeDifference / (1000 * 60 * 60 * 24),
-          );
-          return daysDifference;
-        },
-        size: 150,
-      },
+      // {
+      //   accessorKey: "updatedAt",
+      //   header: dictionary.db.models.statistics.updatedAt,
+      //   cell: (info) => {
+      //     const currentDate = new Date();
+      //     const statistics = api.monster.getStatisticsByMonsterId.useQuery(info.row.id);
+      //     const updatedAt = statistics.data?.updatedAt ?? new Date();
+      //     // 计算更新时间和当前时间的时间差（毫秒）
+      //     const timeDifference =
+      //       currentDate.getTime() - updatedAt.getTime();
+      //     // 将时间差转换为天数
+      //     const daysDifference = Math.ceil(
+      //       timeDifference / (1000 * 60 * 60 * 24),
+      //     );
+      //     return daysDifference;
+      //   },
+      //   size: 150,
+      // },
     ],
     [
       dictionary.db.enums.Element,
@@ -177,7 +179,7 @@ export default function MonserPageClient(props: {
       dictionary.db.models.monster.name,
       dictionary.db.models.monster.physicalDefense,
       dictionary.db.models.monster.physicalResistance,
-      dictionary.db.models.monster.updatedAt,
+      // dictionary.db.models.monster.updatedAt,
     ],
   );
 
