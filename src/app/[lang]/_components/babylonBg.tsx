@@ -296,7 +296,8 @@ export default function BabylonBg(): JSX.Element {
     camera.minZ = 0.1;
     camera.fov = 1;
     camera.wheelDeltaPercentage = 0.05;
-    // camera.inputs.clear(); // -----------------------------------------------------相机输入禁用-----------------------
+    camera.inputs.clear(); // -----------------------------------------------------相机输入禁用-----------------------
+    
     const cameraControl = (event: MouseEvent): void => {
       if (event.buttons === 0) {
         camera.alpha -= event.movementX / 100000;
