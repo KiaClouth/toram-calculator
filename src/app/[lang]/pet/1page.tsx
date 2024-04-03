@@ -1,4 +1,3 @@
-import { api } from "~/trpc/server";
 import { getDictionary } from "~/app/get-dictionary";
 import { type Locale } from "~/app/i18n-config";
 import { getServerAuthSession } from "~/server/auth";
@@ -11,7 +10,6 @@ export default async function MonsterPage({
 }) {
   const dictionary = getDictionary(lang);
   const session = await getServerAuthSession();
-  const petList = await api.monster.getList.query();
 
   return (
     <PetPageClient dictionary={dictionary} session={session} />

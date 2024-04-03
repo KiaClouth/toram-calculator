@@ -1,4 +1,4 @@
-import { dictionary } from "./type";
+import { type dictionary } from "./type";
 const dictionary: dictionary = {
   ui: {
     root: {
