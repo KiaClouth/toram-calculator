@@ -1,5 +1,6 @@
 "use client";
 
+import { type Post } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -8,6 +9,13 @@ import { api } from "~/trpc/react";
 export function CreatePost() {
   const router = useRouter();
   const [content, setContent] = useState("");
+  const defaultPost: Post = {
+    id: 0,
+    name: "",
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    createdById: ""
+  }
 
   const createPost = api.post.create.useMutation({
     onSuccess: () => {
@@ -22,6 +30,7 @@ export function CreatePost() {
         console.log(content)
         e.preventDefault();
         createPost.mutate({
+          ...defaultPost,
           name: content
         });
       }}

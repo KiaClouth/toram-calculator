@@ -212,7 +212,7 @@ const dictionary: dictionary = {
     models: {
       monster: {
         id: "ID",
-        updatedById: "更新者",
+        updatedByUserId: "更新者",
         state: "状态",
         name: "名称",
         monsterType: "类型",
@@ -238,7 +238,7 @@ const dictionary: dictionary = {
         difficultyOfRanged: "难度：远程",
         possibilityOfRunningAround: "好动程度",
         specialBehavior: "特殊说明",
-        createdById: "属于[ID]",
+        createdByUserId: "属于[ID]",
         viewCount: "",
         usageCount: "",
         createdAt: "",

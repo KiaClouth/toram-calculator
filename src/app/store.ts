@@ -10,7 +10,7 @@ import type { Monster } from "@prisma/client";
 export const defaultMonster: Monster = {
   id: "",
   updatedAt: new Date(),
-  updatedById: "",
+  updatedByUserId: "",
   state: "PRIVATE",
   name: "",
   monsterType: "COMMON_BOSS",
@@ -38,7 +38,7 @@ export const defaultMonster: Monster = {
   specialBehavior: "",
   viewCount: 0,
   usageCount: 0,
-  createdById: "",
+  createdByUserId: "",
   createdAt: new Date(),
   usageTimestamps: [],
   viewTimestamps: [],
@@ -68,11 +68,12 @@ export const useBearStore = create<AppState>()(
     increase: (by) => set((state) => ({ bears: state.bears + by })),
     monsterPage: {
       monsterList: [],
-      setMonsterList:(newMonsterList: Monster[]) => set(
-        produce((state: AppState) => {
-          state.monsterPage.monsterList = newMonsterList
-        })
-      ),
+      setMonsterList: (newMonsterList: Monster[]) =>
+        set(
+          produce((state: AppState) => {
+            state.monsterPage.monsterList = newMonsterList;
+          }),
+        ),
       monster: defaultMonster,
       setMonster: (newMonster: Monster) =>
         set(

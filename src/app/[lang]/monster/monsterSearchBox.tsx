@@ -28,7 +28,7 @@ export default function LongSearchBox(props: {
     }
     setOpen(openClass);
     const tempFilm: Film[] = [];
-    const hiddenData: Array<keyof Monster> = ["id", "updatedAt", "updatedById", "state", "createdById"]
+    const hiddenData: Array<keyof Monster> = ["id", "updatedAt", "updatedByUserId", "state", "createdByUserId"]
     monsterList.forEach((monster) => {
       const related: [string, string | undefined][] = [];
       for (const attr in monster) {

@@ -276,7 +276,7 @@ export default async function CharacterPage({
 }) {
   const dictionary = getDictionary(lang);
   const session = await getServerAuthSession();
-  const characterList = await api.character.getList.query();
+  const characterList = await api.character.getAll.query();
   const cLv = 1;
   const cAbi: abi = {
     str: 1,

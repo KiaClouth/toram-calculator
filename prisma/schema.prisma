@@ -28,17 +28,17 @@ model User {
 }
 
 model Account {
-    id                String  @id @default(cuid()) /// @zod.custom.omit(["model","input"]) 
+    id                String  @id @default(cuid())
     userId            String
     type              String
     provider          String
     providerAccountId String
-    refresh_token     String? // @db.Text
-    access_token      String? // @db.Text
+    refresh_token     String?
+    access_token      String?
     expires_at        Int?
     token_type        String?
     scope             String?
-    id_token          String? // @db.Text
+    id_token          String?
     session_state     String?
     user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -46,7 +46,7 @@ model Account {
 }
 
 model Session {
-    id           String   @id @default(cuid()) /// @zod.custom.omit(["model","input"]) 
+    id           String   @id @default(cuid())
     sessionToken String   @unique
     userId       String
     expires      DateTime
@@ -63,12 +63,12 @@ model VerificationToken {
 }
 
 model Post {
-    id          Int      @id @default(autoincrement()) /// @zod.custom.omit(["model","input"]) 
+    id          Int      @id @default(autoincrement())
     name        String   @default("SYSTEM")
-    createdAt   DateTime @default(now()) /// @zod.custom.omit(["model","input"]) 
-    updatedAt   DateTime @updatedAt /// @zod.custom.omit(["model","input"]) 
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
     createdBy   User     @relation(fields: [createdById], references: [id])
-    createdById String /// @zod.custom.omit(["model","input"]) 
+    createdById String
 
     @@index([name])
 }
@@ -139,14 +139,14 @@ enum MonsterType {
 
 // 怪物模型
 model Monster {
-    id                               String            @id @default(cuid())
-    state                            State             @default(PRIVATE)
-    name                             String            @default("SYSTEM")
-    monsterType                      MonsterType       @default(COMMON_BOSS)
+    id                               String      @id @default(cuid())
+    state                            State       @default(PRIVATE)
+    name                             String      @default("SYSTEM")
+    monsterType                      MonsterType @default(COMMON_BOSS)
     baseLv                           Int?
     experience                       Int?
     address                          String?
-    element                          Element           @default(DARK)
+    element                          Element     @default(DARK)
     radius                           Int?
     maxhp                            Int?
     physicalDefense                  Int?
@@ -160,20 +160,20 @@ model Monster {
     normalAttackResistanceModifier   Int?
     physicalAttackResistanceModifier Int?
     magicalAttackResistanceModifier  Int?
-    difficultyOfTank                 Int               @default(5)
-    difficultyOfMelee                Int               @default(5)
-    difficultyOfRanged               Int               @default(5)
-    possibilityOfRunningAround       Int               @default(5)
+    difficultyOfTank                 Int         @default(5)
+    difficultyOfMelee                Int         @default(5)
+    difficultyOfRanged               Int         @default(5)
+    possibilityOfRunningAround       Int         @default(5)
     specialBehavior                  String?
     belongToAnalyzers                Analyzer[]
-    updatedBy                        UserUpdate?       @relation(fields: [updatedById], references: [userId])
-    updatedById                      String? /// @zod.custom.omit(["model","input"])
-    createdBy                        UserCreate?       @relation(fields: [createdById], references: [userId])
-    createdById                      String? /// @zod.custom.omit(["model","input"])
-    viewCount                        Int               @default(0)
-    usageCount                       Int               @default(0)
-    createdAt                        DateTime          @default(now())
-    updatedAt                        DateTime          @updatedAt
+    updatedBy                        UserUpdate? @relation(fields: [updatedByUserId], references: [userId])
+    updatedByUserId                  String?
+    createdBy                        UserCreate? @relation(fields: [createdByUserId], references: [userId])
+    createdByUserId                  String?
+    viewCount                        Int         @default(0)
+    usageCount                       Int         @default(0)
+    createdAt                        DateTime    @default(now())
+    updatedAt                        DateTime    @updatedAt
     usageTimestamps                  DateTime[]
     viewTimestamps                   DateTime[]
 }
@@ -299,7 +299,7 @@ enum ModifiersName {
 
 // 单项加成数据模型
 model Modifier {
-    id                    String                    @id @default(cuid()) /// @zod.custom.omit(["model","input"]) 
+    id                    String                    @id @default(cuid())
     modifiersValueType    ModifiersValueType        @default(PERCENTAGE_BONUS)
     value                 Float                     @default(0)
     belongToodifiersLists ModifierOnModifiersList[]
@@ -308,7 +308,7 @@ model Modifier {
 
 // 加成项集（附魔等）模型
 model ModifiersList {
-    id                        String                    @id @default(cuid()) /// @zod.custom.omit(["model","input"]) 
+    id                        String                    @id @default(cuid())
     modifiers                 ModifierOnModifiersList[]
     usedByMainWeapon          MainWeapon[]
     usedBySubWeapon           SubWeapon[]
@@ -336,7 +336,7 @@ model ModifierOnModifiersList {
 
 // 机体模型
 model Character {
-    id                String                  @id @default(cuid()) /// @zod.custom.omit(["model","input"]) 
+    id                String                  @id @default(cuid())
     state             State                   @default(PRIVATE)
     name              String                  @default("SYSTEM")
     lv                Int                     @default(1)
@@ -353,8 +353,8 @@ model Character {
     modifiersList     ModifiersList?          @relation(fields: [modifiersListId], references: [id])
     modifiersListId   String?
     belongToAnalyzers Analyzer[]
-    createdBy         UserCreate?             @relation(fields: [createdById], references: [userId])
-    createdById       String? /// @zod.custom.omit(["model","input"])
+    createdBy         UserCreate?             @relation(fields: [createdByUserId], references: [userId])
+    createdByUserId   String?
     viewCount         Int                     @default(0)
     usageCount        Int                     @default(0)
     createdAt         DateTime                @default(now())
@@ -402,16 +402,16 @@ enum CrystalType {
 
 // 锻晶模型
 model Crystal {
-    id                        String                         @id @default(cuid()) /// @zod.custom.omit(["model","input"]) 
+    id                        String                         @id @default(cuid())
     state                     State                          @default(PRIVATE)
     type                      CrystalType                    @default(GENERAL)
     front                     Int                            @default(0)
     modifiersList             ModifiersList?                 @relation(fields: [modifiersListId], references: [id])
     modifiersListId           String?
-    updatedBy                 UserUpdate?                    @relation(fields: [updatedById], references: [userId])
-    updatedById               String? /// @zod.custom.omit(["model","input"])
-    createdBy                 UserCreate?                    @relation(fields: [createdById], references: [userId])
-    createdById               String? /// @zod.custom.omit(["model","input"])
+    updatedBy                 UserUpdate?                    @relation(fields: [updatedByUserId], references: [userId])
+    updatedByUserId           String?
+    createdBy                 UserCreate?                    @relation(fields: [createdByUserId], references: [userId])
+    createdByUserId           String?
     usedByMainWeapon          CrystalOnMainWeapon[]
     usedByBodyArmor           CrystalOnBodyArmor[]
     usedByAdditionalEquipment CrystalOnAdditionalEquipment[]
@@ -516,7 +516,7 @@ enum SubWeaType {
 
 // 主武器模型
 model MainWeapon {
-    id              String                @id @default(cuid()) /// @zod.custom.omit(["model","input"]) 
+    id              String                @id @default(cuid())
     state           State                 @default(PRIVATE)
     name            String                @default("SYSTEM")
     mainWeaType     MainWeaType           @default(ONE_HAND_SWORD)
@@ -542,25 +542,25 @@ model MainWeapon {
 
 // 副武器模型
 model SubWeapon {
-    id              String            @id @default(cuid()) /// @zod.custom.omit(["model","input"]) 
-    state           State             @default(PRIVATE)
-    name            String            @default("SYSTEM")
-    subWeaType      SubWeaType        @default(NO_WEAPOEN)
-    baseAtk         Int               @default(0)
-    refinement      Int               @default(0)
-    stability       Int               @default(60)
-    element         Element           @default(NO_ELEMENT)
+    id              String          @id @default(cuid())
+    state           State           @default(PRIVATE)
+    name            String          @default("SYSTEM")
+    subWeaType      SubWeaType      @default(NO_WEAPOEN)
+    baseAtk         Int             @default(0)
+    refinement      Int             @default(0)
+    stability       Int             @default(60)
+    element         Element         @default(NO_ELEMENT)
     usedBy          EquipmentList[]
-    modifiersList   ModifiersList?    @relation(fields: [modifiersListId], references: [id])
+    modifiersList   ModifiersList?  @relation(fields: [modifiersListId], references: [id])
     modifiersListId String?
-    createdBy       UserCreate?       @relation(fields: [createdByUserId], references: [userId])
+    createdBy       UserCreate?     @relation(fields: [createdByUserId], references: [userId])
     createdByUserId String?
-    updatedBy       UserUpdate?       @relation(fields: [updatedByUserId], references: [userId])
+    updatedBy       UserUpdate?     @relation(fields: [updatedByUserId], references: [userId])
     updatedByUserId String?
-    viewCount       Int               @default(0)
-    usageCount      Int               @default(0)
-    createdAt       DateTime          @default(now())
-    updatedAt       DateTime          @updatedAt
+    viewCount       Int             @default(0)
+    usageCount      Int             @default(0)
+    createdAt       DateTime        @default(now())
+    updatedAt       DateTime        @updatedAt
     usageTimestamps DateTime[]
     viewTimestamps  DateTime[]
 }
@@ -574,7 +574,7 @@ enum BodyArmorType {
 
 // 身体装备模型
 model BodyArmor {
-    id              String               @id @default(cuid()) /// @zod.custom.omit(["model","input"]) 
+    id              String               @id @default(cuid())
     state           State                @default(PRIVATE)
     bodyArmorType   BodyArmorType        @default(NORMAL)
     name            String               @default("SYSTEM")
@@ -597,7 +597,7 @@ model BodyArmor {
 
 // 追加装备模型
 model AdditionalEquipment {
-    id              String                         @id @default(cuid()) /// @zod.custom.omit(["model","input"]) 
+    id              String                         @id @default(cuid())
     state           State                          @default(PRIVATE)
     name            String                         @default("SYSTEM")
     refinement      Int                            @default(0)
@@ -619,7 +619,7 @@ model AdditionalEquipment {
 
 // 特殊装备模型
 model SpecialEquipment {
-    id              String                      @id @default(cuid()) /// @zod.custom.omit(["model","input"]) 
+    id              String                      @id @default(cuid())
     state           State                       @default(PRIVATE)
     usedBy          EquipmentList[]
     modifiersList   ModifiersList?              @relation(fields: [modifiersListId], references: [id])
@@ -671,7 +671,7 @@ enum SkillType {
 
 // 技能模型
 model Skill {
-    id              String             @id @default(cuid()) /// @zod.custom.omit(["model","input"]) 
+    id              String             @id @default(cuid())
     state           State              @default(PRIVATE)
     name            String?            @default("SYSTEM")
     type            SkillType          @default(BUFF)
@@ -719,18 +719,18 @@ model ConsumableOnCharacter {
 
 // 宠物模型
 model Pet {
-    id              String            @id @default(cuid()) /// @zod.custom.omit(["model","input"]) 
-    createdBy       UserCreate?       @relation(fields: [createdByUserId], references: [userId])
+    id              String      @id @default(cuid())
+    createdBy       UserCreate? @relation(fields: [createdByUserId], references: [userId])
     createdByUserId String?
-    updatedBy       UserUpdate?       @relation(fields: [updatedByUserId], references: [userId])
+    updatedBy       UserUpdate? @relation(fields: [updatedByUserId], references: [userId])
     updatedByUserId String?
-    state           State             @default(PRIVATE)
-    name            String?           @default("SYSTEM")
+    state           State       @default(PRIVATE)
+    name            String?     @default("SYSTEM")
     usedBy          Character[]
-    viewCount       Int               @default(0)
-    usageCount      Int               @default(0)
-    createdAt       DateTime          @default(now())
-    updatedAt       DateTime          @updatedAt
+    viewCount       Int         @default(0)
+    usageCount      Int         @default(0)
+    createdAt       DateTime    @default(now())
+    updatedAt       DateTime    @updatedAt
     usageTimestamps DateTime[]
     viewTimestamps  DateTime[]
 }
@@ -750,7 +750,7 @@ enum ConsumableType {
 
 // 消耗品模型
 model Consumable {
-    id              String                  @id @default(cuid()) /// @zod.custom.omit(["model","input"]) 
+    id              String                  @id @default(cuid())
     state           State                   @default(PRIVATE)
     name            String                  @default("SYSTEM")
     usedBy          ConsumableOnCharacter[]
@@ -770,7 +770,7 @@ model Consumable {
 
 // 分析器模型
 model Analyzer {
-    id              String      @id @default(cuid()) /// @zod.custom.omit(["model","input"])
+    id              String      @id @default(cuid())
     state           State       @default(PRIVATE)
     name            String?     @default("SYSTEM")
     createdAt       DateTime    @default(now())
@@ -785,7 +785,7 @@ model Analyzer {
 
 // 连击模型
 model Combo {
-    id              String             @id @default(cuid()) /// @zod.custom.omit(["model","input"])
+    id              String             @id @default(cuid())
     createdAt       DateTime           @default(now())
     createdBy       UserCreate?        @relation(fields: [createdByUserId], references: [userId])
     createdByUserId String?
@@ -808,7 +808,7 @@ model ComboOnCharacter {
 
 // 输出流程模型
 model Process {
-    id               String   @id @default(cuid()) /// @zod.custom.omit(["model","input"])
+    id               String   @id @default(cuid())
     steps            Step[]
     belongToAnalyzer Analyzer @relation(fields: [analyzerId], references: [id])
     analyzerId       String
@@ -816,7 +816,7 @@ model Process {
 
 // 输出流程步骤模型
 model Step {
-    id              String  @id @default(cuid()) /// @zod.custom.omit(["model","input"])
+    id              String  @id @default(cuid())
     order           Int
     skill           Skill   @relation(fields: [skillId], references: [id])
     skillId         String

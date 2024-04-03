@@ -1,22 +1,19 @@
-import { z } from "zod";
+import { CharacterSchema } from "prisma/generated/zod";
 
-import {
-  createTRPCRouter,
-  protectedProcedure,
-} from "~/server/api/trpc";
+import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 
 export const characterRouter = createTRPCRouter({
-  getList: protectedProcedure.query(({ ctx }) => {
+  getAll: protectedProcedure.query(({ ctx }) => {
     return ctx.db.character.findMany();
   }),
-  createCharacter: protectedProcedure
-    .input(z.object({ name: z.string().min(1) }))
+  create: protectedProcedure
+    .input(CharacterSchema.omit({ id: true }))
     .mutation(async ({ ctx, input }) => {
       return ctx.db.character.create({
         data: {
           name: input.name,
-          createdById: ctx.session.user.id
-        }
-      })
+          createdByUserId: ctx.session.user.id,
+        },
+      });
     }),
 });

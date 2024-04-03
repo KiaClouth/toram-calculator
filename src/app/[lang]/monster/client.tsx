@@ -52,9 +52,9 @@ export default function MonserPageClient(props: {
     const hiddenData: Array<keyof Monster> = [
       "id",
       // "updatedAt",
-      "updatedById",
+      "updatedByUserId",
       "state",
-      "createdById",
+      "createdByUserId",
     ];
     const newMonsterList: Monster[] = [];
     defaultMonsterList.forEach((monster) => {
@@ -73,7 +73,7 @@ export default function MonserPageClient(props: {
   };
 
   // 定义不需要展示的列
-  const hiddenData: Array<keyof Monster> = ["id", "updatedById"];
+  const hiddenData: Array<keyof Monster> = ["id", "updatedByUserId"];
 
   // 列定义
   const columns = React.useMemo<ColumnDef<Monster>[]>(

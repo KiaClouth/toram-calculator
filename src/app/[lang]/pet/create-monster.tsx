@@ -80,8 +80,8 @@ export default function CreateMonster(props: {
   // 定义不需要手动输入的值
   const hiddenData: Array<keyof Monster> = [
     "id",
-    "updatedById",
-    "createdById",
+    "updatedByUserId",
+    "createdByUserId",
     "updatedAt"
   ];
 
