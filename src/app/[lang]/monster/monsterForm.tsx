@@ -12,16 +12,14 @@ import { zodValidator } from "@tanstack/zod-form-adapter";
 import { ZodFirstPartyTypeKind, type z } from "zod";
 import { type Monster, type $Enums } from "@prisma/client";
 import { useBearStore } from "~/app/store";
-import { type Session } from "next-auth";
 
 export default function MonsterForm(props: {
   dictionary: ReturnType<typeof getDictionary>;
-  session: Session | null;
   defaultMonster: Monster;
   setDefaultMonsterList: (list: Monster[]) => void;
 }) {
   const router = useRouter();
-  const { dictionary, session, defaultMonster, setDefaultMonsterList } = props;
+  const { dictionary, defaultMonster, setDefaultMonsterList } = props;
   const newListQuery = api.monster.getUserVisbleList.useQuery();
   // 状态管理参数
   const {
@@ -40,7 +38,7 @@ export default function MonsterForm(props: {
   const createMonster = api.monster.create.useMutation({
     onSuccess: async () => {
       // 创建成功后重新获取数据
-      const newList = await newListQuery.refetch()
+      const newList = await newListQuery.refetch();
       // 确保数据已成功加载
       if (newList.isSuccess) {
         setDefaultMonsterList(newList.data);
@@ -54,7 +52,7 @@ export default function MonsterForm(props: {
   const updateMonster = api.monster.update.useMutation({
     onSuccess: async () => {
       // 更新成功后重新获取数据
-      const newList = await newListQuery.refetch()
+      const newList = await newListQuery.refetch();
       // 确保数据已成功加载
       if (newList.isSuccess) {
         setDefaultMonsterList(newList.data);
@@ -129,6 +127,9 @@ export default function MonsterForm(props: {
     return ZodFirstPartyTypeKind.ZodUndefined;
   };
 
+  // 表单元素
+  const formRef = React.useRef<HTMLFormElement>(null);
+
   useEffect(() => {
     // escape键监听
     const handleEscapeKeyPress = (e: KeyboardEvent) => {
@@ -140,21 +141,30 @@ export default function MonsterForm(props: {
     // enter键监听
     const handleEnterKeyPress = (e: KeyboardEvent) => {
       if (e.key === "Enter") {
-        // 移除默认事件
+        console.log("按下了回车");
         e.preventDefault();
+        e.stopPropagation();
         void form.handleSubmit();
       }
     };
-    document.addEventListener("keydown", handleEscapeKeyPress);
-    document.addEventListener("keydown", handleEnterKeyPress);
+
+    // 监听绑带与清除
+    const formElement = formRef.current;
+    formElement?.addEventListener("keydown", handleEscapeKeyPress);
+    formElement?.addEventListener("keydown", handleEnterKeyPress);
+
     return () => {
-      document.removeEventListener("keydown", handleEscapeKeyPress);
+      if (formElement) {
+        formElement.removeEventListener("keydown", handleEscapeKeyPress);
+        formElement.removeEventListener("keydown", handleEnterKeyPress);
+      }
     };
   }, [form, monsterDialogState, setMonsterDialogState]);
 
   return (
     <form.Provider>
       <form
+        ref={formRef}
         onSubmit={(e) => {
           e.preventDefault();
           e.stopPropagation();

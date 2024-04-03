@@ -267,7 +267,7 @@ export default function MonserPageClient(props: {
     return () => {
       document.removeEventListener("keydown", handleEscapeKeyPress);
     };
-  }, [monsterDialogState, setMonsterDialogState]);
+  }, [defaultMonsterList, monsterDialogState, setMonsterDialogState, setMonsterList]);
 
   return (
     <main className="flex flex-col lg:w-[calc(100dvw-96px)] lg:flex-row">
@@ -417,8 +417,8 @@ export default function MonserPageClient(props: {
                               header.getContext(),
                             )}
                             {{
-                              asc: " 🔼",
-                              desc: " 🔽",
+                              asc: " ↓",
+                              desc: " ↑",
                             }[header.column.getIsSorted() as string] ?? null}
                           </div>
                           {/* {!header.isPlaceholder &&
@@ -543,7 +543,6 @@ export default function MonserPageClient(props: {
             {
               <MonsterForm
                 dictionary={dictionary}
-                session={session}
                 defaultMonster={monster}
                 setDefaultMonsterList={setDefaultMonsterList}
               />
