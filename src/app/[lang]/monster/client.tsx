@@ -195,6 +195,14 @@ export default function MonserPageClient(props: {
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     debugTable: true,
+    initialState: {
+      sorting: [
+        {
+          id: 'baseLv',
+          desc: true, // 默认按等级降序排列
+        },
+      ]
+    },
   });
 
   // 虚拟表格容器
