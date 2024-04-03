@@ -1,5 +1,4 @@
 import { MonsterSchema } from "prisma/generated/zod";
-import { z } from "zod";
 
 import {
   createTRPCRouter,
@@ -8,29 +7,53 @@ import {
 } from "~/server/api/trpc";
 
 export const monsterRouter = createTRPCRouter({
-  getList: publicProcedure.query(({ ctx }) => {
-    console.log(ctx.session?.user.name + "获取了一次怪物数据");
+  getall: publicProcedure.query(({ ctx }) => {
+    console.log(
+      ctx.session?.user.name ?? ctx.session?.user.email + "请求了完整的列表",
+    );
     return ctx.db.monster.findMany();
   }),
 
-  getUserByMonsterId: publicProcedure
-    .input(z.string())
-    .query(({ ctx, input }) => {
-      return ctx.db.monster.findFirst({
-        // orderBy: { createdAt: "desc" },
-        where: { updatedById: input },
-      });
-    }),
+  getPublicList: publicProcedure.query(({ ctx }) => {
+    console.log(
+      ctx.session?.user.name ?? ctx.session?.user.email + "请求了公用的列表",
+    );
+    return ctx.db.monster.findMany({
+      where: { state: "PUBLIC" },
+    });
+  }),
 
-  // getMonster: publicProcedure
-  // .input({})
-  // .mutation(async ({ ctx, input }) => {
-  //   return ctx.db.monster.create({
-  //   });
-  // }),
+  getPrivateList: protectedProcedure.query(({ ctx }) => {
+    console.log(
+      ctx.session?.user.name ??
+        ctx.session?.user.email + "请求了由他自己创建的怪物的列表",
+    );
+    return ctx.db.monster.findMany({
+      where: {
+        createdById: ctx.session?.user.id,
+        state: "PRIVATE",
+      },
+    });
+  }),
+
+  getUserVisbleList: publicProcedure.query(({ ctx }) => {
+    console.log(
+      ctx.session?.user.name ?? ctx.session?.user.email + "请求了他可见的列表",
+    );
+    if (ctx.session?.user.id) {
+      return ctx.db.monster.findMany({
+        where: {
+          OR: [{ state: "PUBLIC" }, { createdById: ctx.session?.user.id }],
+        },
+      });
+    }
+    return ctx.db.monster.findMany({
+      where: { state: "PUBLIC" },
+    });
+  }),
 
   create: protectedProcedure
-    .input(MonsterSchema)
+    .input(MonsterSchema.omit({ id: true }))
     .mutation(async ({ ctx, input }) => {
       console.log(
         "上传者：" + ctx.session.user.name + ",用户ID:" + ctx.session.user.id,
@@ -58,6 +81,18 @@ export const monsterRouter = createTRPCRouter({
           ...input,
           createdById: userCreate.userId,
         },
+      });
+    }),
+
+  update: protectedProcedure
+    .input(MonsterSchema)
+    .mutation(async ({ ctx, input }) => {
+      console.log(
+        "更新者：" + ctx.session.user.name + ",用户ID:" + ctx.session.user.id,
+      );
+      return ctx.db.monster.update({
+        where: { id: input.id },
+        data: { ...input },
       });
     }),
 });

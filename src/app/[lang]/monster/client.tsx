@@ -18,6 +18,7 @@ import { IconCloudUpload, IconFilter } from "../_components/iconsList";
 import Dialog from "../_components/dialog";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { useBearStore } from "~/app/store";
+import { defaultMonster } from "~/app/store";
 
 export default function MonserPageClient(props: {
   dictionary: ReturnType<typeof getDictionary>;
@@ -28,7 +29,20 @@ export default function MonserPageClient(props: {
   const [defaultMonsterList, setDefaultMonsterList] = useState(
     props.monsterList,
   );
-  const [monsterList, setMonsterList] = useState(defaultMonsterList);
+
+  // 状态管理参数
+  const {
+    monster,
+    setMonster,
+    monsterList,
+    setMonsterList,
+    monsterDialogState,
+    setMonsterDialogState,
+    setMonsterFormState,
+    filterState,
+    setFilterState,
+  } = useBearStore((state) => state.monsterPage);
+
   // 搜索框行为函数
   const handleSearchFilterChange = (value: string) => {
     if (value === "" || value === null) {
@@ -57,16 +71,6 @@ export default function MonserPageClient(props: {
     });
     setMonsterList(newMonsterList);
   };
-
-  // 状态管理参数
-  const {
-    monster,
-    setMonster,
-    monsterDialogState,
-    setMonsterDialogState,
-    filterState,
-    setFilterState,
-  } = useBearStore((state) => state.monsterPage);
 
   // 定义不需要展示的列
   const hiddenData: Array<keyof Monster> = ["id", "updatedById"];
@@ -103,6 +107,11 @@ export default function MonserPageClient(props: {
       {
         accessorKey: "baseLv",
         header: () => dictionary.db.models.monster.baseLv,
+        size: 120,
+      },
+      {
+        accessorKey: "experience",
+        header: () => dictionary.db.models.monster.experience,
         size: 120,
       },
       {
@@ -148,18 +157,13 @@ export default function MonserPageClient(props: {
       {
         accessorKey: "updatedAt",
         header: dictionary.db.models.monster.updatedAt,
-        cell: (info) => {
-          const currentDate = new Date();
-          // 计算更新时间和当前时间的时间差（毫秒）
-          const timeDifference =
-            currentDate.getTime() - info.getValue<Date>().getTime();
-          // 将时间差转换为天数
-          const daysDifference = Math.ceil(
-            timeDifference / (1000 * 60 * 60 * 24),
-          );
-          return daysDifference;
-        },
-        size: 150,
+        cell: (info) => info.getValue<Date>().toLocaleDateString(),
+        size: 100,
+      },
+      {
+        accessorKey: "usageCount",
+        header: () => dictionary.db.models.monster.usageCount,
+        size: 140,
       },
     ],
     [
@@ -171,6 +175,7 @@ export default function MonserPageClient(props: {
       dictionary.db.models.monster.criticalResistance,
       dictionary.db.models.monster.dodge,
       dictionary.db.models.monster.element,
+      dictionary.db.models.monster.experience,
       dictionary.db.models.monster.id,
       dictionary.db.models.monster.magicalDefense,
       dictionary.db.models.monster.magicalResistance,
@@ -179,6 +184,7 @@ export default function MonserPageClient(props: {
       dictionary.db.models.monster.physicalDefense,
       dictionary.db.models.monster.physicalResistance,
       dictionary.db.models.monster.updatedAt,
+      dictionary.db.models.monster.usageCount,
     ],
   );
 
@@ -214,6 +220,7 @@ export default function MonserPageClient(props: {
       if (monster.id !== id) return;
       setMonster(monster);
       setMonsterDialogState(true);
+      setMonsterFormState("UPDATE");
     });
   };
 
@@ -240,9 +247,8 @@ export default function MonserPageClient(props: {
     return styles;
   };
 
-  // 按键监听
-
   useEffect(() => {
+    setMonsterList(defaultMonsterList);
     // u键监听
     const handleEscapeKeyPress = (e: KeyboardEvent) => {
       if (e.key === "u") {
@@ -350,7 +356,11 @@ export default function MonserPageClient(props: {
                       level="primary"
                       icon={<IconCloudUpload />}
                       className="hidden lg:flex"
-                      onClick={() => setMonsterDialogState(true)}
+                      onClick={() => {
+                        setMonster(defaultMonster);
+                        setMonsterDialogState(true);
+                        setMonsterFormState("CREATE");
+                      }}
                     >
                       {dictionary.ui.monster.upload} [u]
                     </Button>
@@ -525,8 +535,8 @@ export default function MonserPageClient(props: {
             {
               <MonsterForm
                 dictionary={dictionary}
+                session={session}
                 defaultMonster={monster}
-                defaultMonsterList={defaultMonsterList}
                 setDefaultMonsterList={setDefaultMonsterList}
               />
             }

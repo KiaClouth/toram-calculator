@@ -11,9 +11,18 @@ export default async function MonsterPage({
 }) {
   const dictionary = getDictionary(lang);
   const session = await getServerAuthSession();
-  const monsterList = await api.monster.getList.query();
+  const monsterList = session?.user.id
+  ? [
+      ...(await api.monster.getPublicList.query()),
+      ...(await api.monster.getPrivateList.query()),
+    ]
+  : await api.monster.getPublicList.query();
 
   return (
-    <MonserPageClient dictionary={dictionary} session={session} monsterList={monsterList} />
+    <MonserPageClient
+      dictionary={dictionary}
+      session={session}
+      monsterList={monsterList}
+    />
   );
 }

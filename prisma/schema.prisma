@@ -139,7 +139,7 @@ enum MonsterType {
 
 // 怪物模型
 model Monster {
-    id                               String            @id @default(cuid()) /// @zod.custom.omit(["model","input"]) 
+    id                               String            @id @default(cuid())
     state                            State             @default(PRIVATE)
     name                             String            @default("SYSTEM")
     monsterType                      MonsterType       @default(COMMON_BOSS)

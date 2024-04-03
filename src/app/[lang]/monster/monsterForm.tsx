@@ -12,20 +12,58 @@ import { zodValidator } from "@tanstack/zod-form-adapter";
 import { ZodFirstPartyTypeKind, type z } from "zod";
 import { type Monster, type $Enums } from "@prisma/client";
 import { useBearStore } from "~/app/store";
+import { type Session } from "next-auth";
 
 export default function MonsterForm(props: {
   dictionary: ReturnType<typeof getDictionary>;
+  session: Session | null;
   defaultMonster: Monster;
-  defaultMonsterList: Monster[];
   setDefaultMonsterList: (list: Monster[]) => void;
 }) {
   const router = useRouter();
-  const { dictionary, defaultMonster } = props;
+  const { dictionary, session, defaultMonster, setDefaultMonsterList } = props;
+  const newListQuery = api.monster.getUserVisbleList.useQuery();
   // 状态管理参数
-  const { monsterDialogState, setMonsterDialogState } = useBearStore(
-    (state) => state.monsterPage,
-  );
-  let newMonster: Monster 
+  const {
+    monster,
+    monsterDialogState,
+    setMonsterList,
+    setMonsterDialogState,
+    monsterFormState,
+  } = useBearStore((state) => state.monsterPage);
+  let newMonster: Monster;
+  const stateString =
+    monsterFormState === "CREATE"
+      ? dictionary.ui.monster.upload
+      : dictionary.ui.monster.modify;
+
+  const createMonster = api.monster.create.useMutation({
+    onSuccess: async () => {
+      // 创建成功后重新获取数据
+      const newList = await newListQuery.refetch()
+      // 确保数据已成功加载
+      if (newList.isSuccess) {
+        setDefaultMonsterList(newList.data);
+        setMonsterList(newList.data);
+      }
+      setMonsterDialogState(!monsterDialogState);
+      router.refresh();
+    },
+  });
+
+  const updateMonster = api.monster.update.useMutation({
+    onSuccess: async () => {
+      // 更新成功后重新获取数据
+      const newList = await newListQuery.refetch()
+      // 确保数据已成功加载
+      if (newList.isSuccess) {
+        setDefaultMonsterList(newList.data);
+        setMonsterList(newList.data);
+      }
+      setMonsterDialogState(!monsterDialogState);
+      router.refresh();
+    },
+  });
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function FieldInfo({ field }: { field: FieldApi<any, any, any, any> }) {
@@ -40,7 +78,15 @@ export default function MonsterForm(props: {
   }
 
   // 定义不需要手动输入的值
-  const hiddenData: Array<keyof Monster> = ["createdAt","updatedAt","viewCount","usageCount","viewTimestamps","usageTimestamps"];
+  const hiddenData: Array<keyof Monster> = [
+    "id",
+    "createdAt",
+    "updatedAt",
+    "viewCount",
+    "usageCount",
+    "viewTimestamps",
+    "usageTimestamps",
+  ];
 
   // 定义表单
   const form = useForm({
@@ -54,17 +100,15 @@ export default function MonsterForm(props: {
         viewCount: 0,
         usageTimestamps: [],
         viewTimestamps: [],
-      } satisfies Monster
-      createMonster.mutate(newMonster);
+      } satisfies Monster;
+      if (monsterFormState === "CREATE") {
+        createMonster.mutate(newMonster);
+      } else if (monsterFormState === "UPDATE") {
+        newMonster.id = monster.id;
+        updateMonster.mutate(newMonster);
+      }
     },
     validatorAdapter: zodValidator,
-  });
-
-  const createMonster = api.monster.create.useMutation({
-    onSuccess: () => {
-      setMonsterDialogState(!monsterDialogState);
-      router.refresh();
-    },
   });
 
   const getZodType = <T extends z.ZodTypeAny>(
@@ -100,7 +144,7 @@ export default function MonsterForm(props: {
         e.preventDefault();
         void form.handleSubmit();
       }
-    }
+    };
     document.addEventListener("keydown", handleEscapeKeyPress);
     document.addEventListener("keydown", handleEnterKeyPress);
     return () => {
@@ -119,7 +163,7 @@ export default function MonsterForm(props: {
         className={`CreateMonsterFrom flex w-full max-w-7xl flex-col gap-4 overflow-y-auto rounded px-3 lg:w-4/5`}
       >
         <div className="title flex justify-between border-b-1.5 border-brand-color-1st p-3 text-lg font-semibold">
-          <span>{dictionary.ui.monster.upload}</span>
+          <span>{stateString}</span>
         </div>
         <div className="inputArea flex-1 overflow-y-auto">
           <fieldset className="dataKinds flex flex-col flex-wrap lg:flex-row">
@@ -255,8 +299,8 @@ export default function MonsterForm(props: {
                   disabled={createMonster.isLoading || !canSubmit}
                 >
                   {createMonster.isLoading
-                    ? `${dictionary.ui.monster.save}...`
-                    : `${dictionary.ui.monster.save + " [Enter]"}`}
+                    ? `${stateString}...`
+                    : `${stateString + " [Enter]"}`}
                 </Button>
               )}
             </form.Subscribe>
