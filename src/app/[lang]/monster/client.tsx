@@ -255,9 +255,10 @@ export default function MonserPageClient(props: {
     monsterList.forEach((monster) => {
       if (monster.id !== id) return;
       setMonster(monster);
+
       setMonsterDialogState(true);
       setMonsterFormState(
-        session?.user.role === "ADMIN" ? "UPDATE" : "DISPLAY",
+        session?.user.role === "ADMIN" ? "CREATE" : "DISPLAY",
       );
     });
   };
@@ -290,7 +291,10 @@ export default function MonserPageClient(props: {
     // u键监听
     const handleEscapeKeyPress = (e: KeyboardEvent) => {
       if (e.key === "u") {
-        setMonsterDialogState(!monsterDialogState);
+        setMonsterDialogState(true);
+        setMonsterFormState(
+          session?.user.role === "ADMIN" ? "CREATE" : "DISPLAY",
+        );
       }
     };
     document.addEventListener("keydown", handleEscapeKeyPress);
@@ -303,6 +307,7 @@ export default function MonserPageClient(props: {
     session?.user.id,
     session?.user.role,
     setMonsterDialogState,
+    setMonsterFormState,
     setMonsterList,
   ]);
 
@@ -395,7 +400,12 @@ export default function MonserPageClient(props: {
                       level="tertiary"
                       icon={<IconCloudUpload />}
                       className="flex lg:hidden"
-                      onClick={() => setMonsterDialogState(true)}
+                      onClick={() => {
+                        setMonsterDialogState(true);
+                        setMonsterFormState(
+                          session?.user.role === "ADMIN" ? "CREATE" : "DISPLAY",
+                        );
+                      }}
                     ></Button>
                     <Button // 仅PC端显示
                       level="primary"
@@ -404,7 +414,9 @@ export default function MonserPageClient(props: {
                       onClick={() => {
                         setMonster(defaultMonster);
                         setMonsterDialogState(true);
-                        setMonsterFormState("CREATE");
+                        setMonsterFormState(
+                          session?.user.role === "ADMIN" ? "CREATE" : "DISPLAY",
+                        );
                       }}
                     >
                       {dictionary.ui.monster.upload} [u]

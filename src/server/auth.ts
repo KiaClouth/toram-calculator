@@ -42,7 +42,6 @@ declare module "next-auth" {
 export const authOptions: NextAuthOptions = {
   callbacks: {
     session: ({ session, user }) => {
-      console.log("User是: ", user)
       return ({
       ...session,
       user: {
