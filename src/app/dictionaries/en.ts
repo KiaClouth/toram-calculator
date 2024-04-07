@@ -224,6 +224,10 @@ const dictionary: dictionary = {
       SkillTreeName: {
         SWORLD: "",
         MAGIC: ""
+      },
+      UserRole: {
+        USER: "",
+        ADMIN: ""
       }
     },
     models: {
