@@ -77,8 +77,8 @@ interface AppState {
     setMonster: (newMonster: Monster) => void;
     monsterDialogState: boolean;
     setMonsterDialogState: (newState: boolean) => void;
-    monsterFormState: "CREATE" | "UPDATE";
-    setMonsterFormState: (newState: "CREATE" | "UPDATE") => void;
+    monsterFormState: "CREATE" | "UPDATE" | "DISPLAY";
+    setMonsterFormState: (newState: "CREATE" | "UPDATE" | "DISPLAY") => void;
     filterState: boolean;
     setFilterState: (newState: boolean) => void;
   };
@@ -128,8 +128,8 @@ export const useBearStore = create<AppState>()(
             state.monsterPage.monsterDialogState = newState;
           }),
         ),
-      monsterFormState: "CREATE",
-      setMonsterFormState: (newState: "CREATE" | "UPDATE") =>
+      monsterFormState: "DISPLAY",
+      setMonsterFormState: (newState: "CREATE" | "UPDATE" | "DISPLAY") =>
         set(
           produce((state: AppState) => {
             state.monsterPage.monsterFormState = newState;

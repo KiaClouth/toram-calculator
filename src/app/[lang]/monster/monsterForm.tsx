@@ -30,10 +30,22 @@ export default function MonsterForm(props: {
     monsterFormState,
   } = useBearStore((state) => state.monsterPage);
   let newMonster: Monster;
-  const stateString =
-    monsterFormState === "CREATE"
-      ? dictionary.ui.monster.upload
-      : dictionary.ui.monster.modify;
+  let stateString: string;
+  switch (monsterFormState) {
+    case "CREATE":
+      stateString = dictionary.ui.monster.upload;
+      break;
+
+    case "UPDATE":
+      stateString = dictionary.ui.monster.modify;
+
+    case "DISPLAY":
+      stateString = monster.name;
+
+    default:
+      stateString = monster.name;
+      break;
+  }
 
   const createMonster = api.monster.create.useMutation({
     onSuccess: async () => {
@@ -143,30 +155,25 @@ export default function MonsterForm(props: {
     // enter键监听
     const handleEnterKeyPress = (e: KeyboardEvent) => {
       if (e.key === "Enter") {
-        console.log("按下了回车");
         e.preventDefault();
         e.stopPropagation();
-        void form.handleSubmit();
+        monsterFormState !== "DISPLAY" && void form.handleSubmit();
       }
     };
 
     // 监听绑带与清除
-    const formElement = formRef.current;
-    formElement?.addEventListener("keydown", handleEscapeKeyPress);
-    formElement?.addEventListener("keydown", handleEnterKeyPress);
+    document.addEventListener("keydown", handleEscapeKeyPress);
+    document.addEventListener("keydown", handleEnterKeyPress);
 
     return () => {
-      if (formElement) {
-        formElement.removeEventListener("keydown", handleEscapeKeyPress);
-        formElement.removeEventListener("keydown", handleEnterKeyPress);
-      }
+      document.removeEventListener("keydown", handleEscapeKeyPress);
+      document.removeEventListener("keydown", handleEnterKeyPress);
     };
-  }, [form, monsterDialogState, setMonsterDialogState]);
+  }, [form, monsterDialogState, monsterFormState, setMonsterDialogState]);
 
   return (
     <form.Provider>
       <form
-        ref={formRef}
         onSubmit={(e) => {
           e.preventDefault();
           e.stopPropagation();
@@ -301,21 +308,23 @@ export default function MonsterForm(props: {
             <Button onClick={() => setMonsterDialogState(!monsterDialogState)}>
               {dictionary.ui.monster.close} [Esc]
             </Button>
-            <form.Subscribe
-              selector={(state) => [state.canSubmit, state.isSubmitting]}
-            >
-              {([canSubmit]) => (
-                <Button
-                  type="submit"
-                  level="primary"
-                  disabled={createMonster.isLoading || !canSubmit}
-                >
-                  {createMonster.isLoading
-                    ? `${stateString}...`
-                    : `${stateString + " [Enter]"}`}
-                </Button>
-              )}
-            </form.Subscribe>
+            {monsterFormState !== "DISPLAY" && (
+              <form.Subscribe
+                selector={(state) => [state.canSubmit, state.isSubmitting]}
+              >
+                {([canSubmit]) => (
+                  <Button
+                    type="submit"
+                    level="primary"
+                    disabled={createMonster.isLoading || !canSubmit}
+                  >
+                    {createMonster.isLoading
+                      ? `${stateString}...`
+                      : `${stateString + " [Enter]"}`}
+                  </Button>
+                )}
+              </form.Subscribe>
+            )}
           </div>
         </div>
       </form>

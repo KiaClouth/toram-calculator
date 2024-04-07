@@ -256,7 +256,9 @@ export default function MonserPageClient(props: {
       if (monster.id !== id) return;
       setMonster(monster);
       setMonsterDialogState(true);
-      setMonsterFormState("UPDATE");
+      setMonsterFormState(
+        session?.user.role === "ADMIN" ? "UPDATE" : "DISPLAY",
+      );
     });
   };
 
@@ -298,6 +300,8 @@ export default function MonserPageClient(props: {
   }, [
     defaultMonsterList,
     monsterDialogState,
+    session?.user.id,
+    session?.user.role,
     setMonsterDialogState,
     setMonsterList,
   ]);
@@ -384,7 +388,7 @@ export default function MonserPageClient(props: {
                   icon={<IconFilter />}
                   onClick={() => setFilterState(!filterState)}
                 ></Button>
-                {session?.user ? (
+                {session?.user.role === "ADMIN" ? (
                   <React.Fragment>
                     <Button // 仅移动端显示
                       size="sm"
@@ -563,7 +567,7 @@ export default function MonserPageClient(props: {
                                     "flex flex-col justify-center px-3 py-6 underline underline-offset-4 "
                                   }
                                 >
-                                  <IconElementWater className="w-12 h-12" />
+                                  <IconElementWater className="h-12 w-12" />
                                 </td>
                               );
                             case "FIRE":
@@ -577,7 +581,7 @@ export default function MonserPageClient(props: {
                                     "flex flex-col justify-center px-3 py-6 underline underline-offset-4 "
                                   }
                                 >
-                                  <IconElementFire className="w-12 h-12" />
+                                  <IconElementFire className="h-12 w-12" />
                                 </td>
                               );
                             case "EARTH":
@@ -591,7 +595,7 @@ export default function MonserPageClient(props: {
                                     "flex flex-col justify-center px-3 py-6 underline underline-offset-4 "
                                   }
                                 >
-                                  <IconElementEarth className="w-12 h-12" />
+                                  <IconElementEarth className="h-12 w-12" />
                                 </td>
                               );
                             case "WIND":
@@ -605,7 +609,7 @@ export default function MonserPageClient(props: {
                                     "flex flex-col justify-center px-3 py-6 underline underline-offset-4 "
                                   }
                                 >
-                                  <IconElemenWind className="w-12 h-12" />
+                                  <IconElemenWind className="h-12 w-12" />
                                 </td>
                               );
                             case "LIGHT":
@@ -619,7 +623,7 @@ export default function MonserPageClient(props: {
                                     "flex flex-col justify-center px-3 py-6 underline underline-offset-4 "
                                   }
                                 >
-                                  <IconElementLight className="w-12 h-12" />
+                                  <IconElementLight className="h-12 w-12" />
                                 </td>
                               );
                             case "DARK":
@@ -633,10 +637,9 @@ export default function MonserPageClient(props: {
                                     "flex flex-col justify-center px-3 py-6 underline underline-offset-4 "
                                   }
                                 >
-                                  <IconElementDark className="w-12 h-12" />
+                                  <IconElementDark className="h-12 w-12" />
                                 </td>
                               );
-
                             default:
                               return (
                                 <td
@@ -648,7 +651,7 @@ export default function MonserPageClient(props: {
                                     "flex flex-col justify-center px-3 py-6 underline underline-offset-4 "
                                   }
                                 >
-                                  <IconElementNoElement className="w-12 h-12" />
+                                  <IconElementNoElement className="h-12 w-12" />
                                 </td>
                               );
                           }
@@ -704,7 +707,7 @@ export default function MonserPageClient(props: {
         <div className="RightArea sticky top-0 z-10 flex-1"></div>
       </div>
       {monsterDialogState ? (
-        session ? (
+        session?.user.role === "ADMIN" ? (
           <Dialog state={monsterDialogState} setState={setMonsterDialogState}>
             {
               <MonsterForm
@@ -714,7 +717,17 @@ export default function MonserPageClient(props: {
               />
             }
           </Dialog>
-        ) : undefined
+        ) : (
+          <Dialog state={monsterDialogState} setState={setMonsterDialogState}>
+            {
+              <MonsterForm
+                dictionary={dictionary}
+                defaultMonster={monster}
+                setDefaultMonsterList={setDefaultMonsterList}
+              />
+            }
+          </Dialog>
+        )
       ) : undefined}
     </main>
   );

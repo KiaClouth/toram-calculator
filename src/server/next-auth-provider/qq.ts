@@ -95,7 +95,8 @@ export default function QQProvider<P extends QQProfile>(
       return {
         id: profile.open_id,
         name: profile.nickname,
-        image: profile.figureurl
+        image: profile.figureurl,
+        role: "USER",
       };
     },
     style: {

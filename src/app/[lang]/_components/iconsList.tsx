@@ -527,14 +527,14 @@ export const IconSearch = (props: React.SVGAttributes<SVGElement>) => {
         cy="11"
         r="8"
         stroke="currentColor"
-        stroke-width="1.5"
+        strokeWidth="1.5"
         stroke-linecap="round"
         stroke-linejoin="round"
       />
       <path
         d="M16.5 16.9579L21.5 21.958"
         stroke="currentColor"
-        stroke-width="1.5"
+        strokeWidth="1.5"
         stroke-linecap="round"
         stroke-linejoin="round"
       />
@@ -621,17 +621,17 @@ export const IconElementWater = (props: React.SVGAttributes<SVGElement>) => {
 <path opacity="0.5" d="M31.0441 14.4117C33.1396 14.4117 34.8382 12.713 34.8382 10.6176C34.8382 8.52216 33.1396 6.82349 31.0441 6.82349C28.9487 6.82349 27.25 8.52216 27.25 10.6176C27.25 12.713 28.9487 14.4117 31.0441 14.4117Z" fill="white"/>
 <path opacity="0.5" d="M56.5294 57.5147C55.1764 58.7353 54.5 60.1912 55 60.75C55.5 61.3088 57.0147 60.7647 58.3676 59.5441C59.7206 58.3235 60.397 56.8677 59.897 56.3088C59.397 55.75 57.8823 56.2941 56.5294 57.5147Z" fill="white"/>
 <path opacity="0.5" d="M61.2941 53.9852C60.7352 54.4852 60.5735 55.2205 60.9264 55.6176C61.2794 56.0146 62.0294 55.9264 62.5882 55.4117C63.147 54.9117 63.3088 54.1764 62.9558 53.7793C62.5882 53.397 61.8529 53.4852 61.2941 53.9852Z" fill="white"/>
-<circle cx="36" cy="36" r="35" stroke="#2F1A49" stroke-width="2"/>
+<circle cx="36" cy="36" r="35" stroke="#2F1A49" strokeWidth="2"/>
 <defs>
 <radialGradient id="paint0_radial_741_5461" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(35.9952 35.9994) scale(34.8214)">
-<stop stop-color="#004AAD"/>
-<stop offset="0.2746" stop-color="#024DAE"/>
-<stop offset="0.4397" stop-color="#0A55B3"/>
-<stop offset="0.5759" stop-color="#1663BC"/>
-<stop offset="0.6964" stop-color="#2877C8"/>
-<stop offset="0.8064" stop-color="#3F92D7"/>
-<stop offset="0.9074" stop-color="#5AB2EA"/>
-<stop offset="1" stop-color="#7AD6FF"/>
+<stop stopColor="#004AAD"/>
+<stop offset="0.2746" stopColor="#024DAE"/>
+<stop offset="0.4397" stopColor="#0A55B3"/>
+<stop offset="0.5759" stopColor="#1663BC"/>
+<stop offset="0.6964" stopColor="#2877C8"/>
+<stop offset="0.8064" stopColor="#3F92D7"/>
+<stop offset="0.9074" stopColor="#5AB2EA"/>
+<stop offset="1" stopColor="#7AD6FF"/>
 </radialGradient>
 </defs>
 </svg>
@@ -660,17 +660,17 @@ export const IconElementFire = (props: React.SVGAttributes<SVGElement>) => {
 <path opacity="0.5" d="M31.0441 14.4117C33.1396 14.4117 34.8382 12.713 34.8382 10.6176C34.8382 8.52216 33.1396 6.82349 31.0441 6.82349C28.9487 6.82349 27.25 8.52216 27.25 10.6176C27.25 12.713 28.9487 14.4117 31.0441 14.4117Z" fill="white"/>
 <path opacity="0.5" d="M56.5294 57.5147C55.1764 58.7353 54.5 60.1912 55 60.75C55.5 61.3088 57.0147 60.7647 58.3676 59.5441C59.7206 58.3235 60.397 56.8677 59.897 56.3088C59.397 55.75 57.8823 56.2941 56.5294 57.5147Z" fill="white"/>
 <path opacity="0.5" d="M61.2941 53.9852C60.7352 54.4852 60.5735 55.2205 60.9264 55.6176C61.2794 56.0146 62.0294 55.9264 62.5882 55.4117C63.147 54.9117 63.3088 54.1764 62.9558 53.7793C62.5882 53.397 61.8529 53.4852 61.2941 53.9852Z" fill="white"/>
-<circle cx="36" cy="36" r="35" stroke="#2F1A49" stroke-width="2"/>
+<circle cx="36" cy="36" r="35" stroke="#2F1A49" strokeWidth="2"/>
 <defs>
 <radialGradient id="paint0_radial_741_5415" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(35.9995 35.9994) scale(34.8214 34.8214)">
-<stop stop-color="#921D00"/>
-<stop offset="0.2976" stop-color="#951F02"/>
-<stop offset="0.4767" stop-color="#9D250B"/>
-<stop offset="0.6243" stop-color="#AB2F18"/>
-<stop offset="0.7548" stop-color="#BF3D2C"/>
-<stop offset="0.874" stop-color="#DA4F45"/>
-<stop offset="0.9836" stop-color="#FA6564"/>
-<stop offset="1" stop-color="#FF6969"/>
+<stop stopColor="#921D00"/>
+<stop offset="0.2976" stopColor="#951F02"/>
+<stop offset="0.4767" stopColor="#9D250B"/>
+<stop offset="0.6243" stopColor="#AB2F18"/>
+<stop offset="0.7548" stopColor="#BF3D2C"/>
+<stop offset="0.874" stopColor="#DA4F45"/>
+<stop offset="0.9836" stopColor="#FA6564"/>
+<stop offset="1" stopColor="#FF6969"/>
 </radialGradient>
 </defs>
 </svg>
@@ -699,18 +699,18 @@ export const IconElementEarth = (props: React.SVGAttributes<SVGElement>) => {
 <path opacity="0.5" d="M31.0441 14.4117C33.1396 14.4117 34.8382 12.713 34.8382 10.6176C34.8382 8.52216 33.1396 6.82349 31.0441 6.82349C28.9487 6.82349 27.25 8.52216 27.25 10.6176C27.25 12.713 28.9487 14.4117 31.0441 14.4117Z" fill="white"/>
 <path opacity="0.5" d="M56.5294 57.5147C55.1764 58.7353 54.5 60.1912 55 60.75C55.5 61.3088 57.0147 60.7647 58.3676 59.5441C59.7206 58.3235 60.397 56.8677 59.897 56.3088C59.397 55.75 57.8823 56.2941 56.5294 57.5147Z" fill="white"/>
 <path opacity="0.5" d="M61.2941 53.9852C60.7352 54.4852 60.5735 55.2205 60.9264 55.6176C61.2794 56.0146 62.0294 55.9264 62.5882 55.4117C63.147 54.9117 63.3088 54.1764 62.9558 53.7793C62.5882 53.397 61.8529 53.4852 61.2941 53.9852Z" fill="white"/>
-<circle cx="36" cy="36" r="35" stroke="#2F1A49" stroke-width="2"/>
+<circle cx="36" cy="36" r="35" stroke="#2F1A49" strokeWidth="2"/>
 <defs>
 <radialGradient id="paint0_radial_741_5499" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(36.0047 36.0009) scale(34.8214)">
-<stop stop-color="#63433B"/>
-<stop offset="0.2652" stop-color="#66453D"/>
-<stop offset="0.4247" stop-color="#6E4E42"/>
-<stop offset="0.5562" stop-color="#7C5C4B"/>
-<stop offset="0.6726" stop-color="#916F57"/>
-<stop offset="0.779" stop-color="#AB8968"/>
-<stop offset="0.878" stop-color="#CBA87C"/>
-<stop offset="0.9695" stop-color="#F1CD93"/>
-<stop offset="1" stop-color="#FFDB9C"/>
+<stop stopColor="#63433B"/>
+<stop offset="0.2652" stopColor="#66453D"/>
+<stop offset="0.4247" stopColor="#6E4E42"/>
+<stop offset="0.5562" stopColor="#7C5C4B"/>
+<stop offset="0.6726" stopColor="#916F57"/>
+<stop offset="0.779" stopColor="#AB8968"/>
+<stop offset="0.878" stopColor="#CBA87C"/>
+<stop offset="0.9695" stopColor="#F1CD93"/>
+<stop offset="1" stopColor="#FFDB9C"/>
 </radialGradient>
 </defs>
 </svg>
@@ -738,17 +738,17 @@ export const IconElemenWind = (props: React.SVGAttributes<SVGElement>) => {
 <path opacity="0.5" d="M56.5294 57.5147C55.1764 58.7353 54.5 60.1912 55 60.75C55.5 61.3088 57.0147 60.7647 58.3676 59.5441C59.7206 58.3235 60.397 56.8677 59.897 56.3088C59.397 55.75 57.8823 56.2941 56.5294 57.5147Z" fill="white"/>
 <path opacity="0.5" d="M61.2941 53.9852C60.7352 54.4852 60.5735 55.2205 60.9264 55.6176C61.2794 56.0146 62.0294 55.9264 62.5882 55.4117C63.147 54.9117 63.3088 54.1764 62.9558 53.7793C62.5882 53.397 61.8529 53.4852 61.2941 53.9852Z" fill="white"/>
 <path d="M50.2795 31.4265C47.3383 33.6765 44.0442 35.4706 40.5736 36.75C40.5883 36.5736 40.5883 36.3824 40.603 36.1912C42.5589 35.353 44.3089 34.0442 45.5736 32.3383C47.9706 29.0736 48.3677 24.3383 46.1765 20.9412C44.25 24.5589 41.7059 27.853 38.7206 30.6471C38.5883 30.5 38.4559 30.353 38.3236 30.2059C40.1618 28.4412 41.5 26.1618 41.9559 23.6618C42.6912 19.6765 40.9706 15.25 37.5148 13.1471C37.3383 18.2059 36.0883 23.2206 33.8971 27.7941C33.3971 27.6912 32.8677 27.6471 32.3383 27.6471C27.7648 27.6471 24.0589 31.353 24.0589 35.9265C24.0589 37.25 24.3824 38.5 24.9412 39.6177C23.9706 39.7942 23.0736 40.1471 22.4265 40.8677C21.3383 42.0736 21.3824 44.1471 22.5442 45.3089C23.2648 46.0294 24.2942 46.3677 25.3089 46.5294C26.5442 46.7353 27.8089 46.7353 29.0589 46.7206C31.9559 46.7059 34.853 46.6912 37.75 46.6765C38.853 46.6765 40 46.6765 40.9853 47.1765C41.9706 47.6765 42.7059 48.8236 42.3677 49.8677C42.0295 50.8971 40.853 51.3677 39.8089 51.603C35.1618 52.6324 30.9706 52.1765 29.7206 53.6324C29.2501 54.1765 29.103 54.7941 29.103 54.7941C29.103 54.7941 28.9118 55.5883 29.2206 56.3677C29.6618 57.5147 30.9853 57.9853 31.9559 58.3236C34.9412 59.3383 37.7795 58.6177 37.7795 58.4118C37.7795 58.2794 36.6765 58.4559 35.5 57.7059C35.1324 57.4706 34.2353 56.8971 34.103 55.8824C34 55.0589 34.4559 54.4118 34.5295 54.3089C35.1324 53.4706 36.1471 53.3236 37.6177 53.0883C40.5736 52.6324 42.0442 52.3971 42.3824 52.3088C44.1912 51.8383 45.7648 51.4118 46.6912 50C47.3089 49.0589 47.4853 47.8383 47.1618 46.7647C46.7206 45.2647 45.3971 44.1618 43.9559 43.5736C43 43.1912 41.9706 43 40.9412 42.8824C42.353 42.6912 43.7353 42.25 45 41.5589C48.5295 39.5736 50.853 35.4265 50.2795 31.4265ZM32.3383 39.853C30.1765 39.853 28.4118 38.103 28.4118 35.9265C28.4118 33.7647 30.1618 32 32.3383 32C34.5148 32 36.2648 33.75 36.2648 35.9265C36.25 38.0883 34.5 39.853 32.3383 39.853Z" fill="white"/>
-<circle cx="36" cy="36" r="35" stroke="#2F1A49" stroke-width="2"/>
+<circle cx="36" cy="36" r="35" stroke="#2F1A49" strokeWidth="2"/>
 <defs>
 <radialGradient id="paint0_radial_741_5481" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(35.9995 36.0009) scale(34.8214 34.8214)">
-<stop stop-color="#16A085"/>
-<stop offset="0.2886" stop-color="#19A287"/>
-<stop offset="0.4622" stop-color="#21A98D"/>
-<stop offset="0.6053" stop-color="#2FB498"/>
-<stop offset="0.7318" stop-color="#43C4A7"/>
-<stop offset="0.8475" stop-color="#5ED9BB"/>
-<stop offset="0.9537" stop-color="#7EF2D3"/>
-<stop offset="1" stop-color="#8EFFDF"/>
+<stop stopColor="#16A085"/>
+<stop offset="0.2886" stopColor="#19A287"/>
+<stop offset="0.4622" stopColor="#21A98D"/>
+<stop offset="0.6053" stopColor="#2FB498"/>
+<stop offset="0.7318" stopColor="#43C4A7"/>
+<stop offset="0.8475" stopColor="#5ED9BB"/>
+<stop offset="0.9537" stopColor="#7EF2D3"/>
+<stop offset="1" stopColor="#8EFFDF"/>
 </radialGradient>
 </defs>
 </svg>
@@ -777,14 +777,14 @@ export const IconElementLight = (props: React.SVGAttributes<SVGElement>) => {
 <path opacity="0.5" d="M31.0441 14.4117C33.1396 14.4117 34.8382 12.713 34.8382 10.6176C34.8382 8.52216 33.1396 6.82349 31.0441 6.82349C28.9487 6.82349 27.25 8.52216 27.25 10.6176C27.25 12.713 28.9487 14.4117 31.0441 14.4117Z" fill="white"/>
 <path opacity="0.5" d="M56.5294 57.5147C55.1764 58.7353 54.5 60.1912 55 60.75C55.5 61.3088 57.0147 60.7647 58.3676 59.5441C59.7206 58.3235 60.397 56.8677 59.897 56.3088C59.397 55.75 57.8823 56.2941 56.5294 57.5147Z" fill="white"/>
 <path opacity="0.5" d="M61.2941 53.9852C60.7352 54.4852 60.5735 55.2205 60.9264 55.6176C61.2794 56.0146 62.0294 55.9264 62.5882 55.4117C63.147 54.9117 63.3088 54.1764 62.9558 53.7793C62.5882 53.397 61.8529 53.4852 61.2941 53.9852Z" fill="white"/>
-<circle cx="36" cy="36" r="35" stroke="#2F1A49" stroke-width="2"/>
+<circle cx="36" cy="36" r="35" stroke="#2F1A49" strokeWidth="2"/>
 <defs>
 <radialGradient id="paint0_radial_741_5519" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(35.9952 36.0009) scale(34.8214)">
-<stop stop-color="#F4D6A6"/>
-<stop offset="0.3986" stop-color="#F4D7A9"/>
-<stop offset="0.6383" stop-color="#F5DCB1"/>
-<stop offset="0.8353" stop-color="#F6E3BF"/>
-<stop offset="1" stop-color="#F7EDD2"/>
+<stop stopColor="#F4D6A6"/>
+<stop offset="0.3986" stopColor="#F4D7A9"/>
+<stop offset="0.6383" stopColor="#F5DCB1"/>
+<stop offset="0.8353" stopColor="#F6E3BF"/>
+<stop offset="1" stopColor="#F7EDD2"/>
 </radialGradient>
 </defs>
 </svg>
@@ -814,19 +814,19 @@ export const IconElementDark = (props: React.SVGAttributes<SVGElement>) => {
 <path opacity="0.5" d="M31.0441 14.4117C33.1396 14.4117 34.8382 12.713 34.8382 10.6176C34.8382 8.52216 33.1396 6.82349 31.0441 6.82349C28.9487 6.82349 27.25 8.52216 27.25 10.6176C27.25 12.713 28.9487 14.4117 31.0441 14.4117Z" fill="white"/>
 <path opacity="0.5" d="M56.5294 57.5147C55.1764 58.7353 54.5 60.1912 55 60.75C55.5 61.3088 57.0147 60.7647 58.3676 59.5441C59.7206 58.3235 60.397 56.8677 59.897 56.3088C59.397 55.75 57.8823 56.2941 56.5294 57.5147Z" fill="white"/>
 <path opacity="0.5" d="M61.2941 53.9852C60.7352 54.4852 60.5735 55.2205 60.9264 55.6176C61.2794 56.0146 62.0294 55.9264 62.5882 55.4117C63.147 54.9117 63.3088 54.1764 62.9558 53.7793C62.5882 53.397 61.8529 53.4852 61.2941 53.9852Z" fill="white"/>
-<circle cx="36" cy="36" r="35" stroke="#2F1A49" stroke-width="2"/>
+<circle cx="36" cy="36" r="35" stroke="#2F1A49" strokeWidth="2"/>
 <defs>
 <radialGradient id="paint0_radial_741_5396" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(35.9952 35.9979) scale(34.8214 34.8214)">
-<stop stop-color="#410081"/>
-<stop offset="0.2502" stop-color="#430383"/>
-<stop offset="0.4006" stop-color="#4B0B88"/>
-<stop offset="0.5248" stop-color="#571992"/>
-<stop offset="0.6346" stop-color="#692EA0"/>
-<stop offset="0.7349" stop-color="#8048B1"/>
-<stop offset="0.8284" stop-color="#9C68C7"/>
-<stop offset="0.9147" stop-color="#BD8EE1"/>
-<stop offset="0.9966" stop-color="#E3B9FE"/>
-<stop offset="1" stop-color="#E5BBFF"/>
+<stop stopColor="#410081"/>
+<stop offset="0.2502" stopColor="#430383"/>
+<stop offset="0.4006" stopColor="#4B0B88"/>
+<stop offset="0.5248" stopColor="#571992"/>
+<stop offset="0.6346" stopColor="#692EA0"/>
+<stop offset="0.7349" stopColor="#8048B1"/>
+<stop offset="0.8284" stopColor="#9C68C7"/>
+<stop offset="0.9147" stopColor="#BD8EE1"/>
+<stop offset="0.9966" stopColor="#E3B9FE"/>
+<stop offset="1" stopColor="#E5BBFF"/>
 </radialGradient>
 </defs>
 </svg>
@@ -855,7 +855,7 @@ export const IconElementNoElement = (
 <path opacity="0.5" d="M31.0441 14.4117C33.1396 14.4117 34.8382 12.713 34.8382 10.6176C34.8382 8.52216 33.1396 6.82349 31.0441 6.82349C28.9487 6.82349 27.25 8.52216 27.25 10.6176C27.25 12.713 28.9487 14.4117 31.0441 14.4117Z" fill="white"/>
 <path opacity="0.5" d="M56.5294 57.5147C55.1764 58.7353 54.5 60.1912 55 60.75C55.5 61.3088 57.0147 60.7647 58.3676 59.5441C59.7206 58.3235 60.397 56.8677 59.897 56.3088C59.397 55.75 57.8823 56.2941 56.5294 57.5147Z" fill="white"/>
 <path opacity="0.5" d="M61.2941 53.9852C60.7352 54.4852 60.5735 55.2205 60.9264 55.6176C61.2794 56.0146 62.0294 55.9264 62.5882 55.4117C63.147 54.9117 63.3088 54.1764 62.9558 53.7793C62.5882 53.397 61.8529 53.4852 61.2941 53.9852Z" fill="white"/>
-<circle cx="36" cy="36" r="35" stroke="#2F1A49" stroke-width="2"/>
+<circle cx="36" cy="36" r="35" stroke="#2F1A49" strokeWidth="2"/>
 </svg>
 
   );

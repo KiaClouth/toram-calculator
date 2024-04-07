@@ -58,6 +58,9 @@ export const monsterRouter = createTRPCRouter({
   create: protectedProcedure
     .input(MonsterSchema.omit({ id: true }))
     .mutation(async ({ ctx, input }) => {
+      // 检查用户权限
+      if (ctx.session.user.role !== "ADMIN") return
+      
       // 检查用户是否存在关联的 UserCreate
       let userCreate = await ctx.db.userCreate.findUnique({
         where: { userId: ctx.session?.user.id },
