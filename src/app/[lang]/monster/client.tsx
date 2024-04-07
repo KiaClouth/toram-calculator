@@ -575,6 +575,31 @@ export default function MonserPageClient(props: {
                               )}
                             </td>
                           );
+                        
+                        // 以下值需要添加百分比符号
+                        case "physicalResistance":
+                        case "magicalResistance":
+                        case "criticalResistance":
+                        case "dodge":
+                        case "block":
+                        case "normalAttackResistanceModifier":
+                        case "physicalAttackResistanceModifier":
+                        case "magicalAttackResistanceModifier":
+                          return (
+                            <td
+                              key={cell.id}
+                              style={{
+                                ...getCommonPinningStyles(column),
+                              }}
+                              className={`flex flex-col justify-center px-3 py-6 `}
+                            >
+                              {flexRender(
+                                cell.column.columnDef.cell,
+                                cell.getContext(),
+                              )}
+                              %
+                            </td>
+                          );
 
                         default:
                           return (
