@@ -9,16 +9,16 @@ import {
 export const skillRouter = createTRPCRouter({
   getall: publicProcedure.query(({ ctx }) => {
     console.log(
-      ctx.session?.user.name ??
-        ctx.session?.user.email + "请求了完整的技能列表",
+      (ctx.session?.user.name ?? ctx.session?.user.email) +
+        "请求了完整的技能列表",
     );
     return ctx.db.skill.findMany();
   }),
 
   getPublicList: publicProcedure.query(({ ctx }) => {
     console.log(
-      ctx.session?.user.name ??
-        ctx.session?.user.email + "请求了公用的技能列表",
+      (ctx.session?.user.name ?? ctx.session?.user.email) +
+        "请求了公用的技能列表",
     );
     return ctx.db.skill.findMany({
       where: { state: "PUBLIC" },
@@ -27,8 +27,8 @@ export const skillRouter = createTRPCRouter({
 
   getPrivateList: protectedProcedure.query(({ ctx }) => {
     console.log(
-      ctx.session?.user.name ??
-        ctx.session?.user.email + "请求了由他自己创建的技能列表",
+      (ctx.session?.user.name ?? ctx.session?.user.email) +
+        "请求了由他自己创建的技能列表",
     );
     return ctx.db.skill.findMany({
       where: {
@@ -40,8 +40,8 @@ export const skillRouter = createTRPCRouter({
 
   getUserVisbleList: publicProcedure.query(({ ctx }) => {
     console.log(
-      ctx.session?.user.name ??
-        ctx.session?.user.email + "请求了他可见的技能列表",
+      (ctx.session?.user.name ?? ctx.session?.user.email) +
+        "请求了他可见的技能列表",
     );
     if (ctx.session?.user.id) {
       return ctx.db.skill.findMany({
@@ -66,8 +66,8 @@ export const skillRouter = createTRPCRouter({
       // 如果不存在，创建一个新的 UserCreate
       if (!userCreate) {
         console.log(
-          ctx.session.user.name ??
-            ctx.session.user.email + "初次上传技能，自动创建对应userCreate",
+          (ctx.session?.user.name ?? ctx.session?.user.email) +
+            "初次上传技能，自动创建对应userCreate",
         );
         userCreate = await ctx.db.userCreate.create({
           data: {
@@ -77,8 +77,9 @@ export const skillRouter = createTRPCRouter({
         });
       }
       console.log(
-        ctx.session.user.name ??
-          ctx.session.user.email + "上传了技能: " + input.name,
+        (ctx.session?.user.name ?? ctx.session?.user.email) +
+          "上传了技能: " +
+          input.name,
       );
       // 创建怪物并关联创建者和统计信息
       return ctx.db.skill.create({
@@ -93,8 +94,9 @@ export const skillRouter = createTRPCRouter({
     .input(SkillSchema)
     .mutation(async ({ ctx, input }) => {
       console.log(
-        ctx.session.user.name ??
-          ctx.session.user.email + "修改了技能: " + input.name,
+        (ctx.session?.user.name ?? ctx.session?.user.email) +
+          "修改了技能: " +
+          input.name,
       );
       return ctx.db.skill.update({
         where: { id: input.id },
