@@ -51,9 +51,15 @@ export default function MonserPageClient(props: {
     // 搜索时需要忽略的数据
     const hiddenData: Array<keyof Monster> = [
       "id",
-      // "updatedAt",
-      "updatedByUserId",
       "state",
+      "experience",
+      "radius",
+      "difficultyOfMelee",
+      "difficultyOfRanged",
+      "difficultyOfTank",
+      "updatedAt",
+      "updatedByUserId",
+      "createdAt",
       "createdByUserId",
     ];
     const newMonsterList: Monster[] = [];
@@ -73,7 +79,12 @@ export default function MonserPageClient(props: {
   };
 
   // 定义不需要展示的列
-  const hiddenData: Array<keyof Monster> = ["id", "updatedByUserId"];
+  const hiddenData: Array<keyof Monster> = [
+    "id",
+    "address",
+    "monsterType",
+    "updatedByUserId",
+  ];
 
   // 列定义
   const columns = React.useMemo<ColumnDef<Monster>[]>(
@@ -87,6 +98,12 @@ export default function MonserPageClient(props: {
       {
         accessorKey: "name",
         header: () => dictionary.db.models.monster.name,
+        cell: (info) => info.getValue(),
+        size: 180,
+      },
+      {
+        accessorKey: "address",
+        header: () => dictionary.db.models.monster.address,
         cell: (info) => info.getValue(),
         size: 150,
       },
@@ -169,6 +186,7 @@ export default function MonserPageClient(props: {
     [
       dictionary.db.enums.Element,
       dictionary.db.enums.MonsterType,
+      dictionary.db.models.monster.address,
       dictionary.db.models.monster.avoidance,
       dictionary.db.models.monster.baseLv,
       dictionary.db.models.monster.block,
@@ -198,10 +216,10 @@ export default function MonserPageClient(props: {
     initialState: {
       sorting: [
         {
-          id: 'baseLv',
+          id: "baseLv",
           desc: true, // 默认按等级降序排列
         },
-      ]
+      ],
     },
   });
 
@@ -267,7 +285,12 @@ export default function MonserPageClient(props: {
     return () => {
       document.removeEventListener("keydown", handleEscapeKeyPress);
     };
-  }, [defaultMonsterList, monsterDialogState, setMonsterDialogState, setMonsterList]);
+  }, [
+    defaultMonsterList,
+    monsterDialogState,
+    setMonsterDialogState,
+    setMonsterList,
+  ]);
 
   return (
     <main className="flex flex-col lg:w-[calc(100dvw-96px)] lg:flex-row">
@@ -406,7 +429,7 @@ export default function MonserPageClient(props: {
                             {...{
                               onClick: header.column.getToggleSortingHandler(),
                             }}
-                            className={`border-1 flex-1 border-transition-color-8 px-3 py-3 text-left hover:bg-transition-color-8 lg:py-3 ${
+                            className={`border-1 flex-1 border-transition-color-8 px-3 py-3 text-left hover:bg-transition-color-8 ${
                               header.column.getCanSort()
                                 ? "cursor-pointer select-none"
                                 : ""
@@ -422,40 +445,40 @@ export default function MonserPageClient(props: {
                             }[header.column.getIsSorted() as string] ?? null}
                           </div>
                           {/* {!header.isPlaceholder &&
-                              header.column.getCanPin() && ( // 固定列
-                                <div className="flex gap-1 p-2">
-                                  {header.column.getIsPinned() !== "left" ? (
-                                    <button
-                                      className="flex-1 rounded bg-transition-color-8 px-1"
-                                      onClick={() => {
-                                        header.column.pin("left");
-                                      }}
-                                    >
-                                      {"<"}
-                                    </button>
-                                  ) : null}
-                                  {header.column.getIsPinned() ? (
-                                    <button
-                                      className="flex-1 rounded bg-transition-color-8 px-1"
-                                      onClick={() => {
-                                        header.column.pin(false);
-                                      }}
-                                    >
-                                      X
-                                    </button>
-                                  ) : null}
-                                  {header.column.getIsPinned() !== "right" ? (
-                                    <button
-                                      className="flex-1 rounded bg-transition-color-8 px-1"
-                                      onClick={() => {
-                                        header.column.pin("right");
-                                      }}
-                                    >
-                                      {">"}
-                                    </button>
-                                  ) : null}
-                                </div>
-                              )} */}
+                            header.column.getCanPin() && ( // 固定列
+                              <div className="flex">
+                                {header.column.getIsPinned() !== "left" ? (
+                                  <button
+                                    className="flex-1 rounded bg-transition-color-8 px-1"
+                                    onClick={() => {
+                                      header.column.pin("left");
+                                    }}
+                                  >
+                                    {"←"}
+                                  </button>
+                                ) : null}
+                                {header.column.getIsPinned() ? (
+                                  <button
+                                    className="flex-1 rounded bg-transition-color-8 px-1"
+                                    onClick={() => {
+                                      header.column.pin(false);
+                                    }}
+                                  >
+                                    {"x"}
+                                  </button>
+                                ) : null}
+                                {header.column.getIsPinned() !== "right" ? (
+                                  <button
+                                    className="flex-1 rounded bg-transition-color-8 px-1"
+                                    onClick={() => {
+                                      header.column.pin("right");
+                                    }}
+                                  >
+                                    {"→"}
+                                  </button>
+                                ) : null}
+                              </div>
+                            )} */}
                         </th>
                       );
                     })}
@@ -489,17 +512,44 @@ export default function MonserPageClient(props: {
                         // 默认隐藏的数据
                         return;
                       }
-                      return (
-                        <td
-                          key={cell.id}
-                          style={{
-                            ...getCommonPinningStyles(column),
-                          }}
-                          className={
-                            `px-3 py-6 ` +
-                            ((key: string, value) => {
-                              switch (key) {
-                                case "element": // 元素
+
+                      switch (
+                        cell.column.id as Exclude<
+                          keyof Monster,
+                          keyof typeof hiddenData
+                        >
+                      ) {
+                        case "name":
+                          return (
+                            <td
+                              key={cell.id}
+                              style={{
+                                ...getCommonPinningStyles(column),
+                              }}
+                              className="flex flex-col justify-center px-3 py-6"
+                            >
+                              <span className=" text-lg font-bold">
+                                {flexRender(
+                                  cell.column.columnDef.cell,
+                                  cell.getContext(),
+                                )}
+                              </span>
+                              <span className="text-sm text-accent-color-70">
+                                {row.getValue("address") ?? "没有读取到地址"}
+                              </span>
+                            </td>
+                          );
+
+                        case "element":
+                          return (
+                            <td
+                              key={cell.id}
+                              style={{
+                                ...getCommonPinningStyles(column),
+                              }}
+                              className={
+                                "flex flex-col justify-center px-3 py-6 underline underline-offset-4 " +
+                                ((key: string, value) => {
                                   switch (value) {
                                     case "WATER":
                                       return "text-water";
@@ -516,18 +566,32 @@ export default function MonserPageClient(props: {
                                     default:
                                       return "";
                                   }
-                                default:
-                                  return "";
+                                })(cell.column.id, cell.getValue())
                               }
-                            })(cell.column.id, cell.getValue())
-                          }
-                        >
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext(),
-                          )}
-                        </td>
-                      );
+                            >
+                              {flexRender(
+                                cell.column.columnDef.cell,
+                                cell.getContext(),
+                              )}
+                            </td>
+                          );
+
+                        default:
+                          return (
+                            <td
+                              key={cell.id}
+                              style={{
+                                ...getCommonPinningStyles(column),
+                              }}
+                              className={`flex flex-col justify-center px-3 py-6 `}
+                            >
+                              {flexRender(
+                                cell.column.columnDef.cell,
+                                cell.getContext(),
+                              )}
+                            </td>
+                          );
+                      }
                     })}
                   </tr>
                 );
