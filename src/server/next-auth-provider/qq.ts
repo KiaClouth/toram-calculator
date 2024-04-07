@@ -60,7 +60,7 @@ export default function QQProvider<P extends QQProfile>(
         url.searchParams.append("client_secret", options.clientSecret);
         url.searchParams.append("redirect_uri", callbackUrl);
         url.searchParams.append("code", params.code!);
-        console.log("params.code is:", params.code);
+        console.log("正在尝试QQ登录的用户其params.code是:", params.code);
         const res = await fetch(url).then((res) => res.text());
         const accessToken = new URLSearchParams(res).get("access_token") ?? "";
         const tokens: TokenSet = {
@@ -83,7 +83,7 @@ export default function QQProvider<P extends QQProfile>(
         getUserInfoUrl.searchParams.append("oauth_consumer_key", options.clientId);
         getUserInfoUrl.searchParams.append("openid", openId);
         const profile = await fetch(getUserInfoUrl).then(async (res) => (await res.json()) as QQProfile);
-        console.log(profile.nickname)
+        console.log("正在尝试QQ登录的用户其昵称是：" + profile.nickname)
         return {
           ...profile,
           open_id: openId
