@@ -65,11 +65,12 @@ export default function MonsterForm(props: {
     onSuccess: async () => {
       // 更新成功后重新获取数据
       const newList = await newListQuery.refetch();
-      // 确保数据已成功加载
+      // 确保数据已成功加载后，更新本地数据
       if (newList.isSuccess) {
         setDefaultMonsterList(newList.data);
         setMonsterList(newList.data);
       }
+      // 关闭弹出层
       setMonsterDialogState(!monsterDialogState);
       router.refresh();
     },
@@ -140,9 +141,6 @@ export default function MonsterForm(props: {
     }
     return ZodFirstPartyTypeKind.ZodUndefined;
   };
-
-  // 表单元素
-  const formRef = React.useRef<HTMLFormElement>(null);
 
   useEffect(() => {
     // escape键监听
