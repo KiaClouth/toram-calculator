@@ -30,6 +30,19 @@ const dictionary: dictionary = {
       columnsHidden: "隐藏列",
       filter: "过滤",
     },
+    skill: {
+      searchPlaceholder: "这里是搜索框~",
+      upload: "上传技能数据",
+      save: "保存",
+      reset: "清空",
+      modify: "修改",
+      cancel: "取消",
+      close: "关闭",
+      pageTitle: "技能信息表",
+      discription: "啊啦啦啦啦，这里是本页的描述信息。但是还没有想好写什么~",
+      columnsHidden: "隐藏列",
+      filter: "过滤",
+    },
   },
   db: {
     enums: {
@@ -207,6 +220,10 @@ const dictionary: dictionary = {
       SkillType: {
         BUFF: "",
         DAMAGE: ""
+      },
+      SkillTreeName: {
+        SWORLD: "",
+        MAGIC: ""
       }
     },
     models: {
@@ -245,6 +262,26 @@ const dictionary: dictionary = {
         updatedAt: "",
         usageTimestamps: "",
         viewTimestamps: "",
+      },
+      skill: {
+        id: "",
+        state: "",
+        name: "",
+        type: "",
+        mpCost: "",
+        mpGain: "",
+        hpCost: "",
+        hpGain: "",
+        createdByUserId: "",
+        updatedByUserId: "",
+        viewCount: "",
+        usageCount: "",
+        createdAt: "",
+        updatedAt: "",
+        usageTimestamps: "",
+        viewTimestamps: "",
+        level: "",
+        treeName: ""
       }
     },
   },

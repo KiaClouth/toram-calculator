@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { produce } from "immer";
 
-import type { Monster } from "@prisma/client";
+import type { Monster, Skill } from "@prisma/client";
 
 // if you need middleware
 // import { devtools, persist } from 'zustand/middleware'
@@ -44,6 +44,28 @@ export const defaultMonster: Monster = {
   viewTimestamps: [],
 };
 
+// 技能表单的默认值
+export const defaultSkill: Skill = {
+  id: "",
+  state: "PRIVATE",
+  name: null,
+  type: "BUFF",
+  mpCost: 0,
+  mpGain: 0,
+  hpCost: 0,
+  hpGain: 0,
+  createdByUserId: null,
+  updatedByUserId: null,
+  viewCount: 0,
+  usageCount: 0,
+  createdAt: new Date(),
+  updatedAt: new Date(),
+  usageTimestamps: [],
+  viewTimestamps: [],
+  level: 0,
+  treeName: "SWORLD"
+};
+
 // 应用客户端状态数据类型定义
 interface AppState {
   bears: number;
@@ -57,6 +79,18 @@ interface AppState {
     setMonsterDialogState: (newState: boolean) => void;
     monsterFormState: "CREATE" | "UPDATE";
     setMonsterFormState: (newState: "CREATE" | "UPDATE") => void;
+    filterState: boolean;
+    setFilterState: (newState: boolean) => void;
+  };
+  skillPage: {
+    skillList: Skill[];
+    setSkillList: (newSkillList: Skill[]) => void;
+    skill: Skill;
+    setSkill: (newSkill: Skill) => void;
+    skillDialogState: boolean;
+    setSkillDialogState: (newState: boolean) => void;
+    skillFormState: "CREATE" | "UPDATE";
+    setSkillFormState: (newState: "CREATE" | "UPDATE") => void;
     filterState: boolean;
     setFilterState: (newState: boolean) => void;
   };
@@ -106,6 +140,43 @@ export const useBearStore = create<AppState>()(
         set(
           produce((state: AppState) => {
             state.monsterPage.filterState = newState;
+          }),
+        ),
+    },
+    skillPage: {
+      skillList: [],
+      setSkillList: (newSkillList: Skill[]) =>
+        set(
+          produce((state: AppState) => {
+            state.skillPage.skillList = newSkillList;
+          }),
+        ),
+      skill: defaultSkill,
+      setSkill: (newSkill: Skill) =>
+        set(
+          produce((state: AppState) => {
+            state.skillPage.skill = newSkill;
+          }),
+        ),
+      skillDialogState: false,
+      setSkillDialogState: (newState: boolean) =>
+        set(
+          produce((state: AppState) => {
+            state.skillPage.skillDialogState = newState;
+          }),
+        ),
+      skillFormState: "CREATE",
+      setSkillFormState: (newState: "CREATE" | "UPDATE") =>
+        set(
+          produce((state: AppState) => {
+            state.skillPage.skillFormState = newState;
+          }),
+        ),
+      filterState: false,
+      setFilterState: (newState: boolean) =>
+        set(
+          produce((state: AppState) => {
+            state.skillPage.filterState = newState;
           }),
         ),
     },

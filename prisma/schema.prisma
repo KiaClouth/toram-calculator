@@ -669,12 +669,19 @@ enum SkillType {
     DAMAGE
 }
 
+enum SkillTreeName {
+    SWORLD
+    MAGIC
+}
+
 // 技能模型
 model Skill {
     id              String             @id @default(cuid())
     state           State              @default(PRIVATE)
     name            String?            @default("SYSTEM")
     type            SkillType          @default(BUFF)
+    level           Int                @default(0)
+    treeName        SkillTreeName      @default(SWORLD)
     mpCost          Int                @default(0)
     mpGain          Int                @default(0)
     hpCost          Int                @default(0)

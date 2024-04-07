@@ -242,7 +242,7 @@ export default function PetPage() {
       childMainAbiName: childEducationMainAbi,
       childeCharacter: 1,
     })
-    console.table(mainPet.display())
+    // console.table(mainPet.display())
   }
 
   return (

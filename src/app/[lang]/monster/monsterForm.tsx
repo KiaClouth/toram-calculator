@@ -82,6 +82,8 @@ export default function MonsterForm(props: {
     "updatedAt",
     "viewCount",
     "usageCount",
+    "createdByUserId",
+    "updatedByUserId",
     "viewTimestamps",
     "usageTimestamps",
   ];

@@ -16,7 +16,6 @@ import SignInOrOut from "./signInOrOut";
 import ThemeSwitch from "./themeSwitch";
 import { type getDictionary } from "~/app/get-dictionary";
 import { type Session } from "next-auth";
-import { useBearStore } from "~/app/store";
 
 export default function Nav(props: {
   dictionary: ReturnType<typeof getDictionary>;
@@ -34,7 +33,7 @@ export default function Nav(props: {
       [
         dictionary.ui.root.skills,
         <IconBasketball key={"IconBasketball"} />,
-        "/building",
+        "/skill",
       ],
       [
         dictionary.ui.root.equipments,
