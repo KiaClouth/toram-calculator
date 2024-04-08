@@ -265,7 +265,8 @@ const dictionary: dictionary = {
         createdAt: "",
         updatedAt: "",
         usageTimestamps: "",
-        viewTimestamps: ""
+        viewTimestamps: "",
+        accuracy: ""
       },
       skill: {
         id: "",
@@ -285,7 +286,8 @@ const dictionary: dictionary = {
         usageTimestamps: "",
         viewTimestamps: "",
         level: "",
-        treeName: ""
+        treeName: "",
+        accuracy: ""
       }
     },
   },

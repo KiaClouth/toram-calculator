@@ -265,7 +265,8 @@ const dictionary: dictionary = {
         createdAt: "创建于",
         updatedAt: "更新于",
         usageTimestamps: "",
-        viewTimestamps: ""
+        viewTimestamps: "",
+        accuracy: ""
       },
       skill: {
         id: "",
@@ -285,7 +286,8 @@ const dictionary: dictionary = {
         usageTimestamps: "",
         viewTimestamps: "",
         level: "",
-        treeName: ""
+        treeName: "",
+        accuracy: ""
       }
     },
   },

@@ -3,8 +3,6 @@ import React, { useEffect } from "react";
 
 import { api } from "~/trpc/react";
 import type { getDictionary } from "~/app/get-dictionary";
-
-import { useRouter } from "next/navigation";
 import Button from "../_components/button";
 import { type Monster as zMonster, MonsterSchema } from "prisma/generated/zod";
 import { type FieldApi, useForm } from "@tanstack/react-form";
@@ -18,7 +16,6 @@ export default function MonsterForm(props: {
   defaultMonster: Monster;
   setDefaultMonsterList: (list: Monster[]) => void;
 }) {
-  const router = useRouter();
   const { dictionary, defaultMonster, setDefaultMonsterList } = props;
   const newListQuery = api.monster.getUserVisbleList.useQuery();
   // 状态管理参数
@@ -30,51 +27,12 @@ export default function MonsterForm(props: {
     monsterFormState,
   } = useBearStore((state) => state.monsterPage);
   let newMonster: Monster;
-  let stateString: string;
-  switch (monsterFormState) {
-    case "CREATE":
-      stateString = dictionary.ui.monster.upload;
-      break;
-
-    case "UPDATE":
-      stateString = dictionary.ui.monster.modify;
-
-    case "DISPLAY":
-      stateString = monster.name;
-
-    default:
-      stateString = monster.name;
-      break;
-  }
-
-  const createMonster = api.monster.create.useMutation({
-    onSuccess: async () => {
-      // 创建成功后重新获取数据
-      const newList = await newListQuery.refetch();
-      // 确保数据已成功加载
-      if (newList.isSuccess) {
-        setDefaultMonsterList(newList.data);
-        setMonsterList(newList.data);
-      }
-      setMonsterDialogState(!monsterDialogState);
-      router.refresh();
-    },
-  });
-
-  const updateMonster = api.monster.update.useMutation({
-    onSuccess: async () => {
-      // 更新成功后重新获取数据
-      const newList = await newListQuery.refetch();
-      // 确保数据已成功加载后，更新本地数据
-      if (newList.isSuccess) {
-        setDefaultMonsterList(newList.data);
-        setMonsterList(newList.data);
-      }
-      // 关闭弹出层
-      setMonsterDialogState(!monsterDialogState);
-      router.refresh();
-    },
-  });
+  const formTitle = {
+    CREATE: dictionary.ui.monster.upload,
+    UPDATE: dictionary.ui.monster.modify,
+    DISPLAY: monster.name,
+  }[monsterFormState];
+  const [dataUploadingState, setDataUploadingState] = React.useState(false);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function FieldInfo({ field }: { field: FieldApi<any, any, any, any> }) {
@@ -105,6 +63,7 @@ export default function MonsterForm(props: {
   const form = useForm({
     defaultValues: defaultMonster,
     onSubmit: async ({ value }) => {
+      setDataUploadingState(true);
       newMonster = {
         ...value,
         createdAt: new Date(),
@@ -114,11 +73,47 @@ export default function MonsterForm(props: {
         usageTimestamps: [],
         viewTimestamps: [],
       } satisfies Monster;
-      if (monsterFormState === "CREATE") {
-        createMonster.mutate(newMonster);
-      } else if (monsterFormState === "UPDATE") {
-        newMonster.id = monster.id;
-        updateMonster.mutate(newMonster);
+    
+      const createMonster = api.monster.create.useMutation({
+        onSuccess: async () => {
+          // 创建成功后重新获取数据
+          const newList = await newListQuery.refetch();
+          // 确保数据已成功加载
+          if (newList.isSuccess) {
+            setDefaultMonsterList(newList.data);
+            setMonsterList(newList.data);
+          }
+          // 关闭弹出层
+          setDataUploadingState(false);
+          setMonsterDialogState(!monsterDialogState);
+        },
+      });
+    
+      const updateMonster = api.monster.update.useMutation({
+        onSuccess: async () => {
+          // 更新成功后重新获取数据
+          const newList = await newListQuery.refetch();
+          // 确保数据已成功加载后，更新本地数据
+          if (newList.isSuccess) {
+            setDefaultMonsterList(newList.data);
+            setMonsterList(newList.data);
+          }
+          // 关闭弹出层
+          setDataUploadingState(false);
+          setMonsterDialogState(!monsterDialogState);
+        },
+      });
+      switch (monsterFormState) {
+        case "CREATE":
+          createMonster.mutate(newMonster);
+          break;
+
+        case "UPDATE":
+          updateMonster.mutate(newMonster);
+          break;
+
+        default:
+          break;
       }
     },
     validatorAdapter: zodValidator,
@@ -180,7 +175,7 @@ export default function MonsterForm(props: {
         className={`CreateMonsterFrom flex w-full max-w-7xl flex-col gap-4 overflow-y-auto rounded px-3 lg:w-4/5`}
       >
         <div className="title flex justify-between border-b-1.5 border-brand-color-1st p-3 text-lg font-semibold">
-          <span>{stateString}</span>
+          <span>{formTitle}</span>
         </div>
         <div className="inputArea flex-1 overflow-y-auto">
           <fieldset className="dataKinds flex flex-col flex-wrap lg:flex-row">
@@ -314,11 +309,11 @@ export default function MonsterForm(props: {
                   <Button
                     type="submit"
                     level="primary"
-                    disabled={createMonster.isLoading || !canSubmit}
+                    disabled={dataUploadingState || !canSubmit}
                   >
-                    {createMonster.isLoading
-                      ? `${stateString}...`
-                      : `${stateString + " [Enter]"}`}
+                    {dataUploadingState
+                      ? `${dictionary.ui.monster.upload}...`
+                      : `${dictionary.ui.monster.upload + " [Enter]"}`}
                   </Button>
                 )}
               </form.Subscribe>

@@ -125,6 +125,12 @@ export default function MonserPageClient(props: {
         size: 120,
       },
       {
+        accessorKey: "accuracy",
+        header: () => dictionary.db.models.monster.accuracy,
+        cell: (info) => info.getValue(),
+        size: 120,
+      },
+      {
         accessorKey: "element",
         header: () => dictionary.db.models.monster.element,
         cell: (info) =>
@@ -196,6 +202,7 @@ export default function MonserPageClient(props: {
     [
       dictionary.db.enums.Element,
       dictionary.db.enums.MonsterType,
+      dictionary.db.models.monster.accuracy,
       dictionary.db.models.monster.address,
       dictionary.db.models.monster.avoidance,
       dictionary.db.models.monster.baseLv,
@@ -226,8 +233,8 @@ export default function MonserPageClient(props: {
     initialState: {
       sorting: [
         {
-          id: "baseLv",
-          desc: true, // 默认按等级降序排列
+          id: "usageCount",
+          desc: true, // 默认按热度降序排列
         },
       ],
     },
@@ -255,10 +262,9 @@ export default function MonserPageClient(props: {
     monsterList.forEach((monster) => {
       if (monster.id !== id) return;
       setMonster(monster);
-
       setMonsterDialogState(true);
       setMonsterFormState(
-        session?.user.role === "ADMIN" ? "CREATE" : "DISPLAY",
+        session?.user.role === "ADMIN" ? "UPDATE" : "DISPLAY",
       );
     });
   };

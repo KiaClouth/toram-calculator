@@ -95,7 +95,7 @@ model UserCreate {
     consumables          Consumable[]
     combos               Combo[]
     analyzers            Analyzer[]
-    belongToUser         User                  @relation(fields: [userId], references: [id])
+    belongToUser         User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
     userId               String                @id
 }
 
@@ -111,7 +111,7 @@ model UserUpdate {
     pets                 Pet[]
     skills               Skill[]
     consumables          Consumable[]
-    belongToUser         User                  @relation(fields: [userId], references: [id])
+    belongToUser         User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
     userId               String                @id
 }
 
@@ -147,6 +147,7 @@ model Monster {
     id                               String      @id @default(cuid())
     state                            State       @default(PRIVATE)
     name                             String      @default("SYSTEM")
+    accuracy                         Int?        @default(10)
     monsterType                      MonsterType @default(COMMON_BOSS)
     baseLv                           Int?
     experience                       Int?
@@ -329,11 +330,9 @@ model ModifiersList {
 
 // 加成项与加成项集的多对多关系表
 model ModifierOnModifiersList {
-    assignedAt      DateTime      @default(now())
-    assignedBy      String        @default("SYSTEM")
     modifier        Modifier      @relation(fields: [modifierId], references: [id])
     modifierId      String
-    modifiersList   ModifiersList @relation(fields: [modifiersListId], references: [id])
+    modifiersList   ModifiersList @relation(fields: [modifiersListId], references: [id], onDelete: Cascade)
     modifiersListId String
 
     @@id([modifierId, modifiersListId])
@@ -358,7 +357,7 @@ model Character {
     modifiersList     ModifiersList?          @relation(fields: [modifiersListId], references: [id])
     modifiersListId   String?
     belongToAnalyzers Analyzer[]
-    createdBy         UserCreate?             @relation(fields: [createdByUserId], references: [userId])
+    createdBy         UserCreate?             @relation(fields: [createdByUserId], references: [userId], onDelete: Cascade)
     createdByUserId   String?
     viewCount         Int                     @default(0)
     usageCount        Int                     @default(0)
@@ -375,7 +374,7 @@ model BaseAbi {
     baseVit           Int       @default(1)
     baseAgi           Int       @default(1)
     baseDex           Int       @default(1)
-    belongToCharacter Character @relation(fields: [characterId], references: [id])
+    belongToCharacter Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
     characterId       String    @id
 }
 
@@ -383,7 +382,7 @@ model BaseAbi {
 model SpecialAbi {
     specialAbiType    SpecialAbiType @default(NULL)
     value             Int            @default(0)
-    belongToCharacter Character      @relation(fields: [characterId], references: [id])
+    belongToCharacter Character      @relation(fields: [characterId], references: [id], onDelete: Cascade)
     characterId       String         @id
 }
 
@@ -409,6 +408,8 @@ enum CrystalType {
 model Crystal {
     id                        String                         @id @default(cuid())
     state                     State                          @default(PRIVATE)
+    name                      String                         @default("SYSTEM")
+    accuracy                  Int?                           @default(10)
     type                      CrystalType                    @default(GENERAL)
     front                     Int                            @default(0)
     modifiersList             ModifiersList?                 @relation(fields: [modifiersListId], references: [id])
@@ -431,11 +432,9 @@ model Crystal {
 
 // 锻晶与主武器的多对多关系表
 model CrystalOnMainWeapon {
-    assignedAt   DateTime   @default(now())
-    assignedBy   String     @default("SYSTEM")
     crystal      Crystal    @relation(fields: [crystalId], references: [id])
     crystalId    String
-    mainWeapon   MainWeapon @relation(fields: [mainWeaponId], references: [id])
+    mainWeapon   MainWeapon @relation(fields: [mainWeaponId], references: [id], onDelete: Cascade)
     mainWeaponId String
 
     @@id([crystalId, mainWeaponId])
@@ -443,11 +442,9 @@ model CrystalOnMainWeapon {
 
 // 锻晶与身体装备的多对多关系表
 model CrystalOnBodyArmor {
-    assignedAt  DateTime  @default(now())
-    assignedBy  String    @default("SYSTEM")
     crystal     Crystal   @relation(fields: [crystalId], references: [id])
     crystalId   String
-    bodyArmor   BodyArmor @relation(fields: [bodyArmorId], references: [id])
+    bodyArmor   BodyArmor @relation(fields: [bodyArmorId], references: [id], onDelete: Cascade)
     bodyArmorId String
 
     @@id([crystalId, bodyArmorId])
@@ -455,11 +452,9 @@ model CrystalOnBodyArmor {
 
 // 锻晶与追加装备的多对多关系表
 model CrystalOnAdditionalEquipment {
-    assignedAt            DateTime            @default(now())
-    assignedBy            String              @default("SYSTEM")
     crystal               Crystal             @relation(fields: [crystalId], references: [id])
     crystalId             String
-    additionalEquipment   AdditionalEquipment @relation(fields: [additionalEquipmentId], references: [id])
+    additionalEquipment   AdditionalEquipment @relation(fields: [additionalEquipmentId], references: [id], onDelete: Cascade)
     additionalEquipmentId String
 
     @@id([crystalId, additionalEquipmentId])
@@ -467,11 +462,9 @@ model CrystalOnAdditionalEquipment {
 
 // 锻晶与特殊装备的多对多关系表
 model CrystalOnSpecialEquipment {
-    assignedAt         DateTime         @default(now())
-    assignedBy         String           @default("SYSTEM")
     crystal            Crystal          @relation(fields: [crystalId], references: [id])
     crystalId          String
-    specialEquipment   SpecialEquipment @relation(fields: [specialEquipmentId], references: [id])
+    specialEquipment   SpecialEquipment @relation(fields: [specialEquipmentId], references: [id], onDelete: Cascade)
     specialEquipmentId String
 
     @@id([crystalId, specialEquipmentId])
@@ -479,7 +472,7 @@ model CrystalOnSpecialEquipment {
 
 // 机体装备配置
 model EquipmentList {
-    belongToCharacter     Character            @relation(fields: [characterId], references: [id])
+    belongToCharacter     Character            @relation(fields: [characterId], references: [id], onDelete: Cascade)
     characterId           String               @id
     mainWeapon            MainWeapon?          @relation(fields: [mainWeaponId], references: [id])
     mainWeaponId          String?
@@ -524,6 +517,7 @@ model MainWeapon {
     id              String                @id @default(cuid())
     state           State                 @default(PRIVATE)
     name            String                @default("SYSTEM")
+    accuracy        Int?                  @default(10)
     mainWeaType     MainWeaType           @default(ONE_HAND_SWORD)
     baseAtk         Int                   @default(0)
     refinement      Int                   @default(0)
@@ -550,6 +544,7 @@ model SubWeapon {
     id              String          @id @default(cuid())
     state           State           @default(PRIVATE)
     name            String          @default("SYSTEM")
+    accuracy        Int?            @default(10)
     subWeaType      SubWeaType      @default(NO_WEAPOEN)
     baseAtk         Int             @default(0)
     refinement      Int             @default(0)
@@ -581,8 +576,9 @@ enum BodyArmorType {
 model BodyArmor {
     id              String               @id @default(cuid())
     state           State                @default(PRIVATE)
-    bodyArmorType   BodyArmorType        @default(NORMAL)
     name            String               @default("SYSTEM")
+    accuracy        Int?                 @default(10)
+    bodyArmorType   BodyArmorType        @default(NORMAL)
     refinement      Int                  @default(0)
     usedBy          EquipmentList[]
     modifiersList   ModifiersList?       @relation(fields: [modifiersListId], references: [id])
@@ -605,6 +601,7 @@ model AdditionalEquipment {
     id              String                         @id @default(cuid())
     state           State                          @default(PRIVATE)
     name            String                         @default("SYSTEM")
+    accuracy        Int?                           @default(10)
     refinement      Int                            @default(0)
     usedBy          EquipmentList[]
     modifiersList   ModifiersList?                 @relation(fields: [modifiersListId], references: [id])
@@ -626,6 +623,8 @@ model AdditionalEquipment {
 model SpecialEquipment {
     id              String                      @id @default(cuid())
     state           State                       @default(PRIVATE)
+    name            String                      @default("SYSTEM")
+    accuracy        Int?                        @default(10)
     usedBy          EquipmentList[]
     modifiersList   ModifiersList?              @relation(fields: [modifiersListId], references: [id])
     modifiersListId String?
@@ -647,7 +646,7 @@ model Fashion {
     modifiersList     ModifiersList? @relation(fields: [modifiersListId], references: [id])
     modifiersListId   String?
     updatedAt         DateTime       @updatedAt
-    belongToCharacter Character?     @relation(fields: [characterId], references: [id])
+    belongToCharacter Character?     @relation(fields: [characterId], references: [id], onDelete: Cascade)
     characterId       String         @id
 }
 
@@ -656,14 +655,14 @@ model Cuisine {
     modifiersList     ModifiersList? @relation(fields: [modifiersListId], references: [id])
     modifiersListId   String?
     updatedAt         DateTime       @updatedAt
-    belongToCharacter Character?     @relation(fields: [characterId], references: [id])
+    belongToCharacter Character?     @relation(fields: [characterId], references: [id], onDelete: Cascade)
     characterId       String         @id
 }
 
 // 机体已习得技能表
 model SkillList {
     updatedAt         DateTime           @updatedAt
-    belongToCharacter Character?         @relation(fields: [characterId], references: [id])
+    belongToCharacter Character?         @relation(fields: [characterId], references: [id], onDelete: Cascade)
     characterId       String             @id
     skill             SkillOnSkillList[]
 }
@@ -684,6 +683,7 @@ model Skill {
     id              String             @id @default(cuid())
     state           State              @default(PRIVATE)
     name            String?            @default("SYSTEM")
+    accuracy        Int?               @default(10)
     type            SkillType          @default(BUFF)
     level           Int                @default(0)
     treeName        SkillTreeName      @default(SWORLD)
@@ -707,9 +707,7 @@ model Skill {
 
 // 技能和技能树多对多关系
 model SkillOnSkillList {
-    assignedAt  DateTime  @default(now())
-    assignedBy  String    @default("SYSTEM")
-    skillList   SkillList @relation(fields: [skillListId], references: [characterId])
+    skillList   SkillList @relation(fields: [skillListId], references: [characterId], onDelete: Cascade)
     skillListId String
     skill       Skill     @relation(fields: [skillId], references: [id])
     skillId     String
@@ -719,11 +717,9 @@ model SkillOnSkillList {
 
 // 消耗品与机体的多对多关系
 model ConsumableOnCharacter {
-    assignedAt   DateTime   @default(now())
-    assignedBy   String     @default("SYSTEM")
     consumable   Consumable @relation(fields: [consumableId], references: [id])
     consumableId String
-    character    Character  @relation(fields: [characterId], references: [id])
+    character    Character  @relation(fields: [characterId], references: [id], onDelete: Cascade)
     characterId  String
 
     @@id([consumableId, characterId])
@@ -732,12 +728,13 @@ model ConsumableOnCharacter {
 // 宠物模型
 model Pet {
     id              String      @id @default(cuid())
+    state           State       @default(PRIVATE)
+    name            String?     @default("SYSTEM")
+    accuracy        Int?        @default(10)
     createdBy       UserCreate? @relation(fields: [createdByUserId], references: [userId])
     createdByUserId String?
     updatedBy       UserUpdate? @relation(fields: [updatedByUserId], references: [userId])
     updatedByUserId String?
-    state           State       @default(PRIVATE)
-    name            String?     @default("SYSTEM")
     usedBy          Character[]
     viewCount       Int         @default(0)
     usageCount      Int         @default(0)
@@ -765,6 +762,7 @@ model Consumable {
     id              String                  @id @default(cuid())
     state           State                   @default(PRIVATE)
     name            String                  @default("SYSTEM")
+    accuracy        Int?                    @default(10)
     usedBy          ConsumableOnCharacter[]
     modifiersList   ModifiersList?          @relation(fields: [modifiersListId], references: [id])
     modifiersListId String?
@@ -786,11 +784,11 @@ model Analyzer {
     state           State       @default(PRIVATE)
     name            String?     @default("SYSTEM")
     createdAt       DateTime    @default(now())
-    createdBy       UserCreate? @relation(fields: [createdByUserId], references: [userId])
+    createdBy       UserCreate? @relation(fields: [createdByUserId], references: [userId], onDelete: Cascade)
     createdByUserId String?
     monster         Monster?    @relation(fields: [monsterId], references: [id])
     monsterId       String?
-    character       Character?  @relation(fields: [characterId], references: [id])
+    character       Character?  @relation(fields: [characterId], references: [id], onDelete: Cascade)
     characterId     String?
     processes       Process[]
 }
@@ -799,7 +797,7 @@ model Analyzer {
 model Combo {
     id              String             @id @default(cuid())
     createdAt       DateTime           @default(now())
-    createdBy       UserCreate?        @relation(fields: [createdByUserId], references: [userId])
+    createdBy       UserCreate?        @relation(fields: [createdByUserId], references: [userId], onDelete: Cascade)
     createdByUserId String?
     state           State              @default(PRIVATE)
     name            String?            @default("SYSTEM")
@@ -808,11 +806,9 @@ model Combo {
 
 // 连击和分析器多对多关系
 model ComboOnCharacter {
-    assignedAt  DateTime  @default(now())
-    assignedBy  String    @default("SYSTEM")
-    combo       Combo     @relation(fields: [comboId], references: [id])
+    combo       Combo     @relation(fields: [comboId], references: [id], onDelete: Cascade)
     comboId     String
-    character   Character @relation(fields: [characterId], references: [id])
+    character   Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
     characterId String
 
     @@id([comboId, characterId])
@@ -822,7 +818,7 @@ model ComboOnCharacter {
 model Process {
     id               String   @id @default(cuid())
     steps            Step[]
-    belongToAnalyzer Analyzer @relation(fields: [analyzerId], references: [id])
+    belongToAnalyzer Analyzer @relation(fields: [analyzerId], references: [id], onDelete: Cascade)
     analyzerId       String
 }
 
@@ -830,8 +826,8 @@ model Process {
 model Step {
     id              String  @id @default(cuid())
     order           Int
-    skill           Skill   @relation(fields: [skillId], references: [id])
+    skill           Skill   @relation(fields: [skillId], references: [id], onDelete: Cascade)
     skillId         String
-    belongToProcess Process @relation(fields: [processId], references: [id])
+    belongToProcess Process @relation(fields: [processId], references: [id], onDelete: Cascade)
     processId       String
 }
