@@ -42,7 +42,6 @@ export default function MonserPageClient(props: {
 
   // 状态管理参数
   const {
-    monster,
     setMonster,
     monsterList,
     setMonsterList,

@@ -180,7 +180,7 @@ export default function MonsterForm(props: {
         }}
         className={`CreateMonsterFrom flex w-full max-w-7xl flex-col gap-4 overflow-y-auto rounded px-3 lg:w-4/5`}
       >
-        <div className="title @border-b-1.5 flex items-center gap-4 border-brand-color-1st pt-5">
+        <div className="title flex items-center gap-4 pt-10">
           <div className="h-[1px] flex-1 bg-brand-color-1st"></div>
           <span className="text-lg font-bold">{formTitle}</span>
           <div className="h-[1px] flex-1 bg-brand-color-1st"></div>
@@ -293,7 +293,7 @@ export default function MonsterForm(props: {
                                     : e.target.value,
                                 )
                               }
-                              className={` mt-1 rounded px-4 py-2 ${monsterFormState === "DISPLAY" ? " pointer-events-none bg-transparent" : " pointer-events-auto bg-transition-color-8"}`}
+                              className={` mt-1 rounded px-4 py-2 ${monsterFormState === "DISPLAY" ? " pointer-events-none outline-transition-color-20 bg-transparent" : " pointer-events-auto bg-transition-color-8"}`}
                             />
                           </label>
                           <FieldInfo field={field} />
