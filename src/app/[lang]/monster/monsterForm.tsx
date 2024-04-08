@@ -9,14 +9,15 @@ import { type FieldApi, useForm } from "@tanstack/react-form";
 import { zodValidator } from "@tanstack/zod-form-adapter";
 import { ZodFirstPartyTypeKind, type z } from "zod";
 import { type Monster, type $Enums } from "@prisma/client";
-import { useBearStore } from "~/app/store";
+import { defaultMonster, useBearStore } from "~/app/store";
+import { type Session } from "next-auth";
 
 export default function MonsterForm(props: {
   dictionary: ReturnType<typeof getDictionary>;
-  defaultMonster: Monster;
+  session: Session | null;
   setDefaultMonsterList: (list: Monster[]) => void;
 }) {
-  const { dictionary, defaultMonster, setDefaultMonsterList } = props;
+  const { dictionary, setDefaultMonsterList } = props;
   const newListQuery = api.monster.getUserVisbleList.useQuery();
   // 状态管理参数
   const {
@@ -25,6 +26,7 @@ export default function MonsterForm(props: {
     setMonsterList,
     setMonsterDialogState,
     monsterFormState,
+    setMonsterFormState,
   } = useBearStore((state) => state.monsterPage);
   let newMonster: Monster;
   const formTitle = {
@@ -61,7 +63,11 @@ export default function MonsterForm(props: {
 
   // 定义表单
   const form = useForm({
-    defaultValues: defaultMonster,
+    defaultValues: {
+      CREATE: defaultMonster,
+      UPDATE: monster,
+      DISPLAY: monster,
+    }[monsterFormState],
     onSubmit: async ({ value }) => {
       setDataUploadingState(true);
       newMonster = {
@@ -73,36 +79,6 @@ export default function MonsterForm(props: {
         usageTimestamps: [],
         viewTimestamps: [],
       } satisfies Monster;
-    
-      const createMonster = api.monster.create.useMutation({
-        onSuccess: async () => {
-          // 创建成功后重新获取数据
-          const newList = await newListQuery.refetch();
-          // 确保数据已成功加载
-          if (newList.isSuccess) {
-            setDefaultMonsterList(newList.data);
-            setMonsterList(newList.data);
-          }
-          // 关闭弹出层
-          setDataUploadingState(false);
-          setMonsterDialogState(!monsterDialogState);
-        },
-      });
-    
-      const updateMonster = api.monster.update.useMutation({
-        onSuccess: async () => {
-          // 更新成功后重新获取数据
-          const newList = await newListQuery.refetch();
-          // 确保数据已成功加载后，更新本地数据
-          if (newList.isSuccess) {
-            setDefaultMonsterList(newList.data);
-            setMonsterList(newList.data);
-          }
-          // 关闭弹出层
-          setDataUploadingState(false);
-          setMonsterDialogState(!monsterDialogState);
-        },
-      });
       switch (monsterFormState) {
         case "CREATE":
           createMonster.mutate(newMonster);
@@ -136,8 +112,37 @@ export default function MonsterForm(props: {
     }
     return ZodFirstPartyTypeKind.ZodUndefined;
   };
+  const createMonster = api.monster.create.useMutation({
+    onSuccess: async () => {
+      // 创建成功后重新获取数据
+      const newList = await newListQuery.refetch();
+      // 确保数据已成功加载
+      if (newList.isSuccess) {
+        setDefaultMonsterList(newList.data);
+        setMonsterList(newList.data);
+      }
+      // 上传成功后表单转换为展示状态
+      setDataUploadingState(false);
+      setMonsterFormState("DISPLAY");
+    },
+  });
+  const updateMonster = api.monster.update.useMutation({
+    onSuccess: async () => {
+      // 更新成功后重新获取数据
+      const newList = await newListQuery.refetch();
+      // 确保数据已成功加载后，更新本地数据
+      if (newList.isSuccess) {
+        setDefaultMonsterList(newList.data);
+        setMonsterList(newList.data);
+      }
+      // 上传成功后表单转换为展示状态
+      setDataUploadingState(false);
+      setMonsterFormState("DISPLAY");
+    },
+  });
 
   useEffect(() => {
+    console.log("MonsterForm render");
     // escape键监听
     const handleEscapeKeyPress = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
@@ -159,6 +164,7 @@ export default function MonsterForm(props: {
     document.addEventListener("keydown", handleEnterKeyPress);
 
     return () => {
+      console.log("MonsterForm unmount");
       document.removeEventListener("keydown", handleEscapeKeyPress);
       document.removeEventListener("keydown", handleEnterKeyPress);
     };
@@ -174,8 +180,10 @@ export default function MonsterForm(props: {
         }}
         className={`CreateMonsterFrom flex w-full max-w-7xl flex-col gap-4 overflow-y-auto rounded px-3 lg:w-4/5`}
       >
-        <div className="title flex justify-between border-b-1.5 border-brand-color-1st p-3 text-lg font-semibold">
-          <span>{formTitle}</span>
+        <div className="title @border-b-1.5 flex items-center gap-4 border-brand-color-1st pt-5">
+          <div className="h-[1px] flex-1 bg-brand-color-1st"></div>
+          <span className="text-lg font-bold">{formTitle}</span>
+          <div className="h-[1px] flex-1 bg-brand-color-1st"></div>
         </div>
         <div className="inputArea flex-1 overflow-y-auto">
           <fieldset className="dataKinds flex flex-col flex-wrap lg:flex-row">
@@ -211,7 +219,7 @@ export default function MonsterForm(props: {
                               return (
                                 <label
                                   key={key + option}
-                                  className=" flex cursor-pointer justify-between gap-2 rounded-full border-1.5 border-transition-color-8 p-2 px-4 hover:border-transition-color-20 lg:flex-row-reverse lg:justify-end"
+                                  className={`flex cursor-pointer justify-between gap-2 rounded-full border-1.5 p-2 px-4 hover:border-transition-color-20 lg:flex-row-reverse lg:justify-end lg:rounded-sm ${monsterFormState === "DISPLAY" ? " pointer-events-none border-transparent bg-transparent" : " pointer-events-auto border-transition-color-8 bg-transition-color-8"}`}
                                 >
                                   {
                                     dictionary.db.enums[
@@ -222,6 +230,7 @@ export default function MonsterForm(props: {
                                     ]
                                   }
                                   <input
+                                    disabled={monsterFormState === "DISPLAY"}
                                     id={field.name + option}
                                     name={field.name}
                                     value={option}
@@ -230,7 +239,7 @@ export default function MonsterForm(props: {
                                     onChange={(e) =>
                                       field.handleChange(e.target.value)
                                     }
-                                    className=" mt-1 rounded bg-transition-color-8 px-4 py-2"
+                                    className={` mt-1 rounded px-4 py-2`}
                                   />
                                 </label>
                               );
@@ -267,6 +276,7 @@ export default function MonsterForm(props: {
                           >
                             {dictionary.db.models.monster[key as keyof Monster]}
                             <input
+                              disabled={monsterFormState === "DISPLAY"}
                               id={field.name}
                               name={field.name}
                               value={
@@ -283,7 +293,7 @@ export default function MonsterForm(props: {
                                     : e.target.value,
                                 )
                               }
-                              className=" mt-1 rounded bg-transition-color-8 px-4 py-2"
+                              className={` mt-1 rounded px-4 py-2 ${monsterFormState === "DISPLAY" ? " pointer-events-none bg-transparent" : " pointer-events-auto bg-transition-color-8"}`}
                             />
                           </label>
                           <FieldInfo field={field} />
@@ -298,9 +308,19 @@ export default function MonsterForm(props: {
         </div>
         <div className="functionArea flex justify-end border-t-1.5 border-brand-color-1st py-3">
           <div className="btnGroup flex gap-2">
-            <Button onClick={() => setMonsterDialogState(!monsterDialogState)}>
+            <Button
+              onClick={() => {
+                setMonsterFormState("DISPLAY");
+                setMonsterDialogState(!monsterDialogState);
+              }}
+            >
               {dictionary.ui.monster.close} [Esc]
             </Button>
+            {monsterFormState == "DISPLAY" && (
+              <Button onClick={() => setMonsterFormState("UPDATE")}>
+                {dictionary.ui.monster.modify} [Enter]
+              </Button>
+            )}
             {monsterFormState !== "DISPLAY" && (
               <form.Subscribe
                 selector={(state) => [state.canSubmit, state.isSubmitting]}
@@ -312,8 +332,8 @@ export default function MonsterForm(props: {
                     disabled={dataUploadingState || !canSubmit}
                   >
                     {dataUploadingState
-                      ? `${dictionary.ui.monster.upload}...`
-                      : `${dictionary.ui.monster.upload + " [Enter]"}`}
+                      ? dictionary.ui.monster.upload + "..."
+                      : dictionary.ui.monster.upload + " [Enter]"}
                   </Button>
                 )}
               </form.Subscribe>

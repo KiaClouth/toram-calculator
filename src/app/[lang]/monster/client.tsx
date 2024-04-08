@@ -125,12 +125,6 @@ export default function MonserPageClient(props: {
         size: 120,
       },
       {
-        accessorKey: "accuracy",
-        header: () => dictionary.db.models.monster.accuracy,
-        cell: (info) => info.getValue(),
-        size: 120,
-      },
-      {
         accessorKey: "element",
         header: () => dictionary.db.models.monster.element,
         cell: (info) =>
@@ -202,7 +196,6 @@ export default function MonserPageClient(props: {
     [
       dictionary.db.enums.Element,
       dictionary.db.enums.MonsterType,
-      dictionary.db.models.monster.accuracy,
       dictionary.db.models.monster.address,
       dictionary.db.models.monster.avoidance,
       dictionary.db.models.monster.baseLv,
@@ -263,9 +256,7 @@ export default function MonserPageClient(props: {
       if (monster.id !== id) return;
       setMonster(monster);
       setMonsterDialogState(true);
-      setMonsterFormState(
-        session?.user.role === "ADMIN" ? "UPDATE" : "DISPLAY",
-      );
+      setMonsterFormState("DISPLAY");
     });
   };
 
@@ -298,9 +289,7 @@ export default function MonserPageClient(props: {
     const handleEscapeKeyPress = (e: KeyboardEvent) => {
       if (e.key === "u") {
         setMonsterDialogState(true);
-        setMonsterFormState(
-          session?.user.role === "ADMIN" ? "CREATE" : "DISPLAY",
-        );
+        setMonsterFormState("DISPLAY");
       }
     };
     document.addEventListener("keydown", handleEscapeKeyPress);
@@ -310,8 +299,6 @@ export default function MonserPageClient(props: {
   }, [
     defaultMonsterList,
     monsterDialogState,
-    session?.user.id,
-    session?.user.role,
     setMonsterDialogState,
     setMonsterFormState,
     setMonsterList,
@@ -399,36 +386,31 @@ export default function MonserPageClient(props: {
                   icon={<IconFilter />}
                   onClick={() => setFilterState(!filterState)}
                 ></Button>
-                {session?.user.role === "ADMIN" ? (
-                  <React.Fragment>
-                    <Button // 仅移动端显示
-                      size="sm"
-                      level="tertiary"
-                      icon={<IconCloudUpload />}
-                      className="flex lg:hidden"
-                      onClick={() => {
-                        setMonsterDialogState(true);
-                        setMonsterFormState(
-                          session?.user.role === "ADMIN" ? "CREATE" : "DISPLAY",
-                        );
-                      }}
-                    ></Button>
-                    <Button // 仅PC端显示
-                      level="primary"
-                      icon={<IconCloudUpload />}
-                      className="hidden lg:flex"
-                      onClick={() => {
-                        setMonster(defaultMonster);
-                        setMonsterDialogState(true);
-                        setMonsterFormState(
-                          session?.user.role === "ADMIN" ? "CREATE" : "DISPLAY",
-                        );
-                      }}
-                    >
-                      {dictionary.ui.monster.upload} [u]
-                    </Button>
-                  </React.Fragment>
-                ) : undefined}
+
+                <React.Fragment>
+                  <Button // 仅移动端显示
+                    size="sm"
+                    level="tertiary"
+                    icon={<IconCloudUpload />}
+                    className="flex lg:hidden"
+                    onClick={() => {
+                      setMonsterDialogState(true);
+                      setMonsterFormState("CREATE");
+                    }}
+                  ></Button>
+                  <Button // 仅PC端显示
+                    level="primary"
+                    icon={<IconCloudUpload />}
+                    className="hidden lg:flex"
+                    onClick={() => {
+                      setMonster(defaultMonster);
+                      setMonsterDialogState(true);
+                      setMonsterFormState("CREATE");
+                    }}
+                  >
+                    {dictionary.ui.monster.upload} [u]
+                  </Button>
+                </React.Fragment>
               </div>
             </div>
             <div className="Discription my-3 hidden rounded-sm bg-transition-color-8 p-3 lg:block">
@@ -724,29 +706,15 @@ export default function MonserPageClient(props: {
         </div>
         <div className="RightArea sticky top-0 z-10 flex-1"></div>
       </div>
-      {monsterDialogState ? (
-        session?.user.role === "ADMIN" ? (
-          <Dialog state={monsterDialogState} setState={setMonsterDialogState}>
-            {
-              <MonsterForm
-                dictionary={dictionary}
-                defaultMonster={monster}
-                setDefaultMonsterList={setDefaultMonsterList}
-              />
-            }
-          </Dialog>
-        ) : (
-          <Dialog state={monsterDialogState} setState={setMonsterDialogState}>
-            {
-              <MonsterForm
-                dictionary={dictionary}
-                defaultMonster={monster}
-                setDefaultMonsterList={setDefaultMonsterList}
-              />
-            }
-          </Dialog>
-        )
-      ) : undefined}
+      <Dialog state={monsterDialogState} setState={setMonsterDialogState}>
+        {monsterDialogState && (
+          <MonsterForm
+            dictionary={dictionary}
+            session={session}
+            setDefaultMonsterList={setDefaultMonsterList}
+          />
+        )}
+      </Dialog>
     </main>
   );
 }

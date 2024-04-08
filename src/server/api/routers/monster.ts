@@ -59,13 +59,13 @@ export const monsterRouter = createTRPCRouter({
     .input(MonsterSchema.omit({ id: true }))
     .mutation(async ({ ctx, input }) => {
       // 检查用户权限
-      if (ctx.session.user.role !== "ADMIN") {
-        console.log(
-          (ctx.session?.user.name ?? ctx.session?.user.email) +
-            "没有权限上传怪物",
-        );
-        return;
-      }
+      // if (ctx.session.user.role !== "ADMIN") {
+      //   console.log(
+      //     (ctx.session?.user.name ?? ctx.session?.user.email) +
+      //       "没有权限上传怪物",
+      //   );
+      //   return;
+      // }
 
       // 检查用户是否存在关联的 UserCreate
       let userCreate = await ctx.db.userCreate.findUnique({
@@ -103,13 +103,13 @@ export const monsterRouter = createTRPCRouter({
     .input(MonsterSchema)
     .mutation(async ({ ctx, input }) => {
       // 检查用户权限
-      if (ctx.session.user.role !== "ADMIN") {
-        console.log(
-          (ctx.session?.user.name ?? ctx.session?.user.email) +
-            "没有权限更新怪物",
-        );
-        return;
-      }
+      // if (ctx.session.user.role !== "ADMIN") {
+      //   console.log(
+      //     (ctx.session?.user.name ?? ctx.session?.user.email) +
+      //       "没有权限更新怪物",
+      //   );
+      //   return;
+      // }
       console.log(
         (ctx.session?.user.name ?? ctx.session?.user.email) +
           "更新了Monster: " +

@@ -266,7 +266,6 @@ const dictionary: dictionary = {
         updatedAt: "更新于",
         usageTimestamps: "被使用记录",
         viewTimestamps: "被查看记录",
-        accuracy: "准确度",
       },
       skill: {
         id: "",
@@ -287,7 +286,6 @@ const dictionary: dictionary = {
         viewTimestamps: "",
         level: "",
         treeName: "",
-        accuracy: "准确度"
       }
     },
   },

@@ -42,7 +42,6 @@ export const defaultMonster: Monster = {
   updatedAt: new Date(),
   usageTimestamps: [],
   viewTimestamps: [],
-  accuracy: null
 };
 
 // 技能表单的默认值
@@ -65,7 +64,6 @@ export const defaultSkill: Skill = {
   viewTimestamps: [],
   level: 0,
   treeName: "SWORLD",
-  accuracy: null
 };
 
 // 应用客户端状态数据类型定义
