@@ -180,13 +180,13 @@ export default function MonsterForm(props: {
         }}
         className={`CreateMonsterFrom flex w-full max-w-7xl flex-col gap-4 overflow-y-auto rounded px-3 lg:w-4/5`}
       >
-        <div className="title flex items-center gap-4 pt-10">
-          <div className="h-[1px] flex-1 bg-brand-color-1st"></div>
-          <span className="text-lg font-bold">{formTitle}</span>
-          <div className="h-[1px] flex-1 bg-brand-color-1st"></div>
+        <div className="title flex items-center gap-6 pt-10">
+          <div className="h-[2px] flex-1 bg-accent-color"></div>
+          <span className="text-lg lg:text-2xl font-bold">{formTitle}</span>
+          <div className="h-[2px] flex-1 bg-accent-color"></div>
         </div>
         <div className="inputArea flex-1 overflow-y-auto">
-          <fieldset className="dataKinds flex flex-col flex-wrap lg:flex-row">
+          <fieldset className="dataKinds flex flex-wrap flex-row">
             {Object.entries(MonsterSchema.shape).map(([key, value]) => {
               // 遍历怪物zod模型
               if (hiddenData.includes(key as keyof Monster)) return undefined;
@@ -214,7 +214,7 @@ export default function MonsterForm(props: {
                           <span>
                             {dictionary.db.models.monster[key as keyof Monster]}
                           </span>
-                          <div className="inputContianer flex flex-col gap-2 lg:flex-row">
+                          <div className="inputContianer flex gap-2 flex-wrap border-1.5 border-transition-color-20 rounded">
                             {type.map((option) => {
                               return (
                                 <label
@@ -272,7 +272,7 @@ export default function MonsterForm(props: {
                         >
                           <label
                             htmlFor={field.name}
-                            className="flex basis-1/4 flex-col gap-1 p-2"
+                            className="flex w-full flex-col gap-1"
                           >
                             {dictionary.db.models.monster[key as keyof Monster]}
                             <input
@@ -293,7 +293,7 @@ export default function MonsterForm(props: {
                                     : e.target.value,
                                 )
                               }
-                              className={` mt-1 rounded px-4 py-2 ${monsterFormState === "DISPLAY" ? " pointer-events-none outline-transition-color-20 bg-transparent" : " pointer-events-auto bg-transition-color-8"}`}
+                              className={`flex-1 w-full mt-1 rounded px-4 py-2 ${monsterFormState === "DISPLAY" ? " pointer-events-none outline-transition-color-20 bg-transparent" : " pointer-events-auto bg-transition-color-8"}`}
                             />
                           </label>
                           <FieldInfo field={field} />
