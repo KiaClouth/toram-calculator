@@ -386,30 +386,32 @@ export default function MonserPageClient(props: {
                   onClick={() => setFilterState(!filterState)}
                 ></Button>
 
-                <React.Fragment>
-                  <Button // 仅移动端显示
-                    size="sm"
-                    level="tertiary"
-                    icon={<IconCloudUpload />}
-                    className="flex lg:hidden"
-                    onClick={() => {
-                      setMonsterDialogState(true);
-                      setMonsterFormState("CREATE");
-                    }}
-                  ></Button>
-                  <Button // 仅PC端显示
-                    level="primary"
-                    icon={<IconCloudUpload />}
-                    className="hidden lg:flex"
-                    onClick={() => {
-                      setMonster(defaultMonster);
-                      setMonsterDialogState(true);
-                      setMonsterFormState("CREATE");
-                    }}
-                  >
-                    {dictionary.ui.monster.upload} [u]
-                  </Button>
-                </React.Fragment>
+                {session?.user && (
+                  <React.Fragment>
+                    <Button // 仅移动端显示
+                      size="sm"
+                      level="tertiary"
+                      icon={<IconCloudUpload />}
+                      className="flex lg:hidden"
+                      onClick={() => {
+                        setMonsterDialogState(true);
+                        setMonsterFormState("CREATE");
+                      }}
+                    ></Button>
+                    <Button // 仅PC端显示
+                      level="primary"
+                      icon={<IconCloudUpload />}
+                      className="hidden lg:flex"
+                      onClick={() => {
+                        setMonster(defaultMonster);
+                        setMonsterDialogState(true);
+                        setMonsterFormState("CREATE");
+                      }}
+                    >
+                      {dictionary.ui.monster.upload} [u]
+                    </Button>
+                  </React.Fragment>
+                )}
               </div>
             </div>
             <div className="Discription my-3 hidden rounded-sm bg-transition-color-8 p-3 lg:block">

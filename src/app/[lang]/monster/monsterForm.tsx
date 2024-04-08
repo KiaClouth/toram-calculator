@@ -17,7 +17,7 @@ export default function MonsterForm(props: {
   session: Session | null;
   setDefaultMonsterList: (list: Monster[]) => void;
 }) {
-  const { dictionary, setDefaultMonsterList } = props;
+  const { dictionary, session, setDefaultMonsterList } = props;
   const newListQuery = api.monster.getUserVisbleList.useQuery();
   // 状态管理参数
   const {
@@ -316,7 +316,7 @@ export default function MonsterForm(props: {
             >
               {dictionary.ui.monster.close} [Esc]
             </Button>
-            {monsterFormState == "DISPLAY" && (
+            {monsterFormState == "DISPLAY" && session?.user && (
               <Button onClick={() => setMonsterFormState("UPDATE")}>
                 {dictionary.ui.monster.modify} [Enter]
               </Button>
