@@ -360,8 +360,8 @@ export default function MonserPageClient(props: {
           ref={tableContainerRef}
           className="ModuleContent h-[calc(100dvh-67px)] w-full flex-col overflow-auto lg:h-dvh 2xl:w-[1536px]"
         >
-          <div className="Title sticky left-0 flex flex-col gap-9 py-5 mt-3 lg:pb-10 lg:pt-20">
-            <div className="Row flex flex-row items-center justify-between gap-4 lg:justify-start">
+          <div className="Title sticky left-0 flex flex-col gap-9 py-10 lg:py-5 mt-3 lg:pb-10 lg:pt-20">
+            <div className="Row flex flex-col lg:flex-row items-center justify-between gap-10 lg:gap-4 lg:justify-start">
               <h1 className="Text text-nowrap text-left text-3xl lg:bg-transparent lg:text-4xl">
                 {dictionary.ui.monster.pageTitle}
               </h1>
