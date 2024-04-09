@@ -662,14 +662,11 @@ enum SkillTreeName {
 model Skill {
     id              String        @id @default(cuid())
     state           State         @default(PRIVATE)
-    name            String?       @default("SYSTEM")
-    type            SkillType     @default(BUFF)
-    level           Int           @default(0)
     treeName        SkillTreeName @default(SWORLD)
-    mpCost          Int           @default(0)
-    mpGain          Int           @default(0)
-    hpCost          Int           @default(0)
-    hpGain          Int           @default(0)
+    name            String?       @default("SYSTEM")
+    level           Int           @default(0)
+    cost            SkillCost[]
+    yield           SkillYield[]
     usedBy          SkillList[]
     usedByStep      Step[]
     createdBy       UserCreate?   @relation(fields: [createdByUserId], references: [userId])
@@ -683,6 +680,18 @@ model Skill {
     usageTimestamps DateTime[]
     viewTimestamps  DateTime[]
     raters          Rate[]
+}
+
+model SkillCost {
+    id            String  @id @default(cuid())
+    belongToSkill Skill?  @relation(fields: [skillId], references: [id], onDelete: Cascade)
+    skillId       String?
+}
+
+model SkillYield {
+    id            String  @id @default(cuid())
+    belongToSkill Skill?  @relation(fields: [skillId], references: [id], onDelete: Cascade)
+    skillId       String?
 }
 
 // 宠物模型

@@ -182,11 +182,11 @@ export default function MonsterForm(props: {
       >
         <div className="title flex items-center gap-6 pt-10">
           <div className="h-[2px] flex-1 bg-accent-color"></div>
-          <span className="text-lg lg:text-2xl font-bold">{formTitle}</span>
+          <span className="text-lg font-bold lg:text-2xl">{formTitle}</span>
           <div className="h-[2px] flex-1 bg-accent-color"></div>
         </div>
         <div className="inputArea flex-1 overflow-y-auto">
-          <fieldset className="dataKinds flex flex-wrap flex-row">
+          <fieldset className="dataKinds flex flex-row flex-wrap gap-y-[4px]">
             {Object.entries(MonsterSchema.shape).map(([key, value]) => {
               // 遍历怪物zod模型
               if (hiddenData.includes(key as keyof Monster)) return undefined;
@@ -214,12 +214,14 @@ export default function MonsterForm(props: {
                           <span>
                             {dictionary.db.models.monster[key as keyof Monster]}
                           </span>
-                          <div className="inputContianer flex gap-2 flex-wrap border-1.5 border-transition-color-20 rounded">
+                          <div
+                            className={`inputContianer mt-1 flex flex-wrap gap-2 self-start rounded ${monsterFormState === "DISPLAY" ? " outline-transition-color-20" : ""}`}
+                          >
                             {type.map((option) => {
                               return (
                                 <label
                                   key={key + option}
-                                  className={`flex cursor-pointer justify-between gap-2 rounded-full border-1.5 p-2 px-4 hover:border-transition-color-20 lg:flex-row-reverse lg:justify-end lg:rounded-sm ${monsterFormState === "DISPLAY" ? " pointer-events-none border-transparent bg-transparent" : " pointer-events-auto border-transition-color-8 bg-transition-color-8"}`}
+                                  className={`flex cursor-pointer items-center justify-between gap-2 rounded-full p-2 px-4 hover:border-transition-color-20 lg:flex-row-reverse lg:justify-end lg:rounded-sm ${monsterFormState === "DISPLAY" ? " pointer-events-none border-transparent bg-transparent" : " pointer-events-auto border-transition-color-8 bg-transition-color-8"}`}
                                 >
                                   {
                                     dictionary.db.enums[
@@ -239,7 +241,7 @@ export default function MonsterForm(props: {
                                     onChange={(e) =>
                                       field.handleChange(e.target.value)
                                     }
-                                    className={` mt-1 rounded px-4 py-2`}
+                                    className={` mt-0.5 rounded px-4 py-2`}
                                   />
                                 </label>
                               );
@@ -293,7 +295,7 @@ export default function MonsterForm(props: {
                                     : e.target.value,
                                 )
                               }
-                              className={`flex-1 w-full mt-1 rounded px-4 py-2 ${monsterFormState === "DISPLAY" ? " pointer-events-none outline-transition-color-20 bg-transparent" : " pointer-events-auto bg-transition-color-8"}`}
+                              className={`mt-1 w-full flex-1 rounded px-4 py-2 ${monsterFormState === "DISPLAY" ? " pointer-events-none bg-transparent outline-transition-color-20" : " pointer-events-auto bg-transition-color-8"}`}
                             />
                           </label>
                           <FieldInfo field={field} />
