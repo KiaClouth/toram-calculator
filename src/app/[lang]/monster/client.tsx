@@ -360,8 +360,8 @@ export default function MonserPageClient(props: {
           ref={tableContainerRef}
           className="ModuleContent h-[calc(100dvh-67px)] w-full flex-col overflow-auto lg:h-dvh 2xl:w-[1536px]"
         >
-          <div className="Title sticky left-0 flex flex-col gap-9 py-10 lg:py-5 mt-3 lg:pb-10 lg:pt-20">
-            <div className="Row flex flex-col lg:flex-row items-center justify-between gap-10 lg:gap-4 lg:justify-start">
+          <div className="Title sticky left-0 mt-3 flex flex-col gap-9 py-10 lg:py-5 lg:pb-10 lg:pt-20">
+            <div className="Row flex flex-col items-center justify-between gap-10 lg:flex-row lg:justify-start lg:gap-4">
               <h1 className="Text text-nowrap text-left text-3xl lg:bg-transparent lg:text-4xl">
                 {dictionary.ui.monster.pageTitle}
               </h1>
@@ -369,8 +369,8 @@ export default function MonserPageClient(props: {
                 <input
                   type="search"
                   placeholder={dictionary.ui.monster.searchPlaceholder}
-                  className="w-full flex-1 bg-transition-color-8 rounded-sm border-transition-color-20 lg:bg-transparent px-3 py-2 backdrop-blur-xl placeholder:text-accent-color-50 hover:border-accent-color-70
-                  hover:bg-transition-color-8 focus:border-accent-color-70 focus:outline-none lg:flex-1 lg:rounded-none lg:border-b-1.5 lg:px-5 lg:font-normal"
+                  className="w-full flex-1 rounded-sm border-transition-color-20 bg-transition-color-8 px-3 py-2 backdrop-blur-xl placeholder:text-accent-color-50 hover:border-accent-color-70 hover:bg-transition-color-8
+                  focus:border-accent-color-70 focus:outline-none lg:flex-1 lg:rounded-none lg:border-b-1.5 lg:bg-transparent lg:px-5 lg:font-normal"
                   onChange={(e) => handleSearchFilterChange(e.target.value)}
                 />
                 <Button // 仅移动端显示
@@ -691,10 +691,27 @@ export default function MonserPageClient(props: {
                               }}
                               className={`flex flex-col justify-center px-3 py-6 `}
                             >
-                              {flexRender(
-                                cell.column.columnDef.cell,
-                                cell.getContext(),
-                              )}
+                              {((cell) => {
+                                try {
+                                  const content =
+                                    dictionary.db.enums[
+                                      (cell.column.id
+                                        .charAt(0)
+                                        .toLocaleUpperCase() +
+                                        cell.column.id.slice(
+                                          1,
+                                        )) as keyof typeof $Enums
+                                    ][
+                                      cell.getValue() as keyof (typeof $Enums)[keyof typeof $Enums]
+                                    ];
+                                  return content;
+                                } catch (error) {
+                                  return flexRender(
+                                    cell.column.columnDef.cell,
+                                    cell.getContext(),
+                                  );
+                                }
+                              })(cell)}
                             </td>
                           );
                       }

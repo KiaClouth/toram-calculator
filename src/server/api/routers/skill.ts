@@ -12,7 +12,12 @@ export const skillRouter = createTRPCRouter({
       (ctx.session?.user.name ?? ctx.session?.user.email) +
         "请求了完整的技能列表",
     );
-    return ctx.db.skill.findMany();
+    return ctx.db.skill.findMany({
+      relationLoadStrategy: 'join', // or 'query'
+      include: {
+        skillEffect: true,
+      },
+    });
   }),
 
   getPublicList: publicProcedure.query(({ ctx }) => {
@@ -58,6 +63,15 @@ export const skillRouter = createTRPCRouter({
   create: protectedProcedure
     .input(SkillSchema.omit({ id: true }))
     .mutation(async ({ ctx, input }) => {
+      // 检查用户权限
+      // if (ctx.session.user.role !== "ADMIN") {
+      //   console.log(
+      //     (ctx.session?.user.name ?? ctx.session?.user.email) +
+      //       "没有权限上传技能",
+      //   );
+      //   return;
+      // }
+
       // 检查用户是否存在关联的 UserCreate
       let userCreate = await ctx.db.userCreate.findUnique({
         where: { userId: ctx.session?.user.id },
@@ -78,10 +92,10 @@ export const skillRouter = createTRPCRouter({
       }
       console.log(
         (ctx.session?.user.name ?? ctx.session?.user.email) +
-          "上传了技能: " +
+          "上传了Skill: " +
           input.name,
       );
-      // 创建怪物并关联创建者和统计信息
+      // 创建技能并关联创建者和统计信息
       return ctx.db.skill.create({
         data: {
           ...input,
@@ -93,9 +107,17 @@ export const skillRouter = createTRPCRouter({
   update: protectedProcedure
     .input(SkillSchema)
     .mutation(async ({ ctx, input }) => {
+      // 检查用户权限
+      // if (ctx.session.user.role !== "ADMIN") {
+      //   console.log(
+      //     (ctx.session?.user.name ?? ctx.session?.user.email) +
+      //       "没有权限更新技能",
+      //   );
+      //   return;
+      // }
       console.log(
         (ctx.session?.user.name ?? ctx.session?.user.email) +
-          "修改了技能: " +
+          "更新了Skill: " +
           input.name,
       );
       return ctx.db.skill.update({

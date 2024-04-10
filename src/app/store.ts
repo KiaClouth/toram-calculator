@@ -49,11 +49,6 @@ export const defaultSkill: Skill = {
   id: "",
   state: "PRIVATE",
   name: null,
-  type: "BUFF",
-  mpCost: 0,
-  mpGain: 0,
-  hpCost: 0,
-  hpGain: 0,
   createdByUserId: null,
   updatedByUserId: null,
   viewCount: 0,
@@ -63,7 +58,10 @@ export const defaultSkill: Skill = {
   usageTimestamps: [],
   viewTimestamps: [],
   level: 0,
-  treeName: "SWORLD",
+  skillTreeName: "SWORLD",
+  skillType: "ACTIVE_SKILL",
+  weaponElementDependencyType: "TRUE",
+  element: "NO_ELEMENT",
 };
 
 // 应用客户端状态数据类型定义
@@ -89,8 +87,8 @@ interface AppState {
     setSkill: (newSkill: Skill) => void;
     skillDialogState: boolean;
     setSkillDialogState: (newState: boolean) => void;
-    skillFormState: "CREATE" | "UPDATE";
-    setSkillFormState: (newState: "CREATE" | "UPDATE") => void;
+    skillFormState: "CREATE" | "UPDATE" | "DISPLAY";
+    setSkillFormState: (newState: "CREATE" | "UPDATE" | "DISPLAY") => void;
     filterState: boolean;
     setFilterState: (newState: boolean) => void;
   };
@@ -166,7 +164,7 @@ export const useBearStore = create<AppState>()(
           }),
         ),
       skillFormState: "CREATE",
-      setSkillFormState: (newState: "CREATE" | "UPDATE") =>
+      setSkillFormState: (newState: "CREATE" | "UPDATE" | "DISPLAY") =>
         set(
           produce((state: AppState) => {
             state.skillPage.skillFormState = newState;

@@ -218,8 +218,8 @@ const dictionary: dictionary = {
         SPECIALCRYSTAL: ""
       },
       SkillType: {
-        BUFF: "",
-        DAMAGE: ""
+        ACTIVE_SKILL: "",
+        PASSIVE_SKILL: ""
       },
       SkillTreeName: {
         SWORLD: "",
@@ -228,6 +228,56 @@ const dictionary: dictionary = {
       UserRole: {
         USER: "",
         ADMIN: ""
+      },
+      ComputedFields: {
+        S_LV: "",
+        C_LV: "",
+        C_BS: "",
+        C_BI: "",
+        C_BV: "",
+        C_BA: "",
+        C_BD: "",
+        C_BC: "",
+        C_S: "",
+        C_I: "",
+        C_V: "",
+        C_A: "",
+        C_D: "",
+        C_HP: "",
+        C_MP: "",
+        C_PATK: "",
+        C_MATK: "",
+        C_VPATK: "",
+        C_VMATK: "",
+        M_LV: "",
+        M_HP: "",
+        M_PDEF: "",
+        M_PRES: "",
+        M_MDEF: "",
+        M_MRES: "",
+        CONSTANT: ""
+      },
+      Operator: {
+        EQUALS: "",
+        AND: "",
+        OR: "",
+        NOT: "",
+        GREATER: "",
+        LESS: "",
+        ADD: "",
+        SUB: "",
+        MULTI: "",
+        DIV: ""
+      },
+      TriggerTimingType: {
+        ON_USE: "",
+        PER_SECOND: "",
+        PER_USE_SKILL: "",
+        NEXT_SKILL: ""
+      },
+      WeaponElementDependencyType: {
+        TRUE: "",
+        FALSE: ""
       }
     },
     models: {
@@ -271,11 +321,6 @@ const dictionary: dictionary = {
         id: "",
         state: "",
         name: "",
-        type: "",
-        mpCost: "",
-        mpGain: "",
-        hpCost: "",
-        hpGain: "",
         createdByUserId: "",
         updatedByUserId: "",
         viewCount: "",
@@ -284,8 +329,11 @@ const dictionary: dictionary = {
         updatedAt: "",
         usageTimestamps: "",
         viewTimestamps: "",
+        skillType: "",
         level: "",
-        treeName: "",
+        skillTreeName: "",
+        weaponElementDependencyType: "",
+        element: ""
       }
     },
   },

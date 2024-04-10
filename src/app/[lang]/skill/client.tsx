@@ -1,23 +1,36 @@
 "use client";
 
-import { type $Enums, type Skill } from "@prisma/client";
-import { type getDictionary } from "~/app/get-dictionary";
-import { type Session } from "next-auth";
-import React, { type CSSProperties, useEffect, useState } from "react";
+import type { $Enums, Skill } from "@prisma/client";
 import {
+  type Column,
   type ColumnDef,
-  useReactTable,
   getCoreRowModel,
   getSortedRowModel,
-  type Column,
+  useReactTable,
   flexRender,
 } from "@tanstack/react-table";
-import { useVirtualizer } from "@tanstack/react-virtual";
-import { useBearStore, defaultSkill } from "~/app/store";
+import { type getDictionary } from "~/app/get-dictionary";
+import { type Session } from "next-auth";
+import React, { useState, type CSSProperties, useEffect } from "react";
+import SkillForm from "./skillForm";
 import Button from "../_components/button";
-import { IconFilter, IconCloudUpload } from "../_components/iconsList";
+import {
+  IconCloudUpload,
+  IconElemenWind,
+  IconElementDark,
+  IconElementEarth,
+  IconElementFire,
+  IconElementLight,
+  IconElementNoElement,
+  IconElementWater,
+  IconFilter,
+} from "../_components/iconsList";
+import Dialog from "../_components/dialog";
+import { useVirtualizer } from "@tanstack/react-virtual";
+import { useBearStore } from "~/app/store";
+import { defaultSkill } from "~/app/store";
 
-export default function SkillPageClient(props: {
+export default function MonserPageClient(props: {
   dictionary: ReturnType<typeof getDictionary>;
   session: Session | null;
   skillList: Skill[];
@@ -27,7 +40,6 @@ export default function SkillPageClient(props: {
 
   // 状态管理参数
   const {
-    skill,
     setSkill,
     skillList,
     setSkillList,
@@ -46,9 +58,10 @@ export default function SkillPageClient(props: {
     // 搜索时需要忽略的数据
     const hiddenData: Array<keyof Skill> = [
       "id",
-      // "updatedAt",
-      "updatedByUserId",
       "state",
+      "updatedAt",
+      "updatedByUserId",
+      "createdAt",
       "createdByUserId",
     ];
     const newSkillList: Skill[] = [];
@@ -68,7 +81,7 @@ export default function SkillPageClient(props: {
   };
 
   // 定义不需要展示的列
-  const hiddenData: Array<keyof Skill> = ["id", "updatedByUserId"];
+  const hiddenData: Array<keyof Skill> = ["id"];
 
   // 列定义
   const columns = React.useMemo<ColumnDef<Skill>[]>(
@@ -83,14 +96,25 @@ export default function SkillPageClient(props: {
         accessorKey: "name",
         header: () => dictionary.db.models.skill.name,
         cell: (info) => info.getValue(),
-        size: 150,
+        size: 180,
       },
       {
-        accessorKey: "type",
-        header: () => dictionary.db.models.skill.type,
-        cell: (info) =>
-          dictionary.db.enums.SkillType[info.getValue<$Enums.SkillType>()],
-        size: 120,
+        accessorKey: "element",
+        header: dictionary.db.models.skill.element,
+        cell: (info) => info.getValue(),
+        size: 180,
+      },
+      {
+        accessorKey: "skillTreeName",
+        header: dictionary.db.models.skill.skillTreeName,
+        cell: (info) => info.getValue(),
+        size: 180,
+      },
+      {
+        accessorKey: "skillType",
+        header: dictionary.db.models.skill.skillType,
+        cell: (info) => info.getValue(),
+        size: 180,
       },
       {
         accessorKey: "updatedAt",
@@ -105,10 +129,11 @@ export default function SkillPageClient(props: {
       },
     ],
     [
-      dictionary.db.enums.SkillType,
+      dictionary.db.models.skill.element,
       dictionary.db.models.skill.id,
       dictionary.db.models.skill.name,
-      dictionary.db.models.skill.type,
+      dictionary.db.models.skill.skillTreeName,
+      dictionary.db.models.skill.skillType,
       dictionary.db.models.skill.updatedAt,
       dictionary.db.models.skill.usageCount,
     ],
@@ -124,8 +149,8 @@ export default function SkillPageClient(props: {
     initialState: {
       sorting: [
         {
-          id: "baseLv",
-          desc: true, // 默认按等级降序排列
+          id: "usageCount",
+          desc: true, // 默认按热度降序排列
         },
       ],
     },
@@ -154,7 +179,7 @@ export default function SkillPageClient(props: {
       if (skill.id !== id) return;
       setSkill(skill);
       setSkillDialogState(true);
-      setSkillFormState("UPDATE");
+      setSkillFormState("DISPLAY");
     });
   };
 
@@ -186,14 +211,22 @@ export default function SkillPageClient(props: {
     // u键监听
     const handleEscapeKeyPress = (e: KeyboardEvent) => {
       if (e.key === "u") {
-        setSkillDialogState(!skillDialogState);
+        setSkillDialogState(true);
+        setSkillFormState("DISPLAY");
       }
     };
     document.addEventListener("keydown", handleEscapeKeyPress);
     return () => {
       document.removeEventListener("keydown", handleEscapeKeyPress);
     };
-  }, [defaultSkillList, skillDialogState, setSkillDialogState, setSkillList]);
+  }, [
+    defaultSkillList,
+    skillDialogState,
+    setSkillDialogState,
+    setSkillFormState,
+    setSkillList,
+    skillList,
+  ]);
 
   return (
     <main className="flex flex-col lg:w-[calc(100dvw-96px)] lg:flex-row">
@@ -201,7 +234,7 @@ export default function SkillPageClient(props: {
         className={`Module1 fixed left-0 top-0 z-50 lg:z-0 ${filterState ? " translate-x-0 " : " -translate-x-full "} flex-none border-transition-color-8 bg-primary-color backdrop-blur-xl lg:sticky lg:translate-x-0 lg:border-x-1.5 lg:bg-transition-color-8 ${filterState ? " pointer-events-auto visible basis-[260px] opacity-100 " : " pointer-events-none invisible basis-[0px] opacity-0 "}`}
       >
         <div
-          className={`Content flex h-dvh w-dvw flex-col-reverse gap-4 overflow-y-auto px-6 pt-8 lg:absolute lg:left-0 lg:top-0 lg:w-[260px] lg:flex-col`}
+          className={`Content flex h-dvh w-dvw flex-col gap-4 overflow-y-auto px-6 pt-8 lg:absolute lg:left-0 lg:top-0 lg:w-[260px]`}
         >
           <div className="Title flex items-center justify-between">
             <h1 className="text-lg">{dictionary.ui.skill.filter}</h1>
@@ -248,18 +281,21 @@ export default function SkillPageClient(props: {
       </div>
       <div className="Module2 flex flex-1 px-3 backdrop-blur-xl">
         <div className="LeftArea sticky top-0 z-10 flex-1"></div>
-        <div className="ModuleContent h-[calc(100dvh-67px)] w-full flex-col overflow-auto lg:h-dvh 2xl:w-[1536px]">
-          <div className="Title sticky left-0 flex flex-col gap-9 py-5 lg:pb-10 lg:pt-20">
-            <div className="Row flex flex-row items-center justify-between gap-4 lg:justify-start">
-              <h1 className="Text hidden text-left text-2xl font-bold lg:block lg:bg-transparent lg:text-4xl">
+        <div
+          ref={tableContainerRef}
+          className="ModuleContent h-[calc(100dvh-67px)] w-full flex-col overflow-auto lg:h-dvh 2xl:w-[1536px]"
+        >
+          <div className="Title sticky left-0 mt-3 flex flex-col gap-9 py-10 lg:py-5 lg:pb-10 lg:pt-20">
+            <div className="Row flex flex-col items-center justify-between gap-10 lg:flex-row lg:justify-start lg:gap-4">
+              <h1 className="Text text-nowrap text-left text-3xl lg:bg-transparent lg:text-4xl">
                 {dictionary.ui.skill.pageTitle}
               </h1>
               <div className="Control flex flex-1 gap-2">
                 <input
                   type="search"
                   placeholder={dictionary.ui.skill.searchPlaceholder}
-                  className="flex-1 border-b-1.5 border-transition-color-20 bg-transparent py-2 backdrop-blur-xl placeholder:text-accent-color-50
-                  hover:border-accent-color-70 hover:bg-transition-color-8 focus:border-accent-color-70 focus:outline-none lg:flex-1 lg:px-5 lg:font-normal"
+                  className="w-full flex-1 rounded-sm border-transition-color-20 bg-transition-color-8 px-3 py-2 backdrop-blur-xl placeholder:text-accent-color-50 hover:border-accent-color-70 hover:bg-transition-color-8
+                  focus:border-accent-color-70 focus:outline-none lg:flex-1 lg:rounded-none lg:border-b-1.5 lg:bg-transparent lg:px-5 lg:font-normal"
                   onChange={(e) => handleSearchFilterChange(e.target.value)}
                 />
                 <Button // 仅移动端显示
@@ -274,14 +310,18 @@ export default function SkillPageClient(props: {
                   icon={<IconFilter />}
                   onClick={() => setFilterState(!filterState)}
                 ></Button>
-                {session?.user ? (
+
+                {session?.user && (
                   <React.Fragment>
                     <Button // 仅移动端显示
                       size="sm"
                       level="tertiary"
                       icon={<IconCloudUpload />}
                       className="flex lg:hidden"
-                      onClick={() => setSkillDialogState(true)}
+                      onClick={() => {
+                        setSkillDialogState(true);
+                        setSkillFormState("CREATE");
+                      }}
                     ></Button>
                     <Button // 仅PC端显示
                       level="primary"
@@ -296,7 +336,7 @@ export default function SkillPageClient(props: {
                       {dictionary.ui.skill.upload} [u]
                     </Button>
                   </React.Fragment>
-                ) : undefined}
+                )}
               </div>
             </div>
             <div className="Discription my-3 hidden rounded-sm bg-transition-color-8 p-3 lg:block">
@@ -329,7 +369,7 @@ export default function SkillPageClient(props: {
                             {...{
                               onClick: header.column.getToggleSortingHandler(),
                             }}
-                            className={`border-1 flex-1 border-transition-color-8 px-3 py-3 text-left hover:bg-transition-color-8 lg:py-3 ${
+                            className={`border-1 flex-1 border-transition-color-8 px-3 py-3 text-left hover:bg-transition-color-8 ${
                               header.column.getCanSort()
                                 ? "cursor-pointer select-none"
                                 : ""
@@ -345,40 +385,40 @@ export default function SkillPageClient(props: {
                             }[header.column.getIsSorted() as string] ?? null}
                           </div>
                           {/* {!header.isPlaceholder &&
-                              header.column.getCanPin() && ( // 固定列
-                                <div className="flex gap-1 p-2">
-                                  {header.column.getIsPinned() !== "left" ? (
-                                    <button
-                                      className="flex-1 rounded bg-transition-color-8 px-1"
-                                      onClick={() => {
-                                        header.column.pin("left");
-                                      }}
-                                    >
-                                      {"<"}
-                                    </button>
-                                  ) : null}
-                                  {header.column.getIsPinned() ? (
-                                    <button
-                                      className="flex-1 rounded bg-transition-color-8 px-1"
-                                      onClick={() => {
-                                        header.column.pin(false);
-                                      }}
-                                    >
-                                      X
-                                    </button>
-                                  ) : null}
-                                  {header.column.getIsPinned() !== "right" ? (
-                                    <button
-                                      className="flex-1 rounded bg-transition-color-8 px-1"
-                                      onClick={() => {
-                                        header.column.pin("right");
-                                      }}
-                                    >
-                                      {">"}
-                                    </button>
-                                  ) : null}
-                                </div>
-                              )} */}
+                            header.column.getCanPin() && ( // 固定列
+                              <div className="flex">
+                                {header.column.getIsPinned() !== "left" ? (
+                                  <button
+                                    className="flex-1 rounded bg-transition-color-8 px-1"
+                                    onClick={() => {
+                                      header.column.pin("left");
+                                    }}
+                                  >
+                                    {"←"}
+                                  </button>
+                                ) : null}
+                                {header.column.getIsPinned() ? (
+                                  <button
+                                    className="flex-1 rounded bg-transition-color-8 px-1"
+                                    onClick={() => {
+                                      header.column.pin(false);
+                                    }}
+                                  >
+                                    {"x"}
+                                  </button>
+                                ) : null}
+                                {header.column.getIsPinned() !== "right" ? (
+                                  <button
+                                    className="flex-1 rounded bg-transition-color-8 px-1"
+                                    onClick={() => {
+                                      header.column.pin("right");
+                                    }}
+                                  >
+                                    {"→"}
+                                  </button>
+                                ) : null}
+                              </div>
+                            )} */}
                         </th>
                       );
                     })}
@@ -412,45 +452,65 @@ export default function SkillPageClient(props: {
                         // 默认隐藏的数据
                         return;
                       }
-                      return (
-                        <td
-                          key={cell.id}
-                          style={{
-                            ...getCommonPinningStyles(column),
-                          }}
-                          className={
-                            `px-3 py-6 ` +
-                            ((key: string, value) => {
-                              switch (key) {
-                                case "element": // 元素
-                                  switch (value) {
-                                    case "WATER":
-                                      return "text-water";
-                                    case "FIRE":
-                                      return "text-fire";
-                                    case "EARTH":
-                                      return "text-earth";
-                                    case "WIND":
-                                      return "text-wind";
-                                    case "LIGHT":
-                                      return "text-light";
-                                    case "DARK":
-                                      return "text-dark";
-                                    default:
-                                      return "";
-                                  }
-                                default:
-                                  return "";
-                              }
-                            })(cell.column.id, cell.getValue())
-                          }
+
+                      switch (
+                        cell.column.id as Exclude<
+                          keyof Skill,
+                          keyof typeof hiddenData
                         >
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext(),
-                          )}
-                        </td>
-                      );
+                      ) {
+                        case "name":
+                          return (
+                            <td
+                              key={cell.id}
+                              style={{
+                                ...getCommonPinningStyles(column),
+                              }}
+                              className="flex flex-col justify-center px-3 py-6"
+                            >
+                              <span className=" text-lg font-bold">
+                                {flexRender(
+                                  cell.column.columnDef.cell,
+                                  cell.getContext(),
+                                )}
+                              </span>
+                            </td>
+                          );
+
+                        default: {
+                          return (
+                            <td
+                              key={cell.id}
+                              style={{
+                                ...getCommonPinningStyles(column),
+                              }}
+                              className={`flex flex-col justify-center px-3 py-6 `}
+                            >
+                              {((cell) => {
+                                try {
+                                  const content =
+                                    dictionary.db.enums[
+                                      (cell.column.id
+                                        .charAt(0)
+                                        .toLocaleUpperCase() +
+                                        cell.column.id.slice(
+                                          1,
+                                        )) as keyof typeof $Enums
+                                    ][
+                                      cell.getValue() as keyof (typeof $Enums)[keyof typeof $Enums]
+                                    ];
+                                  return content;
+                                } catch (error) {
+                                  return flexRender(
+                                    cell.column.columnDef.cell,
+                                    cell.getContext(),
+                                  );
+                                }
+                              })(cell)}
+                            </td>
+                          );
+                        }
+                      }
                     })}
                   </tr>
                 );
@@ -460,6 +520,15 @@ export default function SkillPageClient(props: {
         </div>
         <div className="RightArea sticky top-0 z-10 flex-1"></div>
       </div>
+      <Dialog state={skillDialogState} setState={setSkillDialogState}>
+        {skillDialogState && (
+          <SkillForm
+            dictionary={dictionary}
+            session={session}
+            setDefaultSkillList={setDefaultSkillList}
+          />
+        )}
+      </Dialog>
     </main>
   );
 }

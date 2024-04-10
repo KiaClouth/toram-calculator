@@ -1,8 +1,7 @@
-import React from "react";
-import { type Locale } from "~/app/i18n-config";
-import { getDictionary } from "~/app/get-dictionary";
-import { getServerAuthSession } from "~/server/auth";
 import { api } from "~/trpc/server";
+import { getDictionary } from "~/app/get-dictionary";
+import { type Locale } from "~/app/i18n-config";
+import { getServerAuthSession } from "~/server/auth";
 import SkillPageClient from "./client";
 
 export default async function CharacterPage({
@@ -15,6 +14,10 @@ export default async function CharacterPage({
   const skillList = await api.skill.getUserVisbleList.query();
 
   return (
-    <SkillPageClient session={session} dictionary={dictionary} skillList={skillList} />
+    <SkillPageClient
+      session={session}
+      dictionary={dictionary}
+      skillList={skillList}
+    />
   );
 }

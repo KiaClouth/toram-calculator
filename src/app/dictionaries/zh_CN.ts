@@ -26,7 +26,7 @@ const dictionary: dictionary = {
       cancel: "取消",
       close: "关闭",
       pageTitle: "怪物信息表",
-      discription: "表中记录的应该是1星状态下的定点王数据，2/3/4星的经验和HP为1星的2/5/10倍；2/3/4星的物防、魔防、回避值为1星的2/4/6倍。",
+      discription: "表中记录的应该是1星状态下的定点王数据， 2 / 3 / 4 星的经验和HP为1星的 2 / 5 / 10 倍；物防、魔防、回避值为1星的 2 / 4 / 6 倍。",
       columnsHidden: "隐藏列",
       filter: "过滤",
     },
@@ -173,61 +173,111 @@ const dictionary: dictionary = {
         GEM_POWDER_DROP: ""
       },
       ModifiersValueType: {
-        FLAT_BONUS: "",
-        PERCENTAGE_BONUS: ""
+        FLAT_BONUS: "常数",
+        PERCENTAGE_BONUS: "百分比"
       },
       SpecialAbiType: {
-        NULL: "",
-        LUC: "",
-        CRI: "",
-        TEC: "",
-        MEN: ""
+        NULL: "无",
+        LUC: "幸运",
+        CRI: "暴击",
+        TEC: "技巧",
+        MEN: "异抗"
       },
       MainWeaType: {
-        NO_WEAPOEN: "",
-        ONE_HAND_SWORD: "",
-        TWO_HANDS_SWORD: "",
-        BOW: "",
-        STAFF: "",
-        MAGIC_DEVICE: "",
-        KNUCKLE: "",
-        HALBERD: "",
-        KATANA: ""
+        NO_WEAPOEN: "空",
+        ONE_HAND_SWORD: "单手剑",
+        TWO_HANDS_SWORD: "双手剑",
+        BOW: "弓",
+        STAFF: "法杖",
+        MAGIC_DEVICE: "魔导具",
+        KNUCKLE: "拳套",
+        HALBERD: "旋风枪",
+        KATANA: "拔刀剑"
       },
       SubWeaType: {
-        NO_WEAPOEN: "",
-        ONE_HAND_SWORD: "",
-        MAGIC_DEVICE: "",
-        KNUCKLE: "",
-        KATANA: "",
-        ARROW: "",
-        DAGGER: "",
-        NINJUTSUSCROLL: "",
-        SHIELD: ""
+        NO_WEAPOEN: "空",
+        ONE_HAND_SWORD: "单手剑",
+        MAGIC_DEVICE: "魔导具",
+        KNUCKLE: "拳套",
+        KATANA: "拔刀剑",
+        ARROW: "箭矢",
+        DAGGER: "小刀",
+        NINJUTSUSCROLL: "忍术卷轴",
+        SHIELD: "盾牌"
       },
       BodyArmorType: {
-        NORMAL: "",
-        LIGHT: "",
-        HEAVY: ""
+        NORMAL: "一般",
+        LIGHT: "轻化",
+        HEAVY: "重化"
       },
       CrystalType: {
-        GENERAL: "",
-        WEAPONCRYSTAL: "",
-        BODYCRYSTAL: "",
-        ADDITIONALCRYSTAL: "",
-        SPECIALCRYSTAL: ""
+        GENERAL: "通用锻晶",
+        WEAPONCRYSTAL: "武器锻晶",
+        BODYCRYSTAL: "身体锻晶",
+        ADDITIONALCRYSTAL: "追加锻晶",
+        SPECIALCRYSTAL: "特殊锻晶"
       },
       SkillType: {
-        BUFF: "",
-        DAMAGE: ""
+        ACTIVE_SKILL: "主动技能",
+        PASSIVE_SKILL: "被动技能"
       },
       SkillTreeName: {
-        SWORLD: "",
-        MAGIC: ""
+        SWORLD: "剑系技能树",
+        MAGIC: "魔法技能树"
       },
       UserRole: {
-        USER: "",
-        ADMIN: ""
+        USER: "常规用户",
+        ADMIN: "管理员"
+      },
+      ComputedFields: {
+        S_LV: "",
+        C_LV: "",
+        C_BS: "",
+        C_BI: "",
+        C_BV: "",
+        C_BA: "",
+        C_BD: "",
+        C_BC: "",
+        C_S: "",
+        C_I: "",
+        C_V: "",
+        C_A: "",
+        C_D: "",
+        C_HP: "",
+        C_MP: "",
+        C_PATK: "",
+        C_MATK: "",
+        C_VPATK: "",
+        C_VMATK: "",
+        M_LV: "",
+        M_HP: "",
+        M_PDEF: "",
+        M_PRES: "",
+        M_MDEF: "",
+        M_MRES: "",
+        CONSTANT: ""
+      },
+      Operator: {
+        EQUALS: "等于",
+        AND: "并且",
+        OR: "或者",
+        NOT: "非",
+        GREATER: "大于",
+        LESS: "小于",
+        ADD: "加上",
+        SUB: "减去",
+        MULTI: "乘以",
+        DIV: "除以"
+      },
+      TriggerTimingType: {
+        ON_USE: "使用时",
+        PER_SECOND: "每秒",
+        PER_USE_SKILL: "每次使用技能时",
+        NEXT_SKILL: "下一个技能"
+      },
+      WeaponElementDependencyType: {
+        TRUE: "继承",
+        FALSE: "不继承"
       }
     },
     models: {
@@ -268,24 +318,22 @@ const dictionary: dictionary = {
         viewTimestamps: "被查看记录",
       },
       skill: {
-        id: "",
-        state: "",
-        name: "",
-        type: "",
-        mpCost: "",
-        mpGain: "",
-        hpCost: "",
-        hpGain: "",
-        createdByUserId: "",
-        updatedByUserId: "",
-        viewCount: "",
-        usageCount: "",
-        createdAt: "",
-        updatedAt: "",
+        id: "ID",
+        state: "状态",
+        name: "名称",
+        createdByUserId: "创建者ID",
+        updatedByUserId: "更新者ID",
+        viewCount: "被查看次数",
+        usageCount: "被使用次数",
+        createdAt: "创建于",
+        updatedAt: "更新于",
         usageTimestamps: "",
         viewTimestamps: "",
-        level: "",
-        treeName: "",
+        skillType: "类型",
+        level: "等级",
+        skillTreeName: "所属技能树",
+        weaponElementDependencyType: "属性是否继承武器",
+        element: "自身元素属性"
       }
     },
   },
