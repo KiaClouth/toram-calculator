@@ -334,6 +334,14 @@ const dictionary: dictionary = {
         skillTreeName: "",
         weaponElementDependencyType: "",
         element: ""
+      },
+      user: {
+        id: "账号ID",
+        name: "用户名",
+        email: "邮件地址",
+        emailVerified: "邮件邀请时间",
+        image: "头像",
+        role: "身份类型"
       }
     },
   },

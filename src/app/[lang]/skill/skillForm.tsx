@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect } from "react";
 
-import { api } from "~/trpc/react";
+import { tApi } from "~/trpc/react";
 import type { getDictionary } from "~/app/get-dictionary";
 import Button from "../_components/button";
 import { type Skill as zSkill, SkillSchema } from "prisma/generated/zod";
@@ -18,7 +18,7 @@ export default function SkillForm(props: {
   setDefaultSkillList: (list: Skill[]) => void;
 }) {
   const { dictionary, session, setDefaultSkillList } = props;
-  const newListQuery = api.skill.getUserVisbleList.useQuery();
+  const newListQuery = tApi.skill.getUserVisbleList.useQuery();
   // 状态管理参数
   const {
     skill,
@@ -112,7 +112,7 @@ export default function SkillForm(props: {
     }
     return ZodFirstPartyTypeKind.ZodUndefined;
   };
-  const createSkill = api.skill.create.useMutation({
+  const createSkill = tApi.skill.create.useMutation({
     onSuccess: async () => {
       // 创建成功后重新获取数据
       const newList = await newListQuery.refetch();
@@ -126,7 +126,7 @@ export default function SkillForm(props: {
       setSkillFormState("DISPLAY");
     },
   });
-  const updateSkill = api.skill.update.useMutation({
+  const updateSkill = tApi.skill.update.useMutation({
     onSuccess: async () => {
       // 更新成功后重新获取数据
       const newList = await newListQuery.refetch();

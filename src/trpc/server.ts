@@ -28,7 +28,7 @@ const createContext = cache(() => {
   });
 });
 
-export const api = createTRPCProxyClient<AppRouter>({
+export const sApi = createTRPCProxyClient<AppRouter>({
   transformer,
   links: [
     loggerLink({

@@ -1,4 +1,4 @@
-import { api } from "~/trpc/server";
+import { sApi } from "~/trpc/server";
 import { getDictionary } from "~/app/get-dictionary";
 import { type Locale } from "~/app/i18n-config";
 import { getServerAuthSession } from "~/server/auth";
@@ -11,7 +11,7 @@ export default async function MonsterPage({
 }) {
   const dictionary = getDictionary(lang);
   const session = await getServerAuthSession();
-  const monsterList = await api.monster.getUserVisbleList.query();
+  const monsterList = await sApi.monster.getUserVisbleList.query();
 
   return (
     <MonserPageClient

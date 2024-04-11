@@ -1,4 +1,4 @@
-import type { $Enums, Monster, Skill } from "@prisma/client";
+import type { $Enums, Monster, Skill, User } from "@prisma/client";
 
 // 为了方便编辑器自动补全，这个方法可以将数据库模型的值类型转换为字符串
 type ConvertToAllString<T> = T extends object
@@ -59,6 +59,7 @@ interface dictionary {
     models: {
       monster: ConvertToAllString<Monster>;
       skill: ConvertToAllString<Skill>;
+      user: ConvertToAllString<User>
     };
   };
 }

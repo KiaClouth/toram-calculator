@@ -29,12 +29,15 @@ import Dialog from "../_components/dialog";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { useBearStore } from "~/app/store";
 import { defaultMonster } from "~/app/store";
+import { type sApi } from "~/trpc/server";
 
-export default function MonserPageClient(props: {
+interface Props {
   dictionary: ReturnType<typeof getDictionary>;
   session: Session | null;
   monsterList: Monster[];
-}) {
+}
+
+export default function MonserPageClient(props: Props) {
   const { dictionary, session } = props;
   const [defaultMonsterList, setDefaultMonsterList] = useState(
     props.monsterList,
@@ -518,7 +521,7 @@ export default function MonserPageClient(props: {
                       position: "absolute",
                       transform: `translateY(${virtualRow.start}px)`, //this should always be a `style` as it changes on scroll
                     }}
-                    className={`group flex cursor-pointer border-y-1.5 border-transition-color-8 transition-none hover:border-brand-color-1st`}
+                    className={`group flex cursor-pointer border-y-1.5 border-transition-color-8 transition-none hover:border-brand-color-1st hover:bg-transition-color-8`}
                     onClick={() => handleTrClick(row.getValue("id"))}
                   >
                     {row.getVisibleCells().map((cell) => {
@@ -576,7 +579,7 @@ export default function MonserPageClient(props: {
                                 ...getCommonPinningStyles(column),
                               }}
                               className={
-                                "flex flex-col justify-center px-3 py-6 underline underline-offset-4 "
+                                "flex flex-col justify-center px-3 py-6"
                               }
                             >
                               {icon}

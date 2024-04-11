@@ -334,6 +334,14 @@ const dictionary: dictionary = {
         skillTreeName: "所属技能树",
         weaponElementDependencyType: "属性是否继承武器",
         element: "自身元素属性"
+      },
+      user: {
+        id: "账号ID",
+        name: "用户名",
+        email: "邮件地址",
+        emailVerified: "邮件邀请时间",
+        image: "头像",
+        role: "身份类型"
       }
     },
   },

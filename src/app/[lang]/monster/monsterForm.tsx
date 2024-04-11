@@ -1,7 +1,8 @@
 "use client";
 import React, { useEffect } from "react";
 
-import { api } from "~/trpc/react";
+import { tApi } from "~/trpc/react";
+import { type sApi } from "~/trpc/server";
 import type { getDictionary } from "~/app/get-dictionary";
 import Button from "../_components/button";
 import { type Monster as zMonster, MonsterSchema } from "prisma/generated/zod";
@@ -24,10 +25,10 @@ import {
 export default function MonsterForm(props: {
   dictionary: ReturnType<typeof getDictionary>;
   session: Session | null;
-  setDefaultMonsterList: (list: Monster[]) => void;
+  setDefaultMonsterList: (list: Awaited<ReturnType<typeof sApi.monster.getUserVisbleList.query>>) => void;
 }) {
   const { dictionary, session, setDefaultMonsterList } = props;
-  const newListQuery = api.monster.getUserVisbleList.useQuery();
+  const newListQuery = tApi.monster.getUserVisbleList.useQuery();
   // 状态管理参数
   const {
     monster,
@@ -121,7 +122,7 @@ export default function MonsterForm(props: {
     }
     return ZodFirstPartyTypeKind.ZodUndefined;
   };
-  const createMonster = api.monster.create.useMutation({
+  const createMonster = tApi.monster.create.useMutation({
     onSuccess: async () => {
       // 创建成功后重新获取数据
       const newList = await newListQuery.refetch();
@@ -135,7 +136,7 @@ export default function MonsterForm(props: {
       setMonsterFormState("DISPLAY");
     },
   });
-  const updateMonster = api.monster.update.useMutation({
+  const updateMonster = tApi.monster.update.useMutation({
     onSuccess: async () => {
       // 更新成功后重新获取数据
       const newList = await newListQuery.refetch();
@@ -261,7 +262,6 @@ export default function MonsterForm(props: {
                                       key={key + option}
                                       className={`flex cursor-pointer items-center justify-between gap-2 rounded-full p-2 px-4 hover:border-transition-color-20 lg:flex-row-reverse lg:justify-end lg:rounded-sm lg:hover:opacity-100 ${field.getValue() === option ? "opacity-100" : "opacity-20"} ${monsterFormState === "DISPLAY" ? " pointer-events-none border-transparent bg-transparent" : " pointer-events-auto border-transition-color-8 bg-transition-color-8"}`}
                                     >
-                                      {icon}
                                       {
                                         dictionary.db.enums[
                                           (key.charAt(0).toLocaleUpperCase() +
@@ -283,8 +283,9 @@ export default function MonsterForm(props: {
                                         onChange={(e) =>
                                           field.handleChange(e.target.value)
                                         }
-                                        className={` mt-0.5 rounded px-4 py-2`}
+                                        className={` hidden mt-0.5 rounded px-4 py-2`}
                                       />
+                                      {icon}
                                     </label>
                                   );
                                 })}

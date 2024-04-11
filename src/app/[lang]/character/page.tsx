@@ -3,7 +3,7 @@ import CharacterPageClient from "./client";
 import { type Locale } from "~/app/i18n-config";
 import { getDictionary } from "~/app/get-dictionary";
 import { getServerAuthSession } from "~/server/auth";
-import { api } from "~/trpc/server";
+import { sApi } from "~/trpc/server";
 import { type Element } from "@prisma/client";
 
 const variableBonus = {
@@ -276,7 +276,7 @@ export default async function CharacterPage({
 }) {
   const dictionary = getDictionary(lang);
   const session = await getServerAuthSession();
-  const characterList = await api.character.getAll.query();
+  const characterList = await sApi.character.getAll.query();
   const cLv = 1;
   const cAbi: abi = {
     str: 1,

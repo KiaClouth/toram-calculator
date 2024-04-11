@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 
-import { api } from "~/trpc/react";
+import { tApi } from "~/trpc/react";
 import type { getDictionary } from "~/app/get-dictionary";
 
 import type { Session } from "next-auth";
@@ -35,18 +35,19 @@ export default function CreateMonster(props: {
       </React.Fragment>
     );
   }
+
+  const createMonster = tApi.monster.create.useMutation({
+    onSuccess: () => {
+      router.refresh();
+    },
+  });
+  
   const form = useForm({
     defaultValues: defaultMonster,
     onSubmit: async ({ value }) => {
       createMonster.mutate(value);
     },
     validatorAdapter: zodValidator,
-  });
-
-  const createMonster = api.monster.create.useMutation({
-    onSuccess: () => {
-      router.refresh();
-    },
   });
 
   const toggleState = () => {
