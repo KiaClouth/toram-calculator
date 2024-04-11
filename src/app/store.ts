@@ -9,7 +9,7 @@ import type { Monster, Skill } from "@prisma/client";
 // 怪物表单的默认值
 export const defaultMonster: Monster = {
   id: "",
-  state: "PRIVATE",
+  state: "PUBLIC",
   name: "",
   monsterType: "COMMON_BOSS",
   baseLv: 0,

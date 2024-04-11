@@ -101,6 +101,7 @@ export default function MonsterForm(props: {
         default:
           break;
       }
+      setMonsterDialogState(false);
     },
     validatorAdapter: zodValidator,
   });

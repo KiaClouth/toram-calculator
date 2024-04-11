@@ -111,7 +111,7 @@ export default function MonserPageClient(props: Props) {
         accessorKey: "name",
         header: () => dictionary.db.models.monster.name,
         cell: (info) => info.getValue(),
-        size: 180,
+        size: 220,
       },
       {
         accessorKey: "address",
@@ -290,8 +290,8 @@ export default function MonserPageClient(props: Props) {
     // u键监听
     const handleEscapeKeyPress = (e: KeyboardEvent) => {
       if (e.key === "u") {
+        setMonsterFormState("CREATE");
         setMonsterDialogState(true);
-        setMonsterFormState("DISPLAY");
       }
     };
     document.addEventListener("keydown", handleEscapeKeyPress);
