@@ -16,13 +16,6 @@ import SkillForm from "./skillForm";
 import Button from "../_components/button";
 import {
   IconCloudUpload,
-  IconElemenWind,
-  IconElementDark,
-  IconElementEarth,
-  IconElementFire,
-  IconElementLight,
-  IconElementNoElement,
-  IconElementWater,
   IconFilter,
 } from "../_components/iconsList";
 import Dialog from "../_components/dialog";

@@ -718,7 +718,7 @@ export const IconElementEarth = (props: React.SVGAttributes<SVGElement>) => {
   );
 };
 
-export const IconElemenWind = (props: React.SVGAttributes<SVGElement>) => {
+export const IconElementWind = (props: React.SVGAttributes<SVGElement>) => {
   return (
     <svg width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
 <path d="M36 70.8236C55.2325 70.8236 70.8236 55.2326 70.8236 36C70.8236 16.7675 55.2325 1.17651 36 1.17651C16.7675 1.17651 1.17651 16.7675 1.17651 36C1.17651 55.2326 16.7675 70.8236 36 70.8236Z" fill="url(#paint0_radial_741_5481)"/>

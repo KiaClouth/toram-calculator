@@ -16,7 +16,7 @@ import MonsterForm from "./monsterForm";
 import Button from "../_components/button";
 import {
   IconCloudUpload,
-  IconElemenWind,
+  IconElementWind,
   IconElementDark,
   IconElementEarth,
   IconElementFire,
@@ -555,107 +555,34 @@ export default function MonserPageClient(props: {
                             </td>
                           );
 
-                        case "element":
-                          switch (cell.getValue()) {
-                            case "WATER":
-                              return (
-                                <td
-                                  key={cell.id}
-                                  style={{
-                                    ...getCommonPinningStyles(column),
-                                  }}
-                                  className={
-                                    "flex flex-col justify-center px-3 py-6 underline underline-offset-4 "
-                                  }
-                                >
-                                  <IconElementWater className="h-12 w-12" />
-                                </td>
-                              );
-                            case "FIRE":
-                              return (
-                                <td
-                                  key={cell.id}
-                                  style={{
-                                    ...getCommonPinningStyles(column),
-                                  }}
-                                  className={
-                                    "flex flex-col justify-center px-3 py-6 underline underline-offset-4 "
-                                  }
-                                >
-                                  <IconElementFire className="h-12 w-12" />
-                                </td>
-                              );
-                            case "EARTH":
-                              return (
-                                <td
-                                  key={cell.id}
-                                  style={{
-                                    ...getCommonPinningStyles(column),
-                                  }}
-                                  className={
-                                    "flex flex-col justify-center px-3 py-6 underline underline-offset-4 "
-                                  }
-                                >
-                                  <IconElementEarth className="h-12 w-12" />
-                                </td>
-                              );
-                            case "WIND":
-                              return (
-                                <td
-                                  key={cell.id}
-                                  style={{
-                                    ...getCommonPinningStyles(column),
-                                  }}
-                                  className={
-                                    "flex flex-col justify-center px-3 py-6 underline underline-offset-4 "
-                                  }
-                                >
-                                  <IconElemenWind className="h-12 w-12" />
-                                </td>
-                              );
-                            case "LIGHT":
-                              return (
-                                <td
-                                  key={cell.id}
-                                  style={{
-                                    ...getCommonPinningStyles(column),
-                                  }}
-                                  className={
-                                    "flex flex-col justify-center px-3 py-6 underline underline-offset-4 "
-                                  }
-                                >
-                                  <IconElementLight className="h-12 w-12" />
-                                </td>
-                              );
-                            case "DARK":
-                              return (
-                                <td
-                                  key={cell.id}
-                                  style={{
-                                    ...getCommonPinningStyles(column),
-                                  }}
-                                  className={
-                                    "flex flex-col justify-center px-3 py-6 underline underline-offset-4 "
-                                  }
-                                >
-                                  <IconElementDark className="h-12 w-12" />
-                                </td>
-                              );
-                            default:
-                              return (
-                                <td
-                                  key={cell.id}
-                                  style={{
-                                    ...getCommonPinningStyles(column),
-                                  }}
-                                  className={
-                                    "flex flex-col justify-center px-3 py-6 underline underline-offset-4 "
-                                  }
-                                >
-                                  <IconElementNoElement className="h-12 w-12" />
-                                </td>
-                              );
-                          }
+                        case "element": {
+                          const icon =
+                            {
+                              WATER: <IconElementWater className="h-12 w-12" />,
+                              FIRE: <IconElementFire className="h-12 w-12" />,
+                              EARTH: <IconElementEarth className="h-12 w-12" />,
+                              WIND: <IconElementWind className="h-12 w-12" />,
+                              LIGHT: <IconElementLight className="h-12 w-12" />,
+                              DARK: <IconElementDark className="h-12 w-12" />,
+                              NO_ELEMENT: (
+                                <IconElementNoElement className="h-12 w-12" />
+                              ),
+                            }[cell.getValue() as keyof typeof $Enums.Element] ??
+                            undefined;
+                          return (
+                            <td
+                              key={cell.id}
+                              style={{
+                                ...getCommonPinningStyles(column),
+                              }}
+                              className={
+                                "flex flex-col justify-center px-3 py-6 underline underline-offset-4 "
+                              }
+                            >
+                              {icon}
+                            </td>
+                          );
+                        }
 
                         // 以下值需要添加百分比符号
                         case "physicalResistance":
