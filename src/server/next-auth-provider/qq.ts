@@ -59,7 +59,10 @@ export default function QQProvider<P extends QQProfile>(
         url.searchParams.append("client_id", options.clientId);
         url.searchParams.append("client_secret", options.clientSecret);
         url.searchParams.append("redirect_uri", callbackUrl);
-        url.searchParams.append("code", params.code!);
+        url.searchParams.append("code", params.code ?? "未知");
+        console.log("正在尝试QQ登录的用户其client_id是:", options.clientId);
+        console.log("正在尝试QQ登录的用户其client_secret是:", options.clientSecret);
+        console.log("正在尝试QQ登录的用户其redirect_uri是:", callbackUrl);
         console.log("正在尝试QQ登录的用户其params.code是:", params.code);
         const res = await fetch(url).then((res) => res.text());
         const accessToken = new URLSearchParams(res).get("access_token") ?? "";
@@ -69,21 +72,24 @@ export default function QQProvider<P extends QQProfile>(
         return { tokens };
       },
     },
+    
     userinfo: {
       url: userinfoUrl,
       async request({ tokens }) {
         const getOpenIdUrl = new URL(openIdUrl);
         getOpenIdUrl.searchParams.append("access_token", tokens.access_token ?? "");
+        console.log("正在尝试QQ登录的用户其access_token是：", tokens.access_token ?? "")
         getOpenIdUrl.searchParams.append("fmt", "json" );
         const openIdObj = await fetch(getOpenIdUrl).then(async (res) => (await res.json()) as { "client_id": string; openid: string });
         const openId = openIdObj.openid
+        console.log("正在尝试QQ登录的用户其openId是：", openId)
 
         const getUserInfoUrl = new URL(userinfoUrl);
         getUserInfoUrl.searchParams.append("access_token", tokens.access_token ?? "");
         getUserInfoUrl.searchParams.append("oauth_consumer_key", options.clientId);
         getUserInfoUrl.searchParams.append("openid", openId);
         const profile = await fetch(getUserInfoUrl).then(async (res) => (await res.json()) as QQProfile);
-        console.log("正在尝试QQ登录的用户其昵称是：" + profile.nickname)
+        console.log("正在尝试QQ登录的用户其信息是：", profile)
         return {
           ...profile,
           open_id: openId
