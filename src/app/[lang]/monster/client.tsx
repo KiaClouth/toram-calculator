@@ -29,7 +29,6 @@ import Dialog from "../_components/dialog";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { useBearStore } from "~/app/store";
 import { defaultMonster } from "~/app/store";
-import { type sApi } from "~/trpc/server";
 
 interface Props {
   dictionary: ReturnType<typeof getDictionary>;
@@ -257,6 +256,7 @@ export default function MonserPageClient(props: Props) {
     monsterList.forEach((monster) => {
       if (monster.id !== id) return;
       setMonster(monster);
+      setSameNameMonsterList(compusteSameNameMonsterList(monster));
       setMonsterDialogState(true);
       setMonsterFormState("DISPLAY");
     });
@@ -283,6 +283,17 @@ export default function MonserPageClient(props: Props) {
           : undefined;
     }
     return styles;
+  };
+
+  // 弹出层怪物名称列表
+  const [sameNameMonsterList, setSameNameMonsterList] = useState<Monster[]>([]);
+  const compusteSameNameMonsterList = (monster: Monster) => {
+    console.log("当前monster", monster);
+    const list: Monster[] = [];
+    monsterList.forEach((m) => {
+      m.name === monster.name && list.push(m);
+    });
+    return list;
   };
 
   useEffect(() => {
@@ -361,11 +372,11 @@ export default function MonserPageClient(props: Props) {
         <div className="LeftArea sticky top-0 z-10 flex-1"></div>
         <div
           ref={tableContainerRef}
-          className="ModuleContent h-[calc(100dvh-67px)] w-full flex-col overflow-auto lg:h-dvh 2xl:w-[1536px]"
+          className="ModuleContent h-[calc(100dvh-67px)] w-full flex-col overflow-auto lg:h-dvh lg:w-[calc(100dvw-130px)] 2xl:w-[1536px]"
         >
-          <div className="Title sticky left-0 mt-3 flex flex-col gap-9 py-10 lg:py-5 lg:pb-10 lg:pt-20">
+          <div className="Title sticky left-0 mt-3 flex flex-col gap-9 py-5 lg:pt-20">
             <div className="Row flex flex-col items-center justify-between gap-10 lg:flex-row lg:justify-start lg:gap-4">
-              <h1 className="Text text-nowrap text-left text-3xl lg:bg-transparent lg:text-4xl">
+              <h1 className="Text text-left text-3xl lg:bg-transparent lg:text-4xl">
                 {dictionary.ui.monster.pageTitle}
               </h1>
               <div className="Control flex flex-1 gap-2">
@@ -447,7 +458,7 @@ export default function MonserPageClient(props: Props) {
                             {...{
                               onClick: header.column.getToggleSortingHandler(),
                             }}
-                            className={`border-1 flex-1 border-transition-color-8 px-3 py-3 text-left hover:bg-transition-color-8 ${
+                            className={`border-1 flex-1 border-transition-color-8 px-3 py-6 text-left hover:bg-transition-color-8 ${
                               header.column.getCanSort()
                                 ? "cursor-pointer select-none"
                                 : ""
@@ -521,7 +532,7 @@ export default function MonserPageClient(props: Props) {
                       position: "absolute",
                       transform: `translateY(${virtualRow.start}px)`, //this should always be a `style` as it changes on scroll
                     }}
-                    className={`group flex cursor-pointer border-y-1.5 border-transition-color-8 transition-none hover:border-brand-color-1st hover:bg-transition-color-8`}
+                    className={`group flex cursor-pointer border-y-1.5 border-transition-color-8 transition-none hover:rounded hover:border-transparent hover:bg-transition-color-8 hover:font-bold`}
                     onClick={() => handleTrClick(row.getValue("id"))}
                   >
                     {row.getVisibleCells().map((cell) => {
@@ -544,7 +555,7 @@ export default function MonserPageClient(props: Props) {
                               style={{
                                 ...getCommonPinningStyles(column),
                               }}
-                              className="flex flex-col justify-center px-3 py-6"
+                              className="flex flex-col justify-center px-3 py-6 lg:py-8"
                             >
                               <span className=" text-lg font-bold">
                                 {flexRender(
@@ -552,8 +563,11 @@ export default function MonserPageClient(props: Props) {
                                   cell.getContext(),
                                 )}
                               </span>
-                              <span className="text-sm text-accent-color-70">
-                                {row.getValue("address") ?? "没有读取到地址"}
+                              <span className="text-sm font-normal text-accent-color-70">
+                                {(row.getValue("address") ===
+                                  ("" ?? undefined ?? null) &&
+                                  "不知名的地方") ||
+                                  row.getValue("address")}
                               </span>
                             </td>
                           );
@@ -656,11 +670,39 @@ export default function MonserPageClient(props: Props) {
       </div>
       <Dialog state={monsterDialogState} setState={setMonsterDialogState}>
         {monsterDialogState && (
-          <MonsterForm
-            dictionary={dictionary}
-            session={session}
-            setDefaultMonsterList={setDefaultMonsterList}
-          />
+          <div className="Content flex w-full overflow-y-auto 2xl:w-[1536px]">
+            {sameNameMonsterList.length > 1 && (
+              <div className="SameNameMonsterList flex flex-col gap-1 overflow-y-auto border-r-1.5 border-brand-color-1st p-3 lg:w-60">
+                {sameNameMonsterList.map((monster) => (
+                  <div
+                    key={"SameNameMonsterId" + monster.id}
+                    className="SameNameMonster"
+                  >
+                    <Button
+                      level="tertiary"
+                      onClick={() => setMonster(monster)}
+                      className="flex w-full flex-col rounded-sm"
+                    >
+                      <span className="w-full text-left text-lg font-bold">
+                        {monster.name}
+                      </span>
+                      <span className="w-full text-left text-sm text-accent-color-70">
+                        {(monster.address === ("" ?? undefined ?? null) &&
+                          "没有读取到地址") ||
+                          monster.address}
+                      </span>
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            )}
+            {/* <div className="tab flex w-32 flex-col justify-center gap-1 border-r-1.5 border-brand-color-1st p-3"></div> */}
+            <MonsterForm
+              dictionary={dictionary}
+              session={session}
+              setDefaultMonsterList={setDefaultMonsterList}
+            />
+          </div>
         )}
       </Dialog>
     </main>

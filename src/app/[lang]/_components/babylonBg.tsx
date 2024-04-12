@@ -1,9 +1,10 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import * as BABYLON from "babylonjs";
 import "babylonjs-loaders";
 import React from "react";
 import LoadingBox from "./loadingBox";
+import { useTheme } from "next-themes";
 
 declare module "babylonjs" {
   interface Material {
@@ -243,46 +244,51 @@ function isPBRMaterial(
 }
 
 export default function BabylonBg(): JSX.Element {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  // 场景渲染状态代替图片加载状态
   const [loaderState, setLoaderState] = useState(false);
+  // 模型加载进度展示标签引用
   const percentageRef = React.useRef<HTMLDivElement>(null);
+  // 主题获取
+  const theme = useTheme();
+  // 场景材质主色
+  const mainColor = useMemo(() => {
+    return (
+      {
+        light: new BABYLON.Color3(
+          234 / 255,
+          249 / 255,
+          254 / 255,
+        ).toLinearSpace(),
+        dark: new BABYLON.Color3(0, 0, 0).toLinearSpace(),
+      }[theme.theme ?? "light"] ??
+      new BABYLON.Color3(234 / 255, 249 / 255, 254 / 255).toLinearSpace()
+    );
+  }, [theme.theme]);
+
+  // canvas引用
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  // 测试模式配置函数
+  // function testModelOpen() {
+  //   // 是否开启inspector ///////////////////////////////////////////////////////////////////////////////////////////////////
+  //   void scene.debugLayer.show({
+  //     // embedMode: true
+  //   });
+  //   // 世界坐标轴显示
+  //   new BABYLON.AxesViewer(scene, 0.1);
+  // }
+  // testModelOpen();
+
+  // 其他bbl内容
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    // 引擎定义
     const engine = new BABYLON.Engine(canvas, true);
-
-    //自定义加载动画
-    engine.loadingScreen = {
-      displayLoadingUI: (): void => {
-        // console.log('display')
-      },
-      hideLoadingUI: (): void => {
-        // console.log('hidden')
-      },
-      loadingUIBackgroundColor: "#000000",
-      loadingUIText: "Loading...",
-    };
-
-    const mainColor = new BABYLON.Color3(
-      234 / 255,
-      249 / 255,
-      254 / 255,
-    ).toLinearSpace();
+    // 场景定义
     const scene = new BABYLON.Scene(engine);
     scene.clearColor = new BABYLON.Color4(0, 0, 0, 1);
     scene.ambientColor = mainColor;
-
-    function testModelOpen() {
-      // 是否开启inspector ///////////////////////////////////////////////////////////////////////////////////////////////////
-      void scene.debugLayer.show({
-        // embedMode: true
-      });
-      // 世界坐标轴显示
-      new BABYLON.AxesViewer(scene, 0.1);
-    }
-    // testModelOpen();
-
     // 摄像机
     const camera = new BABYLON.ArcRotateCamera(
       "Camera",
@@ -297,7 +303,7 @@ export default function BabylonBg(): JSX.Element {
     camera.fov = 1;
     camera.wheelDeltaPercentage = 0.05;
     camera.inputs.clear(); // -----------------------------------------------------相机输入禁用-----------------------
-    
+
     const cameraControl = (event: MouseEvent): void => {
       if (event.buttons === 0) {
         camera.alpha -= event.movementX / 100000;
@@ -305,7 +311,7 @@ export default function BabylonBg(): JSX.Element {
       }
     };
     // 注册鼠标移动事件来触发相机控制
-    canvas.addEventListener("mousemove", cameraControl);
+    canvas !== null && canvas.addEventListener("mousemove", cameraControl);
 
     // 后期处理
     new BABYLON.LensRenderingPipeline(
@@ -501,6 +507,7 @@ export default function BabylonBg(): JSX.Element {
         }
       });
     });
+
     // 当场景中资源加载和初始化完成后
     scene.executeWhenReady(() => {
       // 注册循环渲染函数
@@ -511,7 +518,7 @@ export default function BabylonBg(): JSX.Element {
         // FogOfWarPluginMaterial.fogCenter.z = camera.position.z;
         scene.render();
       });
-      // 通知loading组件
+      // 通知loading
       setLoaderState(true);
     });
 
@@ -520,10 +527,10 @@ export default function BabylonBg(): JSX.Element {
       // 销毁场景和引擎
       scene.dispose();
       engine.dispose();
-      canvas.removeEventListener("mousemove", cameraControl);
+      canvas && canvas.removeEventListener("mousemove", cameraControl);
       console.log("内存已清理");
     };
-  }, []);
+  }, [mainColor, theme.theme]);
 
   return (
     <React.Fragment>

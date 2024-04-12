@@ -82,7 +82,7 @@ export default async function RootLayout({
       <body
         className={
           `font-sans ${inter.variable}` +
-          " flex h-dvh w-dvw flex-col-reverse lg:flex-row @text-primary-color"
+          " flex h-dvh w-dvw flex-col-reverse lg:flex-row @text-transparent"
         }
       >
         <TRPCReactProvider cookies={cookies().toString()}>

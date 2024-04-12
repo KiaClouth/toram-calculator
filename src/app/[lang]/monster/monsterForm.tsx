@@ -189,7 +189,7 @@ export default function MonsterForm(props: {
           e.stopPropagation();
           void form.handleSubmit();
         }}
-        className={`CreateMonsterFrom flex w-full max-w-7xl flex-col gap-4 overflow-y-auto rounded px-3 lg:w-4/5`}
+        className={`CreateMonsterFrom flex w-full flex-col gap-4 overflow-y-auto rounded px-3`}
       >
         <div className="title flex items-center gap-6 pt-10">
           <div className="h-[2px] flex-1 bg-accent-color"></div>
