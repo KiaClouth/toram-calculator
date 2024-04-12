@@ -285,6 +285,17 @@ export default function BabylonBg(): JSX.Element {
     const canvas = canvasRef.current;
     // 引擎定义
     const engine = new BABYLON.Engine(canvas, true);
+    //自定义加载动画
+    engine.loadingScreen = {
+      displayLoadingUI: (): void => {
+        // console.log('display')
+      },
+      hideLoadingUI: (): void => {
+        // console.log('hidden')
+      },
+      loadingUIBackgroundColor: '#000000',
+      loadingUIText: 'Loading...'
+    }
     // 场景定义
     const scene = new BABYLON.Scene(engine);
     scene.clearColor = new BABYLON.Color4(0, 0, 0, 1);
