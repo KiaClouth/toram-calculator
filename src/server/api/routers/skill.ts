@@ -9,7 +9,7 @@ import {
 export const skillRouter = createTRPCRouter({
   getall: publicProcedure.query(({ ctx }) => {
     console.log(
-      new Date().toLocaleDateString() +
+      new Date().toLocaleDateString() + "--" + new Date().toLocaleTimeString() + "--" +
         (ctx.session?.user.name ?? ctx.session?.user.email) +
         "请求了完整的技能列表",
     );
@@ -23,7 +23,7 @@ export const skillRouter = createTRPCRouter({
 
   getPublicList: publicProcedure.query(({ ctx }) => {
     console.log(
-      new Date().toLocaleDateString() +
+      new Date().toLocaleDateString() + "--" + new Date().toLocaleTimeString() + "--" +
         (ctx.session?.user.name ?? ctx.session?.user.email) +
         "请求了公用的技能列表",
     );
@@ -34,7 +34,7 @@ export const skillRouter = createTRPCRouter({
 
   getPrivateList: protectedProcedure.query(({ ctx }) => {
     console.log(
-      new Date().toLocaleDateString() +
+      new Date().toLocaleDateString() + "--" + new Date().toLocaleTimeString() + "--" +
         (ctx.session?.user.name ?? ctx.session?.user.email) +
         "请求了由他自己创建的技能列表",
     );
@@ -48,7 +48,7 @@ export const skillRouter = createTRPCRouter({
 
   getUserVisbleList: publicProcedure.query(({ ctx }) => {
     console.log(
-      new Date().toLocaleDateString() +
+      new Date().toLocaleDateString() + "--" + new Date().toLocaleTimeString() + "--" +
         (ctx.session?.user.name ?? ctx.session?.user.email) +
         "请求了他可见的技能列表",
     );
@@ -84,7 +84,7 @@ export const skillRouter = createTRPCRouter({
       // 如果不存在，创建一个新的 UserCreate
       if (!userCreate) {
         console.log(
-          new Date().toLocaleDateString() +
+          new Date().toLocaleDateString() + "--" + new Date().toLocaleTimeString() + "--" +
             (ctx.session?.user.name ?? ctx.session?.user.email) +
             "初次上传技能，自动创建对应userCreate",
         );
@@ -96,7 +96,7 @@ export const skillRouter = createTRPCRouter({
         });
       }
       console.log(
-        new Date().toLocaleDateString() +
+        new Date().toLocaleDateString() + "--" + new Date().toLocaleTimeString() + "--" +
           (ctx.session?.user.name ?? ctx.session?.user.email) +
           "上传了Skill: " +
           input.name,
@@ -122,7 +122,7 @@ export const skillRouter = createTRPCRouter({
       //   return;
       // }
       console.log(
-        new Date().toLocaleDateString() +
+        new Date().toLocaleDateString() + "--" + new Date().toLocaleTimeString() + "--" +
           (ctx.session?.user.name ?? ctx.session?.user.email) +
           "更新了Skill: " +
           input.name,
