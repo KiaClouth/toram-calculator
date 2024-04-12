@@ -9,7 +9,8 @@ import {
 export const monsterRouter = createTRPCRouter({
   getall: publicProcedure.query(({ ctx }) => {
     console.log(
-      (ctx.session?.user.name ?? ctx.session?.user.email) +
+      new Date().toLocaleDateString() +
+        (ctx.session?.user.name ?? ctx.session?.user.email) +
         "请求了完整的怪物列表",
     );
     return ctx.db.monster.findMany();
@@ -17,7 +18,8 @@ export const monsterRouter = createTRPCRouter({
 
   getPublicList: publicProcedure.query(({ ctx }) => {
     console.log(
-      (ctx.session?.user.name ?? ctx.session?.user.email) +
+      new Date().toLocaleDateString() +
+        (ctx.session?.user.name ?? ctx.session?.user.email) +
         "请求了公用的怪物列表",
     );
     return ctx.db.monster.findMany({
@@ -27,7 +29,8 @@ export const monsterRouter = createTRPCRouter({
 
   getPrivateList: protectedProcedure.query(({ ctx }) => {
     console.log(
-      (ctx.session?.user.name ?? ctx.session?.user.email) +
+      new Date().toLocaleDateString() +
+        (ctx.session?.user.name ?? ctx.session?.user.email) +
         "请求了由他自己创建的怪物列表",
     );
     return ctx.db.monster.findMany({
@@ -40,7 +43,8 @@ export const monsterRouter = createTRPCRouter({
 
   getUserVisbleList: publicProcedure.query(({ ctx }) => {
     console.log(
-      (ctx.session?.user.name ?? ctx.session?.user.email) +
+      new Date().toLocaleDateString() +
+        (ctx.session?.user.name ?? ctx.session?.user.email) +
         "请求了他可见的怪物列表",
     );
     if (ctx.session?.user.id) {
@@ -75,7 +79,8 @@ export const monsterRouter = createTRPCRouter({
       // 如果不存在，创建一个新的 UserCreate
       if (!userCreate) {
         console.log(
-          (ctx.session?.user.name ?? ctx.session?.user.email) +
+          new Date().toLocaleDateString() +
+            (ctx.session?.user.name ?? ctx.session?.user.email) +
             "初次上传怪物，自动创建对应userCreate",
         );
         userCreate = await ctx.db.userCreate.create({
@@ -86,7 +91,8 @@ export const monsterRouter = createTRPCRouter({
         });
       }
       console.log(
-        (ctx.session?.user.name ?? ctx.session?.user.email) +
+        new Date().toLocaleDateString() +
+          (ctx.session?.user.name ?? ctx.session?.user.email) +
           "上传了Monster: " +
           input.name,
       );
@@ -111,7 +117,8 @@ export const monsterRouter = createTRPCRouter({
       //   return;
       // }
       console.log(
-        (ctx.session?.user.name ?? ctx.session?.user.email) +
+        new Date().toLocaleDateString() +
+          (ctx.session?.user.name ?? ctx.session?.user.email) +
           "更新了Monster: " +
           input.name,
       );
