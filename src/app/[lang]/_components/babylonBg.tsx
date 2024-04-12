@@ -253,17 +253,17 @@ export default function BabylonBg(): JSX.Element {
   // 场景材质主色
   const mainColor = useMemo(() => {
     return (
-      {
-        light: new BABYLON.Color3(0, 0, 0).toLinearSpace(),
-        dark: new BABYLON.Color3(
-          234 / 255,
-          249 / 255,
-          254 / 255,
-        ).toLinearSpace(),
-      }[theme.theme ?? "dark"] ??
+      // {
+      //   light: new BABYLON.Color3(0, 0, 0).toLinearSpace(),
+      //   dark: new BABYLON.Color3(
+      //     234 / 255,
+      //     249 / 255,
+      //     254 / 255,
+      //   ).toLinearSpace(),
+      // }[theme.theme ?? "dark"] ??
       new BABYLON.Color3(234 / 255, 249 / 255, 254 / 255).toLinearSpace()
     );
-  }, [theme.theme]);
+  }, []);
 
   // canvas引用
   const canvasRef = useRef<HTMLCanvasElement>(null);
