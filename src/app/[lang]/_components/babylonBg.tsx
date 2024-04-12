@@ -254,13 +254,13 @@ export default function BabylonBg(): JSX.Element {
   const mainColor = useMemo(() => {
     return (
       {
-        light: new BABYLON.Color3(
+        light: new BABYLON.Color3(0, 0, 0).toLinearSpace(),
+        dark: new BABYLON.Color3(
           234 / 255,
           249 / 255,
           254 / 255,
         ).toLinearSpace(),
-        dark: new BABYLON.Color3(0, 0, 0).toLinearSpace(),
-      }[theme.theme ?? "light"] ??
+      }[theme.theme ?? "dark"] ??
       new BABYLON.Color3(234 / 255, 249 / 255, 254 / 255).toLinearSpace()
     );
   }, [theme.theme]);
@@ -293,9 +293,9 @@ export default function BabylonBg(): JSX.Element {
       hideLoadingUI: (): void => {
         // console.log('hidden')
       },
-      loadingUIBackgroundColor: '#000000',
-      loadingUIText: 'Loading...'
-    }
+      loadingUIBackgroundColor: "#000000",
+      loadingUIText: "Loading...",
+    };
     // 场景定义
     const scene = new BABYLON.Scene(engine);
     scene.clearColor = new BABYLON.Color4(0, 0, 0, 1);
