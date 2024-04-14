@@ -30,14 +30,13 @@ model User {
     accounts      Account[]
     sessions      Session[]
     posts         Post[]
+    rates         Rate[]
     create        UserCreate?
     update        UserUpdate?
-    rates         Rate[]
 }
 
 model Account {
     id                String  @id @default(cuid())
-    userId            String
     type              String
     provider          String
     providerAccountId String
@@ -49,6 +48,7 @@ model Account {
     id_token          String?
     session_state     String?
     user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId            String
 
     @@unique([provider, providerAccountId])
 }
@@ -56,9 +56,9 @@ model Account {
 model Session {
     id           String   @id @default(cuid())
     sessionToken String   @unique
-    userId       String
     expires      DateTime
     user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId       String
 }
 
 model VerificationToken {
@@ -691,16 +691,17 @@ enum SkillType {
 
 // 技能效果
 model SkillEffect {
-    id            String       @id @default(cuid())
-    condition     Condition    @relation(fields: [conditionId], references: [id])
-    cost          SkillCost[]
-    yield         SkillYield[]
-    sideEffect    SideEffect[]
-    belongToSkill Skill        @relation(fields: [skillId], references: [id], onDelete: Cascade)
-    skillId       String
-    Formula       Formula?     @relation(fields: [formulaId], references: [id])
-    formulaId     String?
-    conditionId   String
+    id                       String       @id @default(cuid())
+    condition                Condition    @relation(fields: [conditionId], references: [id])
+    conditionId              String
+    actionBaseDuration       Int          @default(13)
+    actionModifiableDuration Int          @default(48)
+    castingDurationFormula   Formula      @relation(fields: [castingDurationFormulaId], references: [id])
+    castingDurationFormulaId String
+    cost                     SkillCost[]
+    yield                    SkillYield[]
+    belongToSkill            Skill        @relation(fields: [belongToskillId], references: [id], onDelete: Cascade)
+    belongToskillId          String
 }
 
 // 计算公式
@@ -732,6 +733,21 @@ enum Operator {
 
 // 计算公式中可能用到的属性类型
 enum ComputedFields {
+    MAINWEAPON_TYPE
+    NO_WEAPOEN
+    ONE_HAND_SWORD
+    TWO_HANDS_SWORD
+    BOW
+    STAFF
+    MAGIC_DEVICE
+    KNUCKLE
+    HALBERD
+    KATANA
+    SUBWEAPON_TYPE
+    ARROW
+    DAGGER
+    NINJUTSUSCROLL
+    SHIELD
     CONSTANT
     S_LV
     C_LV
@@ -762,20 +778,19 @@ enum ComputedFields {
 
 // 计算公式
 model Formula {
-    id                  String         @id @default(cuid())
-    operand1Type        ComputedFields
-    operand1Multiplier  Int            @default(1)
-    operand2Type        ComputedFields
-    operand2Multiplier  Int            @default(1)
+    id                  String          @id @default(cuid())
+    operand1Type        ComputedFields  @default(CONSTANT)
+    operand1Multiplier  Float           @default(1)
+    operand2Type        ComputedFields?
+    operand2Multiplier  Float?
     operator            Operator
-    subFormula1         Formula[]      @relation("subformulas1")
-    subFormula1Relation Formula[]      @relation("subformulas1")
-    subFormula2         Formula[]      @relation("subformulas2")
-    subFormula2Relation Formula[]      @relation("subformulas2")
+    subFormula1         Formula[]       @relation("subformulas1")
+    subFormula1Relation Formula[]       @relation("subformulas1")
+    subFormula2         Formula[]       @relation("subformulas2")
+    subFormula2Relation Formula[]       @relation("subformulas2")
     belongToSkillCost   SkillCost[]
-    belongToSkillEffect SkillEffect[]
     belongToSkillYield  SkillYield[]
-    belongToSideEffect  SideEffect[]
+    SkillEffect         SkillEffect[]
 }
 
 // 技能消耗
@@ -788,34 +803,33 @@ model SkillCost {
     formulaId           String
 }
 
-// 技能的瞬时效果
+// 技能回报
 model SkillYield {
-    id                  String         @id @default(cuid())
-    yieldType           ComputedFields @default(M_HP)
-    yieldFormula        Formula        @relation(fields: [formulaId], references: [id])
-    belongToSkillEffect SkillEffect?   @relation(fields: [skillEffectId], references: [id], onDelete: Cascade)
-    skillEffectId       String?
-    formulaId           String
-}
-
-// 技能副作用
-model SideEffect {
     id                  String            @id @default(cuid())
     triggerTiming       TriggerTimingType @default(ON_USE)
-    duration            Int               @default(30)
-    sideEffectType      ComputedFields    @default(C_PATK)
-    sideEffectFormula   Formula           @relation(fields: [formulaId], references: [id])
+    delay               Int               @default(0)
+    durationType        DurationType
+    durationValue       Int               @default(30)
+    yieldType           ComputedFields    @default(M_HP)
+    yieldFormula        Formula           @relation(fields: [formulaId], references: [id])
     formulaId           String
     belongToSkillEffect SkillEffect?      @relation(fields: [skillEffectId], references: [id], onDelete: Cascade)
     skillEffectId       String?
 }
 
-// 副作用发生时机枚举
+// 发生时机枚举
 enum TriggerTimingType {
     ON_USE
     PER_SECOND
     PER_USE_SKILL
     NEXT_SKILL
+}
+
+// 效果有效期类型枚举
+enum DurationType {
+    FRAME
+    SKILL
+    UNLIMITED
 }
 
 // 宠物模型
