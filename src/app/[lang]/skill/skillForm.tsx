@@ -4,13 +4,15 @@ import React, { useEffect } from "react";
 import { tApi } from "~/trpc/react";
 import type { getDictionary } from "~/app/get-dictionary";
 import Button from "../_components/button";
-import { type Skill as zSkill, SkillSchema } from "prisma/generated/zod";
-import { type FieldApi, useForm } from "@tanstack/react-form";
+import { type FieldApi, useForm, useField } from "@tanstack/react-form";
 import { zodValidator } from "@tanstack/zod-form-adapter";
 import { ZodFirstPartyTypeKind, type z } from "zod";
-import { type Skill, type $Enums } from "@prisma/client";
+import { type $Enums } from "@prisma/client";
 import { defaultSkill, useBearStore } from "~/app/store";
 import { type Session } from "next-auth";
+import { type Skill } from "~/server/api/routers/skill";
+import { skillEffectInputSchema, skillInputSchema } from "~/schema/skillSchame";
+import { SkillEffectSchema } from "prisma/generated/zod";
 
 export default function SkillForm(props: {
   dictionary: ReturnType<typeof getDictionary>;
@@ -19,6 +21,7 @@ export default function SkillForm(props: {
 }) {
   const { dictionary, session, setDefaultSkillList } = props;
   const newListQuery = tApi.skill.getUserVisbleList.useQuery();
+
   // 状态管理参数
   const {
     skill,
@@ -29,11 +32,13 @@ export default function SkillForm(props: {
     setSkillFormState,
   } = useBearStore((state) => state.skillPage);
   let newSkill: Skill;
+
   const formTitle = {
     CREATE: dictionary.ui.skill.upload,
     UPDATE: dictionary.ui.skill.modify,
     DISPLAY: skill.name,
   }[skillFormState];
+
   const [dataUploadingState, setDataUploadingState] = React.useState(false);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -69,6 +74,7 @@ export default function SkillForm(props: {
       DISPLAY: skill,
     }[skillFormState],
     onSubmit: async ({ value }) => {
+      console.log("onSubmit", value);
       setDataUploadingState(true);
       newSkill = {
         ...value,
@@ -95,6 +101,7 @@ export default function SkillForm(props: {
     validatorAdapter: zodValidator,
   });
 
+  // 获取Zod类型
   const getZodType = <T extends z.ZodTypeAny>(
     schema: T,
   ): ZodFirstPartyTypeKind => {
@@ -112,6 +119,8 @@ export default function SkillForm(props: {
     }
     return ZodFirstPartyTypeKind.ZodUndefined;
   };
+
+  // 创建技能
   const createSkill = tApi.skill.create.useMutation({
     onSuccess: async () => {
       // 创建成功后重新获取数据
@@ -126,6 +135,8 @@ export default function SkillForm(props: {
       setSkillFormState("DISPLAY");
     },
   });
+
+  // 更新技能
   const updateSkill = tApi.skill.update.useMutation({
     onSuccess: async () => {
       // 更新成功后重新获取数据
@@ -140,6 +151,164 @@ export default function SkillForm(props: {
       setSkillFormState("DISPLAY");
     },
   });
+
+  // 技能效果输入组件
+  const SkillEffectField = () => {
+    const field = useField<Skill, "skillEffect">({
+      name: "skillEffect",
+    });
+
+    return (
+      <fieldset className="flex basis-1/2 flex-col gap-1 p-2 lg:basis-1/4">
+        <label htmlFor={field.name} className="flex w-full flex-col gap-1">
+          {dictionary.db.models.skill.skillEffect}
+          {field.state.value &&
+            Array.isArray(field.state.value) &&
+            field.state.value.map(
+              (subObj, i) =>
+                subObj &&
+                Object.entries(subObj).map(([key, _]) => {
+                  // 输入框的类型定义
+                  const zodValue =
+                    skillEffectInputSchema.shape[
+                      key as keyof Skill["skillEffect"][0]
+                    ];
+                  const valueType = getZodType(zodValue);
+                  const { ZodNumber, ZodString, ...Others } =
+                    ZodFirstPartyTypeKind;
+                  const inputType = {
+                    [ZodNumber]: "number",
+                    [ZodString]: "text",
+                    ...Others,
+                  }[valueType];
+
+                  switch (valueType) {
+                    case ZodFirstPartyTypeKind.ZodEnum: {
+                      // 枚举类型的输入框以单选框的形式创建
+                      return "options" in zodValue ? (
+                        <form.Field
+                          key={"skillEffect" + i + key}
+                          name={`skillEffect.${i}.${key as keyof Skill["skillEffect"][0]}`}
+                          validators={{
+                            onChangeAsyncDebounceMs: 500,
+                            onChangeAsync: skillEffectInputSchema,
+                          }}
+                        >
+                          {(field) => (
+                            <fieldset className="flex basis-full flex-col gap-1 p-2">
+                              <span>
+                                {dictionary.db.models.skill.skillEffect}
+                              </span>
+                              <div
+                                className={`inputContianer mt-1 flex flex-wrap gap-2 self-start rounded ${skillFormState === "DISPLAY" ? " outline-transition-color-20" : ""}`}
+                              >
+                                {Array.isArray(zodValue.options) &&
+                                  zodValue.options.map((option) => {
+                                    return (
+                                      <label
+                                        key={"skillEffect" + i + key + option}
+                                        className={`flex cursor-pointer items-center justify-between gap-2 rounded-full p-2 px-4 hover:border-transition-color-20 lg:flex-row-reverse lg:justify-end lg:rounded-sm ${skillFormState === "DISPLAY" ? " pointer-events-none border-transparent bg-transparent" : " pointer-events-auto border-transition-color-8 bg-transition-color-8"}`}
+                                      >
+                                        {
+                                          dictionary.db.enums[
+                                            (key.charAt(0).toLocaleUpperCase() +
+                                              key.slice(
+                                                1,
+                                              )) as keyof typeof $Enums
+                                          ][
+                                            option as keyof (typeof $Enums)[keyof typeof $Enums]
+                                          ]
+                                        }
+                                        <input
+                                          disabled={
+                                            skillFormState === "DISPLAY"
+                                          }
+                                          id={field.name + option}
+                                          name={field.name}
+                                          value={option}
+                                          type="radio"
+                                          onBlur={field.handleBlur}
+                                          onChange={(e) =>
+                                            field.handleChange(e.target.value)
+                                          }
+                                          className={` mt-0.5 rounded px-4 py-2`}
+                                        />
+                                      </label>
+                                    );
+                                  })}
+                              </div>
+                              <FieldInfo field={field} />
+                            </fieldset>
+                          )}
+                        </form.Field>
+                      ) : null;
+                    }
+
+                    case ZodFirstPartyTypeKind.ZodArray: {
+                      return null;
+                    }
+
+                    default: {
+                      return (
+                        <form.Field
+                          key={"skillEffect" + i + key}
+                          name={`skillEffect.${i}.${key as keyof Skill["skillEffect"][0]}`}
+                          validators={{
+                            onChangeAsyncDebounceMs: 500,
+                            onChangeAsync: skillEffectInputSchema,
+                          }}
+                        >
+                          {(field) => (
+                            <fieldset className="flex basis-1/2 flex-col gap-1 p-2 lg:basis-1/4">
+                              <label
+                                htmlFor={field.name}
+                                className="flex w-full flex-col gap-1"
+                              >
+                                {dictionary.db.models.skill[key as keyof Skill]}
+                                <input
+                                  disabled={skillFormState === "DISPLAY"}
+                                  id={field.name}
+                                  name={field.name}
+                                  type={inputType}
+                                  value={
+                                    typeof field.state.value !== "object"
+                                      ? field.state.value
+                                      : undefined
+                                  }
+                                  onBlur={field.handleBlur}
+                                  onChange={(e) =>
+                                    field.handleChange(
+                                      inputType === "number"
+                                        ? parseFloat(e.target.value)
+                                        : e.target.value,
+                                    )
+                                  }
+                                  className={`mt-1 w-full flex-1 rounded px-4 py-2 ${skillFormState === "DISPLAY" ? " pointer-events-none bg-transparent outline-transition-color-20" : " pointer-events-auto bg-transition-color-8"}`}
+                                />
+                              </label>
+                              <FieldInfo field={field} />
+                            </fieldset>
+                          )}
+                        </form.Field>
+                      );
+                    }
+                  }
+                }),
+            )}
+          <Button
+            onClick={() => {
+              console.log(field.getValue());
+              field.pushValue(skill.skillEffect[0]!);
+              console.log(field.getValue());
+            }}
+          >
+            添加效果
+          </Button>
+        </label>
+        <FieldInfo field={field} />
+      </fieldset>
+    );
+  };
 
   useEffect(() => {
     console.log("SkillForm render");
@@ -187,37 +356,41 @@ export default function SkillForm(props: {
         </div>
         <div className="inputArea flex-1 overflow-y-auto">
           <fieldset className="dataKinds flex flex-row flex-wrap gap-y-[4px]">
-            {Object.entries(SkillSchema.shape).map(([key, value]) => {
-              // 遍历怪物zod模型
+            {Object.entries(skill).map(([key, _]) => {
+              // 遍历对象键
+              // 过滤掉隐藏的数据
               if (hiddenData.includes(key as keyof Skill)) return undefined;
-              return (
-                <form.Field
-                  key={key}
-                  name={key as keyof Skill}
-                  validators={{
-                    onChangeAsyncDebounceMs: 500,
-                    onChangeAsync: SkillSchema.shape[key as keyof zSkill],
-                  }}
-                >
-                  {(field) => {
-                    const type =
-                      "options" in value
-                        ? (value.options as string[])
-                        : getZodType(value);
-                    if (Array.isArray(type)) {
-                      // 枚举类型的输入框以单选框的形式创建
-                      return (
-                        <fieldset
-                          key={key}
-                          className="flex basis-full flex-col gap-1 p-2"
-                        >
+              // 输入框的类型定义
+              const zodValue = skillInputSchema.shape[key as keyof Skill];
+              const valueType = getZodType(zodValue);
+              const { ZodNumber, ZodString, ...Others } = ZodFirstPartyTypeKind;
+              const inputType = {
+                [ZodNumber]: "number",
+                [ZodString]: "text",
+                ...Others,
+              }[valueType];
+              switch (valueType) {
+                case ZodFirstPartyTypeKind.ZodEnum: {
+                  // 枚举类型的输入框以单选框的形式创建
+                  return "options" in zodValue ? (
+                    <form.Field
+                      key={key}
+                      name={key as keyof Skill}
+                      validators={{
+                        onChangeAsyncDebounceMs: 500,
+                        onChangeAsync:
+                          skillInputSchema.shape[key as keyof Skill],
+                      }}
+                    >
+                      {(field) => (
+                        <fieldset className="flex basis-full flex-col gap-1 p-2">
                           <span>
                             {dictionary.db.models.skill[key as keyof Skill]}
                           </span>
                           <div
                             className={`inputContianer mt-1 flex flex-wrap gap-2 self-start rounded ${skillFormState === "DISPLAY" ? " outline-transition-color-20" : ""}`}
                           >
-                            {type.map((option) => {
+                            {zodValue.options.map((option) => {
                               return (
                                 <label
                                   key={key + option}
@@ -249,29 +422,28 @@ export default function SkillForm(props: {
                           </div>
                           <FieldInfo field={field} />
                         </fieldset>
-                      );
-                    } else if (typeof type === "string") {
-                      let inputType: React.HTMLInputTypeAttribute;
-                      switch (type) {
-                        case ZodFirstPartyTypeKind.ZodNumber:
-                          inputType = "number";
+                      )}
+                    </form.Field>
+                  ) : null;
+                }
 
-                          break;
-                        case ZodFirstPartyTypeKind.ZodBoolean:
-                          inputType = "checkbox";
+                case ZodFirstPartyTypeKind.ZodArray: {
+                  return <SkillEffectField key={key} />;
+                }
 
-                          break;
-
-                        default:
-                          inputType = "text";
-                          break;
-                      }
-                      // 普通输入框
-                      return (
-                        <fieldset
-                          key={key}
-                          className="flex basis-1/2 flex-col gap-1 p-2 lg:basis-1/4"
-                        >
+                default: {
+                  return (
+                    <form.Field
+                      key={key}
+                      name={key as keyof Skill}
+                      validators={{
+                        onChangeAsyncDebounceMs: 500,
+                        onChangeAsync:
+                          skillInputSchema.shape[key as keyof Skill],
+                      }}
+                    >
+                      {(field) => (
+                        <fieldset className="flex basis-1/2 flex-col gap-1 p-2 lg:basis-1/4">
                           <label
                             htmlFor={field.name}
                             className="flex w-full flex-col gap-1"
@@ -300,11 +472,11 @@ export default function SkillForm(props: {
                           </label>
                           <FieldInfo field={field} />
                         </fieldset>
-                      );
-                    }
-                  }}
-                </form.Field>
-              );
+                      )}
+                    </form.Field>
+                  );
+                }
+              }
             })}
           </fieldset>
         </div>

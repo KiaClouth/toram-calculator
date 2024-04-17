@@ -1,9 +1,10 @@
-import type { $Enums, Monster, Skill, User } from "@prisma/client";
+import type { $Enums, Monster, User } from "@prisma/client";
+import type { Skill } from "~/server/api/routers/skill";
 
 // 为了方便编辑器自动补全，这个方法可以将数据库模型的值类型转换为字符串
 type ConvertToAllString<T> = T extends object
   ? {
-      [K in keyof T]: T[K] extends Date | Date[]
+      [K in keyof T]: T[K] extends Date | Date[] | Array<object>
         ? string
         : ConvertToAllString<T[K]>;
     }
@@ -59,6 +60,9 @@ interface dictionary {
     models: {
       monster: ConvertToAllString<Monster>;
       skill: ConvertToAllString<Skill>;
+      skillEffect: ConvertToAllString<Skill["skillEffect"][0]>
+      skillCost: ConvertToAllString<Skill["skillEffect"][0]["skillCost"][0]>
+      skillYield: ConvertToAllString<Skill["skillEffect"][0]["skillYield"][0]>
       user: ConvertToAllString<User>
     };
   };

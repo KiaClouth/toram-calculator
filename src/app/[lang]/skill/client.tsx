@@ -1,6 +1,6 @@
 "use client";
 
-import type { $Enums, Skill } from "@prisma/client";
+import type { $Enums } from "@prisma/client";
 import {
   type Column,
   type ColumnDef,
@@ -22,6 +22,7 @@ import Dialog from "../_components/dialog";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { useBearStore } from "~/app/store";
 import { defaultSkill } from "~/app/store";
+import { type Skill } from "~/server/api/routers/skill";
 
 export default function MonserPageClient(props: {
   dictionary: ReturnType<typeof getDictionary>;
@@ -260,7 +261,7 @@ export default function MonserPageClient(props: {
                     level={column.getIsVisible() ? "tertiary" : "primary"}
                     onClick={column.getToggleVisibilityHandler()}
                   >
-                    {dictionary.db.models.skill[column.id as keyof Skill]}
+                    {typeof dictionary.db.models.skill[column.id as keyof Skill]}
                   </Button>
                 );
               })}
@@ -377,41 +378,6 @@ export default function MonserPageClient(props: {
                               desc: " ↑",
                             }[header.column.getIsSorted() as string] ?? null}
                           </div>
-                          {/* {!header.isPlaceholder &&
-                            header.column.getCanPin() && ( // 固定列
-                              <div className="flex">
-                                {header.column.getIsPinned() !== "left" ? (
-                                  <button
-                                    className="flex-1 rounded bg-transition-color-8 px-1"
-                                    onClick={() => {
-                                      header.column.pin("left");
-                                    }}
-                                  >
-                                    {"←"}
-                                  </button>
-                                ) : null}
-                                {header.column.getIsPinned() ? (
-                                  <button
-                                    className="flex-1 rounded bg-transition-color-8 px-1"
-                                    onClick={() => {
-                                      header.column.pin(false);
-                                    }}
-                                  >
-                                    {"x"}
-                                  </button>
-                                ) : null}
-                                {header.column.getIsPinned() !== "right" ? (
-                                  <button
-                                    className="flex-1 rounded bg-transition-color-8 px-1"
-                                    onClick={() => {
-                                      header.column.pin("right");
-                                    }}
-                                  >
-                                    {"→"}
-                                  </button>
-                                ) : null}
-                              </div>
-                            )} */}
                         </th>
                       );
                     })}

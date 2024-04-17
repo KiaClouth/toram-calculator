@@ -1,4 +1,8 @@
-import { SkillSchema } from "prisma/generated/zod";
+import type { Prisma } from "@prisma/client";
+import {
+  SkillSchema,
+} from "prisma/generated/zod";
+import { skillInputSchema } from "~/schema/skillSchame";
 
 import {
   createTRPCRouter,
@@ -6,35 +10,69 @@ import {
   publicProcedure,
 } from "~/server/api/trpc";
 
+export type Skill = Prisma.SkillGetPayload<{
+  include: {
+    skillEffect: {
+      include: {
+        skillCost: true;
+        skillYield: true;
+      };
+    };
+  };
+}>;
+
 export const skillRouter = createTRPCRouter({
-  getall: publicProcedure.query(({ ctx }) => {
+  getAll: publicProcedure.query(({ ctx }) => {
     console.log(
-      new Date().toLocaleDateString() + "--" + new Date().toLocaleTimeString() + "--" +
+      new Date().toLocaleDateString() +
+        "--" +
+        new Date().toLocaleTimeString() +
+        "--" +
         (ctx.session?.user.name ?? ctx.session?.user.email) +
         "请求了完整的技能列表",
     );
     return ctx.db.skill.findMany({
       relationLoadStrategy: "join", // or 'query'
       include: {
-        skillEffect: true,
+        skillEffect: {
+          include: {
+            skillCost: true,
+            skillYield: true,
+          },
+        },
       },
     });
   }),
 
   getPublicList: publicProcedure.query(({ ctx }) => {
     console.log(
-      new Date().toLocaleDateString() + "--" + new Date().toLocaleTimeString() + "--" +
+      new Date().toLocaleDateString() +
+        "--" +
+        new Date().toLocaleTimeString() +
+        "--" +
         (ctx.session?.user.name ?? ctx.session?.user.email) +
         "请求了公用的技能列表",
     );
     return ctx.db.skill.findMany({
       where: { state: "PUBLIC" },
+      relationLoadStrategy: "join", // or 'query'
+      include: {
+        skillEffect: {
+          include: {
+            skillCost: true,
+            skillYield: true,
+          },
+        },
+      },
     });
   }),
 
   getPrivateList: protectedProcedure.query(({ ctx }) => {
     console.log(
-      new Date().toLocaleDateString() + "--" + new Date().toLocaleTimeString() + "--" +
+      new Date().toLocaleDateString() +
+        "--" +
+        new Date().toLocaleTimeString() +
+        "--" +
         (ctx.session?.user.name ?? ctx.session?.user.email) +
         "请求了由他自己创建的技能列表",
     );
@@ -43,12 +81,24 @@ export const skillRouter = createTRPCRouter({
         createdByUserId: ctx.session?.user.id,
         state: "PRIVATE",
       },
+      relationLoadStrategy: "join", // or 'query'
+      include: {
+        skillEffect: {
+          include: {
+            skillCost: true,
+            skillYield: true,
+          },
+        },
+      },
     });
   }),
 
   getUserVisbleList: publicProcedure.query(({ ctx }) => {
     console.log(
-      new Date().toLocaleDateString() + "--" + new Date().toLocaleTimeString() + "--" +
+      new Date().toLocaleDateString() +
+        "--" +
+        new Date().toLocaleTimeString() +
+        "--" +
         (ctx.session?.user.name ?? ctx.session?.user.email) +
         "请求了他可见的技能列表",
     );
@@ -57,15 +107,33 @@ export const skillRouter = createTRPCRouter({
         where: {
           OR: [{ state: "PUBLIC" }, { createdByUserId: ctx.session?.user.id }],
         },
+        relationLoadStrategy: "join", // or 'query'
+        include: {
+          skillEffect: {
+            include: {
+              skillCost: true,
+              skillYield: true,
+            },
+          },
+        },
       });
     }
     return ctx.db.skill.findMany({
       where: { state: "PUBLIC" },
+      relationLoadStrategy: "join", // or 'query'
+      include: {
+        skillEffect: {
+          include: {
+            skillCost: true,
+            skillYield: true,
+          },
+        },
+      },
     });
   }),
 
   create: protectedProcedure
-    .input(SkillSchema.omit({ id: true }))
+    .input(skillInputSchema.omit({ id: true }))
     .mutation(async ({ ctx, input }) => {
       // 检查用户权限
       // if (ctx.session.user.role !== "ADMIN") {
@@ -84,7 +152,10 @@ export const skillRouter = createTRPCRouter({
       // 如果不存在，创建一个新的 UserCreate
       if (!userCreate) {
         console.log(
-          new Date().toLocaleDateString() + "--" + new Date().toLocaleTimeString() + "--" +
+          new Date().toLocaleDateString() +
+            "--" +
+            new Date().toLocaleTimeString() +
+            "--" +
             (ctx.session?.user.name ?? ctx.session?.user.email) +
             "初次上传技能，自动创建对应userCreate",
         );
@@ -95,19 +166,45 @@ export const skillRouter = createTRPCRouter({
           },
         });
       }
+
       console.log(
-        new Date().toLocaleDateString() + "--" + new Date().toLocaleTimeString() + "--" +
+        new Date().toLocaleDateString() +
+          "--" +
+          new Date().toLocaleTimeString() +
+          "--" +
           (ctx.session?.user.name ?? ctx.session?.user.email) +
           "上传了Skill: " +
           input.name,
       );
+
+      // 输入内容拆分成4个表的数据
+      const { skillEffect: skillEffectInputArray, ...skillInput } = input;
+      // 拆分skillEffect
+      const costAndYiled = skillEffectInputArray.map((skillEffectInput) => {
+        const { skillCost: skillCostInput, skillYield: skillYieldInput } =
+          skillEffectInput;
+        // 上传skillCost
+        const skillCost = ctx.db.skillCost.createMany({
+          data: skillCostInput,
+        });
+        // 上传skillYield
+        const skillYield = ctx.db.skillYield.createMany({
+          data: skillYieldInput,
+        });
+        return { skillYield, skillCost };
+      });
+      // 上传skillEffect
+      const skillEffect = ctx.db.skillEffect.createMany({
+        data: skillEffectInputArray,
+      });
       // 创建技能并关联创建者和统计信息
-      return ctx.db.skill.create({
+      const skill = ctx.db.skill.create({
         data: {
-          ...input,
+          ...skillInput,
           createdByUserId: userCreate.userId,
         },
       });
+      return { skill, costAndYiled, skillEffect };
     }),
 
   update: protectedProcedure
@@ -122,7 +219,10 @@ export const skillRouter = createTRPCRouter({
       //   return;
       // }
       console.log(
-        new Date().toLocaleDateString() + "--" + new Date().toLocaleTimeString() + "--" +
+        new Date().toLocaleDateString() +
+          "--" +
+          new Date().toLocaleTimeString() +
+          "--" +
           (ctx.session?.user.name ?? ctx.session?.user.email) +
           "更新了Skill: " +
           input.name,

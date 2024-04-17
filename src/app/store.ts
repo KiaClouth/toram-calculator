@@ -1,7 +1,8 @@
 import { create } from "zustand";
 import { produce } from "immer";
 
-import type { Monster, Skill } from "@prisma/client";
+import type { Monster } from "@prisma/client";
+import { type Skill } from "~/server/api/routers/skill";
 
 // if you need middleware
 // import { devtools, persist } from 'zustand/middleware'
@@ -47,7 +48,7 @@ export const defaultMonster: Monster = {
 // 技能表单的默认值
 export const defaultSkill: Skill = {
   id: "",
-  state: "PRIVATE",
+  state: "PUBLIC",
   name: null,
   createdByUserId: null,
   updatedByUserId: null,
@@ -62,6 +63,53 @@ export const defaultSkill: Skill = {
   skillType: "ACTIVE_SKILL",
   weaponElementDependencyType: "TRUE",
   element: "NO_ELEMENT",
+  skillEffect: [{
+    id: "",
+    condition:"",
+    actionBaseDuration: 24,
+    actionModifiableDuration: 98,
+    belongToskillId: "",
+    castingDurationFormula: "",
+    skillCost: [{
+      id: "",
+      costType: "C_MP",
+      costFormula: "100",
+      skillEffectId: null
+    }],
+    skillYield:[{
+      id: "",
+      triggerTiming: "ON_USE",
+      delay: 30,
+      durationType: "UNLIMITED",
+      durationValue: 0,
+      yieldType: "M_HP",
+      yieldFormula: "0",
+      skillEffectId: null
+    }]
+  },{
+    id: "",
+    condition:"",
+    actionBaseDuration: 24,
+    actionModifiableDuration: 98,
+    belongToskillId: "",
+    castingDurationFormula: "",
+    skillCost: [{
+      id: "",
+      costType: "C_MP",
+      costFormula: "100",
+      skillEffectId: null
+    }],
+    skillYield:[{
+      id: "",
+      triggerTiming: "ON_USE",
+      delay: 30,
+      durationType: "UNLIMITED",
+      durationValue: 0,
+      yieldType: "M_HP",
+      yieldFormula: "0",
+      skillEffectId: null
+    }]
+  }]
 };
 
 // 应用客户端状态数据类型定义

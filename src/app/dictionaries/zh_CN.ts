@@ -255,19 +255,22 @@ const dictionary: dictionary = {
         M_PRES: "",
         M_MDEF: "",
         M_MRES: "",
-        CONSTANT: ""
-      },
-      Operator: {
-        EQUALS: "等于",
-        AND: "并且",
-        OR: "或者",
-        NOT: "非",
-        GREATER: "大于",
-        LESS: "小于",
-        ADD: "加上",
-        SUB: "减去",
-        MULTI: "乘以",
-        DIV: "除以"
+        CONSTANT: "",
+        MAINWEAPON_TYPE: "",
+        NO_WEAPOEN: "",
+        ONE_HAND_SWORD: "",
+        TWO_HANDS_SWORD: "",
+        BOW: "",
+        STAFF: "",
+        MAGIC_DEVICE: "",
+        KNUCKLE: "",
+        HALBERD: "",
+        KATANA: "",
+        SUBWEAPON_TYPE: "",
+        ARROW: "",
+        DAGGER: "",
+        NINJUTSUSCROLL: "",
+        SHIELD: ""
       },
       TriggerTimingType: {
         ON_USE: "使用时",
@@ -278,6 +281,11 @@ const dictionary: dictionary = {
       WeaponElementDependencyType: {
         TRUE: "继承",
         FALSE: "不继承"
+      },
+      DurationType: {
+        FRAME: "",
+        SKILL: "",
+        UNLIMITED: ""
       }
     },
     models: {
@@ -333,7 +341,8 @@ const dictionary: dictionary = {
         level: "等级",
         skillTreeName: "所属技能树",
         weaponElementDependencyType: "属性是否继承武器",
-        element: "自身元素属性"
+        element: "自身元素属性",
+        skillEffect: "技能效果"
       },
       user: {
         id: "账号ID",
@@ -342,6 +351,32 @@ const dictionary: dictionary = {
         emailVerified: "邮件邀请时间",
         image: "头像",
         role: "身份类型"
+      },
+      skillEffect: {
+        skillCost: "技能消耗",
+        skillYield: "作用效果",
+        id: "",
+        condition: "生效条件",
+        actionBaseDuration: "固定动作时长",
+        actionModifiableDuration: "可加速动作时长",
+        castingDurationFormula: "基础咏唱时长计算公式",
+        belongToskillId: ""
+      },
+      skillCost: {
+        id: "",
+        costType: "消耗资源类型",
+        costFormula: "计算公式",
+        skillEffectId: ""
+      },
+      skillYield: {
+        id: "",
+        triggerTiming: "触发时机",
+        delay: "延迟时长",
+        durationType: "持续类型",
+        durationValue: "持续值",
+        yieldType: "作用类型",
+        yieldFormula: "计算公式",
+        skillEffectId: ""
       }
     },
   },

@@ -26,7 +26,7 @@ const dictionary: dictionary = {
       cancel: "取消",
       close: "关闭",
       pageTitle: "怪物信息表",
-      discription: "啊啦啦啦啦，这里是本页的描述信息。但是还没有想好写什么~",
+      discription: "表中记录的应该是1星状态下的定点王数据， 2 / 3 / 4 星的经验和HP为1星的 2 / 5 / 10 倍；物防、魔防、回避值为1星的 2 / 4 / 6 倍。",
       columnsHidden: "隐藏列",
       filter: "过滤",
     },
@@ -173,61 +173,61 @@ const dictionary: dictionary = {
         GEM_POWDER_DROP: ""
       },
       ModifiersValueType: {
-        FLAT_BONUS: "",
-        PERCENTAGE_BONUS: ""
+        FLAT_BONUS: "常数",
+        PERCENTAGE_BONUS: "百分比"
       },
       SpecialAbiType: {
-        NULL: "",
-        LUC: "",
-        CRI: "",
-        TEC: "",
-        MEN: ""
+        NULL: "无",
+        LUC: "幸运",
+        CRI: "暴击",
+        TEC: "技巧",
+        MEN: "异抗"
       },
       MainWeaType: {
-        NO_WEAPOEN: "",
-        ONE_HAND_SWORD: "",
-        TWO_HANDS_SWORD: "",
-        BOW: "",
-        STAFF: "",
-        MAGIC_DEVICE: "",
-        KNUCKLE: "",
-        HALBERD: "",
-        KATANA: ""
+        NO_WEAPOEN: "空",
+        ONE_HAND_SWORD: "单手剑",
+        TWO_HANDS_SWORD: "双手剑",
+        BOW: "弓",
+        STAFF: "法杖",
+        MAGIC_DEVICE: "魔导具",
+        KNUCKLE: "拳套",
+        HALBERD: "旋风枪",
+        KATANA: "拔刀剑"
       },
       SubWeaType: {
-        NO_WEAPOEN: "",
-        ONE_HAND_SWORD: "",
-        MAGIC_DEVICE: "",
-        KNUCKLE: "",
-        KATANA: "",
-        ARROW: "",
-        DAGGER: "",
-        NINJUTSUSCROLL: "",
-        SHIELD: ""
+        NO_WEAPOEN: "空",
+        ONE_HAND_SWORD: "单手剑",
+        MAGIC_DEVICE: "魔导具",
+        KNUCKLE: "拳套",
+        KATANA: "拔刀剑",
+        ARROW: "箭矢",
+        DAGGER: "小刀",
+        NINJUTSUSCROLL: "忍术卷轴",
+        SHIELD: "盾牌"
       },
       BodyArmorType: {
-        NORMAL: "",
-        LIGHT: "",
-        HEAVY: ""
+        NORMAL: "一般",
+        LIGHT: "轻化",
+        HEAVY: "重化"
       },
       CrystalType: {
-        GENERAL: "",
-        WEAPONCRYSTAL: "",
-        BODYCRYSTAL: "",
-        ADDITIONALCRYSTAL: "",
-        SPECIALCRYSTAL: ""
+        GENERAL: "通用锻晶",
+        WEAPONCRYSTAL: "武器锻晶",
+        BODYCRYSTAL: "身体锻晶",
+        ADDITIONALCRYSTAL: "追加锻晶",
+        SPECIALCRYSTAL: "特殊锻晶"
       },
       SkillType: {
-        ACTIVE_SKILL: "",
-        PASSIVE_SKILL: ""
+        ACTIVE_SKILL: "主动技能",
+        PASSIVE_SKILL: "被动技能"
       },
       SkillTreeName: {
-        SWORLD: "",
-        MAGIC: ""
+        SWORLD: "剑系技能树",
+        MAGIC: "魔法技能树"
       },
       UserRole: {
-        USER: "",
-        ADMIN: ""
+        USER: "常规用户",
+        ADMIN: "管理员"
       },
       ComputedFields: {
         S_LV: "",
@@ -255,29 +255,37 @@ const dictionary: dictionary = {
         M_PRES: "",
         M_MDEF: "",
         M_MRES: "",
-        CONSTANT: ""
-      },
-      Operator: {
-        EQUALS: "",
-        AND: "",
-        OR: "",
-        NOT: "",
-        GREATER: "",
-        LESS: "",
-        ADD: "",
-        SUB: "",
-        MULTI: "",
-        DIV: ""
+        CONSTANT: "",
+        MAINWEAPON_TYPE: "",
+        NO_WEAPOEN: "",
+        ONE_HAND_SWORD: "",
+        TWO_HANDS_SWORD: "",
+        BOW: "",
+        STAFF: "",
+        MAGIC_DEVICE: "",
+        KNUCKLE: "",
+        HALBERD: "",
+        KATANA: "",
+        SUBWEAPON_TYPE: "",
+        ARROW: "",
+        DAGGER: "",
+        NINJUTSUSCROLL: "",
+        SHIELD: ""
       },
       TriggerTimingType: {
-        ON_USE: "",
-        PER_SECOND: "",
-        PER_USE_SKILL: "",
-        NEXT_SKILL: ""
+        ON_USE: "使用时",
+        PER_SECOND: "每秒",
+        PER_USE_SKILL: "每次使用技能时",
+        NEXT_SKILL: "下一个技能"
       },
       WeaponElementDependencyType: {
-        TRUE: "",
-        FALSE: ""
+        TRUE: "继承",
+        FALSE: "不继承"
+      },
+      DurationType: {
+        FRAME: "",
+        SKILL: "",
+        UNLIMITED: ""
       }
     },
     models: {
@@ -287,8 +295,8 @@ const dictionary: dictionary = {
         state: "状态",
         name: "名称",
         monsterType: "类型",
-        baseLv: "基础等级",
-        experience: "基础经验",
+        baseLv: "等级",
+        experience: "经验",
         address: "所在地址",
         element: "元素属性",
         radius: "半径",
@@ -310,30 +318,31 @@ const dictionary: dictionary = {
         possibilityOfRunningAround: "好动程度",
         specialBehavior: "特殊说明",
         createdByUserId: "属于[ID]",
-        viewCount: "",
-        usageCount: "",
-        createdAt: "",
-        updatedAt: "",
-        usageTimestamps: "",
-        viewTimestamps: "",
+        viewCount: "被查看次数",
+        usageCount: "被使用次数",
+        createdAt: "创建于",
+        updatedAt: "更新于",
+        usageTimestamps: "被使用记录",
+        viewTimestamps: "被查看记录",
       },
       skill: {
-        id: "",
-        state: "",
-        name: "",
-        createdByUserId: "",
-        updatedByUserId: "",
-        viewCount: "",
-        usageCount: "",
-        createdAt: "",
-        updatedAt: "",
+        id: "ID",
+        state: "状态",
+        name: "名称",
+        createdByUserId: "创建者ID",
+        updatedByUserId: "更新者ID",
+        viewCount: "被查看次数",
+        usageCount: "被使用次数",
+        createdAt: "创建于",
+        updatedAt: "更新于",
         usageTimestamps: "",
         viewTimestamps: "",
-        skillType: "",
-        level: "",
-        skillTreeName: "",
-        weaponElementDependencyType: "",
-        element: ""
+        skillType: "类型",
+        level: "等级",
+        skillTreeName: "所属技能树",
+        weaponElementDependencyType: "属性是否继承武器",
+        element: "自身元素属性",
+        skillEffect: "技能效果"
       },
       user: {
         id: "账号ID",
@@ -342,6 +351,32 @@ const dictionary: dictionary = {
         emailVerified: "邮件邀请时间",
         image: "头像",
         role: "身份类型"
+      },
+      skillEffect: {
+        skillCost: "",
+        skillYield: "",
+        id: "",
+        condition: "",
+        actionBaseDuration: "",
+        actionModifiableDuration: "",
+        castingDurationFormula: "",
+        belongToskillId: ""
+      },
+      skillCost: {
+        id: "",
+        costType: "消耗资源类型",
+        costFormula: "计算公式",
+        skillEffectId: ""
+      },
+      skillYield: {
+        id: "",
+        triggerTiming: "触发时机",
+        delay: "延迟时长",
+        durationType: "持续类型",
+        durationValue: "持续值",
+        yieldType: "作用类型",
+        yieldFormula: "计算公式",
+        skillEffectId: ""
       }
     },
   },

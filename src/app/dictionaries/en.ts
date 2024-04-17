@@ -255,19 +255,22 @@ const dictionary: dictionary = {
         M_PRES: "",
         M_MDEF: "",
         M_MRES: "",
-        CONSTANT: ""
-      },
-      Operator: {
-        EQUALS: "equals",
-        AND: "and",
-        OR: "or",
-        NOT: "not",
-        GREATER: "greater",
-        LESS: "less",
-        ADD: "add",
-        SUB: "sub",
-        MULTI: "multi",
-        DIV: "div",
+        CONSTANT: "",
+        MAINWEAPON_TYPE: "",
+        NO_WEAPOEN: "",
+        ONE_HAND_SWORD: "",
+        TWO_HANDS_SWORD: "",
+        BOW: "",
+        STAFF: "",
+        MAGIC_DEVICE: "",
+        KNUCKLE: "",
+        HALBERD: "",
+        KATANA: "",
+        SUBWEAPON_TYPE: "",
+        ARROW: "",
+        DAGGER: "",
+        NINJUTSUSCROLL: "",
+        SHIELD: ""
       },
       TriggerTimingType: {
         ON_USE: "onUse",
@@ -278,6 +281,11 @@ const dictionary: dictionary = {
       WeaponElementDependencyType: {
         TRUE: "yes",
         FALSE: "no"
+      },
+      DurationType: {
+        FRAME: "",
+        SKILL: "",
+        UNLIMITED: ""
       }
     },
     models: {
@@ -333,7 +341,8 @@ const dictionary: dictionary = {
         level: "",
         skillTreeName: "",
         weaponElementDependencyType: "",
-        element: ""
+        element: "",
+        skillEffect: ""
       },
       user: {
         id: "ID",
@@ -342,6 +351,32 @@ const dictionary: dictionary = {
         emailVerified: "EmailVerified",
         image: "Image",
         role: "Role"
+      },
+      skillEffect: {
+        skillCost: "",
+        skillYield: "",
+        id: "",
+        condition: "",
+        actionBaseDuration: "",
+        actionModifiableDuration: "",
+        castingDurationFormula: "",
+        belongToskillId: ""
+      },
+      skillCost: {
+        id: "",
+        costType: "",
+        costFormula: "",
+        skillEffectId: ""
+      },
+      skillYield: {
+        id: "",
+        triggerTiming: "",
+        delay: "",
+        durationType: "",
+        durationValue: "",
+        yieldType: "",
+        yieldFormula: "",
+        skillEffectId: ""
       }
     },
   },
