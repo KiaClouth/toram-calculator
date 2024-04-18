@@ -13,9 +13,9 @@ export default function Dialog(props: {
   }
 
   React.useEffect(() => {
-    console.log("DialogBox render");
+    console.log("--DialogBox render");
     return () => {
-      console.log("DialogBox unmount");
+      console.log("--DialogBox unmount");
     }
   },[])
 

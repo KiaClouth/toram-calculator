@@ -355,28 +355,28 @@ const dictionary: dictionary = {
       skillEffect: {
         skillCost: "技能消耗",
         skillYield: "作用效果",
-        id: "",
+        id: "ID",
         condition: "生效条件",
         actionBaseDuration: "固定动作时长",
         actionModifiableDuration: "可加速动作时长",
         castingDurationFormula: "基础咏唱时长计算公式",
-        belongToskillId: ""
+        belongToskillId: "所属技能"
       },
       skillCost: {
-        id: "",
+        id: "ID",
         costType: "消耗资源类型",
         costFormula: "计算公式",
-        skillEffectId: ""
+        skillEffectId: "所属技能效果"
       },
       skillYield: {
-        id: "",
+        id: "ID",
         triggerTiming: "触发时机",
         delay: "延迟时长",
         durationType: "持续类型",
         durationValue: "持续值",
         yieldType: "作用类型",
         yieldFormula: "计算公式",
-        skillEffectId: ""
+        skillEffectId: "所属技能效果"
       }
     },
   },

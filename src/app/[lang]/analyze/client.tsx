@@ -163,6 +163,89 @@ export default function AnalyzePageClient(props: Props) {
       bodyArmorId: null,
       additionalEquipmentId: null,
       specialEquipmentId: null,
+      mainWeapon: {
+        id: "",
+        state: "PRIVATE",
+        name: "",
+        mainWeaType: "NO_WEAPOEN",
+        baseAtk: 0,
+        refinement: 0,
+        stability: 0,
+        element: "NO_ELEMENT",
+        modifiersListId: null,
+        createdByUserId: null,
+        updatedByUserId: null,
+        viewCount: 0,
+        usageCount: 0,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        usageTimestamps: [],
+        viewTimestamps: []
+      },
+      subWeapon: {
+        id: "",
+        state: "PRIVATE",
+        name: "",
+        subWeaType: "NO_WEAPOEN",
+        baseAtk: 0,
+        refinement: 0,
+        stability: 0,
+        element: "NO_ELEMENT",
+        modifiersListId: null,
+        createdByUserId: null,
+        updatedByUserId: null,
+        viewCount: 0,
+        usageCount: 0,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        usageTimestamps: [],
+        viewTimestamps: []
+      },
+      bodyArmor: {
+        id: "",
+        state: "PRIVATE",
+        name: "",
+        bodyArmorType: "LIGHT",
+        refinement: 0,
+        modifiersListId: null,
+        createdByUserId: null,
+        updatedByUserId: null,
+        viewCount: 0,
+        usageCount: 0,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        usageTimestamps: [],
+        viewTimestamps: []
+      },
+      addEquipment: {
+        id: "",
+        state: "PRIVATE",
+        name: "",
+        refinement: 0,
+        modifiersListId: null,
+        createdByUserId: null,
+        updatedByUserId: null,
+        viewCount: 0,
+        usageCount: 0,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        usageTimestamps: [],
+        viewTimestamps: []
+      },
+      spcialEquipment: {
+        id: "",
+        state: "PRIVATE",
+        name: "",
+        modifiersListId: null,
+        createdByUserId: null,
+        updatedByUserId: null,
+        viewCount: 0,
+        usageCount: 0,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        usageTimestamps: [],
+        viewTimestamps: []
+      }
     },
     fashion: {
       modifiersListId: null,
@@ -369,7 +452,7 @@ export default function AnalyzePageClient(props: Props) {
     initialCharacterState: CharacterState,
   ): FrameData[] {
     const frameData: FrameData[] = [];
-    let characterState = initialCharacterState;
+    const characterState = initialCharacterState;
 
     for (let frame = 0; frame < 360; frame++) {
       // 应用技能效果到角色状态上

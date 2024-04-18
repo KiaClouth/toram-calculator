@@ -10,6 +10,13 @@ import {
   publicProcedure,
 } from "~/server/api/trpc";
 
+export type SkillEffect = Prisma.SkillEffectGetPayload<{
+  include: {
+    skillCost: true;
+    skillYield: true;
+  }; 
+}>;
+
 export type Skill = Prisma.SkillGetPayload<{
   include: {
     skillEffect: {

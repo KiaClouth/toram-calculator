@@ -311,7 +311,6 @@ export default function MonserPageClient(props: Props) {
     };
   }, [
     defaultMonsterList,
-    monsterDialogState,
     setMonsterDialogState,
     setMonsterFormState,
     setMonsterList,

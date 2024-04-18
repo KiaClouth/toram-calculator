@@ -1,8 +1,8 @@
 import { create } from "zustand";
 import { produce } from "immer";
 
-import type { Monster } from "@prisma/client";
-import { type Skill } from "~/server/api/routers/skill";
+import type { Monster, SkillCost, SkillYield } from "@prisma/client";
+import { SkillEffect, type Skill } from "~/server/api/routers/skill";
 
 // if you need middleware
 // import { devtools, persist } from 'zustand/middleware'
@@ -46,10 +46,39 @@ export const defaultMonster: Monster = {
 };
 
 // 技能表单的默认值
+export const defaultSkillEffectCost: SkillCost = {
+  id: "",
+  costType: "MAINWEAPON_TYPE",
+  costFormula: "",
+  skillEffectId: null
+}
+
+export const defaultSkillEffectYield: SkillYield = {
+  id: "",
+  triggerTiming: "ON_USE",
+  delay: 0,
+  durationType: "FRAME",
+  durationValue: 0,
+  yieldType: "MAINWEAPON_TYPE",
+  yieldFormula: "",
+  skillEffectId: null
+}
+
+export const defaultSkillEffect: SkillEffect = {
+  id: "",
+  condition: "",
+  actionBaseDuration: 24,
+  actionModifiableDuration: 98,
+  belongToskillId: "",
+  castingDurationFormula: "",
+  skillCost: [defaultSkillEffectCost],
+  skillYield: [defaultSkillEffectYield],
+}
+
 export const defaultSkill: Skill = {
   id: "",
   state: "PUBLIC",
-  name: null,
+  name: "",
   createdByUserId: null,
   updatedByUserId: null,
   viewCount: 0,
@@ -63,53 +92,7 @@ export const defaultSkill: Skill = {
   skillType: "ACTIVE_SKILL",
   weaponElementDependencyType: "TRUE",
   element: "NO_ELEMENT",
-  skillEffect: [{
-    id: "",
-    condition:"",
-    actionBaseDuration: 24,
-    actionModifiableDuration: 98,
-    belongToskillId: "",
-    castingDurationFormula: "",
-    skillCost: [{
-      id: "",
-      costType: "C_MP",
-      costFormula: "100",
-      skillEffectId: null
-    }],
-    skillYield:[{
-      id: "",
-      triggerTiming: "ON_USE",
-      delay: 30,
-      durationType: "UNLIMITED",
-      durationValue: 0,
-      yieldType: "M_HP",
-      yieldFormula: "0",
-      skillEffectId: null
-    }]
-  },{
-    id: "",
-    condition:"",
-    actionBaseDuration: 24,
-    actionModifiableDuration: 98,
-    belongToskillId: "",
-    castingDurationFormula: "",
-    skillCost: [{
-      id: "",
-      costType: "C_MP",
-      costFormula: "100",
-      skillEffectId: null
-    }],
-    skillYield:[{
-      id: "",
-      triggerTiming: "ON_USE",
-      delay: 30,
-      durationType: "UNLIMITED",
-      durationValue: 0,
-      yieldType: "M_HP",
-      yieldFormula: "0",
-      skillEffectId: null
-    }]
-  }]
+  skillEffect: [defaultSkillEffect]
 };
 
 // 应用客户端状态数据类型定义

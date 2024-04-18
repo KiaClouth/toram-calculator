@@ -27,8 +27,8 @@ dependencies:
     specifier: ^0.7.1
     version: 0.7.3(typescript@5.4.3)(zod@3.22.4)
   '@tanstack/react-form':
-    specifier: ^0.13.6
-    version: 0.13.7(@types/react@18.2.74)(react-dom@18.2.0)(react@18.2.0)
+    specifier: ^0.19.1
+    version: 0.19.1(@types/react@18.2.74)(react-dom@18.2.0)(react@18.2.0)
   '@tanstack/react-query':
     specifier: ^4.36.1
     version: 4.36.1(react-dom@18.2.0)(react@18.2.0)
@@ -956,16 +956,22 @@ packages:
       '@tanstack/store': 0.3.1
     dev: false
 
+  /@tanstack/form-core@0.19.1:
+    resolution: {integrity: sha512-nV6/4rrMwom4D4j+fWJhUvz6ZQnUAlt/cwfiYrE9M51ljh70vyQ3V+5C6znxGkODyzJrwsmh/tFtrmzdkUngNQ==}
+    dependencies:
+      '@tanstack/store': 0.3.1
+    dev: false
+
   /@tanstack/query-core@4.36.1:
     resolution: {integrity: sha512-DJSilV5+ytBP1FbFcEJovv4rnnm/CokuVvrBEtW/Va9DvuJ3HksbXUJEpI0aV1KtuL4ZoO9AVE6PyNLzF7tLeA==}
     dev: false
 
-  /@tanstack/react-form@0.13.7(@types/react@18.2.74)(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-dLN/Ok+LXtfHpkJPo218iOr2347fPpjiz1OmSud7OYf68C5SxChoOabI/UX3und9Un4MjMxMxKjICHTigNRkiw==}
+  /@tanstack/react-form@0.19.1(@types/react@18.2.74)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-OQLXaYAzlf0rTVsHStr6drJV3wrPVvR/j6kmWnPRQRcNdJkXmf07Nfbvwjwr7wmVKgyun+ROO0JAwEJ1NTgUxA==}
     peerDependencies:
       react: ^17.0.0 || ^18.0.0
     dependencies:
-      '@tanstack/form-core': 0.13.7
+      '@tanstack/form-core': 0.19.1
       '@tanstack/react-store': 0.3.1(react-dom@18.2.0)(react@18.2.0)
       decode-formdata: 0.4.0
       react: 18.2.0

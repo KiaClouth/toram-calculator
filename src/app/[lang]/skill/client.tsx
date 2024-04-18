@@ -43,6 +43,7 @@ export default function MonserPageClient(props: {
     filterState,
     setFilterState,
   } = useBearStore((state) => state.skillPage);
+  setSkillList(defaultSkillList);
 
   // 搜索框行为函数
   const handleSearchFilterChange = (value: string) => {
@@ -201,7 +202,7 @@ export default function MonserPageClient(props: {
   };
 
   useEffect(() => {
-    setSkillList(defaultSkillList);
+    console.log("--Skill Client render")
     // u键监听
     const handleEscapeKeyPress = (e: KeyboardEvent) => {
       if (e.key === "u") {
@@ -211,15 +212,13 @@ export default function MonserPageClient(props: {
     };
     document.addEventListener("keydown", handleEscapeKeyPress);
     return () => {
+      console.log("--Skill Client unmount")
       document.removeEventListener("keydown", handleEscapeKeyPress);
     };
   }, [
     defaultSkillList,
-    skillDialogState,
     setSkillDialogState,
     setSkillFormState,
-    setSkillList,
-    skillList,
   ]);
 
   return (
@@ -479,6 +478,7 @@ export default function MonserPageClient(props: {
         </div>
         <div className="RightArea sticky top-0 z-10 flex-1"></div>
       </div>
+      {/* {(() => { console.log("重新渲染了"); return null})()} */}
       <Dialog state={skillDialogState} setState={setSkillDialogState}>
         {skillDialogState && (
           <SkillForm
