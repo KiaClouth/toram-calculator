@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { produce } from "immer";
 
-import type { Monster, SkillCost, SkillYield } from "@prisma/client";
+import type { Analyzer, Monster, SkillCost, SkillYield } from "@prisma/client";
 import { SkillEffect, type Skill } from "~/server/api/routers/skill";
 
 // if you need middleware
@@ -70,7 +70,7 @@ export const defaultSkillEffect: SkillEffect = {
   actionBaseDuration: 24,
   actionModifiableDuration: 98,
   belongToskillId: "",
-  castingDurationFormula: "",
+  castingDurationFormula: "0",
   skillCost: [defaultSkillEffectCost],
   skillYield: [defaultSkillEffectYield],
 }
@@ -94,6 +94,16 @@ export const defaultSkill: Skill = {
   element: "NO_ELEMENT",
   skillEffect: [defaultSkillEffect]
 };
+
+export const defaultAnalyzer: Analyzer = {
+  id: "",
+  name: "",
+  state: "PRIVATE",
+  createdAt: new Date(),
+  createdByUserId: null,
+  monsterId: null,
+  characterId: null
+}
 
 // 应用客户端状态数据类型定义
 interface AppState {
@@ -123,6 +133,18 @@ interface AppState {
     filterState: boolean;
     setFilterState: (newState: boolean) => void;
   };
+  analyzePage: {
+    analyzeList: Analyzer[];
+    setAnalyzeList: (newAnalyzeList: Analyzer[]) => void;
+    analyze: Analyzer;
+    setAnalyze: (newAnalyze: Analyzer) => void;
+    analyzeDialogState: boolean;
+    setAnalyzeDialogState: (newState: boolean) => void;
+    analyzeFormState: "CREATE" | "UPDATE" | "DISPLAY";
+    setAnalyzeFormState: (newState: "CREATE" | "UPDATE" | "DISPLAY") => void;
+    filterState: boolean;
+    setFilterState: (newState: boolean) => void;
+  }
 }
 
 export const useBearStore = create<AppState>()(
@@ -209,6 +231,37 @@ export const useBearStore = create<AppState>()(
           }),
         ),
     },
+    analyzePage: {
+      analyzeList: [],
+      setAnalyzeList: (newAnalyzeList: Analyzer[]) => set(
+        produce((state: AppState) => {
+          state.analyzePage.analyzeList = newAnalyzeList;
+        })
+      ),
+      analyze: defaultAnalyzer,
+      setAnalyze: (newAnalyze: Analyzer) => set(
+        produce((state: AppState) => {
+          state.analyzePage.analyze = newAnalyze;
+        })),
+      analyzeDialogState: false,
+      setAnalyzeDialogState: (newState: boolean) => set(
+        produce((state: AppState) => {
+          state.analyzePage.analyzeDialogState = newState;
+        })
+      ),
+      analyzeFormState: "DISPLAY",
+      setAnalyzeFormState: (newState: "CREATE" | "UPDATE" | "DISPLAY") => set(
+        produce((state: AppState) => {
+          state.analyzePage.analyzeFormState = newState;
+        })
+      ),
+      filterState: false,
+      setFilterState: (newState: boolean) => set(
+        produce((state: AppState) => {
+          state.analyzePage.filterState = newState;
+        })
+      )
+    }
   }),
 
   // if you need middleware

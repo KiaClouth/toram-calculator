@@ -9,9 +9,9 @@ import type {
   CharacterState,
   FrameData,
 } from "./analyzeType";
-import { Prisma } from "@prisma/client";
+import Dialog from "../_components/dialog";
+import { useBearStore } from "~/app/store";
 
-const a:Prisma.Character$petArgs={}
 
 export interface Props {
   dictionary: ReturnType<typeof getDictionary>;
@@ -19,7 +19,7 @@ export interface Props {
 }
 
 export default function AnalyzePageClient(props: Props) {
-  const { dictionary, session } = props;
+  const { dictionary } = props;
   const skillSequence: _Skill[] = [
     {
       id: "",
@@ -128,158 +128,13 @@ export default function AnalyzePageClient(props: Props) {
       viewTimestamps: [],
     },
   ];
+  
+  // 状态管理参数
+  const {
+    analyzeDialogState,
+    setAnalyzeDialogState,
+  } = useBearStore((state) => state.analyzePage);
 
-  const testCharacter: _Character = {
-    id: "",
-    state: "PRIVATE",
-    name: "",
-    lv: 265,
-    petId: null,
-    modifiersListId: null,
-    createdByUserId: null,
-    viewCount: 0,
-    usageCount: 0,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    usageTimestamps: [],
-    viewTimestamps: [],
-    baseAbi: {
-      baseStr: 0,
-      baseInt: 430,
-      baseVit: 0,
-      baseAgi: 0,
-      baseDex: 247,
-      characterId: "",
-    },
-    specialAbi: {
-      specialAbiType: "NULL",
-      value: 0,
-      characterId: "",
-    },
-    equipmentList: {
-      characterId: "",
-      mainWeaponId: null,
-      subWeaponId: null,
-      bodyArmorId: null,
-      additionalEquipmentId: null,
-      specialEquipmentId: null,
-      mainWeapon: {
-        id: "",
-        state: "PRIVATE",
-        name: "",
-        mainWeaType: "NO_WEAPOEN",
-        baseAtk: 0,
-        refinement: 0,
-        stability: 0,
-        element: "NO_ELEMENT",
-        modifiersListId: null,
-        createdByUserId: null,
-        updatedByUserId: null,
-        viewCount: 0,
-        usageCount: 0,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        usageTimestamps: [],
-        viewTimestamps: []
-      },
-      subWeapon: {
-        id: "",
-        state: "PRIVATE",
-        name: "",
-        subWeaType: "NO_WEAPOEN",
-        baseAtk: 0,
-        refinement: 0,
-        stability: 0,
-        element: "NO_ELEMENT",
-        modifiersListId: null,
-        createdByUserId: null,
-        updatedByUserId: null,
-        viewCount: 0,
-        usageCount: 0,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        usageTimestamps: [],
-        viewTimestamps: []
-      },
-      bodyArmor: {
-        id: "",
-        state: "PRIVATE",
-        name: "",
-        bodyArmorType: "LIGHT",
-        refinement: 0,
-        modifiersListId: null,
-        createdByUserId: null,
-        updatedByUserId: null,
-        viewCount: 0,
-        usageCount: 0,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        usageTimestamps: [],
-        viewTimestamps: []
-      },
-      addEquipment: {
-        id: "",
-        state: "PRIVATE",
-        name: "",
-        refinement: 0,
-        modifiersListId: null,
-        createdByUserId: null,
-        updatedByUserId: null,
-        viewCount: 0,
-        usageCount: 0,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        usageTimestamps: [],
-        viewTimestamps: []
-      },
-      spcialEquipment: {
-        id: "",
-        state: "PRIVATE",
-        name: "",
-        modifiersListId: null,
-        createdByUserId: null,
-        updatedByUserId: null,
-        viewCount: 0,
-        usageCount: 0,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        usageTimestamps: [],
-        viewTimestamps: []
-      }
-    },
-    fashion: {
-      modifiersListId: null,
-      updatedAt: new Date(),
-      characterId: "",
-    },
-    cuisine: {
-      modifiersListId: null,
-      updatedAt: new Date(),
-      characterId: "",
-    },
-    consumableList: [],
-    skill: {
-      updatedAt: new Date(),
-      characterId: "",
-    },
-    combos: [],
-    pet: {
-      id: "",
-      state: "PRIVATE",
-      name: null,
-      createdByUserId: null,
-      updatedByUserId: null,
-      viewCount: 0,
-      usageCount: 0,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      usageTimestamps: [],
-      viewTimestamps: [],
-    },
-    modifiersList: {
-      id: "",
-    },
-  };
 
   const initialCharacterState: CharacterState = {
     systemAttributes: {
@@ -467,7 +322,10 @@ export default function AnalyzePageClient(props: Props) {
   }
 
   useEffect(() => {
-    console.log("comboAnalyze");
+    console.log("--ComboAnalyze Client Render");
+    return () => {
+      console.log("--ComboAnalyze Client Unmount");
+    }
   }, []);
 
   return (
@@ -504,6 +362,16 @@ export default function AnalyzePageClient(props: Props) {
         </div>
         <div className="RightArea sticky top-0 z-10 flex-1"></div>
       </div>
+      
+      <Dialog state={analyzeDialogState} setState={setAnalyzeDialogState}>
+        {analyzeDialogState && (null
+        //   <AnalyzeForm
+        //   dictionary={dictionary}
+        //   session={session}
+        //   setDefaultAnalyzeList={setDefaultAnalyzeList}
+        // />
+        )}
+      </Dialog>
     </main>
   );
 }

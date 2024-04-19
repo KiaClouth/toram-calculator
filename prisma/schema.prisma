@@ -177,7 +177,7 @@ enum MonsterType {
 model Monster {
     id                               String      @id @default(cuid())
     state                            State       @default(PRIVATE)
-    name                             String      @default("SYSTEM")
+    name                             String      @default("SYSTEM") ///  @zod.string.min(2, { message: "最少2个字符" })
     monsterType                      MonsterType @default(COMMON_BOSS)
     baseLv                           Int?
     experience                       Int?
@@ -696,8 +696,8 @@ model SkillEffect {
     actionBaseDuration       Int          @default(13)
     actionModifiableDuration Int          @default(48)
     castingDurationFormula   String
-    skillCost                     SkillCost[]
-    skillYield                    SkillYield[]
+    skillCost                SkillCost[]
+    skillYield               SkillYield[]
     belongToSkill            Skill        @relation(fields: [belongToskillId], references: [id], onDelete: Cascade)
     belongToskillId          String
 }

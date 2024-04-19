@@ -22,14 +22,14 @@ export default function Button(props: MyButtonProps) {
     secondary: "border-1.5 border-accent-color-30 bg-primary-color hover:bg-accent-color hover:text-primary-color",
     tertiary: "border-1.5 border-transparent bg-transition-color-8 hover:bg-transition-color-20",
   }[level ?? "secondary"];
-  
-  const defaultButtonClassNames = `flex flex-none cursor-pointer items-center justify-center ${sizeClass} ${levelClass}`;
+  const disableClass = rest.disabled  ? "cursor-not-allowed opacity-50" : "";
+  const defaultButtonClassNames = `${disableClass} cursor-pointer flex flex-none items-center justify-center ${sizeClass} ${levelClass} `;
 
   return (
     <React.Fragment>
       <button
         {...rest}
-        className={
+        className={` `+
           rest.className
             ? defaultButtonClassNames + rest.className
             : defaultButtonClassNames

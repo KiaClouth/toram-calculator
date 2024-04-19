@@ -288,7 +288,6 @@ export default function MonserPageClient(props: Props) {
   // 弹出层怪物名称列表
   const [sameNameMonsterList, setSameNameMonsterList] = useState<Monster[]>([]);
   const compusteSameNameMonsterList = (monster: Monster) => {
-    console.log("当前monster", monster);
     const list: Monster[] = [];
     monsterList.forEach((m) => {
       m.name === monster.name && list.push(m);
@@ -297,6 +296,7 @@ export default function MonserPageClient(props: Props) {
   };
 
   useEffect(() => {
+    console.log("--Monster Client Render")
     setMonsterList(defaultMonsterList);
     // u键监听
     const handleEscapeKeyPress = (e: KeyboardEvent) => {
@@ -307,6 +307,7 @@ export default function MonserPageClient(props: Props) {
     };
     document.addEventListener("keydown", handleEscapeKeyPress);
     return () => {
+      console.log("--Monster Client Unmount")
       document.removeEventListener("keydown", handleEscapeKeyPress);
     };
   }, [

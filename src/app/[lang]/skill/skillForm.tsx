@@ -4,18 +4,14 @@ import React, { useEffect } from "react";
 import { tApi } from "~/trpc/react";
 import type { getDictionary } from "~/app/get-dictionary";
 import Button from "../_components/button";
-import {
-  type FieldApi,
-  useForm,
-  useField,
-} from "@tanstack/react-form";
+import { type FieldApi, useForm, useField } from "@tanstack/react-form";
 import { zodValidator } from "@tanstack/zod-form-adapter";
 import { ZodFirstPartyTypeKind, type z } from "zod";
 import { type $Enums } from "@prisma/client";
 import { defaultSkill, defaultSkillEffect, useBearStore } from "~/app/store";
 import { type Session } from "next-auth";
 import { type SkillEffect, type Skill } from "~/server/api/routers/skill";
-import { skillInputSchema } from "~/schema/skillSchame";
+import { skillEffectInputSchema, skillInputSchema } from "~/schema/skillSchame";
 
 export default function SkillForm(props: {
   dictionary: ReturnType<typeof getDictionary>;
@@ -72,6 +68,8 @@ export default function SkillForm(props: {
   const skillEffectHiddenData: Array<keyof SkillEffect> = [
     "id",
     "belongToskillId",
+    "skillCost",
+    "skillYield",
   ];
 
   const skillEffectCostHiddenData: Array<keyof SkillEffect["skillCost"][0]> = [
@@ -89,32 +87,32 @@ export default function SkillForm(props: {
       UPDATE: skill,
       DISPLAY: skill,
     }[skillFormState],
-    // onSubmit: async ({ value }) => {
-    //   console.log("onSubmit", value);
-    //   setDataUploadingState(true);
-    //   newSkill = {
-    //     ...value,
-    //     createdAt: new Date(),
-    //     updatedAt: new Date(),
-    //     usageCount: 0,
-    //     viewCount: 0,
-    //     usageTimestamps: [],
-    //     viewTimestamps: [],
-    //   } satisfies Skill;
-    //   switch (skillFormState) {
-    //     case "CREATE":
-    //       createSkill.mutate(newSkill);
-    //       break;
+    onSubmit: async ({ value }) => {
+      console.log("onSubmit", value);
+      setDataUploadingState(true);
+      newSkill = {
+        ...value,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        usageCount: 0,
+        viewCount: 0,
+        usageTimestamps: [],
+        viewTimestamps: [],
+      } satisfies Skill;
+      switch (skillFormState) {
+        case "CREATE":
+          createSkill.mutate(newSkill);
+          break;
 
-    //     case "UPDATE":
-    //       updateSkill.mutate(newSkill);
-    //       break;
+        case "UPDATE":
+          updateSkill.mutate(newSkill);
+          break;
 
-    //     default:
-    //       break;
-    //   }
-    //   setSkillDialogState(false);
-    // },
+        default:
+          break;
+      }
+      setSkillDialogState(false);
+    },
     validatorAdapter: zodValidator,
   });
 
@@ -196,7 +194,7 @@ export default function SkillForm(props: {
       document.removeEventListener("keydown", handleEscapeKeyPress);
       document.removeEventListener("keydown", handleEnterKeyPress);
     };
-  }, [form, skillDialogState, skillFormState, setSkillDialogState]);
+  }, [form, setSkillDialogState, skillDialogState, skillFormState]);
 
   const Formfragment = <T extends keyof U, U>(
     key: string,
@@ -282,8 +280,7 @@ export default function SkillForm(props: {
       </div>
       <div className="inputArea flex-1 overflow-y-auto">
         <fieldset className="dataKinds flex flex-row flex-wrap gap-y-[4px]">
-          { 
-            Object.entries(skill).map(([key, _]) => {
+          {Object.entries(skill).map(([key, _]) => {
             // 遍历对象键
             // 过滤掉隐藏的数据
             if (skillHiddenData.includes(key as keyof Skill)) return undefined;
@@ -338,6 +335,7 @@ export default function SkillForm(props: {
                                     name={field.name}
                                     value={option}
                                     type="radio"
+                                    checked={field.getValue() === option}
                                     onBlur={field.handleBlur}
                                     onChange={(e) =>
                                       field.handleChange(e.target.value)
@@ -361,220 +359,231 @@ export default function SkillForm(props: {
                 return (
                   <form.Field key={key} name={key as keyof Skill} mode="array">
                     {(field) => {
-                      console.log(key)
+                      // console.log(key)
                       return (
                         <fieldset className="flex basis-1/2 flex-col gap-1 p-2 lg:basis-1/4">
-                          {/* {key +
-                              new Date().toLocaleString() +
-                              Array.isArray(field.state.value)} */}
-                          {/* {JSON.stringify(form.state.values, null, 2)} */}
                           <label className="flex w-full flex-col gap-1">
                             {dictionary.db.models.skill.skillEffect}
                             {field.state.value &&
                               Array.isArray(field.state.value) &&
                               field.state.value.map((subObj, i) => {
                                 // console.log(i,subObj)
-                                return null
-                                // return (Object.entries(subObj).map(([subKey, _]) => {
-                                //     if (
-                                //       skillEffectHiddenData.includes(
-                                //         subKey as keyof SkillEffect,
-                                //       )
-                                //     )
-                                //       return undefined;
-                                //     // console.log(i,subKey)
-                                //     // 输入框的类型定义
-                                //     const zodValue =
-                                //       skillEffectInputSchema.shape[
-                                //         subKey as keyof SkillEffect
-                                //       ];
-                                //     const valueType = getZodType(zodValue);
-                                //     const { ZodNumber, ZodString, ...Others } =
-                                //       ZodFirstPartyTypeKind;
-                                //     const inputType = {
-                                //       [ZodNumber]: "number",
-                                //       [ZodString]: "text",
-                                //       ...Others,
-                                //     }[valueType];
-                                //     // return `skillEffect.${i}.${subKey as keyof SkillEffect}\n`
-                                //     switch (valueType) {
-                                //       // case ZodFirstPartyTypeKind.ZodEnum: {
-                                //       //   // 枚举类型的输入框以单选框的形式创建
-                                //       //   return "options" in zodValue ? (
-                                //       //     <form.Field
-                                //       //       key={"skillEffect" + i + subKey}
-                                //       //       name={`skillEffect`}
-                                //       //       validators={{
-                                //       //         onChangeAsyncDebounceMs: 500,
-                                //       //         onChangeAsync:
-                                //       //           skillEffectInputSchema
-                                //       //             .shape[
-                                //       //             subKey as keyof SkillEffect
-                                //       //           ],
-                                //       //       }}
-                                //       //     >
-                                //       //       {(subField) => {
-                                //       //         return (
-                                //       //           <fieldset className="flex basis-full flex-col gap-1 p-2">
-                                //       //             <span>
-                                //       //               {
-                                //       //                 dictionary.db.models
-                                //       //                   .skillEffect[
-                                //       //                   subKey as keyof SkillEffect
-                                //       //                 ]
-                                //       //               }
-                                //       //             </span>
-                                //       //             <div
-                                //       //               className={`inputContianer mt-1 flex flex-wrap gap-2 self-start rounded ${skillFormState === "DISPLAY" ? " outline-transition-color-20" : ""}`}
-                                //       //             >
-                                //       //               {Array.isArray(
-                                //       //                 zodValue.options,
-                                //       //               ) &&
-                                //       //                 zodValue.options.map(
-                                //       //                   (option) => {
-                                //       //                     return (
-                                //       //                       <label
-                                //       //                         key={
-                                //       //                           "skillEffect" +
-                                //       //                           i +
-                                //       //                           subKey +
-                                //       //                           option
-                                //       //                         }
-                                //       //                         className={`flex cursor-pointer items-center justify-between gap-2 rounded-full p-2 px-4 hover:border-transition-color-20 lg:flex-row-reverse lg:justify-end lg:rounded-sm ${skillFormState === "DISPLAY" ? " pointer-events-none border-transparent bg-transparent" : " pointer-events-auto border-transition-color-8 bg-transition-color-8"}`}
-                                //       //                       >
-                                //       //                         {
-                                //       //                           dictionary
-                                //       //                             .db.enums[
-                                //       //                             (subKey
-                                //       //                               .charAt(
-                                //       //                                 0,
-                                //       //                               )
-                                //       //                               .toLocaleUpperCase() +
-                                //       //                               subKey.slice(
-                                //       //                                 1,
-                                //       //                               )) as keyof typeof $Enums
-                                //       //                           ][
-                                //       //                             option as keyof (typeof $Enums)[keyof typeof $Enums]
-                                //       //                           ]
-                                //       //                         }
-                                //       //                         <input
-                                //       //                           disabled={
-                                //       //                             skillFormState ===
-                                //       //                             "DISPLAY"
-                                //       //                           }
-                                //       //                           id={
-                                //       //                             subField.name +
-                                //       //                             option
-                                //       //                           }
-                                //       //                           name={
-                                //       //                             subField.name
-                                //       //                           }
-                                //       //                           value={`${option}`}
-                                //       //                           type="radio"
-                                //       //                           onBlur={
-                                //       //                             subField.handleBlur
-                                //       //                           }
-                                //       //                           onChange={(
-                                //       //                             e,
-                                //       //                           ) =>
-                                //       //                             subField.handleChange(
-                                //       //                               e.target
-                                //       //                                 .value,
-                                //       //                             )
-                                //       //                           }
-                                //       //                           className={` mt-0.5 rounded px-4 py-2`}
-                                //       //                         />
-                                //       //                       </label>
-                                //       //                     );
-                                //       //                   },
-                                //       //                 )}
-                                //       //             </div>
-                                //       //             <FieldInfo
-                                //       //               field={subField}
-                                //       //             />
-                                //       //           </fieldset>
-                                //       //         );
-                                //       //       }}
-                                //       //     </form.Field>
-                                //       //   ) : null;
-                                //       // }
+                                // return null
+                                return (
+                                  <div key={key + i}>
+                                    {Object.entries(subObj).map(
+                                      ([subKey, _]) => {
+                                        if (
+                                          skillEffectHiddenData.includes(
+                                            subKey as keyof SkillEffect,
+                                          )
+                                        )
+                                          return undefined;
+                                        // 输入框的类型定义
+                                        const zodValue =
+                                          skillEffectInputSchema.shape[
+                                            subKey as keyof SkillEffect
+                                          ];
+                                        const valueType = getZodType(zodValue);
+                                        const {
+                                          ZodNumber,
+                                          ZodString,
+                                          ...Others
+                                        } = ZodFirstPartyTypeKind;
+                                        const inputType = {
+                                          [ZodNumber]: "number",
+                                          [ZodString]: "text",
+                                          ...Others,
+                                        }[valueType];
 
-                                //       // case ZodFirstPartyTypeKind.ZodArray: {
-                                //       //   return null;
-                                //       // }
+                                        switch (valueType) {
+                                          // case ZodFirstPartyTypeKind.ZodEnum: {
+                                          //   // 枚举类型的输入框以单选框的形式创建
+                                          //   return "options" in zodValue ? (
+                                          //     <form.Field
+                                          //       key={"skillEffect" + i + subKey}
+                                          //       name={`skillEffect`}
+                                          //       validators={{
+                                          //         onChangeAsyncDebounceMs: 500,
+                                          //         onChangeAsync:
+                                          //           skillEffectInputSchema
+                                          //             .shape[
+                                          //             subKey as keyof SkillEffect
+                                          //           ],
+                                          //       }}
+                                          //     >
+                                          //       {(subField) => {
+                                          //         return (
+                                          //           <fieldset className="flex basis-full flex-col gap-1 p-2">
+                                          //             <span>
+                                          //               {
+                                          //                 dictionary.db.models
+                                          //                   .skillEffect[
+                                          //                   subKey as keyof SkillEffect
+                                          //                 ]
+                                          //               }
+                                          //             </span>
+                                          //             <div
+                                          //               className={`inputContianer mt-1 flex flex-wrap gap-2 self-start rounded ${skillFormState === "DISPLAY" ? " outline-transition-color-20" : ""}`}
+                                          //             >
+                                          //               {Array.isArray(
+                                          //                 zodValue.options,
+                                          //               ) &&
+                                          //                 zodValue.options.map(
+                                          //                   (option) => {
+                                          //                     return (
+                                          //                       <label
+                                          //                         key={
+                                          //                           "skillEffect" +
+                                          //                           i +
+                                          //                           subKey +
+                                          //                           option
+                                          //                         }
+                                          //                         className={`flex cursor-pointer items-center justify-between gap-2 rounded-full p-2 px-4 hover:border-transition-color-20 lg:flex-row-reverse lg:justify-end lg:rounded-sm ${skillFormState === "DISPLAY" ? " pointer-events-none border-transparent bg-transparent" : " pointer-events-auto border-transition-color-8 bg-transition-color-8"}`}
+                                          //                       >
+                                          //                         {
+                                          //                           dictionary
+                                          //                             .db.enums[
+                                          //                             (subKey
+                                          //                               .charAt(
+                                          //                                 0,
+                                          //                               )
+                                          //                               .toLocaleUpperCase() +
+                                          //                               subKey.slice(
+                                          //                                 1,
+                                          //                               )) as keyof typeof $Enums
+                                          //                           ][
+                                          //                             option as keyof (typeof $Enums)[keyof typeof $Enums]
+                                          //                           ]
+                                          //                         }
+                                          //                         <input
+                                          //                           disabled={
+                                          //                             skillFormState ===
+                                          //                             "DISPLAY"
+                                          //                           }
+                                          //                           id={
+                                          //                             subField.name +
+                                          //                             option
+                                          //                           }
+                                          //                           name={
+                                          //                             subField.name
+                                          //                           }
+                                          //                           value={`${option}`}
+                                          //                           type="radio"
+                                          //                           onBlur={
+                                          //                             subField.handleBlur
+                                          //                           }
+                                          //                           onChange={(
+                                          //                             e,
+                                          //                           ) =>
+                                          //                             subField.handleChange(
+                                          //                               e.target
+                                          //                                 .value,
+                                          //                             )
+                                          //                           }
+                                          //                           className={` mt-0.5 rounded px-4 py-2`}
+                                          //                         />
+                                          //                       </label>
+                                          //                     );
+                                          //                   },
+                                          //                 )}
+                                          //             </div>
+                                          //             <FieldInfo
+                                          //               field={subField}
+                                          //             />
+                                          //           </fieldset>
+                                          //         );
+                                          //       }}
+                                          //     </form.Field>
+                                          //   ) : null;
+                                          // }
 
-                                //       default: {
-                                //         return (
-                                //           <form.Field
-                                //             key={"skillEffect" + i + subKey}
-                                //             name={`skillEffect[${i}].${subKey as keyof SkillEffect}`}
-                                //             validators={{
-                                //               onChangeAsyncDebounceMs: 500,
-                                //               onChangeAsync:
-                                //                 skillEffectInputSchema.shape[
-                                //                   subKey as keyof SkillEffect
-                                //                 ],
-                                //             }}
-                                //           >
-                                //             {(subField) => {
-                                //               return (
-                                //                 <fieldset className="flex basis-1/2 flex-col gap-1 p-2 lg:basis-1/4">
-                                //                   <label
-                                //                     htmlFor={subField.name}
-                                //                     className="flex w-full flex-col gap-1"
-                                //                   >
-                                //                     {dictionary.db.models
-                                //                       .skillEffect[
-                                //                       subKey as keyof SkillEffect
-                                //                     ] + i}
-                                //                     <input
-                                //                       disabled={
-                                //                         skillFormState ===
-                                //                         "DISPLAY"
-                                //                       }
-                                //                       id={subField.name}
-                                //                       name={subField.name}
-                                //                       type={inputType}
-                                //                       value={
-                                //                         typeof subField.state
-                                //                           .value !== "object"
-                                //                           ? subField.state.value
-                                //                           : undefined
-                                //                       }
-                                //                       onBlur={
-                                //                         subField.handleBlur
-                                //                       }
-                                //                       onChange={(e) =>
-                                //                         subField.handleChange(
-                                //                           inputType === "number"
-                                //                             ? parseFloat(
-                                //                                 e.target.value,
-                                //                               )
-                                //                             : e.target.value,
-                                //                         )
-                                //                       }
-                                //                       className={`mt-1 w-full flex-1 rounded px-4 py-2 ${skillFormState === "DISPLAY" ? " pointer-events-none bg-transparent outline-transition-color-20" : " pointer-events-auto bg-transition-color-8"}`}
-                                //                     />
-                                //                   </label>
-                                //                   <FieldInfo field={subField} />
-                                //                 </fieldset>
-                                //               );
-                                //             }}
-                                //           </form.Field>
-                                //         );
-                                //       }
-                                //     }
-                                //   })
-                                // );
+                                          case ZodFirstPartyTypeKind.ZodArray: {
+                                            return null;
+                                          }
+
+                                          default: {
+                                            return (
+                                              <div key={subKey + i}>
+                                                {subKey + i}
+                                                {/* <form.Field
+                                                  key={
+                                                    "skillEffect" + i + subKey
+                                                  }
+                                                  name={`skillEffect[${i}].${subKey as keyof SkillEffect}`}
+                                                  validators={{
+                                                    onChangeAsyncDebounceMs: 500,
+                                                    onChangeAsync:
+                                                      skillEffectInputSchema
+                                                        .shape[
+                                                        subKey as keyof SkillEffect
+                                                      ],
+                                                  }}
+                                                >
+                                                  {(subField) => {
+                                                    return  null;
+                                                    <fieldset className="flex basis-1/2 flex-col gap-1 p-2 lg:basis-1/4">
+                                                      <label
+                                                        htmlFor={subField.name}
+                                                        className="flex w-full flex-col gap-1"
+                                                      >
+                                                        {dictionary.db.models
+                                                          .skillEffect[
+                                                          subKey as keyof SkillEffect
+                                                        ] + i}
+                                                        <input
+                                                          disabled={
+                                                            skillFormState ===
+                                                            "DISPLAY"
+                                                          }
+                                                          id={subField.name}
+                                                          name={subField.name}
+                                                          type={inputType}
+                                                          value={
+                                                            typeof subField.state
+                                                              .value !== "object"
+                                                              ? subField.state.value
+                                                              : undefined
+                                                          }
+                                                          onBlur={
+                                                            subField.handleBlur
+                                                          }
+                                                          onChange={(e) =>
+                                                            subField.handleChange(
+                                                              inputType === "number"
+                                                                ? parseFloat(
+                                                                    e.target.value,
+                                                                  )
+                                                                : e.target.value,
+                                                            )
+                                                          }
+                                                          className={`mt-1 w-full flex-1 rounded px-4 py-2 ${skillFormState === "DISPLAY" ? " pointer-events-none bg-transparent outline-transition-color-20" : " pointer-events-auto bg-transition-color-8"}`}
+                                                        />
+                                                      </label>
+                                                      <FieldInfo field={subField} />
+                                                    </fieldset>
+                                                  }}
+                                                </form.Field> */}
+                                              </div>
+                                            );
+                                          }
+                                        }
+                                      },
+                                    )}
+                                  </div>
+                                );
                               })}
                           </label>
                           <Button
+                            type="button"
                             onClick={(e) => {
                               e.stopPropagation();
-                              // console.log(field.state.value);
+                              console.log(field.state.value);
                               field.pushValue(defaultSkillEffect);
-                              // console.log(field.state.value);
+                              console.log(field.state.value);
+                              console.log(form.state.values.skillEffect);
                             }}
+                            className={`${skillFormState === "DISPLAY" && "hidden"}`}
                           >
                             添加效果
                           </Button>
@@ -649,10 +658,12 @@ export default function SkillForm(props: {
             {dictionary.ui.skill.close} [Esc]
           </Button>
           {skillFormState == "DISPLAY" && session?.user && (
-            <Button onClick={(e) => {
-              e.stopPropagation();
-              setSkillFormState("UPDATE")
-            }}>
+            <Button
+              onClick={(e) => {
+                e.stopPropagation();
+                setSkillFormState("UPDATE");
+              }}
+            >
               {dictionary.ui.skill.modify} [Enter]
             </Button>
           )}

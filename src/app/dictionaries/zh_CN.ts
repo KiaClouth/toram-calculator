@@ -39,7 +39,7 @@ const dictionary: dictionary = {
       cancel: "取消",
       close: "关闭",
       pageTitle: "技能信息表",
-      discription: "啊啦啦啦啦，这里是本页的描述信息。但是还没有想好写什么~",
+      discription: "此页面正在开发中，请勿使用",
       columnsHidden: "隐藏列",
       filter: "过滤",
     },

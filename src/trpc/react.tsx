@@ -14,7 +14,17 @@ export function TRPCReactProvider(props: {
   children: React.ReactNode;
   cookies: string;
 }) {
-  const [queryClient] = useState(() => new QueryClient());
+  const [queryClient] = useState(() => new QueryClient(
+    {
+      defaultOptions: {
+        queries: {
+          // 默认useQuery的缓存是过期的，将此值提高为5分钟以避免windows获取到焦点时立即重新请求数据。
+          // https://tanstack.com/query/latest/docs/framework/react/guides/important-defaults
+          staleTime: 5 * 60 * 1000,
+        },
+      },
+    }
+  ));
 
   const [trpcClient] = useState(() =>
     tApi.createClient({
