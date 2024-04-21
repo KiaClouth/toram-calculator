@@ -26,7 +26,7 @@ const dictionary: dictionary = {
       cancel: "取消",
       close: "关闭",
       pageTitle: "怪物信息表",
-      discription: "表中记录的应该是1星状态下的定点王数据， 2 / 3 / 4 星的经验和HP为1星的 2 / 5 / 10 倍；物防、魔防、回避值为1星的 2 / 4 / 6 倍。",
+      discription: "表中记录的是1星状态下的定点王数据， 2 / 3 / 4 星的经验和HP为1星的 2 / 5 / 10 倍；物防、魔防、回避值为1星的 2 / 4 / 6 倍。",
       columnsHidden: "隐藏列",
       filter: "过滤",
     },
