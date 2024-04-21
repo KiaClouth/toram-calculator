@@ -1,6 +1,30 @@
 "use client";
 import React, { useEffect } from "react";
-
+import "@mdxeditor/editor/style.css";
+import {
+  BlockTypeSelect,
+  BoldItalicUnderlineToggles,
+  CodeToggle,
+  CreateLink,
+  DiffSourceToggleWrapper,
+  InsertImage,
+  InsertTable,
+  InsertThematicBreak,
+  ListsToggle,
+  MDXEditor,
+  MDXEditorMethods,
+  Separator,
+  UndoRedo,
+  diffSourcePlugin,
+  headingsPlugin,
+  imagePlugin,
+  linkDialogPlugin,
+  listsPlugin,
+  quotePlugin,
+  tablePlugin,
+  thematicBreakPlugin,
+  toolbarPlugin,
+} from "@mdxeditor/editor";
 import { tApi } from "~/trpc/react";
 import { type sApi } from "~/trpc/server";
 import type { getDictionary } from "~/app/get-dictionary";
@@ -21,6 +45,8 @@ import {
   IconElementDark,
   IconElementNoElement,
 } from "../_components/iconsList";
+import { useTheme } from "next-themes";
+
 
 export default function MonsterForm(props: {
   dictionary: ReturnType<typeof getDictionary>;
@@ -47,8 +73,9 @@ export default function MonsterForm(props: {
     DISPLAY: monster.name,
   }[monsterFormState];
   const [dataUploadingState, setDataUploadingState] = React.useState(false);
+  const theme = useTheme();
+  const mdxEditorRef = React.useRef<MDXEditorMethods>(null)
 
-  
   function FieldInfo({
     field,
   }: {
@@ -59,7 +86,7 @@ export default function MonsterForm(props: {
       <React.Fragment>
         {field.state.meta.touchedErrors ? (
           <span className=" text-brand-color-2nd">
-           {` `} : {field.state.meta.touchedErrors}
+            {` `} : {field.state.meta.touchedErrors}
           </span>
         ) : null}
         {/* {field.state.meta.isValidating ? "正在检查..." : null} */}
@@ -165,6 +192,7 @@ export default function MonsterForm(props: {
 
   useEffect(() => {
     console.log("---MonsterForm render");
+    mdxEditorRef.current?.setMarkdown(monster.specialBehavior ?? "");
     // escape键监听
     const handleEscapeKeyPress = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
@@ -172,25 +200,14 @@ export default function MonsterForm(props: {
       }
     };
 
-    // enter键监听
-    const handleEnterKeyPress = (e: KeyboardEvent) => {
-      if (e.key === "Enter") {
-        e.preventDefault();
-        e.stopPropagation();
-        monsterFormState !== "DISPLAY" && void form.handleSubmit();
-      }
-    };
-
     // 监听绑带与清除
     document.addEventListener("keydown", handleEscapeKeyPress);
-    document.addEventListener("keydown", handleEnterKeyPress);
 
     return () => {
       console.log("---MonsterForm unmount");
       document.removeEventListener("keydown", handleEscapeKeyPress);
-      document.removeEventListener("keydown", handleEnterKeyPress);
     };
-  }, [form, monsterDialogState, monsterFormState, setMonsterDialogState]);
+  }, [form, monster, monsterDialogState, monsterFormState, setMonsterDialogState]);
 
   return (
     <form
@@ -201,7 +218,7 @@ export default function MonsterForm(props: {
       }}
       className={`CreateMonsterFrom flex w-full flex-col gap-4 overflow-y-auto rounded px-3`}
     >
-      <div className="title flex items-center gap-6 pt-10">
+      <div className="title flex items-center gap-6 pt-4">
         <div className="h-[2px] flex-1 bg-accent-color"></div>
         <span className="text-lg font-bold lg:text-2xl">{formTitle}</span>
         <div className="h-[2px] flex-1 bg-accent-color"></div>
@@ -395,60 +412,153 @@ export default function MonsterForm(props: {
               }
 
               default: {
-                // 默认情况
-                return (
-                  <form.Field
-                    key={key}
-                    name={key as keyof Monster}
-                    validators={{
-                      onChangeAsyncDebounceMs: 500,
-                      onChangeAsync: MonsterSchema.shape[key as keyof Monster],
-                    }}
-                  >
-                    {(field) => {
-                      return (
-                        <fieldset
-                          key={key}
-                          className="flex basis-1/2 flex-col gap-1 p-2 lg:basis-1/4"
-                        >
-                          <label
-                            htmlFor={field.name}
-                            className="flex w-full flex-col gap-1"
-                          >
-                            <span>
-                              {
-                                dictionary.db.models.monster[
-                                  key as keyof Monster
-                                ]
-                              }
-                              <FieldInfo field={field} />
-                            </span>
-                            <input
-                              disabled={monsterFormState === "DISPLAY"}
-                              id={field.name}
-                              name={field.name}
-                              value={
-                                typeof field.state.value !== "object"
-                                  ? field.state.value
-                                  : undefined
-                              }
-                              type={inputType}
-                              onBlur={field.handleBlur}
-                              onChange={(e) =>
-                                field.handleChange(
-                                  inputType === "number"
-                                    ? parseFloat(e.target.value)
-                                    : e.target.value,
-                                )
-                              }
-                              className={`mt-1 w-full flex-1 rounded px-4 py-2 ${monsterFormState === "DISPLAY" ? " pointer-events-none bg-transparent outline-transition-color-20" : " pointer-events-auto bg-transition-color-8"}`}
-                            />
-                          </label>
-                        </fieldset>
-                      );
-                    }}
-                  </form.Field>
-                );
+                switch (key as keyof Monster) {
+                  case "specialBehavior":
+                    return (
+                      <form.Field
+                        key={key}
+                        name={key as keyof Monster}
+                        validators={{
+                          onChangeAsyncDebounceMs: 500,
+                          onChangeAsync:
+                            MonsterSchema.shape[key as keyof Monster],
+                        }}
+                      >
+                        {(field) => {
+                          return (
+                            <fieldset
+                              key={key}
+                              className="flex basis-full flex-col gap-1 p-2"
+                            >
+                              <label
+                                htmlFor={field.name}
+                                className="flex w-full flex-col gap-1"
+                              >
+                                <span>
+                                  {
+                                    dictionary.db.models.monster[
+                                      key as keyof Monster
+                                    ]
+                                  }
+                                  <FieldInfo field={field} />
+                                </span>
+                                <input
+                                  id={field.name}
+                                  name={field.name}
+                                  className="hidden"
+                                />
+                                <MDXEditor
+                                  ref={mdxEditorRef}
+                                  contentEditableClassName="prose"
+                                  markdown={
+                                    monster.specialBehavior ?? ""
+                                  }
+                                  onBlur={field.handleBlur}
+                                  onChange={(markdown) =>
+                                    field.handleChange(markdown)
+                                  }
+                                  plugins={[
+                                    headingsPlugin(),
+                                    listsPlugin(),
+                                    quotePlugin(),
+                                    thematicBreakPlugin(),
+                                    linkDialogPlugin(),
+                                    diffSourcePlugin(),
+                                    imagePlugin(),
+                                    tablePlugin(),
+                                  ].concat(
+                                   window.innerWidth < 1024
+                                      ? []
+                                      : [
+                                          toolbarPlugin({
+                                            toolbarContents: () => (
+                                              <>
+                                                <DiffSourceToggleWrapper>
+                                                  {" "}
+                                                  <UndoRedo />
+                                                  <Separator />
+                                                  <BoldItalicUnderlineToggles />
+                                                  <BlockTypeSelect />
+                                                  <CodeToggle />
+                                                  <Separator />
+                                                  <ListsToggle />
+                                                  {/* <Separator />
+                                                  <CreateLink />
+                                                  <InsertImage /> */}
+                                                  <Separator />
+                                                  <InsertTable />
+                                                  <InsertThematicBreak />
+                                                </DiffSourceToggleWrapper>
+                                              </>
+                                            ),
+                                          }),
+                                        ],
+                                  )}
+                                  className={`mt-1 w-full flex-1 rounded outline-transition-color-20 ${monsterFormState === "DISPLAY" ? "display pointer-events-none" : " pointer-events-auto"} ${theme.theme === "dark" && "dark-theme dark-editor"}`}
+                                />
+                              </label>
+                            </fieldset>
+                          );
+                        }}
+                      </form.Field>
+                    );
+
+                  default:
+                    return (
+                      <form.Field
+                        key={key}
+                        name={key as keyof Monster}
+                        validators={{
+                          onChangeAsyncDebounceMs: 500,
+                          onChangeAsync:
+                            MonsterSchema.shape[key as keyof Monster],
+                        }}
+                      >
+                        {(field) => {
+                          return (
+                            <fieldset
+                              key={key}
+                              className="flex basis-1/2 flex-col gap-1 p-2 lg:basis-1/4"
+                            >
+                              <label
+                                htmlFor={field.name}
+                                className="flex w-full flex-col gap-1"
+                              >
+                                <span>
+                                  {
+                                    dictionary.db.models.monster[
+                                      key as keyof Monster
+                                    ]
+                                  }
+                                  <FieldInfo field={field} />
+                                </span>
+                                <input
+                                  disabled={monsterFormState === "DISPLAY"}
+                                  id={field.name}
+                                  name={field.name}
+                                  value={
+                                    typeof field.state.value !== "object"
+                                      ? field.state.value
+                                      : undefined
+                                  }
+                                  type={inputType}
+                                  onBlur={field.handleBlur}
+                                  onChange={(e) =>
+                                    field.handleChange(
+                                      inputType === "number"
+                                        ? parseFloat(e.target.value)
+                                        : e.target.value,
+                                    )
+                                  }
+                                  className={`mt-1 w-full flex-1 rounded px-4 py-2 ${monsterFormState === "DISPLAY" ? " pointer-events-none bg-transparent outline-transition-color-20" : " pointer-events-auto bg-transition-color-8"} ddd`}
+                                />
+                              </label>
+                            </fieldset>
+                          );
+                        }}
+                      </form.Field>
+                    );
+                }
               }
             }
           })}
@@ -464,11 +574,12 @@ export default function MonsterForm(props: {
           >
             {dictionary.ui.monster.close} [Esc]
           </Button>
-          {monsterFormState == "DISPLAY" && session?.user && (
-            <Button onClick={() => setMonsterFormState("UPDATE")}>
-              {dictionary.ui.monster.modify} [Enter]
-            </Button>
-          )}
+          {monsterFormState == "DISPLAY" &&
+            session?.user && (
+              <Button onClick={() => setMonsterFormState("UPDATE")}>
+                {dictionary.ui.monster.modify} [Enter]
+              </Button>
+            )}
           {monsterFormState !== "DISPLAY" && (
             <form.Subscribe
               selector={(state) => [state.canSubmit, state.isSubmitting]}

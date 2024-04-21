@@ -8,10 +8,11 @@ interface MyButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   icon?: JSX.Element;
   size?: Size;
   level?: Level;
+  active?: boolean;
 }
 
 export default function Button(props: MyButtonProps) {
-  const { children, icon, size, level, ...rest } = props;
+  const { children, icon, size, level, active, ...rest } = props;
   const sizeClass = {
     sm: "gap-1 rounded px-4 py-1",
     md: "gap-2 rounded px-4 py-2",
@@ -22,8 +23,9 @@ export default function Button(props: MyButtonProps) {
     secondary: "border-1.5 border-accent-color-30 bg-primary-color hover:bg-accent-color hover:text-primary-color",
     tertiary: "border-1.5 border-transparent bg-transition-color-8 hover:bg-transition-color-20",
   }[level ?? "secondary"];
-  const disableClass = rest.disabled  ? "cursor-not-allowed opacity-50" : "";
-  const defaultButtonClassNames = `${disableClass} cursor-pointer flex flex-none items-center justify-center ${sizeClass} ${levelClass} `;
+  const disableClass = rest.disabled ? "cursor-not-allowed opacity-50" : "";
+  const activedClass = active && "shadow-2xl shadow-brand-color-1st outline-brand-color-1st";
+  const defaultButtonClassNames = `${disableClass} cursor-pointer flex flex-none items-center justify-center ${sizeClass} ${levelClass} ${activedClass} `;
 
   return (
     <React.Fragment>

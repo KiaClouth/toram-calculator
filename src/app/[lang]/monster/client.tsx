@@ -44,6 +44,7 @@ export default function MonserPageClient(props: Props) {
 
   // 状态管理参数
   const {
+    monster,
     setMonster,
     monsterList,
     setMonsterList,
@@ -87,6 +88,23 @@ export default function MonserPageClient(props: Props) {
       filter ? newMonsterList.push(monster) : null;
     });
     setMonsterList(newMonsterList);
+  };
+
+  // 弹出层怪物名称列表
+  const [sameNameMonsterList, setSameNameMonsterList] = useState<Monster[]>([]);
+  const compusteSameNameMonsterList = (
+    monster: Monster,
+    monsterList: Monster[],
+  ) => {
+    const list: Monster[] = [];
+    monsterList.forEach((m) => {
+      m.name === monster.name && list.push(m);
+    });
+    return list.sort((monsterA, monsterB) => {
+      const dateA = new Date(monsterA.updatedAt);
+      const dateB = new Date(monsterB.updatedAt);
+      return dateA.getTime() - dateB.getTime();
+    });
   };
 
   // 定义不需要展示的列
@@ -251,17 +269,6 @@ export default function MonserPageClient(props: Props) {
     overscan: 5,
   });
 
-  // 表格行点击事件
-  const handleTrClick = (id: string) => {
-    monsterList.forEach((monster) => {
-      if (monster.id !== id) return;
-      setMonster(monster);
-      setSameNameMonsterList(compusteSameNameMonsterList(monster));
-      setMonsterDialogState(true);
-      setMonsterFormState("DISPLAY");
-    });
-  };
-
   // 表头固定
   const getCommonPinningStyles = (column: Column<Monster>): CSSProperties => {
     const isPinned = column.getIsPinned();
@@ -285,37 +292,36 @@ export default function MonserPageClient(props: Props) {
     return styles;
   };
 
-  // 弹出层怪物名称列表
-  const [sameNameMonsterList, setSameNameMonsterList] = useState<Monster[]>([]);
-  const compusteSameNameMonsterList = (monster: Monster) => {
-    const list: Monster[] = [];
-    monsterList.forEach((m) => {
-      m.name === monster.name && list.push(m);
+  // 表格行点击事件
+  const handleTrClick = (id: string) => {
+    console.log("id==" + id);
+    monsterList.forEach((monster) => {
+      if (monster.id !== id) return;
+      setMonster(monster);
+      setSameNameMonsterList(compusteSameNameMonsterList(monster, monsterList));
+      setMonsterDialogState(true);
+      setMonsterFormState("DISPLAY");
     });
-    return list;
   };
 
   useEffect(() => {
-    console.log("--Monster Client Render")
+    console.log("--Monster Client Render");
     setMonsterList(defaultMonsterList);
     // u键监听
-    const handleEscapeKeyPress = (e: KeyboardEvent) => {
+    const handleUKeyPress = (e: KeyboardEvent) => {
       if (e.key === "u") {
-        setMonsterFormState("CREATE");
+        setMonster(defaultMonster);
+        setSameNameMonsterList([]);
         setMonsterDialogState(true);
+        setMonsterFormState("CREATE");
       }
     };
-    document.addEventListener("keydown", handleEscapeKeyPress);
+    document.addEventListener("keydown", handleUKeyPress);
     return () => {
-      console.log("--Monster Client Unmount")
-      document.removeEventListener("keydown", handleEscapeKeyPress);
+      console.log("--Monster Client Unmount");
+      document.removeEventListener("keydown", handleUKeyPress);
     };
-  }, [
-    defaultMonsterList,
-    setMonsterDialogState,
-    setMonsterFormState,
-    setMonsterList,
-  ]);
+  }, [defaultMonsterList, monster, setMonster, setMonsterDialogState, setMonsterFormState, setMonsterList]);
 
   return (
     <main className="flex flex-col lg:w-[calc(100dvw-96px)] lg:flex-row">
@@ -408,6 +414,8 @@ export default function MonserPageClient(props: Props) {
                       icon={<IconCloudUpload />}
                       className="flex lg:hidden"
                       onClick={() => {
+                        setMonster(defaultMonster);
+                        setSameNameMonsterList([]);
                         setMonsterDialogState(true);
                         setMonsterFormState("CREATE");
                       }}
@@ -418,6 +426,7 @@ export default function MonserPageClient(props: Props) {
                       className="hidden lg:flex"
                       onClick={() => {
                         setMonster(defaultMonster);
+                        setSameNameMonsterList([]);
                         setMonsterDialogState(true);
                         setMonsterFormState("CREATE");
                       }}
@@ -458,7 +467,7 @@ export default function MonserPageClient(props: Props) {
                             {...{
                               onClick: header.column.getToggleSortingHandler(),
                             }}
-                            className={`border-1 flex-1 border-transition-color-8 px-3 py-6 text-left hover:bg-transition-color-8 ${
+                            className={`border-1 flex-1 border-transition-color-8 px-3 py-4 text-left hover:bg-transition-color-8 lg:py-6 ${
                               header.column.getCanSort()
                                 ? "cursor-pointer select-none"
                                 : ""
@@ -532,7 +541,7 @@ export default function MonserPageClient(props: Props) {
                       position: "absolute",
                       transform: `translateY(${virtualRow.start}px)`, //this should always be a `style` as it changes on scroll
                     }}
-                    className={`group flex cursor-pointer border-y-1.5 border-transition-color-8 transition-none hover:rounded hover:border-transparent hover:bg-transition-color-8 hover:font-bold`}
+                    className={`group flex cursor-pointer border-y-[1px] border-transition-color-8 transition-none hover:rounded hover:border-transparent hover:bg-transition-color-8 hover:font-bold lg:border-y-1.5`}
                     onClick={() => handleTrClick(row.getValue("id"))}
                   >
                     {row.getVisibleCells().map((cell) => {
@@ -670,30 +679,30 @@ export default function MonserPageClient(props: Props) {
       </div>
       <Dialog state={monsterDialogState} setState={setMonsterDialogState}>
         {monsterDialogState && (
-          <div className="Content flex w-full overflow-y-auto 2xl:w-[1536px]">
+          <div className="Content flex w-full flex-col overflow-y-auto lg:flex-row 2xl:w-[1536px]">
             {sameNameMonsterList.length > 1 && (
-              <div className="SameNameMonsterList flex flex-col gap-1 overflow-y-auto border-r-1.5 border-brand-color-1st p-3 lg:w-60">
-                {sameNameMonsterList.map((monster) => (
-                  <div
-                    key={"SameNameMonsterId" + monster.id}
-                    className="SameNameMonster"
-                  >
+              <div className="SameNameMonsterList flex-none flow-row basis-[8%] flex gap-1 overflow-x-auto overflow-y-hidden lg:overflow-x-hidden lg:overflow-y-auto border-r-1.5 border-brand-color-1st p-3 lg:w-60 lg:flex-col">
+                {sameNameMonsterList.map((currentMonster) => {
+                  const order = sameNameMonsterList.indexOf(currentMonster) + 1;
+                  return (
                     <Button
+                      key={"SameNameMonsterId" + currentMonster.id}
                       level="tertiary"
-                      onClick={() => setMonster(monster)}
-                      className="flex w-full flex-col rounded-sm"
+                      onClick={() => {
+                        setMonster(currentMonster)
+                      }}
+                      active={currentMonster.id === monster.id}
+                      className="SameNameMonster flex basis-1/4 h-full lg:h-auto lg:basis-auto flex-col rounded-sm lg:w-full"
                     >
-                      <span className="w-full text-left text-lg font-bold">
-                        {monster.name}
+                      <span className="text-left text-nowrap text-lg lg:font-bold w-full px-2">
+                        {order}
                       </span>
-                      <span className="w-full text-left text-sm text-accent-color-70">
-                        {(monster.address === ("" ?? undefined ?? null) &&
-                          "没有读取到地址") ||
-                          monster.address}
+                      <span className="hidden text-left text-sm lg:block">
+                        {currentMonster.updatedAt.toLocaleString()}
                       </span>
                     </Button>
-                  </div>
-                ))}
+                  )
+                })}
               </div>
             )}
             {/* <div className="tab flex w-32 flex-col justify-center gap-1 border-r-1.5 border-brand-color-1st p-3"></div> */}

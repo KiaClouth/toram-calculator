@@ -187,3 +187,39 @@
 .dark .jumbo::after {
   background-image: var(--stripesDark), var(--rainbow);
 }
+
+// mdx editor
+
+.mdxeditor {
+  background: rgba(var(--primary) / 1);
+}
+
+.prose {
+  max-width: 100%;
+  outline: none;
+}
+
+.prose :where(p):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+  margin: 0rem 0rem;
+}
+
+.mdxeditor-popup-container {
+  z-index: 1000 !important;
+}
+
+.mdxeditor-popup-container * {
+  transition: position 0ms;
+}
+
+.mdxeditor-root-contenteditable {
+  cursor: text;
+  color: rgba(var(--accent) / 1);
+}
+
+.mdxeditor-toolbar {
+  border-radius: 0px !important;
+}
+
+.display .mdxeditor-toolbar {
+  display: none;
+}
