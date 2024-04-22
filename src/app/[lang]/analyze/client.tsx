@@ -68,6 +68,7 @@ export default function AnalyzePageClient(props: Props) {
           actionModifiableDuration: 48,
           belongToskillId: "",
           castingDurationFormula: "",
+          description: null
         },
       ],
       createdByUserId: null,
@@ -78,6 +79,7 @@ export default function AnalyzePageClient(props: Props) {
       updatedAt: new Date(),
       usageTimestamps: [],
       viewTimestamps: [],
+      skillDescription: null
     },
     {
       skillEffect: [
@@ -108,6 +110,7 @@ export default function AnalyzePageClient(props: Props) {
           actionModifiableDuration: 98,
           belongToskillId: "",
           castingDurationFormula: "",
+          description: null
         },
       ],
       id: "",
@@ -126,6 +129,7 @@ export default function AnalyzePageClient(props: Props) {
       updatedAt: new Date(),
       usageTimestamps: [],
       viewTimestamps: [],
+      skillDescription: null
     },
   ];
   
