@@ -387,6 +387,7 @@ export default function MonserPageClient(props: Props) {
               </h1>
               <div className="Control flex flex-1 gap-2">
                 <input
+                  id="MonsterSearchBox"
                   type="search"
                   placeholder={dictionary.ui.monster.searchPlaceholder}
                   className="w-full flex-1 rounded-sm border-transition-color-20 bg-transition-color-8 px-3 py-2 backdrop-blur-xl placeholder:text-accent-color-50 hover:border-accent-color-70 hover:bg-transition-color-8
