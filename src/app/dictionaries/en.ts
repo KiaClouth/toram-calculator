@@ -342,7 +342,8 @@ const dictionary: dictionary = {
         skillTreeName: "TreeName",
         weaponElementDependencyType: "",
         element: "Element",
-        skillEffect: "SkillEffect"
+        skillEffect: "SkillEffect",
+        skillDescription: ""
       },
       user: {
         id: "ID",
@@ -360,7 +361,8 @@ const dictionary: dictionary = {
         actionBaseDuration: "",
         actionModifiableDuration: "",
         castingDurationFormula: "",
-        belongToskillId: ""
+        belongToskillId: "",
+        description: ""
       },
       skillCost: {
         id: "",

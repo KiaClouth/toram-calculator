@@ -342,7 +342,8 @@ const dictionary: dictionary = {
         skillTreeName: "所属技能树",
         weaponElementDependencyType: "属性是否继承武器",
         element: "自身元素属性",
-        skillEffect: "技能效果"
+        skillEffect: "技能效果",
+        skillDescription: "技能说明"
       },
       user: {
         id: "账号ID",
@@ -360,7 +361,8 @@ const dictionary: dictionary = {
         actionBaseDuration: "固定动作时长",
         actionModifiableDuration: "可加速动作时长",
         castingDurationFormula: "基础咏唱时长计算公式",
-        belongToskillId: "所属技能"
+        belongToskillId: "所属技能",
+        description: "效果说明"
       },
       skillCost: {
         id: "ID",

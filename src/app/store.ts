@@ -67,6 +67,7 @@ export const defaultSkillEffectYield: SkillYield = {
 export const defaultSkillEffect: SkillEffect = {
   id: "",
   condition: "",
+  description: "",
   actionBaseDuration: 24,
   actionModifiableDuration: 98,
   belongToskillId: "",
@@ -88,6 +89,7 @@ export const defaultSkill: Skill = {
   usageTimestamps: [],
   viewTimestamps: [],
   level: 0,
+  skillDescription: "",
   skillTreeName: "SWORLD",
   skillType: "ACTIVE_SKILL",
   weaponElementDependencyType: "TRUE",

@@ -342,7 +342,8 @@ const dictionary: dictionary = {
         skillTreeName: "所属技能树",
         weaponElementDependencyType: "属性是否继承武器",
         element: "自身元素属性",
-        skillEffect: "技能效果"
+        skillEffect: "技能效果",
+        skillDescription: ""
       },
       user: {
         id: "账号ID",
@@ -360,7 +361,8 @@ const dictionary: dictionary = {
         actionBaseDuration: "",
         actionModifiableDuration: "",
         castingDurationFormula: "",
-        belongToskillId: ""
+        belongToskillId: "",
+        description: ""
       },
       skillCost: {
         id: "",
