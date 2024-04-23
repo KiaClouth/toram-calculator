@@ -36,7 +36,6 @@ export default function AnalyzePageClient(props: Props) {
           cost: [
             {
               id: "",
-              costType: "C_MP",
               costFormula: "200",
               skillEffectId: null,
             },
@@ -46,7 +45,6 @@ export default function AnalyzePageClient(props: Props) {
               id: "",
               triggerTiming: "ON_USE",
               delay: 33,
-              yieldType: "M_HP",
               yieldFormula: "(C_VMATK + 200) * 500%",
               skillEffectId: null,
               durationType: "SKILL",
@@ -58,7 +56,6 @@ export default function AnalyzePageClient(props: Props) {
               delay: 0,
               durationType: "UNLIMITED",
               durationValue: 0,
-              yieldType: "C_MP",
               yieldFormula: "",
               skillEffectId: null,
             },
@@ -89,7 +86,6 @@ export default function AnalyzePageClient(props: Props) {
             {
               costFormula: "",
               id: "",
-              costType: "C_MP",
               skillEffectId: null,
             },
           ],
@@ -101,7 +97,6 @@ export default function AnalyzePageClient(props: Props) {
               delay: 30,
               durationType: "SKILL",
               durationValue: 0,
-              yieldType: "M_HP",
               skillEffectId: null,
             },
           ],
