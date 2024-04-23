@@ -19,6 +19,7 @@ import {
   quotePlugin,
   tablePlugin,
   toolbarPlugin,
+  thematicBreakPlugin,
 } from "@mdxeditor/editor";
 import { tApi } from "~/trpc/react";
 import { type sApi } from "~/trpc/server";
@@ -483,14 +484,14 @@ export default function MonsterForm(props: {
                                     field.handleChange(markdown)
                                   }
                                   plugins={[
+                                    diffSourcePlugin(),
                                     headingsPlugin(),
                                     listsPlugin(),
                                     quotePlugin(),
-                                    // thematicBreakPlugin(),
                                     // linkDialogPlugin(),
-                                    diffSourcePlugin(),
                                     // imagePlugin(),
                                     tablePlugin(),
+                                    thematicBreakPlugin(),
                                   ].concat(
                                     window.innerWidth < 1024
                                       ? []

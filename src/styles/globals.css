@@ -195,12 +195,24 @@
 }
 
 .prose {
+  color: rgba(var(--accent) / 1) !important;
   max-width: 100%;
   outline: none;
 }
 
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4,
+.prose h5,
+.prose h6,
+.prose h7,
+.prose :where(strong):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+  color: rgba(var(--accent) / 1) !important;
+}
+
 .prose :where(p):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
-  margin: 0rem 0rem;
+  margin: 0.25rem 0.25rem;
 }
 
 

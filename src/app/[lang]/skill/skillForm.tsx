@@ -19,6 +19,7 @@ import {
   quotePlugin,
   tablePlugin,
   toolbarPlugin,
+  thematicBreakPlugin,
 } from "@mdxeditor/editor";
 import { tApi } from "~/trpc/react";
 import { type sApi } from "~/trpc/server";
@@ -75,7 +76,7 @@ export default function SkillForm(props: {
     field,
   }: {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    field: FieldApi<Skill, keyof Skill, any, any>;
+    field: FieldApi<any, any, any, any>;
   }) {
     return (
       <React.Fragment>
@@ -90,7 +91,7 @@ export default function SkillForm(props: {
   }
 
   // 定义不需要手动输入的值
-  const hiddenData: Array<keyof Skill> = [
+  const skillHiddenData: Array<keyof Skill> = [
     "id",
     "createdAt",
     "updatedAt",
@@ -101,7 +102,13 @@ export default function SkillForm(props: {
     "viewTimestamps",
     "usageTimestamps",
   ];
-  type tSkill = Omit<Skill, keyof typeof hiddenData>;
+  type tSkill = Omit<Skill, keyof typeof skillHiddenData>;
+
+  const skillEffectHiddenData: Array<keyof SkillEffect> = [
+    "id",
+    "belongToskillId",
+  ];
+  type tSkillEffect = Omit<SkillEffect, keyof typeof skillEffectHiddenData>;
 
   // 定义表单
   const form = useForm({
@@ -222,9 +229,9 @@ export default function SkillForm(props: {
       <div className="inputArea flex-1 overflow-y-auto">
         <fieldset className="dataKinds flex flex-row flex-wrap gap-y-[4px]">
           {Object.entries(skill).map(([key, _]) => {
-            // 遍历怪物模型
+            // 遍历技能模型
             // 过滤掉隐藏的数据
-            if (hiddenData.includes(key as keyof Skill)) return undefined;
+            if (skillHiddenData.includes(key as keyof Skill)) return undefined;
             // 输入框的类型计算
             const zodValue = skillInputSchema.shape[key as keyof tSkill];
             const valueType = getZodType(zodValue);
@@ -234,7 +241,6 @@ export default function SkillForm(props: {
               [ZodString]: "text",
               ...Others,
             }[valueType];
-            // 由于数组类型的值与常规变量值存在结构差异，因此在此进行区分
             switch (valueType) {
               case ZodFirstPartyTypeKind.ZodEnum: {
                 return (
@@ -262,7 +268,9 @@ export default function SkillForm(props: {
                             zodValue.options.map((option) => {
                               const defaultInputClass =
                                 "mt-0.5 rounded px-4 py-2";
-                              let inputClass = defaultInputClass;
+                              const defaultLabelSizeClass = "";
+                              let inputClass = "";
+                              let labelSizeClass = "";
                               let icon: React.ReactNode = null;
                               switch (option) {
                                 // case "PRIVATE":
@@ -279,6 +287,7 @@ export default function SkillForm(props: {
                                     );
                                     inputClass =
                                       "mt-0.5 hidden rounded px-4 py-2";
+                                    labelSizeClass = "no-element basis-1/3";
                                   }
                                   break;
                                 case "LIGHT":
@@ -288,6 +297,7 @@ export default function SkillForm(props: {
                                     );
                                     inputClass =
                                       "mt-0.5 hidden rounded px-4 py-2";
+                                    labelSizeClass = "light basis-1/3";
                                   }
                                   break;
                                 case "DARK":
@@ -297,6 +307,7 @@ export default function SkillForm(props: {
                                     )),
                                       (inputClass =
                                         "mt-0.5 hidden rounded px-4 py-2");
+                                    labelSizeClass = "dark basis-1/3";
                                   }
                                   break;
                                 case "WATER":
@@ -306,6 +317,7 @@ export default function SkillForm(props: {
                                     );
                                     inputClass =
                                       "mt-0.5 hidden rounded px-4 py-2";
+                                    labelSizeClass = "water basis-1/3";
                                   }
                                   break;
                                 case "FIRE":
@@ -315,6 +327,7 @@ export default function SkillForm(props: {
                                     );
                                     inputClass =
                                       "mt-0.5 hidden rounded px-4 py-2";
+                                    labelSizeClass = "fire basis-1/3";
                                   }
                                   break;
                                 case "EARTH":
@@ -324,6 +337,7 @@ export default function SkillForm(props: {
                                     );
                                     inputClass =
                                       "mt-0.5 hidden rounded px-4 py-2";
+                                    labelSizeClass = "earth basis-1/3";
                                   }
                                   break;
                                 case "WIND":
@@ -333,19 +347,21 @@ export default function SkillForm(props: {
                                     );
                                     inputClass =
                                       "mt-0.5 hidden rounded px-4 py-2";
+                                    labelSizeClass = "wind basis-1/3";
                                   }
                                   break;
                                 default:
                                   {
                                     icon = null;
-                                    inputClass = "mt-0.5 rounded px-4 py-2";
+                                    inputClass = defaultInputClass;
+                                    labelSizeClass = defaultLabelSizeClass;
                                   }
                                   break;
                               }
                               return (
                                 <label
                                   key={key + option}
-                                  className={`flex basis-1/3 cursor-pointer items-center justify-between gap-1 rounded-full p-2 px-4 hover:border-transition-color-20 lg:basis-auto lg:flex-row-reverse lg:justify-end lg:gap-2 lg:rounded-sm lg:hover:opacity-100 ${field.getValue() === option ? "opacity-100" : "opacity-20"} ${skillFormState === "DISPLAY" ? " pointer-events-none border-transparent bg-transparent" : " pointer-events-auto border-transition-color-8 bg-transition-color-8"}`}
+                                  className={`flex ${labelSizeClass} cursor-pointer items-center justify-between gap-1 rounded-full p-2 px-4 hover:border-transition-color-20 lg:basis-auto lg:flex-row-reverse lg:justify-end lg:gap-2 lg:rounded-sm lg:hover:opacity-100 ${field.getValue() === option ? "opacity-100" : "opacity-20"} ${skillFormState === "DISPLAY" ? " pointer-events-none border-transparent bg-transparent" : " pointer-events-auto border-transition-color-8 bg-transition-color-8"}`}
                                 >
                                   {
                                     dictionary.db.enums[
@@ -381,42 +397,107 @@ export default function SkillForm(props: {
 
               case ZodFirstPartyTypeKind.ZodArray: {
                 return (
-                  <form.Field key={key} name={key as keyof tSkill} mode="array">
+                  <form.Field
+                    key={key}
+                    name={key as keyof tSkill}
+                    mode="array"
+                    validators={{
+                      onChangeAsyncDebounceMs: 500,
+                      onChangeAsync: skillInputSchema.shape[key as keyof Skill],
+                    }}
+                  >
                     {(field) => (
                       <fieldset
                         key={key}
-                        className="flex basis-full flex-col gap-1 p-2"
+                        className={`${key} flex basis-full flex-col gap-1 p-2`}
                       >
-                        <span>
-                          {dictionary.db.models.skill[key as keyof tSkill]}
-                          <FieldInfo field={field} />
-                        </span>
-                        <div
-                          className={`inputContianer mt-1 flex flex-wrap self-start rounded lg:gap-2 ${skillFormState === "DISPLAY" ? " outline-transition-color-20" : ""}`}
-                        >
+                        <div className="title flex items-center gap-6 pt-4">
+                          <div className="h-[1px] flex-1 bg-accent-color"></div>
+                          <span className="text-lg">
+                            {dictionary.db.models.skill[key as keyof tSkill]}
+                            <FieldInfo field={field} />
+                          </span>
+                          <div className="h-[1px] flex-1 bg-accent-color"></div>
+                        </div>
+                        <div className="Content flex flex-wrap gap-y-3">
                           {Array.isArray(field.state.value) &&
                             field.state.value.map((subObj, i) => {
                               switch (key as keyof tSkill) {
                                 case "skillEffect":
-                                  return key === "skillEffect" ? ( // 垃圾TS，靠switch推断不出来key===“skillEffect”
-                                    <div key={key + i}>
-                                      <br />
-                                      {`${key}[${i}]-------------------`}
-                                      <br />
-                                      {Object.entries(subObj).map(
-                                        ([subKey, _]) => {
-                                          return (
-                                            <div key={`${key}[${i}].${subKey}`}>
-                                              {subKey + "  =  "}
+                                  return key === "skillEffect" ? (
+                                    <fieldset
+                                      key={key + i}
+                                      className={`${key + i} DataKinds flex flex-none basis-full flex-col gap-y-[4px] overflow-hidden rounded-sm border-1.5 border-brand-color-1st`}
+                                    >
+                                      <span className="w-full bg-transition-color-8 p-1">
+                                        {dictionary.db.models.skill[
+                                          key as keyof tSkill
+                                        ] +
+                                          " " +
+                                          (i + 1)}
+                                      </span>
+
+                                      <div
+                                        className={`InputContianer mt-1 flex w-full basis-full flex-wrap gap-y-3 self-start rounded ${skillFormState === "DISPLAY" ? " outline-transition-color-20" : ""}`}
+                                      >
+                                        {Object.entries(subObj).map(
+                                          ([subKey, _]) => {
+                                            // 遍历技能效果模型
+                                            // 过滤掉隐藏的数据
+                                            if (
+                                              skillEffectHiddenData.includes(
+                                                subKey as keyof SkillEffect,
+                                              )
+                                            )
+                                              return undefined;
+                                            // 输入框的类型计算
+                                            const zodValue =
+                                              skillEffectInputSchema.shape[
+                                                subKey as keyof SkillEffect
+                                              ];
+                                            const valueType =
+                                              getZodType(zodValue);
+                                            const {
+                                              ZodNumber,
+                                              ZodString,
+                                              ...Others
+                                            } = ZodFirstPartyTypeKind;
+                                            const inputType = {
+                                              [ZodNumber]: "number",
+                                              [ZodString]: "text",
+                                              ...Others,
+                                            }[valueType];
+                                            return (
                                               <form.Field
                                                 key={`${key}[${i}].${subKey}`}
                                                 name={`${key}[${i}].${subKey as keyof SkillEffect}`}
+                                                validators={{
+                                                  onChangeAsyncDebounceMs: 500,
+                                                  onChangeAsync:
+                                                    skillEffectInputSchema
+                                                      .shape[
+                                                      subKey as keyof SkillEffect
+                                                    ],
+                                                }}
                                               >
                                                 {(subField) => {
                                                   return (
-                                                    <>
-                                                      {subField.getValue()?.toString()}
-
+                                                    <label
+                                                      htmlFor={`${key}[${i}].${subKey}`}
+                                                      key={`${key}[${i}].${subKey}`}
+                                                      className="flex w-full max-w-[25%] flex-col gap-1 p-2"
+                                                    >
+                                                      <span>
+                                                        {
+                                                          dictionary.db.models
+                                                            .skillEffect[
+                                                            subKey as keyof SkillEffect
+                                                          ]
+                                                        }
+                                                        <FieldInfo
+                                                          field={subField}
+                                                        />
+                                                      </span>
                                                       <input
                                                         autoComplete="off"
                                                         disabled={
@@ -426,11 +507,9 @@ export default function SkillForm(props: {
                                                         id={subField.name}
                                                         name={subField.name}
                                                         value={
-                                                          typeof subField.state
-                                                            .value !== "object"
-                                                            ? subField.state
-                                                                .value
-                                                            : undefined
+                                                          (subField.state
+                                                            .value as string) ??
+                                                          ""
                                                         }
                                                         type={inputType}
                                                         onBlur={
@@ -449,136 +528,21 @@ export default function SkillForm(props: {
                                                         }
                                                         className={`mt-1 w-full flex-1 rounded px-4 py-2 ${skillFormState === "DISPLAY" ? " pointer-events-none bg-transparent outline-transition-color-20" : " pointer-events-auto bg-transition-color-8"}`}
                                                       />
-                                                      <br />
-                                                    </>
+                                                    </label>
                                                   );
                                                 }}
                                               </form.Field>
-                                            </div>
-                                          );
-                                        },
-                                      )}
-                                    </div>
+                                            );
+                                          },
+                                        )}
+                                      </div>
+                                    </fieldset>
                                   ) : null;
 
                                 default:
                                   break;
                               }
                             })}
-                          {/* {"options" in zodValue &&
-                            zodValue.options.map((option) => {
-                              const defaultInputClass =
-                                "mt-0.5 rounded px-4 py-2";
-                              let inputClass = defaultInputClass;
-                              let icon: React.ReactNode = null;
-                              switch (option) {
-                                // case "PRIVATE":
-                                // case "PUBLIC":
-                                // case "COMMON_MOBS":
-                                // case "COMMON_MINI_BOSS":
-                                // case "EVENT_MOBS":
-                                // case "EVENT_MINI_BOSS":
-                                // case "EVENT_BOSS":
-                                case "NO_ELEMENT":
-                                  {
-                                    icon = (
-                                      <IconElementNoElement className="h-6 w-6" />
-                                    );
-                                    inputClass =
-                                      "mt-0.5 hidden rounded px-4 py-2";
-                                  }
-                                  break;
-                                case "LIGHT":
-                                  {
-                                    icon = (
-                                      <IconElementLight className="h-6 w-6" />
-                                    );
-                                    inputClass =
-                                      "mt-0.5 hidden rounded px-4 py-2";
-                                  }
-                                  break;
-                                case "DARK":
-                                  {
-                                    (icon = (
-                                      <IconElementDark className="h-6 w-6" />
-                                    )),
-                                      (inputClass =
-                                        "mt-0.5 hidden rounded px-4 py-2");
-                                  }
-                                  break;
-                                case "WATER":
-                                  {
-                                    icon = (
-                                      <IconElementWater className="h-6 w-6" />
-                                    );
-                                    inputClass =
-                                      "mt-0.5 hidden rounded px-4 py-2";
-                                  }
-                                  break;
-                                case "FIRE":
-                                  {
-                                    icon = (
-                                      <IconElementFire className="h-6 w-6" />
-                                    );
-                                    inputClass =
-                                      "mt-0.5 hidden rounded px-4 py-2";
-                                  }
-                                  break;
-                                case "EARTH":
-                                  {
-                                    icon = (
-                                      <IconElementEarth className="h-6 w-6" />
-                                    );
-                                    inputClass =
-                                      "mt-0.5 hidden rounded px-4 py-2";
-                                  }
-                                  break;
-                                case "WIND":
-                                  {
-                                    icon = (
-                                      <IconElementWind className="h-6 w-6" />
-                                    );
-                                    inputClass =
-                                      "mt-0.5 hidden rounded px-4 py-2";
-                                  }
-                                  break;
-                                default:
-                                  {
-                                    icon = null;
-                                    inputClass = "mt-0.5 rounded px-4 py-2";
-                                  }
-                                  break;
-                              }
-                              return (
-                                <label
-                                  key={key + option}
-                                  className={`flex basis-1/3 cursor-pointer items-center justify-between gap-1 rounded-full p-2 px-4 hover:border-transition-color-20 lg:basis-auto lg:flex-row-reverse lg:justify-end lg:gap-2 lg:rounded-sm lg:hover:opacity-100 ${field.getValue() === option ? "opacity-100" : "opacity-20"} ${skillFormState === "DISPLAY" ? " pointer-events-none border-transparent bg-transparent" : " pointer-events-auto border-transition-color-8 bg-transition-color-8"}`}
-                                >
-                                  {
-                                    dictionary.db.enums[
-                                      (key.charAt(0).toLocaleUpperCase() +
-                                        key.slice(1)) as keyof typeof $Enums
-                                    ][
-                                      option as keyof (typeof $Enums)[keyof typeof $Enums]
-                                    ]
-                                  }
-                                  <input
-                                    disabled={skillFormState === "DISPLAY"}
-                                    id={field.name + option}
-                                    name={field.name}
-                                    value={option}
-                                    checked={field.getValue() === option}
-                                    type="radio"
-                                    onBlur={field.handleBlur}
-                                    onChange={(e) =>
-                                      field.handleChange(e.target.value)
-                                    }
-                                    className={inputClass}
-                                  />
-                                  {icon}
-                                </label>
-                              );
-                            })} */}
                         </div>
                         <Button
                           type="button"
@@ -681,7 +645,7 @@ export default function SkillForm(props: {
                                     headingsPlugin(),
                                     listsPlugin(),
                                     quotePlugin(),
-                                    // thematicBreakPlugin(),
+                                    thematicBreakPlugin(),
                                     // linkDialogPlugin(),
                                     diffSourcePlugin(),
                                     // imagePlugin(),
