@@ -46,21 +46,13 @@ import { useTheme } from "next-themes";
 export default function MonsterForm(props: {
   dictionary: ReturnType<typeof getDictionary>;
   session: Session | null;
-  setDefaultMonsterList: (
-    list: Awaited<ReturnType<typeof sApi.monster.getUserVisbleList.query>>,
-  ) => void;
+  setDefaultMonsterList: (list: Awaited<ReturnType<typeof sApi.monster.getUserVisbleList.query>>) => void;
 }) {
   const { dictionary, session, setDefaultMonsterList } = props;
   const newListQuery = tApi.monster.getUserVisbleList.useQuery();
   // 状态管理参数
-  const {
-    monster,
-    monsterDialogState,
-    setMonsterList,
-    setMonsterDialogState,
-    monsterFormState,
-    setMonsterFormState,
-  } = useBearStore((state) => state.monsterPage);
+  const { monster, monsterDialogState, setMonsterList, setMonsterDialogState, monsterFormState, setMonsterFormState } =
+    useBearStore((state) => state.monsterPage);
   let newMonster: Monster;
   const formTitle = {
     CREATE: dictionary.ui.monster.upload,
@@ -137,9 +129,7 @@ export default function MonsterForm(props: {
     validatorAdapter: zodValidator,
   });
 
-  const getZodType = <T extends z.ZodTypeAny>(
-    schema: T,
-  ): ZodFirstPartyTypeKind => {
+  const getZodType = <T extends z.ZodTypeAny>(schema: T): ZodFirstPartyTypeKind => {
     if (schema === undefined || schema == null) {
       return ZodFirstPartyTypeKind.ZodUndefined;
     }
@@ -202,13 +192,7 @@ export default function MonsterForm(props: {
       console.log("---MonsterForm unmount");
       document.removeEventListener("keydown", handleEscapeKeyPress);
     };
-  }, [
-    form,
-    monster,
-    monsterDialogState,
-    monsterFormState,
-    setMonsterDialogState,
-  ]);
+  }, [form, monster, monsterDialogState, monsterFormState, setMonsterDialogState]);
 
   return (
     <form
@@ -252,10 +236,7 @@ export default function MonsterForm(props: {
                     }}
                   >
                     {(field) => (
-                      <fieldset
-                        key={key}
-                        className="flex basis-full flex-col gap-1 p-2"
-                      >
+                      <fieldset key={key} className="flex basis-full flex-col gap-1 p-2">
                         <span>
                           {dictionary.db.models.monster[key as keyof Monster]}
                           <FieldInfo field={field} />
@@ -265,9 +246,10 @@ export default function MonsterForm(props: {
                         >
                           {"options" in zodValue &&
                             zodValue.options.map((option) => {
-                              const defaultInputClass =
-                                "mt-0.5 rounded px-4 py-2";
-                              let inputClass = defaultInputClass;
+                              const defaultInputClass = "mt-0.5 rounded px-4 py-2";
+                              const defaultLabelSizeClass = "";
+                              let inputClass = "";
+                              let labelSizeClass = "";
                               let icon: React.ReactNode = null;
                               switch (option) {
                                 // case "PRIVATE":
@@ -279,86 +261,70 @@ export default function MonsterForm(props: {
                                 // case "EVENT_BOSS":
                                 case "NO_ELEMENT":
                                   {
-                                    icon = (
-                                      <IconElementNoElement className="h-6 w-6" />
-                                    );
-                                    inputClass =
-                                      "mt-0.5 hidden rounded px-4 py-2";
+                                    icon = <IconElementNoElement className="h-6 w-6" />;
+                                    inputClass = "mt-0.5 hidden rounded px-4 py-2";
+                                    labelSizeClass = "no-element basis-1/3";
                                   }
                                   break;
                                 case "LIGHT":
                                   {
-                                    icon = (
-                                      <IconElementLight className="h-6 w-6" />
-                                    );
-                                    inputClass =
-                                      "mt-0.5 hidden rounded px-4 py-2";
+                                    icon = <IconElementLight className="h-6 w-6" />;
+                                    inputClass = "mt-0.5 hidden rounded px-4 py-2";
+                                    labelSizeClass = "light basis-1/3";
                                   }
                                   break;
                                 case "DARK":
                                   {
-                                    (icon = (
-                                      <IconElementDark className="h-6 w-6" />
-                                    )),
-                                      (inputClass =
-                                        "mt-0.5 hidden rounded px-4 py-2");
+                                    (icon = <IconElementDark className="h-6 w-6" />),
+                                      (inputClass = "mt-0.5 hidden rounded px-4 py-2");
+                                    labelSizeClass = "dark basis-1/3";
                                   }
                                   break;
                                 case "WATER":
                                   {
-                                    icon = (
-                                      <IconElementWater className="h-6 w-6" />
-                                    );
-                                    inputClass =
-                                      "mt-0.5 hidden rounded px-4 py-2";
+                                    icon = <IconElementWater className="h-6 w-6" />;
+                                    inputClass = "mt-0.5 hidden rounded px-4 py-2";
+                                    labelSizeClass = "water basis-1/3";
                                   }
                                   break;
                                 case "FIRE":
                                   {
-                                    icon = (
-                                      <IconElementFire className="h-6 w-6" />
-                                    );
-                                    inputClass =
-                                      "mt-0.5 hidden rounded px-4 py-2";
+                                    icon = <IconElementFire className="h-6 w-6" />;
+                                    inputClass = "mt-0.5 hidden rounded px-4 py-2";
+                                    labelSizeClass = "fire basis-1/3";
                                   }
                                   break;
                                 case "EARTH":
                                   {
-                                    icon = (
-                                      <IconElementEarth className="h-6 w-6" />
-                                    );
-                                    inputClass =
-                                      "mt-0.5 hidden rounded px-4 py-2";
+                                    icon = <IconElementEarth className="h-6 w-6" />;
+                                    inputClass = "mt-0.5 hidden rounded px-4 py-2";
+                                    labelSizeClass = "earth basis-1/3";
                                   }
                                   break;
                                 case "WIND":
                                   {
-                                    icon = (
-                                      <IconElementWind className="h-6 w-6" />
-                                    );
-                                    inputClass =
-                                      "mt-0.5 hidden rounded px-4 py-2";
+                                    icon = <IconElementWind className="h-6 w-6" />;
+                                    inputClass = "mt-0.5 hidden rounded px-4 py-2";
+                                    labelSizeClass = "wind basis-1/3";
                                   }
                                   break;
                                 default:
                                   {
                                     icon = null;
-                                    inputClass = "mt-0.5 rounded px-4 py-2";
+                                    inputClass = defaultInputClass;
+                                    labelSizeClass = defaultLabelSizeClass;
                                   }
                                   break;
                               }
                               return (
                                 <label
                                   key={key + option}
-                                  className={`flex basis-1/3 cursor-pointer items-center justify-between gap-1 rounded-full p-2 px-4 hover:border-transition-color-20 lg:basis-auto lg:flex-row-reverse lg:justify-end lg:gap-2 lg:rounded-sm lg:hover:opacity-100 ${field.getValue() === option ? "opacity-100" : "opacity-20"} ${monsterFormState === "DISPLAY" ? " pointer-events-none border-transparent bg-transparent" : " pointer-events-auto border-transition-color-8 bg-transition-color-8"}`}
+                                  className={`flex ${labelSizeClass} cursor-pointer items-center justify-between gap-1 rounded-full p-2 px-4 hover:border-transition-color-20 lg:basis-auto lg:flex-row-reverse lg:justify-end lg:gap-2 lg:rounded-sm lg:hover:opacity-100 ${field.getValue() === option ? "opacity-100" : "opacity-20"} ${monsterFormState === "DISPLAY" ? " pointer-events-none border-transparent bg-transparent" : " pointer-events-auto border-transition-color-8 bg-transition-color-8"}`}
                                 >
                                   {
                                     dictionary.db.enums[
-                                      (key.charAt(0).toLocaleUpperCase() +
-                                        key.slice(1)) as keyof typeof $Enums
-                                    ][
-                                      option as keyof (typeof $Enums)[keyof typeof $Enums]
-                                    ]
+                                      (key.charAt(0).toLocaleUpperCase() + key.slice(1)) as keyof typeof $Enums
+                                    ][option as keyof (typeof $Enums)[keyof typeof $Enums]]
                                   }
                                   <input
                                     disabled={monsterFormState === "DISPLAY"}
@@ -368,9 +334,7 @@ export default function MonsterForm(props: {
                                     checked={field.getValue() === option}
                                     type="radio"
                                     onBlur={field.handleBlur}
-                                    onChange={(e) =>
-                                      field.handleChange(e.target.value)
-                                    }
+                                    onChange={(e) => field.handleChange(e.target.value)}
                                     className={inputClass}
                                   />
                                   {icon}
@@ -395,27 +359,18 @@ export default function MonsterForm(props: {
                     }}
                   >
                     {(field) => {
-                      const defaultFieldsetClass =
-                        "flex basis-1/2 flex-col gap-1 p-2 lg:basis-1/4";
+                      const defaultFieldsetClass = "flex basis-1/2 flex-col gap-1 p-2 lg:basis-1/4";
                       const defaultInputBox = (
                         <input
                           autoComplete="off"
                           disabled={monsterFormState === "DISPLAY"}
                           id={field.name}
                           name={field.name}
-                          value={
-                            typeof field.state.value !== "object"
-                              ? field.state.value
-                              : undefined
-                          }
+                          value={typeof field.state.value !== "object" ? field.state.value : undefined}
                           type={inputType}
                           onBlur={field.handleBlur}
                           onChange={(e) =>
-                            field.handleChange(
-                              inputType === "number"
-                                ? parseFloat(e.target.value)
-                                : e.target.value,
-                            )
+                            field.handleChange(inputType === "number" ? parseFloat(e.target.value) : e.target.value)
                           }
                           className={`mt-1 w-full flex-1 rounded px-4 py-2 ${monsterFormState === "DISPLAY" ? " pointer-events-none bg-transparent outline-transition-color-20" : " pointer-events-auto bg-transition-color-8"}`}
                         />
@@ -427,8 +382,7 @@ export default function MonsterForm(props: {
                         // case "state":
                         case "name":
                           {
-                            fieldsetClass =
-                              "flex basis-full flex-col gap-1 p-2 lg:basis-1/4";
+                            fieldsetClass = "flex basis-full flex-col gap-1 p-2 lg:basis-1/4";
                           }
                           break;
                         // case "monsterType":
@@ -436,8 +390,7 @@ export default function MonsterForm(props: {
                         // case "experience":
                         case "address":
                           {
-                            fieldsetClass =
-                              "flex basis-full flex-col gap-1 p-2 lg:basis-1/4";
+                            fieldsetClass = "flex basis-full flex-col gap-1 p-2 lg:basis-1/4";
                           }
                           break;
                         // case "element":
@@ -470,19 +423,13 @@ export default function MonsterForm(props: {
                           {
                             inputBox = (
                               <>
-                                <input
-                                  id={field.name}
-                                  name={field.name}
-                                  className="hidden"
-                                />
+                                <input id={field.name} name={field.name} className="hidden" />
                                 <MDXEditor
                                   ref={mdxEditorRef}
                                   contentEditableClassName="prose"
                                   markdown={monster.specialBehavior ?? ""}
                                   onBlur={field.handleBlur}
-                                  onChange={(markdown) =>
-                                    field.handleChange(markdown)
-                                  }
+                                  onChange={(markdown) => field.handleChange(markdown)}
                                   plugins={[
                                     diffSourcePlugin(),
                                     headingsPlugin(),
@@ -524,8 +471,7 @@ export default function MonsterForm(props: {
                                 />
                               </>
                             );
-                            fieldsetClass =
-                              "flex basis-full flex-col gap-1 p-2";
+                            fieldsetClass = "flex basis-full flex-col gap-1 p-2";
                           }
                           break;
 
@@ -534,16 +480,9 @@ export default function MonsterForm(props: {
                       }
                       return (
                         <fieldset key={key} className={fieldsetClass}>
-                          <label
-                            htmlFor={field.name}
-                            className="flex w-full flex-col gap-1"
-                          >
+                          <label htmlFor={field.name} className="flex w-full flex-col gap-1">
                             <span>
-                              {
-                                dictionary.db.models.monster[
-                                  key as keyof Monster
-                                ]
-                              }
+                              {dictionary.db.models.monster[key as keyof Monster]}
                               <FieldInfo field={field} />
                             </span>
                             {inputBox}
@@ -569,20 +508,12 @@ export default function MonsterForm(props: {
             {dictionary.ui.monster.close} [Esc]
           </Button>
           {monsterFormState == "DISPLAY" && session?.user && (
-            <Button onClick={() => setMonsterFormState("UPDATE")}>
-              {dictionary.ui.monster.modify} [Enter]
-            </Button>
+            <Button onClick={() => setMonsterFormState("UPDATE")}>{dictionary.ui.monster.modify} [Enter]</Button>
           )}
           {monsterFormState !== "DISPLAY" && (
-            <form.Subscribe
-              selector={(state) => [state.canSubmit, state.isSubmitting]}
-            >
+            <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
               {([canSubmit]) => (
-                <Button
-                  type="submit"
-                  level="primary"
-                  disabled={!(canSubmit && !dataUploadingState)}
-                >
+                <Button type="submit" level="primary" disabled={!(canSubmit && !dataUploadingState)}>
                   {dataUploadingState
                     ? dictionary.ui.monster.upload + "..."
                     : dictionary.ui.monster.upload + " [Enter]"}

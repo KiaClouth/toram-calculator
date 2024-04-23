@@ -173,104 +173,61 @@ const dictionary: dictionary = {
         GEM_POWDER_DROP: ""
       },
       ModifiersValueType: {
-        FLAT_BONUS: "",
-        PERCENTAGE_BONUS: ""
+        FLAT_BONUS: "Flat",
+        PERCENTAGE_BONUS: "Percentage",
       },
       SpecialAbiType: {
-        NULL: "",
-        LUC: "",
-        CRI: "",
-        TEC: "",
-        MEN: ""
+        NULL: "Null",
+        LUC: "Luc",
+        CRI: "Cri",
+        TEC: "Tec",
+        MEN: "Men"
       },
       MainWeaType: {
-        NO_WEAPOEN: "",
-        ONE_HAND_SWORD: "",
-        TWO_HANDS_SWORD: "",
-        BOW: "",
-        STAFF: "",
-        MAGIC_DEVICE: "",
-        KNUCKLE: "",
-        HALBERD: "",
-        KATANA: ""
+        NO_WEAPOEN: "no-weapon",
+        ONE_HAND_SWORD: "one-hand-sword",
+        TWO_HANDS_SWORD: "two-hands-sword",
+        BOW: "bow",
+        STAFF: "staff",
+        MAGIC_DEVICE: "magic-device",
+        KNUCKLE: "knuckle",
+        HALBERD: "halberd",
+        KATANA: "katana",
       },
       SubWeaType: {
-        NO_WEAPOEN: "",
-        ONE_HAND_SWORD: "",
-        MAGIC_DEVICE: "",
-        KNUCKLE: "",
-        KATANA: "",
-        ARROW: "",
-        DAGGER: "",
-        NINJUTSUSCROLL: "",
-        SHIELD: ""
+        NO_WEAPOEN: "no-weapon",
+        ONE_HAND_SWORD: "one-hand-sword",
+        MAGIC_DEVICE: "magic-device",
+        KNUCKLE: "knuckle",
+        KATANA: "katana",
+        ARROW: "arrow",
+        DAGGER: "dagger",
+        NINJUTSUSCROLL: "ninjutsu-scroll",
+        SHIELD: "shield",
       },
       BodyArmorType: {
-        NORMAL: "",
-        LIGHT: "",
-        HEAVY: ""
+        NORMAL: "Normal",
+        LIGHT: "Light",
+        HEAVY: "Heavy"
       },
       CrystalType: {
-        GENERAL: "",
-        WEAPONCRYSTAL: "",
-        BODYCRYSTAL: "",
-        ADDITIONALCRYSTAL: "",
-        SPECIALCRYSTAL: ""
+        GENERAL: "General",
+        WEAPONCRYSTAL: "WeaponCrystal",
+        BODYCRYSTAL: "BodyCrystal",
+        ADDITIONALCRYSTAL: "AdditionalCrystal",
+        SPECIALCRYSTAL: "SpecialCrystal",
       },
       SkillType: {
-        ACTIVE_SKILL: "",
-        PASSIVE_SKILL: ""
+        ACTIVE_SKILL: "ActiveSkill",
+        PASSIVE_SKILL: "PassiveSkill"
       },
       SkillTreeName: {
-        SWORLD: "",
-        MAGIC: ""
+        SWORLD: "SWorld",
+        MAGIC: "Magic",
       },
       UserRole: {
-        USER: "",
-        ADMIN: ""
-      },
-      ComputedFields: {
-        S_LV: "",
-        C_LV: "",
-        C_BS: "",
-        C_BI: "",
-        C_BV: "",
-        C_BA: "",
-        C_BD: "",
-        C_BC: "",
-        C_S: "",
-        C_I: "",
-        C_V: "",
-        C_A: "",
-        C_D: "",
-        C_HP: "",
-        C_MP: "",
-        C_PATK: "",
-        C_MATK: "",
-        C_VPATK: "",
-        C_VMATK: "",
-        M_LV: "",
-        M_HP: "",
-        M_PDEF: "",
-        M_PRES: "",
-        M_MDEF: "",
-        M_MRES: "",
-        CONSTANT: "",
-        MAINWEAPON_TYPE: "",
-        NO_WEAPOEN: "",
-        ONE_HAND_SWORD: "",
-        TWO_HANDS_SWORD: "",
-        BOW: "",
-        STAFF: "",
-        MAGIC_DEVICE: "",
-        KNUCKLE: "",
-        HALBERD: "",
-        KATANA: "",
-        SUBWEAPON_TYPE: "",
-        ARROW: "",
-        DAGGER: "",
-        NINJUTSUSCROLL: "",
-        SHIELD: ""
+        USER: "User",
+        ADMIN: "Admin",
       },
       TriggerTimingType: {
         ON_USE: "onUse",
@@ -283,9 +240,9 @@ const dictionary: dictionary = {
         FALSE: "no"
       },
       DurationType: {
-        FRAME: "",
-        SKILL: "",
-        UNLIMITED: ""
+        FRAME: "Frame",
+        SKILL: "Skill",
+        UNLIMITED: "Unlimited"
       }
     },
     models: {
@@ -318,12 +275,12 @@ const dictionary: dictionary = {
         possibilityOfRunningAround: "PossibilityOfRunningAround",
         specialBehavior: "SpecialBehavior",
         createdByUserId: "CreatedByUser",
-        viewCount: "",
-        usageCount: "",
+        viewCount: "ViewCount",
+        usageCount: "UsageCount",
         createdAt: "CreatedAt",
         updatedAt: "UpdatedAt",
-        usageTimestamps: "",
-        viewTimestamps: "",
+        usageTimestamps: "UsageTimestamps",
+        viewTimestamps: "ViewTimestamps",
       },
       skill: {
         id: "ID",
@@ -332,15 +289,15 @@ const dictionary: dictionary = {
         createdByUserId: "CreateBy",
         updatedByUserId: "UpdatedBy",
         viewCount: "ViewCount",
-        usageCount: "",
-        createdAt: "",
-        updatedAt: "",
-        usageTimestamps: "",
-        viewTimestamps: "",
+        usageCount: "SsageCount",
+        createdAt: "CreatedAt",
+        updatedAt: "UpdatedAt",
+        usageTimestamps: "UsageTimestamps",
+        viewTimestamps: "ViewTimestamps",
         skillType: "SkillType",
         level: "Level",
         skillTreeName: "TreeName",
-        weaponElementDependencyType: "",
+        weaponElementDependencyType: "WeaponElementDependencyType",
         element: "Element",
         skillEffect: "SkillEffect",
         skillDescription: ""
@@ -354,31 +311,29 @@ const dictionary: dictionary = {
         role: "Role"
       },
       skillEffect: {
-        skillCost: "",
-        skillYield: "",
-        id: "",
-        condition: "",
-        actionBaseDuration: "",
-        actionModifiableDuration: "",
-        castingDurationFormula: "",
-        belongToskillId: "",
-        description: ""
+        skillCost: "SkillCost",
+        skillYield: "SkillYield",
+        id: "ID",
+        condition: "Condition",
+        actionBaseDuration: "ActionBaseDuration",
+        actionModifiableDuration: "ActionModifiableDuration",
+        castingDurationFormula: "CastingDurationFormula",
+        belongToskillId: "BelongToskillId",
+        description: "Description"
       },
       skillCost: {
-        id: "",
-        costType: "",
-        costFormula: "",
-        skillEffectId: ""
+        id: "ID",
+        costFormula: "CostFormula",
+        skillEffectId: "SkillEffectId"
       },
       skillYield: {
-        id: "",
-        triggerTiming: "",
-        delay: "",
-        durationType: "",
-        durationValue: "",
-        yieldType: "",
-        yieldFormula: "",
-        skillEffectId: ""
+        id: "ID",
+        triggerTiming: "TriggerTiming",
+        delay: "Delay",
+        durationType: "DurationType",
+        durationValue: "DurationValue",
+        yieldFormula: "YieldFormula",
+        skillEffectId: "SkillEffectId"
       }
     },
   },

@@ -48,7 +48,6 @@ export const defaultMonster: Monster = {
 // 技能表单的默认值
 export const defaultSkillEffectCost: SkillCost = {
   id: "",
-  costType: "MAINWEAPON_TYPE",
   costFormula: "",
   skillEffectId: null
 }
@@ -59,7 +58,6 @@ export const defaultSkillEffectYield: SkillYield = {
   delay: 0,
   durationType: "FRAME",
   durationValue: 0,
-  yieldType: "MAINWEAPON_TYPE",
   yieldFormula: "",
   skillEffectId: null
 }

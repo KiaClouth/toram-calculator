@@ -751,8 +751,7 @@ enum ComputedFields {
 
 // 技能消耗
 model SkillCost {
-    id                  String         @id @default(cuid())
-    costType            ComputedFields @default(C_MP)
+    id                  String         @id @default(cuid()) 
     costFormula         String
     belongToSkillEffect SkillEffect?   @relation(fields: [skillEffectId], references: [id], onDelete: Cascade)
     skillEffectId       String?
@@ -765,7 +764,6 @@ model SkillYield {
     delay               Int               @default(0)
     durationType        DurationType
     durationValue       Int               @default(30)
-    yieldType           ComputedFields    @default(M_HP)
     yieldFormula        String
     belongToSkillEffect SkillEffect?      @relation(fields: [skillEffectId], references: [id], onDelete: Cascade)
     skillEffectId       String?
