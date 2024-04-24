@@ -52,7 +52,7 @@ export default function Nav(props: {
       [
         dictionary.ui.root.comboAnalyze,
         <IconFilter key={"IconFilter"} />,
-        "/building",
+        "/analyze",
       ],
     ];
 

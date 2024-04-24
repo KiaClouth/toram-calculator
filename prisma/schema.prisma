@@ -473,6 +473,7 @@ enum MainWeaType {
     ONE_HAND_SWORD
     TWO_HANDS_SWORD
     BOW
+    BOWGUN
     STAFF
     MAGIC_DEVICE
     KNUCKLE
