@@ -193,6 +193,7 @@ const dictionary: dictionary = {
         KNUCKLE: "knuckle",
         HALBERD: "halberd",
         KATANA: "katana",
+        BOWGUN: "bowgun",
       },
       SubWeaType: {
         NO_WEAPOEN: "no-weapon",

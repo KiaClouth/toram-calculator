@@ -192,7 +192,8 @@ const dictionary: dictionary = {
         MAGIC_DEVICE: "魔导具",
         KNUCKLE: "拳套",
         HALBERD: "旋风枪",
-        KATANA: "拔刀剑"
+        KATANA: "拔刀剑",
+        BOWGUN: ""
       },
       SubWeaType: {
         NO_WEAPOEN: "空",
