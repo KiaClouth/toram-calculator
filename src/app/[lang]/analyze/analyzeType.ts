@@ -1,27 +1,7 @@
 import type {
   MainWeaType,
-  Skill,
-  SkillCost,
-  SkillEffect,
-  SkillYield,
-  BaseAbi,
   SubWeaType,
   BodyArmorType,
-  Character,
-  SpecialAbi,
-  EquipmentList,
-  Fashion,
-  Cuisine,
-  Consumable,
-  SkillList,
-  Combo,
-  Pet,
-  ModifiersList,
-  MainWeapon,
-  SubWeapon,
-  BodyArmor,
-  AdditionalEquipment,
-  SpecialEquipment,
 } from "@prisma/client";
 
 export type abiType =
@@ -30,40 +10,10 @@ export type abiType =
   | "vit"
   | "agi"
   | "dex"
-  | "luc"
+  | "luk"
   | "tec"
   | "men"
   | "cri";
-
-export interface _SkillEffect extends SkillEffect {
-  cost: SkillCost[];
-  yield: SkillYield[];
-}
-
-export interface _Skill extends Skill {
-  skillEffect: _SkillEffect[];
-}
-
-interface _EquipmentList extends EquipmentList {
-  mainWeapon: MainWeapon;
-  subWeapon: SubWeapon;
-  bodyArmor: BodyArmor;
-  addEquipment: AdditionalEquipment;
-  spcialEquipment: SpecialEquipment;
-}
-
-export interface _Character extends Character {
-  baseAbi: BaseAbi;
-  specialAbi: SpecialAbi;
-  equipmentList: _EquipmentList;
-  fashion: Fashion;
-  cuisine: Cuisine;
-  consumableList: Consumable[];
-  skill: SkillList;
-  combos: Combo[];
-  pet: Pet;
-  modifiersList: ModifiersList;
-}
 
 export type modifiers = {
   baseValue: number;
@@ -136,9 +86,4 @@ export interface MonsterState {
   pRes: number;
   mDef: number;
   mRes: number;
-}
-
-export interface FrameData {
-  frame: number;
-  characterState: CharacterState;
 }

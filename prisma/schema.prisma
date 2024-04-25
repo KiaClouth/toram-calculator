@@ -230,12 +230,11 @@ enum ModifiersName {
     AGI // 敏捷
     DEX // 灵巧
     // 基础属性
-    MAX_HP // 最大HP
     MAX_MP // 最大MP
     AGGRO // 仇恨值
     WEAPON_RANGE // 武器射程
-    NATYRAL_HP_REGEN // HP自然回复
-    NATURAL_MP_REGEN // MP自然回复
+    HP_REGEN // HP自然回复
+    MP_REGEN // MP自然回复
     // 单次伤害增幅
     PHYSICAL_ATK // 物理攻击
     MAGICAL_ATK // 魔法攻击
@@ -285,6 +284,7 @@ enum ModifiersName {
     MATK_DOWN_AGI // 魔法攻击下降（敏捷）
     MATK_DOWN_DEX // 魔法攻击下降（灵巧）
     // 生存能力加成
+    MAX_HP // 最大HP
     PHYSICAL_DEF // 物理防御
     MAGICAL_DEF // 魔法防御
     PHYSICAL_RESISTANCE // 物理抗性

@@ -3,10 +3,12 @@ import React, { useEffect } from "react";
 import { type getDictionary } from "~/app/get-dictionary";
 import { type Session } from "next-auth";
 
-import type { _Character, _Skill, abiType, CharacterState, FrameData, modifiers } from "./analyzeType";
+import type { abiType, CharacterState, modifiers } from "./analyzeType";
 import Dialog from "../_components/dialog";
-import { useBearStore } from "~/app/store";
-import { BodyArmorType, MainWeaType, SubWeaType } from "@prisma/client";
+import { defaultMonster, defaultSkillEffect, useBearStore } from "~/app/store";
+import { Monster, type BodyArmorType, type MainWeaType, type SubWeaType } from "@prisma/client";
+import * as math from "mathjs";
+import { type Skill, type SkillEffect } from "~/server/api/routers/skill";
 
 export interface Props {
   dictionary: ReturnType<typeof getDictionary>;
@@ -15,7 +17,7 @@ export interface Props {
 
 export default function AnalyzePageClient(props: Props) {
   const { dictionary } = props;
-  const skillSequence: _Skill[] = [
+  const skillSequence: Skill[] = [
     {
       id: "",
       state: "PUBLIC",
@@ -27,15 +29,15 @@ export default function AnalyzePageClient(props: Props) {
       skillType: "ACTIVE_SKILL",
       skillEffect: [
         {
-          condition: "MAINWEAPON_TYPE == MAFIC_DEVICE",
-          cost: [
+          condition: "equalText(primaryAttributes.equipment.mainWeapon.type,'MAGIC_DEVICE')",
+          skillCost: [
             {
               id: "",
               costFormula: "200",
               skillEffectId: null,
             },
           ],
-          yield: [
+          skillYield: [
             {
               id: "",
               triggerTiming: "ON_USE",
@@ -59,7 +61,7 @@ export default function AnalyzePageClient(props: Props) {
           actionBaseDuration: 13,
           actionModifiableDuration: 48,
           belongToskillId: "",
-          castingDurationFormula: "",
+          castingDurationFormula: "max(0,min((2 - (skillLevel - 1) * 0.25),(1 - (skillLevel - 5) * 0.5)))",
           description: null,
         },
       ],
@@ -77,14 +79,14 @@ export default function AnalyzePageClient(props: Props) {
       skillEffect: [
         {
           condition: "",
-          cost: [
+          skillCost: [
             {
               costFormula: "",
               id: "",
               skillEffectId: null,
             },
           ],
-          yield: [
+          skillYield: [
             {
               yieldFormula: "",
               id: "",
@@ -452,7 +454,7 @@ export default function AnalyzePageClient(props: Props) {
       },
     };
 
-    primaryAttributes: {
+    public primaryAttributes: {
       // 自由数值：玩家可定义基础值和加成项的，不由其他数值转化而来，但是会参与衍生属性计算的数值
       lv: number;
       abi: Record<abiType, modifiers>;
@@ -476,7 +478,7 @@ export default function AnalyzePageClient(props: Props) {
         };
       };
     };
-    systemAttributes: {
+    public systemAttributes: {
       // 系统数值：由系统决定基础值，加成项由基础值决定的
       pPie: modifiers;
       mPie: modifiers;
@@ -492,7 +494,7 @@ export default function AnalyzePageClient(props: Props) {
       final: modifiers;
       am: modifiers;
     };
-    derivedAttributes: {
+    public derivedAttributes: {
       // 衍生属性：基础值自由数值决定，玩家只能定义加成项的
       maxHP: modifiers;
       maxMP: modifiers;
@@ -505,6 +507,47 @@ export default function AnalyzePageClient(props: Props) {
       mAtk: modifiers;
       aspd: modifiers;
       cspd: modifiers;
+    };
+    public actualAttributes: {
+      abi: {
+        str: number;
+        int: number;
+        vit: number;
+        agi: number;
+        dex: number;
+        luk: number;
+        tec: number;
+        cri: number;
+        men: number;
+      };
+      baseAttr: {
+        maxHp: number;
+        maxMp: number;
+        aggro: number;
+        range: number;
+        mpRegen: number;
+        hpRegen: number;
+      };
+      damageBooster: {
+        weaAtk: number;
+        katanaAtk: number;
+        pAtk: number;
+        pPie: number;
+        mAtk: number;
+        mPie: number;
+        pCr: number;
+        pCd: number;
+        crT: number;
+        cdT: number;
+        mCr: number;
+        mCd: number;
+      };
+      speedBoster: {
+        aspd: number;
+        cspd: number;
+        am: number;
+        cm: number;
+      };
     };
     constructor(state: CharacterState) {
       this.primaryAttributes = state.primaryAttributes;
@@ -530,13 +573,17 @@ export default function AnalyzePageClient(props: Props) {
               value: Math.min(
                 100,
                 Math.floor(
-                  CharacterAttr.weaponAbiT[state.primaryAttributes.equipment.mainWeapon.type].abi_Attr_Convert.str.stabT *
+                  CharacterAttr.weaponAbiT[state.primaryAttributes.equipment.mainWeapon.type].abi_Attr_Convert.str
+                    .stabT *
                     this.totalValue(this.primaryAttributes.abi.str) +
-                    CharacterAttr.weaponAbiT[state.primaryAttributes.equipment.mainWeapon.type].abi_Attr_Convert.int.stabT *
+                    CharacterAttr.weaponAbiT[state.primaryAttributes.equipment.mainWeapon.type].abi_Attr_Convert.int
+                      .stabT *
                       this.totalValue(this.primaryAttributes.abi.int) +
-                    CharacterAttr.weaponAbiT[state.primaryAttributes.equipment.mainWeapon.type].abi_Attr_Convert.agi.stabT *
+                    CharacterAttr.weaponAbiT[state.primaryAttributes.equipment.mainWeapon.type].abi_Attr_Convert.agi
+                      .stabT *
                       this.totalValue(this.primaryAttributes.abi.agi) +
-                    CharacterAttr.weaponAbiT[state.primaryAttributes.equipment.mainWeapon.type].abi_Attr_Convert.dex.stabT *
+                    CharacterAttr.weaponAbiT[state.primaryAttributes.equipment.mainWeapon.type].abi_Attr_Convert.dex
+                      .stabT *
                       this.totalValue(this.primaryAttributes.abi.dex),
                 ),
               ),
@@ -553,13 +600,17 @@ export default function AnalyzePageClient(props: Props) {
                 100,
                 Math.floor(
                   state.primaryAttributes.equipment.mainWeapon.stability +
-                    CharacterAttr.weaponAbiT[state.primaryAttributes.equipment.mainWeapon.type].abi_Attr_Convert.str.stabT *
+                    CharacterAttr.weaponAbiT[state.primaryAttributes.equipment.mainWeapon.type].abi_Attr_Convert.str
+                      .stabT *
                       this.totalValue(this.primaryAttributes.abi.str) +
-                    CharacterAttr.weaponAbiT[state.primaryAttributes.equipment.mainWeapon.type].abi_Attr_Convert.int.stabT *
+                    CharacterAttr.weaponAbiT[state.primaryAttributes.equipment.mainWeapon.type].abi_Attr_Convert.int
+                      .stabT *
                       this.totalValue(this.primaryAttributes.abi.int) +
-                    CharacterAttr.weaponAbiT[state.primaryAttributes.equipment.mainWeapon.type].abi_Attr_Convert.agi.stabT *
+                    CharacterAttr.weaponAbiT[state.primaryAttributes.equipment.mainWeapon.type].abi_Attr_Convert.agi
+                      .stabT *
                       this.totalValue(this.primaryAttributes.abi.agi) +
-                    CharacterAttr.weaponAbiT[state.primaryAttributes.equipment.mainWeapon.type].abi_Attr_Convert.dex.stabT *
+                    CharacterAttr.weaponAbiT[state.primaryAttributes.equipment.mainWeapon.type].abi_Attr_Convert.dex
+                      .stabT *
                       this.totalValue(this.primaryAttributes.abi.dex),
                 ),
               ) /
@@ -718,6 +769,58 @@ export default function AnalyzePageClient(props: Props) {
       //     this.totalValue(this.systemAttributes.weaMatkT) * this.totalValue(this.derivedAttributes.mainWeaAtk) +
       //     ",已附加至魔攻",
       // );
+
+      this.actualAttributes = {
+        abi: {
+          str: this.totalValue(this.primaryAttributes.abi.str),
+          int: this.totalValue(this.primaryAttributes.abi.int),
+          vit: this.totalValue(this.primaryAttributes.abi.vit),
+          agi: this.totalValue(this.primaryAttributes.abi.agi),
+          dex: this.totalValue(this.primaryAttributes.abi.dex),
+          luk: this.totalValue(this.primaryAttributes.abi.luk),
+          tec: this.totalValue(this.primaryAttributes.abi.tec),
+          cri: this.totalValue(this.primaryAttributes.abi.cri),
+          men: this.totalValue(this.primaryAttributes.abi.men),
+        },
+        baseAttr: {
+          maxHp: this.totalValue(this.derivedAttributes.maxHP),
+          maxMp: this.totalValue(this.derivedAttributes.maxMP),
+          aggro: 0,
+          range: 0,
+          mpRegen: 0,
+          hpRegen: 0,
+        },
+        damageBooster: {
+          weaAtk: this.totalValue(this.derivedAttributes.mainWeaAtk),
+          katanaAtk: 0,
+          pAtk: this.totalValue(this.derivedAttributes.pAtk),
+          pPie: this.totalValue(this.systemAttributes.pPie),
+          mAtk: this.totalValue(this.derivedAttributes.mAtk),
+          mPie: this.totalValue(this.systemAttributes.mPie),
+          pCr: this.totalValue(this.derivedAttributes.pCr),
+          pCd: this.totalValue(this.derivedAttributes.pCd),
+          crT: this.totalValue(this.systemAttributes.crT),
+          cdT: this.totalValue(this.systemAttributes.cdT),
+          mCr: this.totalValue(this.derivedAttributes.pCr) * this.totalValue(this.systemAttributes.crT),
+          mCd: (this.totalValue(this.derivedAttributes.pCd) - 100) * this.totalValue(this.systemAttributes.cdT) + 100,
+        },
+        speedBoster: {
+          aspd: this.totalValue(this.derivedAttributes.aspd),
+          cspd: this.totalValue(this.derivedAttributes.cspd),
+          am: Math.min(
+            50,
+            this.totalValue(this.systemAttributes.am) +
+              Math.max(Math.floor((this.totalValue(this.derivedAttributes.aspd) - 1000) / 180), 0),
+          ),
+          cm: Math.min(
+            100,
+            Math.min(
+              Math.floor((this.totalValue(this.derivedAttributes.cspd) - 1000) / 180) + 50,
+              Math.floor(this.totalValue(this.derivedAttributes.cspd) / 20),
+            ),
+          ),
+        },
+      };
     }
 
     public baseValue = (m: modifiers): number => {
@@ -740,6 +843,35 @@ export default function AnalyzePageClient(props: Props) {
       const percentage = this.percentageValue(m);
       return base * (1 + percentage / 100) + fixed;
     };
+  }
+  class MonsterAttr {
+    hp: modifiers;
+    pDef: modifiers;
+    pRes: modifiers;
+    mDef: modifiers;
+    mRes: modifiers;
+    constructor(monsterState: Monster) {
+      this.hp = {
+        baseValue: monsterState.maxhp ?? 0,
+        modifiers: [],
+      };
+      this.pDef = {
+        baseValue: monsterState.physicalDefense ?? 0,
+        modifiers: [],
+      };
+      this.pRes = {
+        baseValue: monsterState.physicalResistance ?? 0,
+        modifiers: [],
+      };
+      this.mDef = {
+        baseValue: monsterState.magicalDefense ?? 0,
+        modifiers: [],
+      };
+      this.mRes = {
+        baseValue: monsterState.magicalResistance ?? 0,
+        modifiers: [],
+      };
+    }
   }
 
   const initialCharacterState = new CharacterAttr({
@@ -789,7 +921,7 @@ export default function AnalyzePageClient(props: Props) {
           {
             valueType: "fixed",
             value: 20,
-            origin: "skill",
+            origin: "skill.ssyc",
           },
         ],
       },
@@ -813,6 +945,11 @@ export default function AnalyzePageClient(props: Props) {
             valueType: "fixed",
             value: 8,
             origin: "additionalEquipment.饼干腰翼.Crystal",
+          },
+          {
+            valueType: "fixed",
+            value: 10,
+            origin: "additionalEquipment",
           },
         ],
       },
@@ -843,7 +980,7 @@ export default function AnalyzePageClient(props: Props) {
           },
           {
             valueType: "fixed",
-            value: 22,
+            value: 20,
             origin: "bodyArmor",
           },
         ],
@@ -853,12 +990,18 @@ export default function AnalyzePageClient(props: Props) {
           {
             valueType: "fixed",
             value: 10,
-            origin: "skill",
+            origin: "skill.ycjj",
           },
         ],
       },
       final: {
-        modifiers: [],
+        modifiers: [
+          {
+            valueType: "fixed",
+            value: 20,
+            origin: "skill.yq",
+          },
+        ],
       },
       am: {
         modifiers: [
@@ -875,7 +1018,7 @@ export default function AnalyzePageClient(props: Props) {
           {
             valueType: "fixed",
             value: 30,
-            origin: "skill",
+            origin: "skill.ss",
           },
         ],
       },
@@ -894,17 +1037,20 @@ export default function AnalyzePageClient(props: Props) {
               valueType: "percentage",
               value: 10,
               origin: "mainWeapon",
-            }, {
+            },
+            {
               valueType: "percentage",
               value: 7,
               origin: "bodyArmor",
-            }, {
+            },
+            {
               valueType: "percentage",
               value: 3,
               origin: "bodyArmor.Crystal",
-            }, {
+            },
+            {
               valueType: "fixed",
-              value: 18,
+              value: 22,
               origin: "ll",
             },
           ],
@@ -919,17 +1065,20 @@ export default function AnalyzePageClient(props: Props) {
         },
         dex: {
           baseValue: 247,
-          modifiers: [{
-            valueType: "percentage",
-            value: 5,
-            origin: "additionalEquipment.饼干腰翼",
-          }, {
-            valueType: "fixed",
-            value: 30,
-            origin: "ll",
-          }],
+          modifiers: [
+            {
+              valueType: "percentage",
+              value: 5,
+              origin: "additionalEquipment.饼干腰翼",
+            },
+            {
+              valueType: "fixed",
+              value: 30,
+              origin: "ll",
+            },
+          ],
         },
-        luc: {
+        luk: {
           baseValue: 0,
           modifiers: [],
         },
@@ -977,31 +1126,38 @@ export default function AnalyzePageClient(props: Props) {
         modifiers: [],
       },
       maxMP: {
-        modifiers: [{
-          valueType: "fixed",
-          value: 1000,
-          origin: "ll",
-        }, {
-          valueType: "fixed",
-          value: 50,
-          origin: "skill",
-          }, {
+        modifiers: [
+          {
+            valueType: "fixed",
+            value: 1000,
+            origin: "ll",
+          },
+          {
+            valueType: "fixed",
+            value: 50,
+            origin: "skill",
+          },
+          {
             valueType: "fixed",
             value: -150,
             origin: "bodyArmor.Crystal",
-          }, {
+          },
+          {
             valueType: "fixed",
             value: -150,
             origin: "additionalEquipment.饼干腰翼.Crystal",
-          }, {
+          },
+          {
             valueType: "fixed",
             value: 300,
             origin: "specialEquipment.读星提灯.Crystal",
-          }, {
+          },
+          {
             valueType: "fixed",
             value: 100,
             origin: "th",
-          }, {
+          },
+          {
             valueType: "fixed",
             value: 100,
             origin: "工会加成",
@@ -1010,20 +1166,50 @@ export default function AnalyzePageClient(props: Props) {
             valueType: "fixed",
             value: 100,
             origin: "会员",
-        }],
+          },
+        ],
       },
       pCr: {
-        modifiers: [],
+        modifiers: [
+          {
+            valueType: "fixed",
+            value: 5,
+            origin: "skill.hz",
+          },
+          {
+            valueType: "fixed",
+            value: 30,
+            origin: "ll",
+          },
+          {
+            valueType: "percentage",
+            value: 20,
+            origin: "additionalEquipment.饼干腰翼.Crystal",
+          },
+        ],
       },
       pCd: {
-        modifiers: [],
+        modifiers: [
+          {
+            valueType: "percentage",
+            value: 5,
+            origin: "skill.hz",
+          },
+        ],
       },
       mainWeaAtk: {
-        modifiers: [{
-          valueType: "percentage",
-          value: 60,
-          origin: "mainWeapon",
-        }],
+        modifiers: [
+          {
+            valueType: "percentage",
+            value: 30,
+            origin: "skill.mfyl",
+          },
+          {
+            valueType: "percentage",
+            value: 30,
+            origin: "skill.yq",
+          },
+        ],
       },
       subWeaAtk: {
         modifiers: [],
@@ -1032,7 +1218,13 @@ export default function AnalyzePageClient(props: Props) {
         modifiers: [],
       },
       pAtk: {
-        modifiers: [],
+        modifiers: [
+          {
+            valueType: "percentage",
+            value: 6,
+            origin: "specialEquipment",
+          },
+        ],
       },
       mAtk: {
         modifiers: [
@@ -1041,34 +1233,182 @@ export default function AnalyzePageClient(props: Props) {
             value: 12,
             origin: "mainWeapon",
           },
+          {
+            valueType: "percentage",
+            value: 3,
+            origin: "skill.mfyl",
+          },
+          {
+            valueType: "fixed",
+            value: 200,
+            origin: "skill.ssyc",
+          },
+          {
+            valueType: "percentage",
+            value: 10,
+            origin: "bodyArmor",
+          },
+          {
+            valueType: "percentage",
+            value: 5,
+            origin: "mainWeapon.Crystal",
+          },
+          {
+            valueType: "percentage",
+            value: 7,
+            origin: "mainWeapon.Crystal",
+          },
+          {
+            valueType: "percentage",
+            value: 5,
+            origin: "bodyArmor.Crystal",
+          },
+          {
+            valueType: "percentage",
+            value: 7,
+            origin: "bodyArmor.Crystal",
+          },
+          {
+            valueType: "percentage",
+            value: 9,
+            origin: "specialEquipment",
+          },
+          {
+            valueType: "percentage",
+            value: 6,
+            origin: "specialEquipment",
+          },
         ],
       },
       aspd: {
-        modifiers: [],
+        modifiers: [
+          {
+            valueType: "percentage",
+            value: 50,
+            origin: "bodyArmor",
+          },
+          {
+            valueType: "fixed",
+            value: 900,
+            origin: "skill.ss",
+          },
+          {
+            valueType: "fixed",
+            value: 400,
+            origin: "additionalEquipment.饼干腰翼.Crystal",
+          },
+        ],
       },
       cspd: {
-        modifiers: [],
+        modifiers: [
+          {
+            valueType: "percentage",
+            value: 40,
+            origin: "skill.ycyl",
+          },
+          {
+            valueType: "fixed",
+            value: 450,
+            origin: "skill.ycyl",
+          },
+          {
+            valueType: "percentage",
+            value: -15,
+            origin: "mainWeapon.Crystal",
+          },
+          {
+            valueType: "percentage",
+            value: 14,
+            origin: "mainWeapon.Crystal",
+          },
+          {
+            valueType: "percentage",
+            value: 20,
+            origin: "bodyArmor.Crystal",
+          },
+          {
+            valueType: "percentage",
+            value: 35,
+            origin: "bodyArmor.Crystal",
+          },
+          {
+            valueType: "percentage",
+            value: 9,
+            origin: "specialEquipment",
+          },
+        ],
       },
     },
   });
 
-  console.log(initialCharacterState.totalValue(initialCharacterState.derivedAttributes.mainWeaAtk));
+  interface SkillData {
+    index: number;
+    name: string;
+    aDuration: {
+      baseValue: number;
+      actualValue: number;
+    };
+    cDuration: {
+      baseValue: number;
+      actualValue: number;
+    };
+    frameDatas: FrameData[];
+  }
 
-  function calculateFrameData(skillSequence: _Skill[], initialCharacterState: CharacterState): FrameData[] {
-    const frameData: FrameData[] = [];
-    const characterState = initialCharacterState;
+  interface FrameData {
+    frame: number;
+    characterAttr: CharacterAttr;
+    monsterAttr: MonsterAttr;
+  }
 
-    for (let frame = 0; frame < 1; frame++) {
-      // 应用技能效果到角色状态上
-      // 这里需要根据技能属性和当前角色状态来计算新的角色状态
-      // 例如：characterState = applySkillEffect(characterState, skillSequence[frame]);
+  const calculateFrameData = (skillSequence: Skill[], initialCharacterState: CharacterState) => {
+    const skillDatas: SkillData[] = [];
+    const characterAttr = new CharacterAttr(initialCharacterState);
+    const monsterAttr = new MonsterAttr(defaultMonster);
+    let skillIndex = 0;
 
-      // 将当前帧的角色状态数据添加到结果数组中
-      frameData.push({ frame, characterState });
+    for (const skill of skillSequence) {
+      const frameDatas: FrameData[] = [];
+      const computeArg = {
+        ...characterAttr,
+        ...monsterAttr,
+        skillLevel: skill.level,
+      };
+      // 确定技能效果
+      let currentEffect: SkillEffect = defaultSkillEffect;
+      for (const effect of skill.skillEffect) {
+        if (math.isBoolean(math.evaluate(effect.condition, { ...computeArg }))) currentEffect = effect;
+      }
+      // console.log(math.evaluate(currentEffect.castingDurationFormula, {...computeArg}));
+      // 计算与帧相关的技能效果参数
+      const aDurationBaseValue = currentEffect.actionBaseDuration;
+      const aDurationActualValue =
+        currentEffect.actionBaseDuration +
+        (currentEffect.actionModifiableDuration * (100 - characterAttr.actualAttributes.speedBoster.am)) / 100;
+      const cDurationBaseValue = math.evaluate(currentEffect.castingDurationFormula, { ...computeArg }) as number;
+      const cDurationActualValue = math.evaluate(currentEffect.castingDurationFormula, { ...computeArg }) as number;
+      for (let frame = 0; frame < aDurationActualValue + cDurationActualValue; frame++) {
+        // 将当前帧的角色状态数据添加到结果数组中
+        frameDatas.push({ frame, characterAttr, monsterAttr });
+      }
+      skillDatas.push({
+        index: skillIndex,
+        name: skill.name ?? "null",
+        aDuration: {
+          baseValue: aDurationBaseValue,
+          actualValue: aDurationActualValue,
+        },
+        cDuration: {
+          baseValue: cDurationBaseValue,
+          actualValue: cDurationActualValue,
+        },
+        frameDatas: frameDatas,
+      });
+      skillIndex++;
     }
 
-    return frameData;
-  }
+    return skillDatas;
+  };
 
   useEffect(() => {
     console.log("--ComboAnalyze Client Render");
@@ -1099,57 +1439,40 @@ export default function AnalyzePageClient(props: Props) {
             </div>
             <div></div>
           </div>
-          {calculateFrameData(skillSequence, initialCharacterState).map((frameData) => (
-            <div key={frameData.frame} className="frame flex flex-col">
-              <span>{frameData.frame}</span>
-              <div>
-                {Object.entries(frameData.characterState.primaryAttributes).map(([key, value0]) => (
-                  <p key={"primaryAttributes" + key + frameData.frame}>
-                    {key}: {JSON.stringify(value0, null, 2)}
-                    {/* {typeof value0 == "object"
-                      ? Object.entries(value0 as unknown as Record<string, unknown>).map(([key1, value1]) => (
-                          <p key={key1 + frameData.frame}>
-                            {"--" + key1}: {JSON.stringify(value1)}
-                          </p>
-                        ))
-                      : value0} */}
-                    <br />
-                    {"\n ----------------------------------------------------- \n"}
-                  </p>
-                ))}
-
-                {Object.entries(frameData.characterState.systemAttributes).map(([key, value0]) => (
-                  <p key={"systemAttributes" + key + frameData.frame}>
-                    {key}: {JSON.stringify(value0, null, 2)}
-                    {/* {typeof value0 == "object"
-                      ? Object.entries(value0 as unknown as Record<string, unknown>).map(([key1, value1]) => (
-                          <p key={key1 + frameData.frame}>
-                            {"--" + key1}: {JSON.stringify(value1)}
-                          </p>
-                        ))
-                      : value0} */}
-                    <br />
-                    {"\n ----------------------------------------------------- \n"}
-                  </p>
-                ))}
-
-                {Object.entries(frameData.characterState.derivedAttributes).map(([key, value0]) => (
-                  <p key={"derivedAttributes" + key + frameData.frame}>
-                    {key}: {JSON.stringify(value0, null, 2)}
-                    {/* {typeof value0 == "object"
-                      ? Object.entries(value0 as unknown as Record<string, unknown>).map(([key1, value1]) => (
-                          <p key={key1 + frameData.frame}>
-                            {"--" + key1}: {JSON.stringify(value1)}
-                          </p>
-                        ))
-                      : value0} */}
-                    <br />
-                    {"\n ----------------------------------------------------- \n"}
-                  </p>
-                ))}
+          <div className="Content flex w-fit gap-2 bg-transition-color-8 p-4">
+            {calculateFrameData(skillSequence, initialCharacterState).map((skillData, skillIndex) => (
+              <div key={skillData.name + skillIndex} className="frame flex flex-col gap-1">
+                <span className="w-full bg-brand-color-1st p-2 text-primary-color">
+                  {skillData.name + " : " + skillData.frameDatas.length + " frames"}
+                </span>
+                <div className="frameData flex">
+                  {skillData.frameDatas.map((frameData, frameIndex) => {
+                    return (
+                      <div
+                        key={skillData.name + ".frameData." + frameIndex}
+                        className="group relative min-h-6 border-2 border-brand-color-2nd"
+                      >
+                        <div className="absolute -left-4 bottom-6 z-10 hidden w-[50dvw] flex-col gap-2 rounded bg-primary-color-70 p-4 shadow-2xl shadow-transition-color-20 backdrop-blur-xl group-hover:flex">
+                          <span className="Title bg-transition-color-8 p-2">{"Frame : " + frameData.frame}</span>
+                          <br />
+                          <div className="CharacterAttr flex flex-col gap-1">
+                            <span className="Title">CharacterAttr</span>
+                            <span className="Content bg-transition-color-8">
+                              {JSON.stringify(frameData.characterAttr.actualAttributes, null, 2)}
+                            </span>
+                          </div>
+                          <div className="CharacterAttr flex flex-col gap-1">
+                            <span className="Title">MonsterAttr</span>
+                            <span className="Content bg-transition-color-8">{JSON.stringify(frameData.monsterAttr, null, 2)}</span>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
         <div className="RightArea sticky top-0 z-10 flex-1"></div>
       </div>
