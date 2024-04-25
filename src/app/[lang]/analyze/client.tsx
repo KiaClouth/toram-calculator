@@ -6,7 +6,7 @@ import { type Session } from "next-auth";
 import type { abiType, CharacterState, modifiers } from "./analyzeType";
 import Dialog from "../_components/dialog";
 import { defaultMonster, defaultSkillEffect, useBearStore } from "~/app/store";
-import { Monster, type BodyArmorType, type MainWeaType, type SubWeaType } from "@prisma/client";
+import { type Monster, type BodyArmorType, type MainWeaType, type SubWeaType } from "@prisma/client";
 import * as math from "mathjs";
 import { type Skill, type SkillEffect } from "~/server/api/routers/skill";
 
@@ -1452,7 +1452,7 @@ export default function AnalyzePageClient(props: Props) {
                         key={skillData.name + ".frameData." + frameIndex}
                         className="group relative min-h-6 border-2 border-brand-color-2nd"
                       >
-                        <div className="absolute -left-4 bottom-6 z-10 hidden w-[50dvw] flex-col gap-2 rounded bg-primary-color-70 p-4 shadow-2xl shadow-transition-color-20 backdrop-blur-xl group-hover:flex">
+                        <div className="absolute -left-4 bottom-6 z-10 hidden w-[50dvw] flex-col gap-2 rounded bg-primary-color-90 p-4 shadow-2xl shadow-transition-color-20 backdrop-blur-xl group-hover:flex">
                           <span className="Title bg-transition-color-8 p-2">{"Frame : " + frameData.frame}</span>
                           <br />
                           <div className="CharacterAttr flex flex-col gap-1">

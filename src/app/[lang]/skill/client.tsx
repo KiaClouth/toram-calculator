@@ -14,10 +14,7 @@ import { type Session } from "next-auth";
 import React, { useState, type CSSProperties, useEffect } from "react";
 import SkillForm from "./skillForm";
 import Button from "../_components/button";
-import {
-  IconCloudUpload,
-  IconFilter,
-} from "../_components/iconsList";
+import { IconCloudUpload, IconFilter } from "../_components/iconsList";
 import Dialog from "../_components/dialog";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { useBearStore } from "~/app/store";
@@ -34,6 +31,7 @@ export default function MonserPageClient(props: {
 
   // 状态管理参数
   const {
+    skill,
     setSkill,
     skillList,
     setSkillList,
@@ -76,6 +74,20 @@ export default function MonserPageClient(props: {
 
   // 定义不需要展示的列
   const hiddenData: Array<keyof Skill> = ["id"];
+
+  // 弹出层怪物名称列表
+  const [sameNameSkillList, setSameNameSkillList] = useState<Skill[]>([]);
+  const compusteSameNameSkillList = (skill: Skill, skillList: Skill[]) => {
+    const list: Skill[] = [];
+    skillList.forEach((m) => {
+      m.name === skill.name && list.push(m);
+    });
+    return list.sort((skillA, skillB) => {
+      const dateA = new Date(skillA.updatedAt);
+      const dateB = new Date(skillB.updatedAt);
+      return dateA.getTime() - dateB.getTime();
+    });
+  };
 
   // 列定义
   const columns = React.useMemo<ColumnDef<Skill>[]>(
@@ -160,8 +172,7 @@ export default function MonserPageClient(props: {
     getScrollElement: () => tableContainerRef.current,
     // measure dynamic row height, except in firefox because it measures table border height incorrectly
     measureElement:
-      typeof window !== "undefined" &&
-      navigator.userAgent.indexOf("Firefox") === -1
+      typeof window !== "undefined" && navigator.userAgent.indexOf("Firefox") === -1
         ? (element) => element?.getBoundingClientRect().height
         : undefined,
     overscan: 5,
@@ -172,6 +183,7 @@ export default function MonserPageClient(props: {
     skillList.forEach((skill) => {
       if (skill.id !== id) return;
       setSkill(skill);
+      setSameNameSkillList(compusteSameNameSkillList(skill, skillList));
       setSkillDialogState(true);
       setSkillFormState("DISPLAY");
     });
@@ -181,8 +193,7 @@ export default function MonserPageClient(props: {
   const getCommonPinningStyles = (column: Column<Skill>): CSSProperties => {
     const isPinned = column.getIsPinned();
     const isLastLeft = isPinned === "left" && column.getIsLastColumn("left");
-    const isFirstRight =
-      isPinned === "right" && column.getIsFirstColumn("right");
+    const isFirstRight = isPinned === "right" && column.getIsFirstColumn("right");
     const styles: CSSProperties = {
       position: isPinned ? "sticky" : "relative",
       width: column.getSize(),
@@ -191,31 +202,29 @@ export default function MonserPageClient(props: {
     if (isPinned) {
       styles.left = isLastLeft ? `${column.getStart("left")}px` : undefined;
       styles.right = isFirstRight ? `${column.getAfter("right")}px` : undefined;
-      styles.borderWidth = isLastLeft
-        ? "0px 2px 0px 0px"
-        : isFirstRight
-          ? "0px 0px 0px 2px"
-          : undefined;
+      styles.borderWidth = isLastLeft ? "0px 2px 0px 0px" : isFirstRight ? "0px 0px 0px 2px" : undefined;
     }
     return styles;
   };
 
   useEffect(() => {
-    console.log("--Skill Client Render")
+    console.log("--Skill Client Render");
     setSkillList(defaultSkillList);
     // u键监听
     const handleEscapeKeyPress = (e: KeyboardEvent) => {
       if (e.key === "u") {
+        setSkill(defaultSkill);
+        setSameNameSkillList([]);
         setSkillDialogState(true);
         setSkillFormState("DISPLAY");
       }
     };
     document.addEventListener("keydown", handleEscapeKeyPress);
     return () => {
-      console.log("--Skill Client Unmount")
+      console.log("--Skill Client Unmount");
       document.removeEventListener("keydown", handleEscapeKeyPress);
     };
-  }, [defaultSkillList, setSkillDialogState, setSkillFormState, setSkillList]);
+  }, [defaultSkillList, setSkill, setSkillDialogState, setSkillFormState, setSkillList]);
 
   return (
     <main className="flex flex-col lg:w-[calc(100dvw-96px)] lg:flex-row">
@@ -227,10 +236,7 @@ export default function MonserPageClient(props: {
         >
           <div className="Title flex items-center justify-between">
             <h1 className="text-lg">{dictionary.ui.skill.filter}</h1>
-            <Button
-              level="tertiary"
-              onClick={() => setFilterState(!filterState)}
-            >
+            <Button level="tertiary" onClick={() => setFilterState(!filterState)}>
               X
             </Button>
           </div>
@@ -292,7 +298,9 @@ export default function MonserPageClient(props: {
                   level="tertiary"
                   className="switch lg:hidden"
                   icon={<IconFilter />}
-                  onClick={() => setFilterState(!filterState)}
+                  onClick={() => {
+                    setFilterState(!filterState);
+                  }}
                 ></Button>
                 <Button // 仅PC端显示
                   className="switch hidden lg:flex"
@@ -308,6 +316,8 @@ export default function MonserPageClient(props: {
                       icon={<IconCloudUpload />}
                       className="flex lg:hidden"
                       onClick={() => {
+                        setSkill(defaultSkill);
+                        setSameNameSkillList([]);
                         setSkillDialogState(true);
                         setSkillFormState("CREATE");
                       }}
@@ -318,6 +328,7 @@ export default function MonserPageClient(props: {
                       className="hidden lg:flex"
                       onClick={() => {
                         setSkill(defaultSkill);
+                        setSameNameSkillList([]);
                         setSkillDialogState(true);
                         setSkillFormState("CREATE");
                       }}
@@ -336,10 +347,7 @@ export default function MonserPageClient(props: {
             <thead className="TableHead sticky top-0 z-10 flex bg-primary-color">
               {table.getHeaderGroups().map((headerGroup) => {
                 return (
-                  <tr
-                    key={headerGroup.id}
-                    className=" flex min-w-full gap-0 border-b-2"
-                  >
+                  <tr key={headerGroup.id} className=" flex min-w-full gap-0 border-b-2">
                     {headerGroup.headers.map((header) => {
                       const { column } = header;
                       if (hiddenData.includes(column.id as keyof Skill)) {
@@ -359,15 +367,10 @@ export default function MonserPageClient(props: {
                               onClick: header.column.getToggleSortingHandler(),
                             }}
                             className={`border-1 flex-1 border-transition-color-8 px-3 py-3 text-left hover:bg-transition-color-8 ${
-                              header.column.getCanSort()
-                                ? "cursor-pointer select-none"
-                                : ""
+                              header.column.getCanSort() ? "cursor-pointer select-none" : ""
                             }`}
                           >
-                            {flexRender(
-                              header.column.columnDef.header,
-                              header.getContext(),
-                            )}
+                            {flexRender(header.column.columnDef.header, header.getContext())}
                             {{
                               asc: " ↓",
                               desc: " ↑",
@@ -407,12 +410,7 @@ export default function MonserPageClient(props: {
                         return;
                       }
 
-                      switch (
-                        cell.column.id as Exclude<
-                          keyof Skill,
-                          keyof typeof hiddenData
-                        >
-                      ) {
+                      switch (cell.column.id as Exclude<keyof Skill, keyof typeof hiddenData>) {
                         case "name":
                           return (
                             <td
@@ -423,10 +421,7 @@ export default function MonserPageClient(props: {
                               className="flex flex-col justify-center px-3 py-6"
                             >
                               <span className=" text-lg font-bold">
-                                {flexRender(
-                                  cell.column.columnDef.cell,
-                                  cell.getContext(),
-                                )}
+                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
                               </span>
                             </td>
                           );
@@ -444,21 +439,12 @@ export default function MonserPageClient(props: {
                                 try {
                                   const content =
                                     dictionary.db.enums[
-                                      (cell.column.id
-                                        .charAt(0)
-                                        .toLocaleUpperCase() +
-                                        cell.column.id.slice(
-                                          1,
-                                        )) as keyof typeof $Enums
-                                    ][
-                                      cell.getValue() as keyof (typeof $Enums)[keyof typeof $Enums]
-                                    ];
+                                      (cell.column.id.charAt(0).toLocaleUpperCase() +
+                                        cell.column.id.slice(1)) as keyof typeof $Enums
+                                    ][cell.getValue() as keyof (typeof $Enums)[keyof typeof $Enums]];
                                   return content;
                                 } catch (error) {
-                                  return flexRender(
-                                    cell.column.columnDef.cell,
-                                    cell.getContext(),
-                                  );
+                                  return flexRender(cell.column.columnDef.cell, cell.getContext());
                                 }
                               })(cell)}
                             </td>
@@ -474,14 +460,35 @@ export default function MonserPageClient(props: {
         </div>
         <div className="RightArea sticky top-0 z-10 flex-1"></div>
       </div>
-      {/* {(() => { console.log("重新渲染了"); return null})()} */}
       <Dialog state={skillDialogState} setState={setSkillDialogState}>
         {skillDialogState && (
-          <SkillForm
-            dictionary={dictionary}
-            session={session}
-            setDefaultSkillList={setDefaultSkillList}
-          />
+          <div className="Content flex w-full flex-col overflow-y-auto lg:flex-row 2xl:w-[1536px]">
+            {sameNameSkillList.length > 1 && (
+              <div className="SameNameSkillList flow-row flex flex-none basis-[8%] gap-1 overflow-x-auto overflow-y-hidden border-r-1.5 border-brand-color-1st p-3 lg:w-60 lg:flex-col lg:overflow-y-auto lg:overflow-x-hidden">
+                {sameNameSkillList.map((currentSkill) => {
+                  const order = sameNameSkillList.indexOf(currentSkill) + 1;
+                  return (
+                    <Button
+                      key={"SameNameSkillId" + currentSkill.id}
+                      level="tertiary"
+                      onClick={() => {
+                        setSkill(currentSkill);
+                      }}
+                      active={currentSkill.id === skill.id}
+                      className="SameNameSkill flex h-full basis-1/4 flex-col rounded-sm lg:h-auto lg:w-full lg:basis-auto"
+                    >
+                      <span className="w-full text-nowrap px-2 text-left text-lg lg:font-bold">{order}</span>
+                      <span className="hidden text-left text-sm lg:block">
+                        {currentSkill.updatedAt.toLocaleString()}
+                      </span>
+                    </Button>
+                  );
+                })}
+              </div>
+            )}
+            {/* <div className="tab flex w-32 flex-col justify-center gap-1 border-r-1.5 border-brand-color-1st p-3"></div> */}
+            <SkillForm dictionary={dictionary} session={session} setDefaultSkillList={setDefaultSkillList} />
+          </div>
         )}
       </Dialog>
     </main>
