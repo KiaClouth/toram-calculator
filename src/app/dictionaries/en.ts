@@ -178,7 +178,7 @@ const dictionary: dictionary = {
       },
       SpecialAbiType: {
         NULL: "Null",
-        LUC: "Luc",
+        LUK: "Luk",
         CRI: "Cri",
         TEC: "Tec",
         MEN: "Men"

@@ -178,7 +178,7 @@ const dictionary: dictionary = {
       },
       SpecialAbiType: {
         NULL: "无",
-        LUC: "幸运",
+        LUK: "幸运",
         CRI: "暴击",
         TEC: "技巧",
         MEN: "异抗"
