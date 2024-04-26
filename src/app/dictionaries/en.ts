@@ -77,8 +77,6 @@ const dictionary: dictionary = {
         MAX_MP: "",
         AGGRO: "",
         WEAPON_RANGE: "",
-        NATYRAL_HP_REGEN: "",
-        NATURAL_MP_REGEN: "",
         PHYSICAL_ATK: "",
         MAGICAL_ATK: "",
         WEAPON_ATK: "",
@@ -170,7 +168,9 @@ const dictionary: dictionary = {
         PET_EXP: "",
         ITEM_COOLDOWN: "",
         RECOIL_DAMAGE: "",
-        GEM_POWDER_DROP: ""
+        GEM_POWDER_DROP: "",
+        HP_REGEN: "",
+        MP_REGEN: ""
       },
       ModifiersValueType: {
         FLAT_BONUS: "Flat",
@@ -282,6 +282,7 @@ const dictionary: dictionary = {
         updatedAt: "UpdatedAt",
         usageTimestamps: "UsageTimestamps",
         viewTimestamps: "ViewTimestamps",
+        raters: "Raters",
       },
       skill: {
         id: "ID",
@@ -329,7 +330,7 @@ const dictionary: dictionary = {
       },
       skillYield: {
         id: "ID",
-        triggerTiming: "TriggerTiming",
+        triggerTimingType: "TriggerTiming",
         delay: "Delay",
         durationType: "DurationType",
         durationValue: "DurationValue",

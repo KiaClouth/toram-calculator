@@ -143,7 +143,7 @@ model Rate {
     belongToConsumable          Consumable?          @relation(fields: [consumableId], references: [id])
     consumableId                String?
 
-    @@unique([userId, monsterId])
+    @@unique([userId, monsterId, crystalId, mainWeaponId, subWeaponId, bodyArmorId, additionalEquipmentId, specialEquipmentId, skillId, petId, consumableId])
 }
 
 // 可公开资源的状态枚举
@@ -361,29 +361,29 @@ model ModifiersList {
 
 // 机体模型
 model Character {
-    id                String         @id @default(cuid())
-    state             State          @default(PRIVATE)
-    name              String         @default("SYSTEM")
-    lv                Int            @default(1)
+    id                String          @id @default(cuid())
+    state             State           @default(PRIVATE)
+    name              String          @default("SYSTEM")
+    lv                Int             @default(1)
     baseAbi           BaseAbi?
     specialAbi        SpecialAbi?
     equipmentList     EquipmentList?
     fashion           Fashion?
     cuisine           Cuisine?
-    consumableList    Consumable[]
-    skill             SkillList?
+    consumableList    ConsumableList?
+    skillList         SkillList?
     combos            Combo[]
-    pet               Pet?           @relation(fields: [petId], references: [id])
+    pet               Pet?            @relation(fields: [petId], references: [id])
     petId             String?
-    modifiersList     ModifiersList? @relation(fields: [modifiersListId], references: [id])
+    modifiersList     ModifiersList?  @relation(fields: [modifiersListId], references: [id])
     modifiersListId   String?
     belongToAnalyzers Analyzer[]
-    createdBy         UserCreate?    @relation(fields: [createdByUserId], references: [userId], onDelete: Cascade)
+    createdBy         UserCreate?     @relation(fields: [createdByUserId], references: [userId], onDelete: Cascade)
     createdByUserId   String?
-    viewCount         Int            @default(0)
-    usageCount        Int            @default(0)
-    createdAt         DateTime       @default(now())
-    updatedAt         DateTime       @updatedAt
+    viewCount         Int             @default(0)
+    usageCount        Int             @default(0)
+    createdAt         DateTime        @default(now())
+    updatedAt         DateTime        @updatedAt
     usageTimestamps   DateTime[]
     viewTimestamps    DateTime[]
 }
@@ -410,7 +410,7 @@ model SpecialAbi {
 // 特殊能力值类型枚举
 enum SpecialAbiType {
     NULL
-    LUC
+    LUK
     CRI
     TEC
     MEN
@@ -561,6 +561,7 @@ model BodyArmor {
     name            String          @default("SYSTEM")
     bodyArmorType   BodyArmorType   @default(NORMAL)
     refinement      Int             @default(0)
+    baseDef         Int             @default(0)
     usedBy          EquipmentList[]
     modifiersList   ModifiersList?  @relation(fields: [modifiersListId], references: [id])
     modifiersListId String?
@@ -752,16 +753,16 @@ enum ComputedFields {
 
 // 技能消耗
 model SkillCost {
-    id                  String         @id @default(cuid()) 
+    id                  String       @id @default(cuid())
     costFormula         String
-    belongToSkillEffect SkillEffect?   @relation(fields: [skillEffectId], references: [id], onDelete: Cascade)
+    belongToSkillEffect SkillEffect? @relation(fields: [skillEffectId], references: [id], onDelete: Cascade)
     skillEffectId       String?
 }
 
 // 技能回报
 model SkillYield {
     id                  String            @id @default(cuid())
-    triggerTiming       TriggerTimingType @default(ON_USE)
+    triggerTimingType   TriggerTimingType @default(ON_USE)
     delay               Int               @default(0)
     durationType        DurationType
     durationValue       Int               @default(30)
@@ -817,22 +818,30 @@ enum ConsumableType {
     AVO
 }
 
+// 机体已习得技能表
+model ConsumableList {
+    updatedAt         DateTime     @updatedAt
+    belongToCharacter Character?   @relation(fields: [characterId], references: [id], onDelete: Cascade)
+    characterId       String       @id
+    consumables       Consumable[]
+}
+
 // 消耗品模型
 model Consumable {
-    id              String         @id @default(cuid())
-    state           State          @default(PRIVATE)
-    name            String         @default("SYSTEM")
-    usedBy          Character[]
-    modifiersList   ModifiersList? @relation(fields: [modifiersListId], references: [id])
+    id              String           @id @default(cuid())
+    state           State            @default(PRIVATE)
+    name            String           @default("SYSTEM")
+    usedBy          ConsumableList[]
+    modifiersList   ModifiersList?   @relation(fields: [modifiersListId], references: [id])
     modifiersListId String?
-    createdBy       UserCreate?    @relation(fields: [createdByUserId], references: [userId])
+    createdBy       UserCreate?      @relation(fields: [createdByUserId], references: [userId])
     createdByUserId String?
-    updatedBy       UserUpdate?    @relation(fields: [updatedByUserId], references: [userId])
+    updatedBy       UserUpdate?      @relation(fields: [updatedByUserId], references: [userId])
     updatedByUserId String?
-    viewCount       Int            @default(0)
-    usageCount      Int            @default(0)
-    createdAt       DateTime       @default(now())
-    updatedAt       DateTime       @updatedAt
+    viewCount       Int              @default(0)
+    usageCount      Int              @default(0)
+    createdAt       DateTime         @default(now())
+    updatedAt       DateTime         @updatedAt
     usageTimestamps DateTime[]
     viewTimestamps  DateTime[]
     raters          Rate[]

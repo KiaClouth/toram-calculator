@@ -18,10 +18,15 @@ export type abiType =
 export type modifiers = {
   baseValue: number;
   modifiers: {
-    valueType: "percentage" | "fixed";
-    value: number;
-    origin: string;
-  }[];
+    fixed: {
+      value: number;
+      origin: string;
+    }[];
+    percentage: {
+      value: number;
+      origin: string;
+    }[];
+  };
 };
 
 export interface CharacterState {

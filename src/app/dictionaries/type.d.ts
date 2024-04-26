@@ -1,4 +1,5 @@
-import type { $Enums, Monster, User } from "@prisma/client";
+import type { $Enums, User } from "@prisma/client";
+import type { Monster } from "~/server/api/routers/monster";
 import type { Skill } from "~/server/api/routers/skill";
 
 // 为了方便编辑器自动补全，这个方法可以将数据库模型的值类型转换为字符串

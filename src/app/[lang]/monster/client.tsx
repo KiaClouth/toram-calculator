@@ -1,6 +1,7 @@
 "use client";
 
-import type { $Enums, Monster } from "@prisma/client";
+import type { $Enums } from "@prisma/client";
+import type { Monster } from "~/server/api/routers/monster";
 import {
   type Column,
   type ColumnDef,

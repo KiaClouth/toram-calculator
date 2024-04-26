@@ -1,11 +1,28 @@
 import { create } from "zustand";
 import { produce } from "immer";
 
-import type { Analyzer, Monster, SkillCost, SkillYield } from "@prisma/client";
-import { SkillEffect, type Skill } from "~/server/api/routers/skill";
+import type { Analyzer } from "@prisma/client";
+import { type SkillEffect, type Skill, type SkillCost, type SkillYield } from "~/server/api/routers/skill";
+import type { Monster } from "~/server/api/routers/monster";
+import type { Character, Cuisine, Fashion } from "~/server/api/routers/character";
+import { type SubWeapon, type AdditionalEquipment, type BodyArmor, type MainWeapon, type SpecialEquipment } from "~/server/api/routers/equipment";
+import type { Crystal, ModifiersList,Modifier } from "~/server/api/routers/crystal";
+import type { Consumable } from "~/server/api/routers/consumable";
+import type { Pet } from "~/server/api/routers/pet";
 
 // if you need middleware
 // import { devtools, persist } from 'zustand/middleware'
+
+const defaultStatistics = {
+  createdByUserId: null,
+  updatedByUserId: null,
+  viewCount: 0,
+  usageCount: 0,
+  createdAt: new Date(),
+  updatedAt: new Date(),
+  usageTimestamps: [],
+  viewTimestamps: []
+}
 
 // 怪物表单的默认值
 export const defaultMonster: Monster = {
@@ -35,14 +52,8 @@ export const defaultMonster: Monster = {
   difficultyOfRanged: 5,
   possibilityOfRunningAround: 0,
   specialBehavior: "",
-  viewCount: 0,
-  usageCount: 0,
-  createdByUserId: null,
-  createdAt: new Date(),
-  updatedByUserId: null,
-  updatedAt: new Date(),
-  usageTimestamps: [],
-  viewTimestamps: [],
+  raters: [],
+  ...defaultStatistics,
 };
 
 // 技能表单的默认值
@@ -54,7 +65,7 @@ export const defaultSkillEffectCost: SkillCost = {
 
 export const defaultSkillEffectYield: SkillYield = {
   id: "",
-  triggerTiming: "ON_USE",
+  triggerTimingType: "ON_USE",
   delay: 0,
   durationType: "FRAME",
   durationValue: 0,
@@ -78,22 +89,177 @@ export const defaultSkill: Skill = {
   id: "",
   state: "PUBLIC",
   name: "",
-  createdByUserId: null,
-  updatedByUserId: null,
-  viewCount: 0,
-  usageCount: 0,
-  createdAt: new Date(),
-  updatedAt: new Date(),
-  usageTimestamps: [],
-  viewTimestamps: [],
   level: 0,
   skillDescription: "",
   skillTreeName: "SWORLD",
   skillType: "ACTIVE_SKILL",
   weaponElementDependencyType: "TRUE",
   element: "NO_ELEMENT",
-  skillEffect: [defaultSkillEffect]
+  skillEffect: [defaultSkillEffect],
+  ...defaultStatistics,
 };
+
+export const defauleModifier: Modifier = {
+  id: "",
+  modifiersValueType: "FLAT_BONUS",
+  value: 0,
+  modifiersName: "STR"
+}
+
+export const defaultModifiersList: ModifiersList = {
+  id: "",
+  modifiers: [defauleModifier],
+}
+
+export const defaultCrystal: Crystal = {
+  id: "",
+  state: "PRIVATE",
+  name: "",
+  type: "GENERAL",
+  front: 0,
+  modifiersListId: defaultModifiersList.id,
+  raters: [],
+  ...defaultStatistics,
+}
+
+export const defaultMainWeapon: MainWeapon = {
+  id: "",
+  state: "PRIVATE",
+  name: "",
+  mainWeaType: "MAGIC_DEVICE",
+  baseAtk: 0,
+  refinement: 0,
+  stability: 0,
+  element: "NO_ELEMENT",
+  crystal: [defaultCrystal],
+  modifiersListId: defaultModifiersList.id,
+  ...defaultStatistics,
+}
+
+export const defaultSubWeapon: SubWeapon = {
+  id: "",
+  state: "PRIVATE",
+  name: "",
+  subWeaType: "NO_WEAPOEN",
+  baseAtk: 0,
+  refinement: 0,
+  stability: 0,
+  element: "NO_ELEMENT",
+  modifiersListId: defaultModifiersList.id,
+  ...defaultStatistics,
+}
+
+export const defaultBodyArmor: BodyArmor = {
+  id: "",
+  state: "PRIVATE",
+  name: "",
+  bodyArmorType: "NORMAL",
+  refinement: 0,
+  baseDef: 0,
+  crystal: [defaultCrystal],
+  modifiersListId: defaultModifiersList.id,
+  ...defaultStatistics,
+}
+
+export const defaultAdditionalEquipment: AdditionalEquipment = {
+  id: "",
+  state: "PRIVATE",
+  name: "",
+  refinement: 0,
+  crystal: [defaultCrystal],
+  modifiersListId: defaultModifiersList.id,
+  ...defaultStatistics,
+}
+
+export const defaultSpecialEquipment: SpecialEquipment = {
+  id: "",
+  state: "PRIVATE",
+  name: "",
+  crystal: [defaultCrystal],
+  modifiersListId: defaultModifiersList.id,
+  ...defaultStatistics,
+}
+
+export const defaultFasion: Fashion = {
+  modifiersListId: "",
+  updatedAt: new Date(),
+  characterId: ""
+}
+
+export const defaultCuisine: Cuisine = {
+  modifiersListId: "",
+  updatedAt: new Date(),
+  characterId: ""
+}
+
+export const defaultconsumable: Consumable = {
+  id: "",
+  state: "PUBLIC",
+  name: "",
+  raters: [],
+  modifiersListId: defaultModifiersList.id,
+  ...defaultStatistics,
+}
+
+export const defaultPet: Pet = {
+  id: "",
+  state: "PRIVATE",
+  name: null,
+  raters: [],
+  ...defaultStatistics,
+}
+
+export const defaultCharacter: Character = {
+  id: "",
+  state: "PUBLIC",
+  name: "",
+  lv: 0,
+  baseAbi: {
+    baseStr: 0,
+    baseInt: 0,
+    baseVit: 0,
+    baseAgi: 0,
+    baseDex: 0,
+    characterId: ""
+  },
+  specialAbi: {
+    specialAbiType: "NULL",
+    value: 0,
+    characterId: ""
+  },
+  equipmentList: {
+    mainWeapon: defaultMainWeapon,
+    mainWeaponId: "",
+    subWeapon: defaultSubWeapon,
+    subWeaponId: "",
+    bodyArmor: defaultBodyArmor,
+    bodyArmorId: "",
+    additionalEquipment: defaultAdditionalEquipment,
+    additionalEquipmentId: "",
+    specialEquipment: defaultSpecialEquipment,
+    specialEquipmentId: "",
+    characterId: ""
+  },
+  fashion: defaultFasion,
+  cuisine: defaultCuisine,
+  consumableList: {
+    updatedAt: new Date(),
+    characterId: "",
+    consumables: [defaultconsumable]
+  },
+  skillList: {
+    updatedAt: new Date(),
+    characterId: "",
+    skills: [defaultSkill]
+  },
+  combos: [],
+  pet: defaultPet,
+  petId: defaultPet.id,
+  modifiersList: defaultModifiersList,
+  modifiersListId: defaultModifiersList.id,
+  ...defaultStatistics,
+}
+
 
 export const defaultAnalyzer: Analyzer = {
   id: "",

@@ -22,14 +22,12 @@ import {
   thematicBreakPlugin,
 } from "@mdxeditor/editor";
 import { tApi } from "~/trpc/react";
-import { type sApi } from "~/trpc/server";
 import type { getDictionary } from "~/app/get-dictionary";
 import Button from "../_components/button";
-import { MonsterSchema } from "prisma/generated/zod";
 import { type FieldApi, useForm } from "@tanstack/react-form";
 import { zodValidator } from "@tanstack/zod-form-adapter";
 import { ZodFirstPartyTypeKind, type z } from "zod";
-import { type Monster, type $Enums } from "@prisma/client";
+import { type $Enums } from "@prisma/client";
 import { defaultMonster, useBearStore } from "~/app/store";
 import { type Session } from "next-auth";
 import {
@@ -42,11 +40,13 @@ import {
   IconElementNoElement,
 } from "../_components/iconsList";
 import { useTheme } from "next-themes";
+import { type Monster } from "~/server/api/routers/monster";
+import { MonsterInputSchema } from "~/schema/monsterSchema";
 
 export default function MonsterForm(props: {
   dictionary: ReturnType<typeof getDictionary>;
   session: Session | null;
-  setDefaultMonsterList: (list: Awaited<ReturnType<typeof sApi.monster.getUserVisbleList.query>>) => void;
+  setDefaultMonsterList: (list: Monster[]) => void;
 }) {
   const { dictionary, session, setDefaultMonsterList } = props;
   const newListQuery = tApi.monster.getUserVisbleList.useQuery();
@@ -92,6 +92,7 @@ export default function MonsterForm(props: {
     "updatedByUserId",
     "viewTimestamps",
     "usageTimestamps",
+    "raters"
   ];
 
   // 定义表单
@@ -215,7 +216,7 @@ export default function MonsterForm(props: {
             // 过滤掉隐藏的数据
             if (hiddenData.includes(key as keyof Monster)) return undefined;
             // 输入框的类型计算
-            const zodValue = MonsterSchema.shape[key as keyof Monster];
+            const zodValue = MonsterInputSchema.shape[key as keyof Monster];
             const valueType = getZodType(zodValue);
             const { ZodNumber, ZodString, ...Others } = ZodFirstPartyTypeKind;
             const inputType = {
@@ -232,7 +233,7 @@ export default function MonsterForm(props: {
                     name={key as keyof Monster}
                     validators={{
                       onChangeAsyncDebounceMs: 500,
-                      onChangeAsync: MonsterSchema.shape[key as keyof Monster],
+                      onChangeAsync: MonsterInputSchema.shape[key as keyof Monster],
                     }}
                   >
                     {(field) => (
@@ -355,7 +356,7 @@ export default function MonsterForm(props: {
                     name={key as keyof Monster}
                     validators={{
                       onChangeAsyncDebounceMs: 500,
-                      onChangeAsync: MonsterSchema.shape[key as keyof Monster],
+                      onChangeAsync: MonsterInputSchema.shape[key as keyof Monster],
                     }}
                   >
                     {(field) => {

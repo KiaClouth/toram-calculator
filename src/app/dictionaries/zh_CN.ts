@@ -77,8 +77,6 @@ const dictionary: dictionary = {
         MAX_MP: "",
         AGGRO: "",
         WEAPON_RANGE: "",
-        NATYRAL_HP_REGEN: "",
-        NATURAL_MP_REGEN: "",
         PHYSICAL_ATK: "",
         MAGICAL_ATK: "",
         WEAPON_ATK: "",
@@ -170,7 +168,9 @@ const dictionary: dictionary = {
         PET_EXP: "",
         ITEM_COOLDOWN: "",
         RECOIL_DAMAGE: "",
-        GEM_POWDER_DROP: ""
+        GEM_POWDER_DROP: "",
+        HP_REGEN: "",
+        MP_REGEN: ""
       },
       ModifiersValueType: {
         FLAT_BONUS: "常数",
@@ -241,9 +241,9 @@ const dictionary: dictionary = {
         FALSE: "不继承"
       },
       DurationType: {
-        FRAME: "",
-        SKILL: "",
-        UNLIMITED: ""
+        FRAME: "指定帧数",
+        SKILL: "指定技能数",
+        UNLIMITED: "无限"
       }
     },
     models: {
@@ -282,6 +282,7 @@ const dictionary: dictionary = {
         updatedAt: "更新于",
         usageTimestamps: "被使用记录",
         viewTimestamps: "被查看记录",
+        raters: "评分列表",
       },
       skill: {
         id: "ID",
@@ -329,7 +330,7 @@ const dictionary: dictionary = {
       },
       skillYield: {
         id: "ID",
-        triggerTiming: "触发时机",
+        triggerTimingType: "触发时机",
         delay: "延迟时长",
         durationType: "持续类型",
         durationValue: "持续值",
