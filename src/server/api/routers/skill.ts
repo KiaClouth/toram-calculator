@@ -186,31 +186,53 @@ export const skillRouter = createTRPCRouter({
 
     // 输入内容拆分成4个表的数据
     const { skillEffect: skillEffectInputArray, ...skillInput } = input;
-    // 拆分skillEffect
-    const costAndYiled = skillEffectInputArray.map((skillEffectInput) => {
-      const { skillCost: skillCostInput, skillYield: skillYieldInput } = skillEffectInput;
-      // 上传skillCost
-      const skillCost = ctx.db.skillCost.createMany({
-        data: skillCostInput,
-      });
-      // 上传skillYield
-      const skillYield = ctx.db.skillYield.createMany({
-        data: skillYieldInput,
-      });
-      return { skillYield, skillCost };
-    });
-    // 上传skillEffect
-    const skillEffect = ctx.db.skillEffect.createMany({
-      data: skillEffectInputArray,
-    });
     // 创建技能并关联创建者和统计信息
     const skill = ctx.db.skill.create({
       data: {
         ...skillInput,
+        skillEffect: {
+          createMany: {
+            data: skillEffectInputArray.map((skillEffectInput) => {
+              return {
+                ...skillEffectInput,
+                skillCost: undefined,
+                skillYield: undefined,
+              };
+            })
+          }
+        },
         createdByUserId: userCreate.userId,
       },
     });
-    return { skill, costAndYiled, skillEffect };
+    // const skillId = (await skill).id;
+    // // 上传skillEffect
+    // const skillEffect = ctx.db.skillEffect.createMany({
+    //   data: skillEffectInputArray.map((skillEffectInput) => {
+    //     return {
+    //       ...skillEffectInput,
+    //       skillCost: undefined,
+    //       skillYield: undefined,
+    //       belongToskillId: skillId
+    //     }
+    //   }),
+    // });
+    // const skillEffectCount = (await skillEffect);
+    // console.log(skillEffectCount);
+    // // 拆分skillEffect
+    // skillEffectInputArray.map((skillEffectInput) => {
+    //   const { skillCost: skillCostInput, skillYield: skillYieldInput } = skillEffectInput;
+    //   // 上传skillCost
+    //   const skillCost = ctx.db.skillCost.createMany({
+    //     data: skillCostInput,
+    //   });
+    //   // 上传skillYield
+    //   const skillYield = ctx.db.skillYield.createMany({
+    //     data: skillYieldInput,
+    //   });
+    //   return { skillYield, skillCost };
+    // });
+    // return { skill, skillEffect };
+    return skill
   }),
 
   update: protectedProcedure.input(SkillSchema).mutation(async ({ ctx, input }) => {

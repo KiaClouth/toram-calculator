@@ -373,7 +373,7 @@ export default function SkillForm(props: {
                     mode="array"
                     validators={{
                       onChangeAsyncDebounceMs: 500,
-                      onChangeAsync: SkillInputSchema.shape[key as keyof tSkill],
+                      // onChangeAsync: SkillInputSchema.shape[key as keyof tSkill],
                     }}
                   >
                     {(field) => (
@@ -382,7 +382,7 @@ export default function SkillForm(props: {
                           <div className="h-[1px] flex-1 bg-accent-color"></div>
                           <span className="text-lg">
                             {dictionary.db.models.skill[key as keyof tSkill]}
-                            <FieldInfo field={field} />
+                            {/* <FieldInfo field={field} /> */}
                           </span>
                           <div className="h-[1px] flex-1 bg-accent-color"></div>
                         </div>
@@ -548,11 +548,11 @@ export default function SkillForm(props: {
                                                   key={`${key}[${i}].${subKey}`}
                                                   name={`${key}[${i}].${subKey as keyof tSkillEffect}`}
                                                   mode="array"
-                                                  validators={{
-                                                    onChangeAsyncDebounceMs: 500,
-                                                    onChangeAsync:
-                                                      SkillEffectInputSchema.shape[subKey as keyof tSkillEffect],
-                                                  }}
+                                                  // validators={{
+                                                  //   onChangeAsyncDebounceMs: 500,
+                                                  //   onChangeAsync:
+                                                  //     SkillEffectInputSchema.shape[subKey as keyof tSkillEffect],
+                                                  // }}
                                                 >
                                                   {(subField) => (
                                                     <fieldset
@@ -567,7 +567,7 @@ export default function SkillForm(props: {
                                                               subKey as keyof tSkillEffect
                                                             ]
                                                           }
-                                                          <FieldInfo field={subField} />
+                                                          {/* <FieldInfo field={subField} /> */}
                                                         </span>
                                                         <div className="h-[1px] flex-1 bg-accent-color"></div>
                                                       </div>
@@ -1319,7 +1319,7 @@ export default function SkillForm(props: {
           {skillFormState !== "DISPLAY" && (
             <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
               {([canSubmit]) => (
-                <Button type="submit" level="primary" disabled={!(canSubmit && !dataUploadingState)}>
+                <Button type="submit" level="primary" disabled={!(canSubmit && !dataUploadingState)} onClick={() => {console.log(form.state.values)}}>
                   {dataUploadingState ? dictionary.ui.skill.upload + "..." : dictionary.ui.skill.upload + " [Enter]"}
                 </Button>
               )}
