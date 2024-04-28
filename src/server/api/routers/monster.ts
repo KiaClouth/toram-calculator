@@ -122,6 +122,30 @@ export const monsterRouter = createTRPCRouter({
         },
       });
     }
+
+    // 检查用户是否存在关联的 UserUpdate
+    let userUpdate = await ctx.db.userUpdate.findUnique({
+      where: { userId: ctx.session?.user.id },
+    });
+
+    // 如果不存在，创建一个新的 UserUpdate
+    if (!userUpdate) {
+      console.log(
+        new Date().toLocaleDateString() +
+          "--" +
+          new Date().toLocaleTimeString() +
+          "--" +
+          (ctx.session?.user.name ?? ctx.session?.user.email) +
+          "初次上传怪物，自动创建对应userUpdate",
+      );
+      userUpdate = await ctx.db.userUpdate.create({
+        data: {
+          userId: ctx.session?.user.id ?? "",
+          // 其他 UserUpdate 的属性，根据实际情况填写
+        },
+      });
+    }
+
     console.log(
       new Date().toLocaleDateString() +
         "--" +
@@ -150,6 +174,30 @@ export const monsterRouter = createTRPCRouter({
     //   );
     //   return;
     // }
+
+    // 检查用户是否存在关联的 UserUpdate
+    let userUpdate = await ctx.db.userUpdate.findUnique({
+      where: { userId: ctx.session?.user.id },
+    });
+
+    // 如果不存在，创建一个新的 UserUpdate
+    if (!userUpdate) {
+      console.log(
+        new Date().toLocaleDateString() +
+          "--" +
+          new Date().toLocaleTimeString() +
+          "--" +
+          (ctx.session?.user.name ?? ctx.session?.user.email) +
+          "初次上传怪物，自动创建对应userUpdate",
+      );
+      userUpdate = await ctx.db.userUpdate.create({
+        data: {
+          userId: ctx.session?.user.id ?? "",
+          // 其他 UserUpdate 的属性，根据实际情况填写
+        },
+      });
+    }
+
     console.log(
       new Date().toLocaleDateString() +
         "--" +
