@@ -283,6 +283,7 @@ const dictionary: dictionary = {
         usageTimestamps: "被使用记录",
         viewTimestamps: "被查看记录",
         raters: "",
+        dataSources: ""
       },
       skill: {
         id: "ID",

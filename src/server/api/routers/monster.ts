@@ -136,6 +136,7 @@ export const monsterRouter = createTRPCRouter({
       data: {
         ...input,
         createdByUserId: userCreate.userId,
+        updatedByUserId: userCreate.userId,
       },
     });
   }),

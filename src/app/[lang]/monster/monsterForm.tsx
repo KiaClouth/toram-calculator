@@ -92,7 +92,7 @@ export default function MonsterForm(props: {
     "updatedByUserId",
     "viewTimestamps",
     "usageTimestamps",
-    "raters"
+    "raters",
   ];
 
   // 定义表单
@@ -508,7 +508,7 @@ export default function MonsterForm(props: {
           >
             {dictionary.ui.monster.close} [Esc]
           </Button>
-          {monsterFormState == "DISPLAY" && session?.user && (
+          {monsterFormState == "DISPLAY" && session?.user.id === monster.createdByUserId && (
             <Button onClick={() => setMonsterFormState("UPDATE")}>{dictionary.ui.monster.modify} [Enter]</Button>
           )}
           {monsterFormState !== "DISPLAY" && (

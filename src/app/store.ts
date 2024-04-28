@@ -53,6 +53,7 @@ export const defaultMonster: Monster = {
   possibilityOfRunningAround: 0,
   specialBehavior: "",
   raters: [],
+  dataSources: "",
   ...defaultStatistics,
 };
 

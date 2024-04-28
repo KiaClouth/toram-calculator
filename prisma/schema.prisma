@@ -201,6 +201,8 @@ model Monster {
     difficultyOfRanged               Int         @default(5)
     possibilityOfRunningAround       Int         @default(5)
     specialBehavior                  String?
+    dataSources                      String?
+    raters                           Rate[]
     belongToAnalyzers                Analyzer[]
     updatedBy                        UserUpdate? @relation(fields: [updatedByUserId], references: [userId])
     updatedByUserId                  String?
@@ -212,7 +214,6 @@ model Monster {
     updatedAt                        DateTime    @updatedAt
     usageTimestamps                  DateTime[]
     viewTimestamps                   DateTime[]
-    raters                           Rate[]
 }
 
 // 加成值数据类型枚举
@@ -667,10 +668,10 @@ model Skill {
     skillTreeName               SkillTreeName               @default(SWORLD)
     name                        String?                     @default("SYSTEM")
     level                       Int                         @default(10)
+    skillType                   SkillType                   @default(ACTIVE_SKILL)
     weaponElementDependencyType WeaponElementDependencyType @default(TRUE)
     element                     Element                     @default(NO_ELEMENT)
     skillDescription            String?
-    skillType                   SkillType                   @default(ACTIVE_SKILL)
     skillEffect                 SkillEffect[]
     usedBy                      SkillList[]
     usedByStep                  Step[]

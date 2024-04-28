@@ -283,6 +283,7 @@ const dictionary: dictionary = {
         usageTimestamps: "UsageTimestamps",
         viewTimestamps: "ViewTimestamps",
         raters: "Raters",
+        dataSources: ""
       },
       skill: {
         id: "ID",

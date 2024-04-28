@@ -6,10 +6,11 @@ import { type Session } from "next-auth";
 import type { abiType, modifiers } from "./analyzeType";
 import Dialog from "../_components/dialog";
 import { defaultCharacter, defaultMonster, useBearStore } from "~/app/store";
-import { type Monster, type BodyArmorType, type MainWeaType, type SubWeaType } from "@prisma/client";
+import { type BodyArmorType, type MainWeaType, type SubWeaType } from "@prisma/client";
 import type { Character } from "~/server/api/routers/character";
 import * as math from "mathjs";
 import { type Skill, type SkillEffect } from "~/server/api/routers/skill";
+import { type Monster } from "~/server/api/routers/monster";
 
 export interface Props {
   dictionary: ReturnType<typeof getDictionary>;
