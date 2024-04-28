@@ -262,7 +262,7 @@ export default function MonserPageClient(props: {
                     level={column.getIsVisible() ? "tertiary" : "primary"}
                     onClick={column.getToggleVisibilityHandler()}
                   >
-                    {typeof dictionary.db.models.skill[column.id as keyof Skill]}
+                    {dictionary.db.models.skill[column.id as keyof Skill]}
                   </Button>
                 );
               })}

@@ -25,7 +25,7 @@ export default function Button(props: MyButtonProps) {
   }[level ?? "secondary"];
   const disableClass = rest.disabled ? "cursor-not-allowed opacity-50" : "";
   const activedClass = active && "shadow-2xl shadow-brand-color-1st outline-brand-color-1st";
-  const defaultButtonClassNames = `${disableClass} cursor-pointer flex flex-none items-center justify-center ${sizeClass} ${levelClass} ${activedClass} `;
+  const defaultButtonClassNames = `${disableClass} cursor-pointer flex flex-none items-center justify-center underline-offset-4 hover:underline ${sizeClass} ${levelClass} ${activedClass} `;
 
   return (
     <React.Fragment>
