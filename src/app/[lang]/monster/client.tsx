@@ -321,14 +321,13 @@ export default function MonserPageClient(props: Props) {
   // 表格行点击事件
   const handleTrClick = (id: string) => {
     console.log("id==" + id);
-    monsterList.forEach((monster) => {
-      if (monster.id === id && monster.id !== "") {
-        setMonster(monster);
-        setSameNameMonsterList(compusteSameNameMonsterList(monster, monsterList));
-        setMonsterDialogState(true);
-        setMonsterFormState("DISPLAY");
-      }
-    });
+    const targetMonster = monsterList.find((monster) => monster.id === id);
+    if (targetMonster) {
+      setMonster(targetMonster);
+      setSameNameMonsterList(compusteSameNameMonsterList(targetMonster, monsterList));
+      setMonsterDialogState(true);
+      setMonsterFormState("DISPLAY");
+    }
   };
 
   useEffect(() => {

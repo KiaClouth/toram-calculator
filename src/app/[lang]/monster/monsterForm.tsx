@@ -512,7 +512,7 @@ export default function MonsterForm(props: {
           >
             {dictionary.ui.close} [Esc]
           </Button>
-          {monsterFormState == "DISPLAY" && session?.user.id === monster.createdByUserId && (
+          {monsterFormState == "DISPLAY" && monster.id !== "" && session?.user.id === monster.createdByUserId && (
             <Button onClick={() => setMonsterFormState("UPDATE")}>{dictionary.ui.modify} [Enter]</Button>
           )}
           {monsterFormState !== "DISPLAY" && (
