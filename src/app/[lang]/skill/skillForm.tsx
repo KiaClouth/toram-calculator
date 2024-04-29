@@ -170,11 +170,11 @@ export default function SkillForm(props: {
     onSuccess(data) {
       const newList = [...defaultSkillList, data];
       // 创建成功后更新数据
-        setDefaultSkillList(newList);
-        setSkillList(newList);
+      setDefaultSkillList(newList);
+      setSkillList(newList);
       // 上传成功后表单转换为展示状态
       setDataUploadingState(false);
-      setSkillFormState("DISPLAY")
+      setSkillFormState("DISPLAY");
     },
   });
 
@@ -187,11 +187,11 @@ export default function SkillForm(props: {
         return skill;
       });
       // 更新成功后更新数据
-        setDefaultSkillList(newList);
-        setSkillList(newList);
+      setDefaultSkillList(newList);
+      setSkillList(newList);
       // 上传成功后表单转换为展示状态
       setDataUploadingState(false);
-      setSkillFormState("DISPLAY")
+      setSkillFormState("DISPLAY");
     },
   });
 
@@ -373,14 +373,14 @@ export default function SkillForm(props: {
                     key={key}
                     name={key as keyof tSkill}
                     mode="array"
-                    validators={{
-                      onChangeAsyncDebounceMs: 500,
-                      // onChangeAsync: SkillInputSchema.shape[key as keyof tSkill],
-                    }}
+                    // validators={{
+                    //   onChangeAsyncDebounceMs: 500,
+                    //   onChangeAsync: SkillInputSchema.shape[key as keyof tSkill],
+                    // }}
                   >
                     {(field) => (
                       <fieldset key={key} className={`${key} flex basis-full flex-col gap-1 p-2`}>
-                        <div className="title flex items-center gap-6 pt-4">
+                        <div className="title flex items-end gap-6 pt-4">
                           <div className="h-[1px] flex-1 bg-accent-color"></div>
                           <span className="text-lg">
                             {dictionary.db.models.skill[key as keyof tSkill]}
@@ -388,7 +388,7 @@ export default function SkillForm(props: {
                           </span>
                           <div className="h-[1px] flex-1 bg-accent-color"></div>
                         </div>
-                        <div className="Content flex flex-wrap gap-y-3">
+                        <div className="Content flex flex-wrap gap-y-3 rounded-sm border-1.5 border-transition-color-20">
                           {Array.isArray(field.state.value) &&
                             field.state.value.map((subObj, i) => {
                               switch (key as keyof tSkill) {
@@ -396,11 +396,16 @@ export default function SkillForm(props: {
                                   return key === "skillEffect" ? (
                                     <fieldset
                                       key={key + i}
-                                      className={`${key + i} DataKinds flex flex-none basis-full flex-col overflow-hidden rounded border-1.5 border-brand-color-1st`}
+                                      className={`${key + i} DataKinds flex flex-none basis-full flex-col overflow-hidden rounded-sm`}
                                     >
-                                      <span className="w-full bg-brand-color-1st p-2 text-primary-color">
-                                        {dictionary.db.models.skill[key as keyof tSkill] + " " + (i + 1)}
-                                      </span>
+                                      <div className="Title flex w-full items-center justify-between p-2 border-b-1.5 border-transition-color-20">
+                                        <span className="">
+                                          {dictionary.db.models.skill[key as keyof tSkill] + " " + (i + 1)}
+                                        </span>
+                                        <Button level="tertiary" size="sm" onClick={() => field.removeValue(i)}>
+                                          -
+                                        </Button>
+                                      </div>
                                       <div
                                         className={`InputContianer flex w-full basis-full flex-wrap gap-y-3 self-start pt-4 ${skillFormState === "DISPLAY" ? " outline-transition-color-20" : ""}`}
                                       >
@@ -559,11 +564,11 @@ export default function SkillForm(props: {
                                                   {(subField) => (
                                                     <fieldset
                                                       key={key + i + subKey}
-                                                      className={`${key + i + subKey} flex basis-full flex-col gap-1 p-2`}
+                                                      className={`${key + i + subKey} flex basis-full flex-col rounded-sm overflow-hidden`}
                                                     >
-                                                      <div className="title flex items-center gap-6 pt-4">
-                                                        <div className="h-[1px] flex-1 bg-accent-color"></div>
-                                                        <span className="text-lg">
+                                                      <div className="title flex items-end gap-6 pt-4">
+                                                        <div className="h-[1px] flex-1 bg-transition-color-20"></div>
+                                                        <span className="text-lg text-transition-color-20">
                                                           {
                                                             dictionary.db.models.skillEffect[
                                                               subKey as keyof tSkillEffect
@@ -571,9 +576,9 @@ export default function SkillForm(props: {
                                                           }
                                                           {/* <FieldInfo field={subField} /> */}
                                                         </span>
-                                                        <div className="h-[1px] flex-1 bg-accent-color"></div>
+                                                        <div className="h-[1px] flex-1 bg-transition-color-20"></div>
                                                       </div>
-                                                      <div className="Content flex flex-wrap gap-y-3">
+                                                      <div className="Content flex flex-wrap gap-x-1 gap-y-3 p-1">
                                                         {Array.isArray(subField.state.value) &&
                                                           subField.state.value.map((subsubObj, j) => {
                                                             switch (subKey as keyof tSkillEffect) {
@@ -581,18 +586,27 @@ export default function SkillForm(props: {
                                                                 return subKey === "skillCost" ? (
                                                                   <fieldset
                                                                     key={subKey + j}
-                                                                    className={`${subKey + j} DataKinds flex flex-none basis-full flex-col gap-y-[4px] overflow-hidden rounded p-1 lg:basis-1/4`}
+                                                                    className={`${subKey + j} DataKinds flex flex-none basis-full flex-col gap-y-[4px] overflow-hidden p-1 outline-transition-color-20 lg:basis-[calc(25%-0.25rem)]`}
                                                                   >
-                                                                    <span className="w-full bg-transition-color-8 p-1">
-                                                                      {dictionary.db.models.skillEffect[
-                                                                        subKey as keyof tSkillEffect
-                                                                      ] +
-                                                                        " " +
-                                                                        (j + 1)}
-                                                                    </span>
+                                                                    <div className="Title flex w-full items-center justify-between border-b-1.5 border-transition-color-20 p-2">
+                                                                      <span className="">
+                                                                        {dictionary.db.models.skillEffect[
+                                                                          subKey as keyof tSkillEffect
+                                                                        ] +
+                                                                          " " +
+                                                                          (j + 1)}
+                                                                      </span>
+                                                                      <Button
+                                                                        level="tertiary"
+                                                                        size="sm"
+                                                                        onClick={() => subField.removeValue(j)}
+                                                                      >
+                                                                        -
+                                                                      </Button>
+                                                                    </div>
 
                                                                     <div
-                                                                      className={`InputContianer mt-1 flex w-full basis-full flex-wrap gap-y-3 self-start rounded outline-transition-color-20 ${skillFormState === "DISPLAY" ? "bg-transition-color-8" : ""}`}
+                                                                      className={`InputContianer mt-1 flex w-full basis-full flex-wrap gap-y-3 self-start rounded ${skillFormState === "DISPLAY" ? "bg-transition-color-8" : ""}`}
                                                                     >
                                                                       {subsubObj &&
                                                                         Object.entries(subsubObj).map(
@@ -825,18 +839,27 @@ export default function SkillForm(props: {
                                                                 return subKey === "skillYield" ? (
                                                                   <fieldset
                                                                     key={subKey + j}
-                                                                    className={`${subKey + j} DataKinds flex flex-none basis-full flex-col gap-y-[4px] overflow-hidden rounded p-1 lg:basis-1/2`}
+                                                                    className={`${subKey + j} DataKinds flex flex-none basis-full flex-col gap-y-[4px] overflow-hidden rounded p-1 outline-transition-color-20 lg:basis-[calc(50%-0.25rem)]`}
                                                                   >
-                                                                    <span className="w-full bg-transition-color-8 p-1">
-                                                                      {dictionary.db.models.skillEffect[
-                                                                        subKey as keyof tSkillEffect
-                                                                      ] +
-                                                                        " " +
-                                                                        (j + 1)}
-                                                                    </span>
+                                                                    <div className="Title flex w-full items-center justify-between border-b-1.5 border-transition-color-20 p-2">
+                                                                      <span className="">
+                                                                        {dictionary.db.models.skillEffect[
+                                                                          subKey as keyof tSkillEffect
+                                                                        ] +
+                                                                          " " +
+                                                                          (j + 1)}
+                                                                      </span>
+                                                                      <Button
+                                                                        level="tertiary"
+                                                                        size="sm"
+                                                                        onClick={() => subField.removeValue(j)}
+                                                                      >
+                                                                        -
+                                                                      </Button>
+                                                                    </div>
 
                                                                     <div
-                                                                      className={`InputContianer mt-1 flex w-full basis-full flex-wrap gap-y-3 self-start rounded outline-transition-color-20 ${skillFormState === "DISPLAY" ? "bg-transition-color-8" : ""}`}
+                                                                      className={`InputContianer mt-1 flex w-full basis-full flex-wrap gap-y-3 self-start rounded ${skillFormState === "DISPLAY" ? "bg-transition-color-8" : ""}`}
                                                                     >
                                                                       {subsubObj &&
                                                                         Object.entries(subsubObj).map(
@@ -1015,7 +1038,7 @@ export default function SkillForm(props: {
                                                                                         <label
                                                                                           htmlFor={`${key}[${i}].${subKey}[${j}].${subsubKey}`}
                                                                                           key={`${key}[${i}].${subKey}[${j}].${subsubKey}`}
-                                                                                          className="flex w-full max-w-[50%] flex-col gap-1 p-2"
+                                                                                          className="flex w-full lg:max-w-[50%] flex-col gap-1 p-2"
                                                                                         >
                                                                                           <span>
                                                                                             {
@@ -1072,27 +1095,27 @@ export default function SkillForm(props: {
                                                                 break;
                                                             }
                                                           })}
-                                                      </div>
 
-                                                      <Button
-                                                        type="button"
-                                                        level="tertiary"
-                                                        onClick={(e) => {
-                                                          e.stopPropagation();
-                                                          console.log(subField.state.value);
-                                                          subField.pushValue(
-                                                            subKey === "skillCost"
-                                                              ? defaultSkillEffectCost
-                                                              : defaultSkillEffectYield,
-                                                          );
-                                                          console.log(subField.state.value);
-                                                        }}
-                                                        className={`${skillFormState === "DISPLAY" && "hidden"}`}
-                                                      >
-                                                        Add [{" "}
-                                                        {dictionary.db.models.skillEffect[subKey as keyof tSkillEffect]}{" "}
-                                                        ]
-                                                      </Button>
+                                                          <Button
+                                                            type="button"
+                                                            level="tertiary"
+                                                            onClick={(e) => {
+                                                              e.stopPropagation();
+                                                              console.log(subField.state.value);
+                                                              subField.pushValue(
+                                                                subKey === "skillCost"
+                                                                  ? defaultSkillEffectCost
+                                                                  : defaultSkillEffectYield,
+                                                              );
+                                                              console.log(subField.state.value);
+                                                            }}
+                                                            className={`${skillFormState === "DISPLAY" && "hidden"}  ${subKey === "skillCost" ? " lg:basis-[calc(25%-0.25rem)]" : "lg:basis-[calc(50%-0.25rem)]"} flex flex-none basis-full flex-col overflow-hidden p-1 outline-transition-color-20`}
+                                                          >
+                                                            Add [{" "}
+                                                            {dictionary.db.models.skillEffect[subKey as keyof tSkillEffect]}{" "}
+                                                            ]
+                                                          </Button>
+                                                      </div>
                                                     </fieldset>
                                                   )}
                                                 </form.Field>
@@ -1114,7 +1137,7 @@ export default function SkillForm(props: {
                                                       <label
                                                         htmlFor={`${key}[${i}].${subKey}`}
                                                         key={`${key}[${i}].${subKey}`}
-                                                        className="flex w-full max-w-[25%] flex-col gap-1 p-2"
+                                                        className="flex w-full lg:max-w-[25%] flex-col gap-1 p-2"
                                                       >
                                                         <span>
                                                           {
