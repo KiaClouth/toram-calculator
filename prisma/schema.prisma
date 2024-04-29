@@ -756,6 +756,7 @@ enum ComputedFields {
 // 技能消耗
 model SkillCost {
     id                  String       @id @default(cuid())
+    name                String?      @default("MP")
     costFormula         String
     belongToSkillEffect SkillEffect? @relation(fields: [skillEffectId], references: [id], onDelete: Cascade)
     skillEffectId       String?
@@ -764,6 +765,7 @@ model SkillCost {
 // 技能回报
 model SkillYield {
     id                  String            @id @default(cuid())
+    name                String?           @default("Damage")
     triggerTimingType   TriggerTimingType @default(ON_USE)
     delay               Int               @default(0)
     durationType        DurationType

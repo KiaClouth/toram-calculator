@@ -1,6 +1,17 @@
 import { type dictionary } from "./type";
 const dictionary: dictionary = {
   ui: {
+    add: "添加",
+    create: "创建",
+    remove: "删除",
+    update: "更新",
+    open: "打开",
+    upload: "上传怪物数据",
+    save: "保存",
+    reset: "清空",
+    modify: "修改",
+    cancel: "取消",
+    close: "关闭",
     root: {
       home: "首页",
       monsters: "怪物",
@@ -19,12 +30,6 @@ const dictionary: dictionary = {
     },
     monster: {
       searchPlaceholder: "这里是搜索框~",
-      upload: "上传怪物数据",
-      save: "保存",
-      reset: "清空",
-      modify: "修改",
-      cancel: "取消",
-      close: "关闭",
       pageTitle: "怪物信息表",
       discription: "表中记录的是1星状态下的定点王数据， 2 / 3 / 4 星的经验和HP为1星的 2 / 5 / 10 倍；物防、魔防、回避值为1星的 2 / 4 / 6 倍。",
       columnsHidden: "隐藏列",
@@ -330,7 +335,8 @@ const dictionary: dictionary = {
       skillCost: {
         id: "ID",
         costFormula: "计算公式",
-        skillEffectId: "所属技能效果"
+        skillEffectId: "所属技能效果",
+        name: "名称"
       },
       skillYield: {
         id: "ID",
@@ -339,7 +345,8 @@ const dictionary: dictionary = {
         durationType: "持续类型",
         durationValue: "持续值",
         yieldFormula: "计算公式",
-        skillEffectId: "所属技能效果"
+        skillEffectId: "所属技能效果",
+        name: "名称"
       }
     },
   },

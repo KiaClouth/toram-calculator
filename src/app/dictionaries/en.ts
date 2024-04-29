@@ -1,6 +1,17 @@
 import { type dictionary } from "./type";
 const dictionary: dictionary = {
   ui: {
+    add: "Add",
+    create: "Create",
+    remove: "Remove",
+    update: "Update",
+    open: "Open",
+    upload: "Upload",
+    reset: "Reset",
+    save: "Save",
+    modify: "Modify",
+    cancel: "Cancel",
+    close: "close",
     root: {
       home: "Home",
       monsters: "Monsters",
@@ -19,12 +30,6 @@ const dictionary: dictionary = {
     },
     monster: {
       searchPlaceholder: "Search something ~",
-      upload: "Upload",
-      reset: "Reset",
-      save: "Save",
-      modify: "Modify",
-      cancel: "Cancel",
-      close: "close",
       pageTitle: "Monster Information Table",
       discription: "Emmm..............",
       columnsHidden: "Columns Hidden",
@@ -329,11 +334,13 @@ const dictionary: dictionary = {
       },
       skillCost: {
         id: "ID",
+        name: "Name",
         costFormula: "CostFormula",
         skillEffectId: "SkillEffectId"
       },
       skillYield: {
         id: "ID",
+        name: "Name",
         triggerTimingType: "TriggerTiming",
         delay: "Delay",
         durationType: "DurationType",

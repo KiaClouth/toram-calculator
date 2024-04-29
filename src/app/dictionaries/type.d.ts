@@ -13,6 +13,17 @@ type ConvertToAllString<T> = T extends object
 
 interface dictionary {
   ui: {
+    add: string;
+    create: string;
+    remove: string;
+    upload: string;
+    update: string;
+    save: string;
+    reset: string;
+    modify: string;
+    cancel: string;
+    open: string;
+    close: string;
     root: {
       home: string;
       monsters: string;
@@ -33,12 +44,6 @@ interface dictionary {
       pageTitle: string;
       discription: string;
       searchPlaceholder: string;
-      upload: string;
-      save: string;
-      reset: string;
-      modify: string;
-      cancel: string;
-      close: string;
       filter: string;
       columnsHidden: string;
     };
