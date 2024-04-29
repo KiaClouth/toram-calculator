@@ -50,7 +50,9 @@ export default function MonserPageClient(props: Props) {
       },
       {
         ...monster,
+        id: "",
         name: monster.name + " " + dictionary.ui.monster.monsterDegreeOfDifficulty[2],
+        baseLv: monster.baseLv !== null ? monster.baseLv + 10 : 0,
         experience: monster.experience !== null ? monster.experience * 2 : 0,
         maxhp: monster.maxhp !== null ? monster.maxhp * 2 : 0,
         physicalDefense: monster.physicalDefense !== null ? monster.physicalDefense * 2 : 0,
@@ -58,7 +60,9 @@ export default function MonserPageClient(props: Props) {
       },
       {
         ...monster,
+        id: "",
         name: monster.name + " " + dictionary.ui.monster.monsterDegreeOfDifficulty[3],
+        baseLv: monster.baseLv !== null ? monster.baseLv + 20 : 0,
         experience: monster.experience !== null ? monster.experience * 5 : 0,
         maxhp: monster.maxhp !== null ? monster.maxhp * 5 : 0,
         physicalDefense: monster.physicalDefense !== null ? monster.physicalDefense * 4 : 0,
@@ -67,7 +71,9 @@ export default function MonserPageClient(props: Props) {
       },
       {
         ...monster,
+        id: "",
         name: monster.name + " " + dictionary.ui.monster.monsterDegreeOfDifficulty[4],
+        baseLv: monster.baseLv !== null ? monster.baseLv + 40 : 0,
         experience: monster.experience !== null ? monster.experience * 10 : 0,
         maxhp: monster.maxhp !== null ? monster.maxhp * 10 : 0,
         physicalDefense: monster.physicalDefense !== null ? monster.physicalDefense * 6 : 0,
@@ -316,11 +322,12 @@ export default function MonserPageClient(props: Props) {
   const handleTrClick = (id: string) => {
     console.log("id==" + id);
     monsterList.forEach((monster) => {
-      if (monster.id !== id) return;
-      setMonster(monster);
-      setSameNameMonsterList(compusteSameNameMonsterList(monster, monsterList));
-      setMonsterDialogState(true);
-      setMonsterFormState("DISPLAY");
+      if (monster.id === id && monster.id !== "") {
+        setMonster(monster);
+        setSameNameMonsterList(compusteSameNameMonsterList(monster, monsterList));
+        setMonsterDialogState(true);
+        setMonsterFormState("DISPLAY");
+      }
     });
   };
 
