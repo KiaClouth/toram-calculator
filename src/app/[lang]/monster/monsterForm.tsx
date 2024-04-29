@@ -209,7 +209,11 @@ export default function MonsterForm(props: {
         <div className="h-[2px] flex-1 bg-accent-color"></div>
       </div>
       <div className="inputArea flex-1 overflow-y-auto">
-        <div className="rounded-sm bg-transition-color-8 p-4 mb-4">{dictionary.ui.monster.monsterForm.discription}</div>
+        {monsterFormState !== "DISPLAY" && (
+          <div className="mb-4 rounded-sm bg-transition-color-8 p-4">
+            {dictionary.ui.monster.monsterForm.discription}
+          </div>
+        )}
         <fieldset className="dataKinds flex flex-row flex-wrap gap-y-[4px]">
           {Object.entries(monster).map(([key, _]) => {
             // 遍历怪物模型

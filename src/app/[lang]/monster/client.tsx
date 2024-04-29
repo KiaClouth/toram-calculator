@@ -46,11 +46,11 @@ export default function MonserPageClient(props: Props) {
     defaultMonsterAugmentedList.push(
       {
         ...monster,
-        name: monster.name + "·一星",
+        name: monster.name + " " + dictionary.ui.monster.monsterDegreeOfDifficulty[1],
       },
       {
         ...monster,
-        name: monster.name + "·二星",
+        name: monster.name + " " + dictionary.ui.monster.monsterDegreeOfDifficulty[2],
         experience: monster.experience !== null ? monster.experience * 2 : 0,
         maxhp: monster.maxhp !== null ? monster.maxhp * 2 : 0,
         physicalDefense: monster.physicalDefense !== null ? monster.physicalDefense * 2 : 0,
@@ -58,7 +58,7 @@ export default function MonserPageClient(props: Props) {
       },
       {
         ...monster,
-        name: monster.name + "·三星",
+        name: monster.name + " " + dictionary.ui.monster.monsterDegreeOfDifficulty[3],
         experience: monster.experience !== null ? monster.experience * 5 : 0,
         maxhp: monster.maxhp !== null ? monster.maxhp * 5 : 0,
         physicalDefense: monster.physicalDefense !== null ? monster.physicalDefense * 4 : 0,
@@ -67,7 +67,7 @@ export default function MonserPageClient(props: Props) {
       },
       {
         ...monster,
-        name: monster.name + "·四星",
+        name: monster.name + " " + dictionary.ui.monster.monsterDegreeOfDifficulty[4],
         experience: monster.experience !== null ? monster.experience * 10 : 0,
         maxhp: monster.maxhp !== null ? monster.maxhp * 10 : 0,
         physicalDefense: monster.physicalDefense !== null ? monster.physicalDefense * 6 : 0,
