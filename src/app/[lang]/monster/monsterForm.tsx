@@ -46,9 +46,10 @@ import { MonsterInputSchema } from "~/schema/monsterSchema";
 export default function MonsterForm(props: {
   dictionary: ReturnType<typeof getDictionary>;
   session: Session | null;
+  defaultMonsterList: Monster[];
   setDefaultMonsterList: (list: Monster[]) => void;
 }) {
-  const { dictionary, session, setDefaultMonsterList } = props;
+  const { dictionary, session, defaultMonsterList, setDefaultMonsterList } = props;
   const newListQuery = tApi.monster.getUserVisbleList.useQuery();
   // 状态管理参数
   const { monster, monsterDialogState, setMonsterList, setMonsterDialogState, monsterFormState, setMonsterFormState } =
@@ -147,32 +148,31 @@ export default function MonsterForm(props: {
   };
 
   const createMonster = tApi.monster.create.useMutation({
-    onSuccess: async () => {
-      // 创建成功后重新获取数据
-      const newList = await newListQuery.refetch();
-      // 确保数据已成功加载
-      if (newList.isSuccess) {
-        setDefaultMonsterList(newList.data);
-        setMonsterList(newList.data);
-      }
+    onSuccess(data) {
+      const newList = [...defaultMonsterList, data]
+      // 创建成功后更新数据
+        setDefaultMonsterList(newList);
+        setMonsterList(newList);
       // 上传成功后表单转换为展示状态
       setDataUploadingState(false);
-      setMonsterFormState("DISPLAY");
+      setMonsterFormState("DISPLAY")
     },
   });
 
   const updateMonster = tApi.monster.update.useMutation({
-    onSuccess: async () => {
-      // 更新成功后重新获取数据
-      const newList = await newListQuery.refetch();
-      // 确保数据已成功加载后，更新本地数据
-      if (newList.isSuccess) {
-        setDefaultMonsterList(newList.data);
-        setMonsterList(newList.data);
-      }
+    onSuccess(data) {
+      const newList = defaultMonsterList.map((monster) => {
+        if (monster.id === data.id) {
+          return data;
+        }
+        return monster;
+      });
+      // 更新成功后更新数据
+        setDefaultMonsterList(newList);
+        setMonsterList(newList);
       // 上传成功后表单转换为展示状态
       setDataUploadingState(false);
-      setMonsterFormState("DISPLAY");
+      setMonsterFormState("DISPLAY")
     },
   });
 

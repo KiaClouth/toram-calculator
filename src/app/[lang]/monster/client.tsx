@@ -375,11 +375,11 @@ export default function MonserPageClient(props: Props) {
           </div>
         </div>
       </div>
-      <div className="Module2 flex flex-1 px-3 backdrop-blur-xl">
+      <div className="Module2 flex flex-1 px-3 backdrop-blur-xl w-full overflow-hidden">
         <div className="LeftArea sticky top-0 z-10 flex-1"></div>
         <div
           ref={tableContainerRef}
-          className="ModuleContent h-[calc(100dvh-67px)] w-full flex-col overflow-auto lg:h-dvh lg:w-[calc(100dvw-130px)] 2xl:w-[1536px]"
+          className={`ModuleContent h-[calc(100dvh-67px)] w-full flex-col overflow-auto lg:h-dvh lg:max-w-[1536px]`}
         >
           <div className="Title sticky left-0 mt-3 flex flex-col gap-9 py-5 lg:pt-20">
             <div className="Row flex flex-col items-center justify-between gap-10 lg:flex-row lg:justify-start lg:gap-4">
@@ -711,6 +711,7 @@ export default function MonserPageClient(props: Props) {
             <MonsterForm
               dictionary={dictionary}
               session={session}
+              defaultMonsterList={defaultMonsterList}
               setDefaultMonsterList={setDefaultMonsterList}
             />
           </div>

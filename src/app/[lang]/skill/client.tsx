@@ -216,7 +216,7 @@ export default function MonserPageClient(props: {
         setSkill(defaultSkill);
         setSameNameSkillList([]);
         setSkillDialogState(true);
-        setSkillFormState("DISPLAY");
+        setSkillFormState("CREATE");
       }
     };
     document.addEventListener("keydown", handleEscapeKeyPress);
@@ -274,11 +274,11 @@ export default function MonserPageClient(props: {
           </div>
         </div>
       </div>
-      <div className="Module2 flex flex-1 px-3 backdrop-blur-xl">
+      <div className="Module2 flex flex-1 px-3 backdrop-blur-xl w-full overflow-hidden">
         <div className="LeftArea sticky top-0 z-10 flex-1"></div>
         <div
           ref={tableContainerRef}
-          className="ModuleContent h-[calc(100dvh-67px)] w-full flex-col overflow-auto lg:h-dvh 2xl:w-[1536px]"
+          className={`ModuleContent h-[calc(100dvh-67px)] w-full flex-col overflow-auto lg:h-dvh lg:max-w-[1536px]`}
         >
           <div className="Title sticky left-0 mt-3 flex flex-col gap-9 py-10 lg:py-5 lg:pb-10 lg:pt-20">
             <div className="Row flex flex-col items-center justify-between gap-10 lg:flex-row lg:justify-start lg:gap-4">
@@ -487,7 +487,7 @@ export default function MonserPageClient(props: {
               </div>
             )}
             {/* <div className="tab flex w-32 flex-col justify-center gap-1 border-r-1.5 border-brand-color-1st p-3"></div> */}
-            <SkillForm dictionary={dictionary} session={session} setDefaultSkillList={setDefaultSkillList} />
+            <SkillForm dictionary={dictionary} session={session} defaultSkillList={defaultSkillList} setDefaultSkillList={setDefaultSkillList} />
           </div>
         )}
       </Dialog>

@@ -162,6 +162,9 @@ export const monsterRouter = createTRPCRouter({
         createdByUserId: userCreate.userId,
         updatedByUserId: userCreate.userId,
       },
+      include: {
+        raters: true,
+      },
     });
   }),
 
@@ -210,6 +213,9 @@ export const monsterRouter = createTRPCRouter({
     return ctx.db.monster.update({
       where: { id: input.id },
       data: { ...input },
+      include: {
+        raters: true,
+      },
     });
   }),
 });

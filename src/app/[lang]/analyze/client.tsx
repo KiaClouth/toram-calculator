@@ -1187,7 +1187,7 @@ export default function AnalyzePageClient(props: Props) {
     <main className="flex flex-col lg:w-[calc(100dvw-96px)] lg:flex-row">
       <div className="Module2 flex flex-1 px-3 backdrop-blur-xl">
         <div className="LeftArea sticky top-0 z-10 flex-1"></div>
-        <div className="ModuleContent h-[calc(100dvh-67px)] w-full flex-col overflow-auto lg:h-dvh lg:w-[calc(100dvw-130px)] 2xl:w-[1536px]">
+        <div className={`ModuleContent h-[calc(100dvh-67px)] w-full flex-col overflow-auto lg:h-dvh lg:max-w-[1536px]`}>
           <div className="Title sticky left-0 mt-3 flex flex-col gap-9 py-5 lg:pt-20">
             <div className="Row flex flex-col items-center justify-between gap-10 lg:flex-row lg:justify-start lg:gap-4">
               <h1 className="Text text-left text-3xl lg:bg-transparent lg:text-4xl">Title</h1>

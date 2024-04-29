@@ -663,7 +663,7 @@ enum WeaponElementDependencyType {
 
 // 技能卡片模型
 model Skill {
-    id                          String                      @id @default(cuid())
+    id                          String                      @id @default(uuid())
     state                       State                       @default(PRIVATE)
     skillTreeName               SkillTreeName               @default(SWORLD)
     name                        String?                     @default("SYSTEM")
@@ -673,7 +673,8 @@ model Skill {
     element                     Element                     @default(NO_ELEMENT)
     skillDescription            String?
     skillEffect                 SkillEffect[]
-    usedBy                      SkillList[]
+    usedBySkillList             SkillList[]
+    usedByComboStep             ComboStep[]
     usedByStep                  Step[]
     createdBy                   UserCreate?                 @relation(fields: [createdByUserId], references: [userId])
     createdByUserId             String?
@@ -695,7 +696,7 @@ enum SkillType {
 
 // 技能效果
 model SkillEffect {
-    id                       String       @id @default(cuid())
+    id                       String       @id @default(uuid())
     description              String?
     condition                String
     actionBaseDuration       Int          @default(13)
@@ -866,12 +867,27 @@ model Analyzer {
 // 连击模型
 model Combo {
     id              String      @id @default(cuid())
+    state           State       @default(PRIVATE)
+    name            String?     @default("SYSTEM")
+    comboSteps      ComboStep[]
+    usedBy          Character[]
     createdAt       DateTime    @default(now())
     createdBy       UserCreate? @relation(fields: [createdByUserId], references: [userId], onDelete: Cascade)
     createdByUserId String?
-    state           State       @default(PRIVATE)
-    name            String?     @default("SYSTEM")
-    usedBy          Character[]
+}
+
+enum ComboType {
+    NULL
+}
+
+model ComboStep {
+    id            String    @id @default(cuid())
+    order         Int
+    comboType     ComboType @default(NULL)
+    skill         Skill     @relation(fields: [skillId], references: [id], onDelete: Cascade)
+    skillId       String
+    belongToCombo Combo     @relation(fields: [comboId], references: [id], onDelete: Cascade)
+    comboId       String
 }
 
 // 输出流程模型

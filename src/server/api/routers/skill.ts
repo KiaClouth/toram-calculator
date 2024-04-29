@@ -1,8 +1,11 @@
-import type { Prisma } from "@prisma/client";
+import { type Prisma, PrismaClient } from "@prisma/client";
+import { randomUUID } from "crypto";
 import { SkillSchema } from "prisma/generated/zod";
 import { SkillInputSchema } from "~/schema/skillSchema";
 
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "~/server/api/trpc";
+
+const prisma = new PrismaClient();
 
 export type SkillCost = Prisma.SkillCostGetPayload<{
   include: object;
@@ -174,65 +177,69 @@ export const skillRouter = createTRPCRouter({
       });
     }
 
-    console.log(
-      new Date().toLocaleDateString() +
-        "--" +
-        new Date().toLocaleTimeString() +
-        "--" +
-        (ctx.session?.user.name ?? ctx.session?.user.email) +
-        "上传了Skill: " +
-        input.name,
-    );
-
     // 输入内容拆分成4个表的数据
     const { skillEffect: skillEffectInputArray, ...skillInput } = input;
-    // 创建技能并关联创建者和统计信息
-    const skill = ctx.db.skill.create({
-      data: {
-        ...skillInput,
-        skillEffect: {
-          createMany: {
-            data: skillEffectInputArray.map((skillEffectInput) => {
-              return {
-                ...skillEffectInput,
-                skillCost: undefined,
-                skillYield: undefined,
-              };
-            })
-          }
+
+    return prisma.$transaction(async () => {
+      const skillId = randomUUID();
+      const skill = await ctx.db.skill
+      .create({
+        data: {
+          ...skillInput,
+          id: skillId,
+          skillEffect: undefined,
+          createdByUserId: userCreate.userId,
         },
-        createdByUserId: userCreate.userId,
-      },
-    });
-    // const skillId = (await skill).id;
-    // // 上传skillEffect
-    // const skillEffect = ctx.db.skillEffect.createMany({
-    //   data: skillEffectInputArray.map((skillEffectInput) => {
-    //     return {
-    //       ...skillEffectInput,
-    //       skillCost: undefined,
-    //       skillYield: undefined,
-    //       belongToskillId: skillId
-    //     }
-    //   }),
-    // });
-    // const skillEffectCount = (await skillEffect);
-    // console.log(skillEffectCount);
-    // // 拆分skillEffect
-    // skillEffectInputArray.map((skillEffectInput) => {
-    //   const { skillCost: skillCostInput, skillYield: skillYieldInput } = skillEffectInput;
-    //   // 上传skillCost
-    //   const skillCost = ctx.db.skillCost.createMany({
-    //     data: skillCostInput,
-    //   });
-    //   // 上传skillYield
-    //   const skillYield = ctx.db.skillYield.createMany({
-    //     data: skillYieldInput,
-    //   });
-    //   return { skillYield, skillCost };
-    // });
-    // return { skill, skillEffect };
-    return skill
+        include: {
+          skillEffect: {
+            include: {
+              skillCost: true,
+              skillYield: true,
+            },
+          },
+        },
+      })
+
+      const skillEffect = skillEffectInputArray.map(async (skillEffectInput) => {
+        const skillEffectId = randomUUID();
+        return await ctx.db.skillEffect.create({
+          data: {
+            ...skillEffectInput,
+            id: skillEffectId,
+            belongToskillId: skillId,
+            skillCost: {
+              createMany: {
+                data: skillEffectInput.skillCost,
+              },
+            },
+            skillYield: {
+              createMany: {
+                data: skillEffectInput.skillYield,
+              },
+            },
+          },
+          include: {
+            skillCost: true,
+            skillYield: true,
+          },
+        });
+      });
+
+      console.log(
+        new Date().toLocaleDateString() +
+          "--" +
+          new Date().toLocaleTimeString() +
+          "--" +
+          (ctx.session?.user.name ?? ctx.session?.user.email) +
+          "上传了Skill: " +
+          input.name,
+      );
+
+      return {
+        ...skill,
+        skillEffect: await Promise.all(skillEffect),
+      };
+    })
   }),
 
   update: protectedProcedure.input(SkillSchema).mutation(async ({ ctx, input }) => {
@@ -256,6 +263,14 @@ export const skillRouter = createTRPCRouter({
     return ctx.db.skill.update({
       where: { id: input.id },
       data: { ...input },
+      include: {
+        skillEffect: {
+          include: {
+            skillCost: true,
+            skillYield: true,
+          },
+        },
+      },
     });
   }),
 });

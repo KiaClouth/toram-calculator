@@ -54,10 +54,10 @@ import { SkillCostSchema, SkillYieldSchema } from "prisma/generated/zod";
 export default function SkillForm(props: {
   dictionary: ReturnType<typeof getDictionary>;
   session: Session | null;
+  defaultSkillList: Skill[];
   setDefaultSkillList: (list: Awaited<ReturnType<typeof sApi.skill.getUserVisbleList.query>>) => void;
 }) {
-  const { dictionary, session, setDefaultSkillList } = props;
-  const newListQuery = tApi.skill.getUserVisbleList.useQuery();
+  const { dictionary, session, defaultSkillList, setDefaultSkillList } = props;
   // 状态管理参数
   const { skill, skillDialogState, setSkillList, setSkillDialogState, skillFormState, setSkillFormState } =
     useBearStore((state) => state.skillPage);
@@ -132,7 +132,10 @@ export default function SkillForm(props: {
       } satisfies Skill;
       switch (skillFormState) {
         case "CREATE":
-          createSkill.mutate(newSkill);
+          {
+            createSkill.mutate(newSkill);
+            console.log("create skill", createSkill);
+          }
           break;
 
         case "UPDATE":
@@ -164,32 +167,31 @@ export default function SkillForm(props: {
   };
 
   const createSkill = tApi.skill.create.useMutation({
-    onSuccess: async () => {
-      // 创建成功后重新获取数据
-      const newList = await newListQuery.refetch();
-      // 确保数据已成功加载
-      if (newList.isSuccess) {
-        setDefaultSkillList(newList.data);
-        setSkillList(newList.data);
-      }
+    onSuccess(data) {
+      const newList = [...defaultSkillList, data];
+      // 创建成功后更新数据
+        setDefaultSkillList(newList);
+        setSkillList(newList);
       // 上传成功后表单转换为展示状态
       setDataUploadingState(false);
-      setSkillFormState("DISPLAY");
+      setSkillFormState("DISPLAY")
     },
   });
 
   const updateSkill = tApi.skill.update.useMutation({
-    onSuccess: async () => {
-      // 更新成功后重新获取数据
-      const newList = await newListQuery.refetch();
-      // 确保数据已成功加载后，更新本地数据
-      if (newList.isSuccess) {
-        setDefaultSkillList(newList.data);
-        setSkillList(newList.data);
-      }
+    onSuccess(data) {
+      const newList = defaultSkillList.map((skill) => {
+        if (skill.id === data.id) {
+          return data;
+        }
+        return skill;
+      });
+      // 更新成功后更新数据
+        setDefaultSkillList(newList);
+        setSkillList(newList);
       // 上传成功后表单转换为展示状态
       setDataUploadingState(false);
-      setSkillFormState("DISPLAY");
+      setSkillFormState("DISPLAY")
     },
   });
 
@@ -396,11 +398,11 @@ export default function SkillForm(props: {
                                       key={key + i}
                                       className={`${key + i} DataKinds flex flex-none basis-full flex-col overflow-hidden rounded border-1.5 border-brand-color-1st`}
                                     >
-                                      <span className="w-full bg-brand-color-1st text-primary-color p-2">
+                                      <span className="w-full bg-brand-color-1st p-2 text-primary-color">
                                         {dictionary.db.models.skill[key as keyof tSkill] + " " + (i + 1)}
                                       </span>
                                       <div
-                                        className={`InputContianer pt-4 flex w-full basis-full flex-wrap gap-y-3 self-start ${skillFormState === "DISPLAY" ? " outline-transition-color-20" : ""}`}
+                                        className={`InputContianer flex w-full basis-full flex-wrap gap-y-3 self-start pt-4 ${skillFormState === "DISPLAY" ? " outline-transition-color-20" : ""}`}
                                       >
                                         {Object.entries(subObj).map(([subKey, _]) => {
                                           // 遍历技能效果模型
@@ -579,7 +581,7 @@ export default function SkillForm(props: {
                                                                 return subKey === "skillCost" ? (
                                                                   <fieldset
                                                                     key={subKey + j}
-                                                                    className={`${subKey + j} DataKinds flex flex-none basis-full lg:basis-1/4 flex-col gap-y-[4px] overflow-hidden rounded bg-brand-color-1st bg-opacity-5 p-1`}
+                                                                    className={`${subKey + j} DataKinds flex flex-none basis-full flex-col gap-y-[4px] overflow-hidden rounded p-1 lg:basis-1/4`}
                                                                   >
                                                                     <span className="w-full bg-transition-color-8 p-1">
                                                                       {dictionary.db.models.skillEffect[
@@ -590,7 +592,7 @@ export default function SkillForm(props: {
                                                                     </span>
 
                                                                     <div
-                                                                      className={`InputContianer mt-1 flex w-full basis-full flex-wrap gap-y-3 self-start rounded ${skillFormState === "DISPLAY" ? " outline-transition-color-20" : ""}`}
+                                                                      className={`InputContianer mt-1 flex w-full basis-full flex-wrap gap-y-3 self-start rounded outline-transition-color-20 ${skillFormState === "DISPLAY" ? "bg-transition-color-8" : ""}`}
                                                                     >
                                                                       {subsubObj &&
                                                                         Object.entries(subsubObj).map(
@@ -791,8 +793,8 @@ export default function SkillForm(props: {
                                                                                             id={subsubField.name}
                                                                                             name={subsubField.name}
                                                                                             value={
-                                                                                              subsubField.state
-                                                                                                .value ?? "未知数据"
+                                                                                              subsubField.state.value ??
+                                                                                              "未知数据"
                                                                                             }
                                                                                             type={inputType}
                                                                                             onBlur={
@@ -823,7 +825,7 @@ export default function SkillForm(props: {
                                                                 return subKey === "skillYield" ? (
                                                                   <fieldset
                                                                     key={subKey + j}
-                                                                    className={`${subKey + j} DataKinds flex flex-none basis-full lg:basis-1/2 flex-col gap-y-[4px] overflow-hidden rounded bg-brand-color-3rd bg-opacity-5 p-1`}
+                                                                    className={`${subKey + j} DataKinds flex flex-none basis-full flex-col gap-y-[4px] overflow-hidden rounded p-1 lg:basis-1/2`}
                                                                   >
                                                                     <span className="w-full bg-transition-color-8 p-1">
                                                                       {dictionary.db.models.skillEffect[
@@ -834,7 +836,7 @@ export default function SkillForm(props: {
                                                                     </span>
 
                                                                     <div
-                                                                      className={`InputContianer mt-1 flex w-full basis-full flex-wrap gap-y-3 self-start rounded ${skillFormState === "DISPLAY" ? " outline-transition-color-20" : ""}`}
+                                                                      className={`InputContianer mt-1 flex w-full basis-full flex-wrap gap-y-3 self-start rounded outline-transition-color-20 ${skillFormState === "DISPLAY" ? "bg-transition-color-8" : ""}`}
                                                                     >
                                                                       {subsubObj &&
                                                                         Object.entries(subsubObj).map(
@@ -1087,7 +1089,9 @@ export default function SkillForm(props: {
                                                         }}
                                                         className={`${skillFormState === "DISPLAY" && "hidden"}`}
                                                       >
-                                                       Add [ {dictionary.db.models.skillEffect[subKey as keyof tSkillEffect]} ]
+                                                        Add [{" "}
+                                                        {dictionary.db.models.skillEffect[subKey as keyof tSkillEffect]}{" "}
+                                                        ]
                                                       </Button>
                                                     </fieldset>
                                                   )}
@@ -1319,7 +1323,14 @@ export default function SkillForm(props: {
           {skillFormState !== "DISPLAY" && (
             <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
               {([canSubmit]) => (
-                <Button type="submit" level="primary" disabled={!(canSubmit && !dataUploadingState)} onClick={() => {console.log(form.state.values)}}>
+                <Button
+                  type="submit"
+                  level="primary"
+                  disabled={!(canSubmit && !dataUploadingState)}
+                  onClick={() => {
+                    console.log(form.state.values);
+                  }}
+                >
                   {dataUploadingState ? dictionary.ui.skill.upload + "..." : dictionary.ui.skill.upload + " [Enter]"}
                 </Button>
               )}
