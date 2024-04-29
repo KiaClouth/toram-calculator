@@ -696,7 +696,7 @@ enum SkillType {
 
 // 技能效果
 model SkillEffect {
-    id                       String       @id @default(uuid())
+    id                       String       @id @default(cuid())
     description              String?
     condition                String
     actionBaseDuration       Int          @default(13)

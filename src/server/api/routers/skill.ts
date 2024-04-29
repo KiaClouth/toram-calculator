@@ -182,8 +182,7 @@ export const skillRouter = createTRPCRouter({
 
     return prisma.$transaction(async () => {
       const skillId = randomUUID();
-      const skill = await ctx.db.skill
-      .create({
+      const skill = await ctx.db.skill.create({
         data: {
           ...skillInput,
           id: skillId,
@@ -198,23 +197,27 @@ export const skillRouter = createTRPCRouter({
             },
           },
         },
-      })
+      });
 
       const skillEffect = skillEffectInputArray.map(async (skillEffectInput) => {
-        const skillEffectId = randomUUID();
         return await ctx.db.skillEffect.create({
           data: {
             ...skillEffectInput,
-            id: skillEffectId,
             belongToskillId: skillId,
             skillCost: {
               createMany: {
-                data: skillEffectInput.skillCost,
+                data: skillEffectInput.skillCost.map((skillCost) => {
+                  const { skillEffectId, ...costData } = skillCost;
+                  return costData;
+                }),
               },
             },
             skillYield: {
               createMany: {
-                data: skillEffectInput.skillYield,
+                data: skillEffectInput.skillYield.map((skillYield) => {
+                  const { skillEffectId, ...yieldData } = skillYield;
+                  return yieldData;
+                }),
               },
             },
           },
@@ -239,7 +242,7 @@ export const skillRouter = createTRPCRouter({
         ...skill,
         skillEffect: await Promise.all(skillEffect),
       };
-    })
+    });
   }),
 
   update: protectedProcedure.input(SkillSchema).mutation(async ({ ctx, input }) => {
