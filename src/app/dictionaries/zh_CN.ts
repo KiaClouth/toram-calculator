@@ -244,6 +244,9 @@ const dictionary: dictionary = {
         FRAME: "指定帧数",
         SKILL: "指定技能数",
         UNLIMITED: "无限"
+      },
+      ComboType: {
+        NULL: "未设置",
       }
     },
     models: {

@@ -244,6 +244,9 @@ const dictionary: dictionary = {
         FRAME: "Frame",
         SKILL: "Skill",
         UNLIMITED: "Unlimited"
+      },
+      ComboType: {
+        NULL: "Null",
       }
     },
     models: {
