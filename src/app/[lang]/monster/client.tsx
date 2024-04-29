@@ -433,7 +433,7 @@ export default function MonserPageClient(props: Props) {
                         setMonsterFormState("CREATE");
                       }}
                     >
-                      {dictionary.ui.monster.upload} [u]
+                      {dictionary.ui.upload} [u]
                     </Button>
                   </React.Fragment>
                 )}

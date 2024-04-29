@@ -50,14 +50,13 @@ export default function MonsterForm(props: {
   setDefaultMonsterList: (list: Monster[]) => void;
 }) {
   const { dictionary, session, defaultMonsterList, setDefaultMonsterList } = props;
-  const newListQuery = tApi.monster.getUserVisbleList.useQuery();
   // 状态管理参数
   const { monster, monsterDialogState, setMonsterList, setMonsterDialogState, monsterFormState, setMonsterFormState } =
     useBearStore((state) => state.monsterPage);
   let newMonster: Monster;
   const formTitle = {
-    CREATE: dictionary.ui.monster.upload,
-    UPDATE: dictionary.ui.monster.modify,
+    CREATE: dictionary.ui.upload,
+    UPDATE: dictionary.ui.modify,
     DISPLAY: monster.name,
   }[monsterFormState];
   const [dataUploadingState, setDataUploadingState] = React.useState(false);
@@ -506,18 +505,18 @@ export default function MonsterForm(props: {
               setMonsterDialogState(!monsterDialogState);
             }}
           >
-            {dictionary.ui.monster.close} [Esc]
+            {dictionary.ui.close} [Esc]
           </Button>
           {monsterFormState == "DISPLAY" && session?.user.id === monster.createdByUserId && (
-            <Button onClick={() => setMonsterFormState("UPDATE")}>{dictionary.ui.monster.modify} [Enter]</Button>
+            <Button onClick={() => setMonsterFormState("UPDATE")}>{dictionary.ui.modify} [Enter]</Button>
           )}
           {monsterFormState !== "DISPLAY" && (
             <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
               {([canSubmit]) => (
                 <Button type="submit" level="primary" disabled={!(canSubmit && !dataUploadingState)}>
                   {dataUploadingState
-                    ? dictionary.ui.monster.upload + "..."
-                    : dictionary.ui.monster.upload + " [Enter]"}
+                    ? dictionary.ui.upload + "..."
+                    : dictionary.ui.upload + " [Enter]"}
                 </Button>
               )}
             </form.Subscribe>
