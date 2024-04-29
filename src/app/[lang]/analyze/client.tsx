@@ -41,6 +41,7 @@ export default function AnalyzePageClient(props: Props) {
           skillCost: [
             {
               id: "",
+              name:"MP Cost",
               costFormula: "200",
               skillEffectId: null,
             },
@@ -48,6 +49,7 @@ export default function AnalyzePageClient(props: Props) {
           skillYield: [
             {
               id: "",
+              name: "Damage",
               triggerTimingType: "ON_USE",
               delay: 33,
               yieldFormula: "(C_VMATK + 200) * 500%",
@@ -57,6 +59,7 @@ export default function AnalyzePageClient(props: Props) {
             },
             {
               id: "",
+              name: "MP Cost half",
               triggerTimingType: "NEXT_SKILL",
               delay: 0,
               durationType: "UNLIMITED",
@@ -77,6 +80,7 @@ export default function AnalyzePageClient(props: Props) {
           skillCost: [
             {
               id: "",
+              name: "MP Cost",
               costFormula: "200",
               skillEffectId: null,
             },
@@ -84,6 +88,7 @@ export default function AnalyzePageClient(props: Props) {
           skillYield: [
             {
               id: "",
+              name: "Damage",
               triggerTimingType: "ON_USE",
               delay: 33,
               yieldFormula: "(C_VMATK + 200) * 250%",
@@ -93,6 +98,7 @@ export default function AnalyzePageClient(props: Props) {
             },
             {
               id: "",
+              name: "MP Cost half",
               triggerTimingType: "NEXT_SKILL",
               delay: 0,
               durationType: "UNLIMITED",
@@ -134,15 +140,17 @@ export default function AnalyzePageClient(props: Props) {
           condition: "equalText(primaryAttributes.equipment.mainWeapon.type,'MAGIC_DEVICE')",
           skillCost: [
             {
-              costFormula: "",
               id: "",
+              name: "MP Cost",
+              costFormula: "",
               skillEffectId: null,
             },
           ],
           skillYield: [
             {
-              yieldFormula: "",
               id: "",
+              yieldFormula: "",
+              name: "Damage",
               triggerTimingType: "ON_USE",
               delay: 30,
               durationType: "SKILL",

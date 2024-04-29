@@ -60,12 +60,14 @@ export const defaultMonster: Monster = {
 // 技能表单的默认值
 export const defaultSkillEffectCost: SkillCost = {
   id: "",
+  name: "MP Cost",
   costFormula: "",
   skillEffectId: null
 }
 
 export const defaultSkillEffectYield: SkillYield = {
   id: "",
+  name: "",
   triggerTimingType: "ON_USE",
   delay: 0,
   durationType: "FRAME",
