@@ -206,18 +206,12 @@ export const skillRouter = createTRPCRouter({
             belongToskillId: skillId,
             skillCost: {
               createMany: {
-                data: skillEffectInput.skillCost.map((skillCost) => {
-                  const { skillEffectId, ...costData } = skillCost;
-                  return costData;
-                }),
+                data: skillEffectInput.skillCost,
               },
             },
             skillYield: {
               createMany: {
-                data: skillEffectInput.skillYield.map((skillYield) => {
-                  const { skillEffectId, ...yieldData } = skillYield;
-                  return yieldData;
-                }),
+                data: skillEffectInput.skillYield,
               },
             },
           },
