@@ -148,13 +148,13 @@ export default function MonsterForm(props: {
 
   const createMonster = tApi.monster.create.useMutation({
     onSuccess(data) {
-      const newList = [...defaultMonsterList, data]
+      const newList = [...defaultMonsterList, data];
       // 创建成功后更新数据
-        setDefaultMonsterList(newList);
-        setMonsterList(newList);
+      setDefaultMonsterList(newList);
+      setMonsterList(newList);
       // 上传成功后表单转换为展示状态
       setDataUploadingState(false);
-      setMonsterFormState("DISPLAY")
+      setMonsterFormState("DISPLAY");
     },
   });
 
@@ -167,11 +167,11 @@ export default function MonsterForm(props: {
         return monster;
       });
       // 更新成功后更新数据
-        setDefaultMonsterList(newList);
-        setMonsterList(newList);
+      setDefaultMonsterList(newList);
+      setMonsterList(newList);
       // 上传成功后表单转换为展示状态
       setDataUploadingState(false);
-      setMonsterFormState("DISPLAY")
+      setMonsterFormState("DISPLAY");
     },
   });
 
@@ -209,6 +209,7 @@ export default function MonsterForm(props: {
         <div className="h-[2px] flex-1 bg-accent-color"></div>
       </div>
       <div className="inputArea flex-1 overflow-y-auto">
+        <div className="rounded-sm bg-transition-color-8 p-4 mb-4">{dictionary.ui.monster.monsterForm.discription}</div>
         <fieldset className="dataKinds flex flex-row flex-wrap gap-y-[4px]">
           {Object.entries(monster).map(([key, _]) => {
             // 遍历怪物模型
@@ -514,9 +515,7 @@ export default function MonsterForm(props: {
             <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
               {([canSubmit]) => (
                 <Button type="submit" level="primary" disabled={!(canSubmit && !dataUploadingState)}>
-                  {dataUploadingState
-                    ? dictionary.ui.upload + "..."
-                    : dictionary.ui.upload + " [Enter]"}
+                  {dataUploadingState ? dictionary.ui.upload + "..." : dictionary.ui.upload + " [Enter]"}
                 </Button>
               )}
             </form.Subscribe>

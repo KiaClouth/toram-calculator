@@ -46,6 +46,9 @@ interface dictionary {
       searchPlaceholder: string;
       filter: string;
       columnsHidden: string;
+      monsterForm: {
+        discription: string;
+      }
     };
     skill: {
       pageTitle: string;

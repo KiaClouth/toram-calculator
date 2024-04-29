@@ -39,9 +39,44 @@ interface Props {
 
 export default function MonserPageClient(props: Props) {
   const { dictionary, session } = props;
-  const [defaultMonsterList, setDefaultMonsterList] = useState(
-    props.monsterList,
-  );
+
+  const defaultMonsterAugmentedList: Monster[] = [];
+  props.monsterList.forEach((monster) => {
+    // 表中记录的是1星状态下的定点王数据， 2 / 3 / 4 星的经验和HP为1星的 2 / 5 / 10 倍；物防、魔防、回避值为1星的 2 / 4 / 6 倍。
+    defaultMonsterAugmentedList.push(
+      {
+        ...monster,
+        name: monster.name + "·一星",
+      },
+      {
+        ...monster,
+        name: monster.name + "·二星",
+        experience: monster.experience !== null ? monster.experience * 2 : 0,
+        maxhp: monster.maxhp !== null ? monster.maxhp * 2 : 0,
+        physicalDefense: monster.physicalDefense !== null ? monster.physicalDefense * 2 : 0,
+        magicalDefense: monster.magicalDefense !== null ? monster.magicalDefense * 2 : 0,
+      },
+      {
+        ...monster,
+        name: monster.name + "·三星",
+        experience: monster.experience !== null ? monster.experience * 5 : 0,
+        maxhp: monster.maxhp !== null ? monster.maxhp * 5 : 0,
+        physicalDefense: monster.physicalDefense !== null ? monster.physicalDefense * 4 : 0,
+        magicalDefense: monster.magicalDefense !== null ? monster.magicalDefense * 4 : 0,
+        avoidance: monster.avoidance !== null ? monster.avoidance * 4 : 0,
+      },
+      {
+        ...monster,
+        name: monster.name + "·四星",
+        experience: monster.experience !== null ? monster.experience * 10 : 0,
+        maxhp: monster.maxhp !== null ? monster.maxhp * 10 : 0,
+        physicalDefense: monster.physicalDefense !== null ? monster.physicalDefense * 6 : 0,
+        magicalDefense: monster.magicalDefense !== null ? monster.magicalDefense * 6 : 0,
+        avoidance: monster.avoidance !== null ? monster.avoidance * 6 : 0,
+      },
+    );
+  });
+  const [defaultMonsterList, setDefaultMonsterList] = useState(defaultMonsterAugmentedList);
 
   // 状态管理参数
   const {
@@ -93,10 +128,7 @@ export default function MonserPageClient(props: Props) {
 
   // 弹出层怪物名称列表
   const [sameNameMonsterList, setSameNameMonsterList] = useState<Monster[]>([]);
-  const compusteSameNameMonsterList = (
-    monster: Monster,
-    monsterList: Monster[],
-  ) => {
+  const compusteSameNameMonsterList = (monster: Monster, monsterList: Monster[]) => {
     const list: Monster[] = [];
     monsterList.forEach((m) => {
       m.name === monster.name && list.push(m);
@@ -109,12 +141,7 @@ export default function MonserPageClient(props: Props) {
   };
 
   // 定义不需要展示的列
-  const hiddenData: Array<keyof Monster> = [
-    "id",
-    "address",
-    "monsterType",
-    "updatedByUserId",
-  ];
+  const hiddenData: Array<keyof Monster> = ["id", "address", "monsterType", "updatedByUserId"];
 
   // 列定义
   const columns = React.useMemo<ColumnDef<Monster>[]>(
@@ -140,15 +167,13 @@ export default function MonserPageClient(props: Props) {
       {
         accessorKey: "monsterType",
         header: () => dictionary.db.models.monster.monsterType,
-        cell: (info) =>
-          dictionary.db.enums.MonsterType[info.getValue<$Enums.MonsterType>()],
+        cell: (info) => dictionary.db.enums.MonsterType[info.getValue<$Enums.MonsterType>()],
         size: 120,
       },
       {
         accessorKey: "element",
         header: () => dictionary.db.models.monster.element,
-        cell: (info) =>
-          dictionary.db.enums.Element[info.getValue<$Enums.Element>()],
+        cell: (info) => dictionary.db.enums.Element[info.getValue<$Enums.Element>()],
         size: 120,
       },
       {
@@ -263,8 +288,7 @@ export default function MonserPageClient(props: Props) {
     getScrollElement: () => tableContainerRef.current,
     // measure dynamic row height, except in firefox because it measures table border height incorrectly
     measureElement:
-      typeof window !== "undefined" &&
-      navigator.userAgent.indexOf("Firefox") === -1
+      typeof window !== "undefined" && navigator.userAgent.indexOf("Firefox") === -1
         ? (element) => element?.getBoundingClientRect().height
         : undefined,
     overscan: 5,
@@ -274,8 +298,7 @@ export default function MonserPageClient(props: Props) {
   const getCommonPinningStyles = (column: Column<Monster>): CSSProperties => {
     const isPinned = column.getIsPinned();
     const isLastLeft = isPinned === "left" && column.getIsLastColumn("left");
-    const isFirstRight =
-      isPinned === "right" && column.getIsFirstColumn("right");
+    const isFirstRight = isPinned === "right" && column.getIsFirstColumn("right");
     const styles: CSSProperties = {
       position: isPinned ? "sticky" : "relative",
       width: column.getSize(),
@@ -284,11 +307,7 @@ export default function MonserPageClient(props: Props) {
     if (isPinned) {
       styles.left = isLastLeft ? `${column.getStart("left")}px` : undefined;
       styles.right = isFirstRight ? `${column.getAfter("right")}px` : undefined;
-      styles.borderWidth = isLastLeft
-        ? "0px 2px 0px 0px"
-        : isFirstRight
-          ? "0px 0px 0px 2px"
-          : undefined;
+      styles.borderWidth = isLastLeft ? "0px 2px 0px 0px" : isFirstRight ? "0px 0px 0px 2px" : undefined;
     }
     return styles;
   };
@@ -334,10 +353,7 @@ export default function MonserPageClient(props: Props) {
         >
           <div className="Title flex items-center justify-between">
             <h1 className="text-lg">{dictionary.ui.monster.filter}</h1>
-            <Button
-              level="tertiary"
-              onClick={() => setFilterState(!filterState)}
-            >
+            <Button level="tertiary" onClick={() => setFilterState(!filterState)}>
               X
             </Button>
           </div>
@@ -375,7 +391,7 @@ export default function MonserPageClient(props: Props) {
           </div>
         </div>
       </div>
-      <div className="Module2 flex flex-1 px-3 backdrop-blur-xl w-full overflow-hidden">
+      <div className="Module2 flex w-full flex-1 overflow-hidden px-3 backdrop-blur-xl">
         <div className="LeftArea sticky top-0 z-10 flex-1"></div>
         <div
           ref={tableContainerRef}
@@ -447,10 +463,7 @@ export default function MonserPageClient(props: Props) {
             <thead className="TableHead sticky top-0 z-10 flex bg-primary-color">
               {table.getHeaderGroups().map((headerGroup) => {
                 return (
-                  <tr
-                    key={headerGroup.id}
-                    className=" flex min-w-full gap-0 border-b-2"
-                  >
+                  <tr key={headerGroup.id} className=" flex min-w-full gap-0 border-b-2">
                     {headerGroup.headers.map((header) => {
                       const { column } = header;
                       if (hiddenData.includes(column.id as keyof Monster)) {
@@ -470,15 +483,10 @@ export default function MonserPageClient(props: Props) {
                               onClick: header.column.getToggleSortingHandler(),
                             }}
                             className={`border-1 flex-1 border-transition-color-8 px-3 py-4 text-left hover:bg-transition-color-8 lg:py-6 ${
-                              header.column.getCanSort()
-                                ? "cursor-pointer select-none"
-                                : ""
+                              header.column.getCanSort() ? "cursor-pointer select-none" : ""
                             }`}
                           >
-                            {flexRender(
-                              header.column.columnDef.header,
-                              header.getContext(),
-                            )}
+                            {flexRender(header.column.columnDef.header, header.getContext())}
                             {{
                               asc: " ↓",
                               desc: " ↑",
@@ -553,12 +561,7 @@ export default function MonserPageClient(props: Props) {
                         return;
                       }
 
-                      switch (
-                        cell.column.id as Exclude<
-                          keyof Monster,
-                          keyof typeof hiddenData
-                        >
-                      ) {
+                      switch (cell.column.id as Exclude<keyof Monster, keyof typeof hiddenData>) {
                         case "name":
                           return (
                             <td
@@ -569,15 +572,10 @@ export default function MonserPageClient(props: Props) {
                               className="flex flex-col justify-center px-3 py-6 lg:py-8"
                             >
                               <span className=" text-lg font-bold">
-                                {flexRender(
-                                  cell.column.columnDef.cell,
-                                  cell.getContext(),
-                                )}
+                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
                               </span>
                               <span className="text-sm font-normal text-accent-color-70">
-                                {(row.getValue("address") ===
-                                  ("" ?? undefined ?? null) &&
-                                  "不知名的地方") ||
+                                {(row.getValue("address") === ("" ?? undefined ?? null) && "不知名的地方") ||
                                   row.getValue("address")}
                               </span>
                             </td>
@@ -592,20 +590,15 @@ export default function MonserPageClient(props: Props) {
                               WIND: <IconElementWind className="h-12 w-12" />,
                               LIGHT: <IconElementLight className="h-12 w-12" />,
                               DARK: <IconElementDark className="h-12 w-12" />,
-                              NO_ELEMENT: (
-                                <IconElementNoElement className="h-12 w-12" />
-                              ),
-                            }[cell.getValue() as keyof typeof $Enums.Element] ??
-                            undefined;
+                              NO_ELEMENT: <IconElementNoElement className="h-12 w-12" />,
+                            }[cell.getValue() as keyof typeof $Enums.Element] ?? undefined;
                           return (
                             <td
                               key={cell.id}
                               style={{
                                 ...getCommonPinningStyles(column),
                               }}
-                              className={
-                                "flex flex-col justify-center px-3 py-6"
-                              }
+                              className={"flex flex-col justify-center px-3 py-6"}
                             >
                               {icon}
                             </td>
@@ -629,11 +622,7 @@ export default function MonserPageClient(props: Props) {
                               }}
                               className={`flex flex-col justify-center px-3 py-6 `}
                             >
-                              {flexRender(
-                                cell.column.columnDef.cell,
-                                cell.getContext(),
-                              )}
-                              %
+                              {flexRender(cell.column.columnDef.cell, cell.getContext())}%
                             </td>
                           );
 
@@ -650,21 +639,12 @@ export default function MonserPageClient(props: Props) {
                                 try {
                                   const content =
                                     dictionary.db.enums[
-                                      (cell.column.id
-                                        .charAt(0)
-                                        .toLocaleUpperCase() +
-                                        cell.column.id.slice(
-                                          1,
-                                        )) as keyof typeof $Enums
-                                    ][
-                                      cell.getValue() as keyof (typeof $Enums)[keyof typeof $Enums]
-                                    ];
+                                      (cell.column.id.charAt(0).toLocaleUpperCase() +
+                                        cell.column.id.slice(1)) as keyof typeof $Enums
+                                    ][cell.getValue() as keyof (typeof $Enums)[keyof typeof $Enums]];
                                   return content;
                                 } catch (error) {
-                                  return flexRender(
-                                    cell.column.columnDef.cell,
-                                    cell.getContext(),
-                                  );
+                                  return flexRender(cell.column.columnDef.cell, cell.getContext());
                                 }
                               })(cell)}
                             </td>
@@ -683,7 +663,7 @@ export default function MonserPageClient(props: Props) {
         {monsterDialogState && (
           <div className="Content flex w-full flex-col overflow-y-auto lg:flex-row 2xl:w-[1536px]">
             {sameNameMonsterList.length > 1 && (
-              <div className="SameNameMonsterList flex-none flow-row basis-[8%] flex gap-1 overflow-x-auto overflow-y-hidden lg:overflow-x-hidden lg:overflow-y-auto border-r-1.5 border-brand-color-1st p-3 lg:w-60 lg:flex-col">
+              <div className="SameNameMonsterList flow-row flex flex-none basis-[8%] gap-1 overflow-x-auto overflow-y-hidden border-r-1.5 border-brand-color-1st p-3 lg:w-60 lg:flex-col lg:overflow-y-auto lg:overflow-x-hidden">
                 {sameNameMonsterList.map((currentMonster) => {
                   const order = sameNameMonsterList.indexOf(currentMonster) + 1;
                   return (
@@ -691,19 +671,17 @@ export default function MonserPageClient(props: Props) {
                       key={"SameNameMonsterId" + currentMonster.id}
                       level="tertiary"
                       onClick={() => {
-                        setMonster(currentMonster)
+                        setMonster(currentMonster);
                       }}
                       active={currentMonster.id === monster.id}
-                      className="SameNameMonster flex basis-1/4 h-full lg:h-auto lg:basis-auto flex-col rounded-sm lg:w-full"
+                      className="SameNameMonster flex h-full basis-1/4 flex-col rounded-sm lg:h-auto lg:w-full lg:basis-auto"
                     >
-                      <span className="text-left text-nowrap text-lg lg:font-bold w-full px-2">
-                        {order}
-                      </span>
+                      <span className="w-full text-nowrap px-2 text-left text-lg lg:font-bold">{order}</span>
                       <span className="hidden text-left text-sm lg:block">
                         {currentMonster.updatedAt.toLocaleString()}
                       </span>
                     </Button>
-                  )
+                  );
                 })}
               </div>
             )}

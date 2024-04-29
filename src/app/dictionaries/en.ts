@@ -34,6 +34,9 @@ const dictionary: dictionary = {
       discription: "Emmm..............",
       columnsHidden: "Columns Hidden",
       filter: "Filter",
+      monsterForm: {
+        discription: "When uploading fixed-point boss data, please use one-star data, and the system will automatically calculate the data for other star levels according to the rules.",
+      }
     },
     skill: {
       searchPlaceholder: "Search something ~",
