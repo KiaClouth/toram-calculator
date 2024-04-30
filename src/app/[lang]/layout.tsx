@@ -87,7 +87,7 @@ export default async function RootLayout({
       >
         <TRPCReactProvider cookies={cookies().toString()}>
           <ThemeProvider>
-            {/* <BabylonBg /> */}
+            <BabylonBg />
             <Nav dictionary={dictionary} session={session} />
             {children}
           </ThemeProvider>

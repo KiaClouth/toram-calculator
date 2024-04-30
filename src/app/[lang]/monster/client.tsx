@@ -399,7 +399,7 @@ export default function MonserPageClient(props: Props) {
           <div className="module flex flex-col gap-3">
             <div className="title">{dictionary.ui.monster.augmented}</div>
             <div className="content flex flex-wrap gap-2 ">
-              <Button level={augmented ? "tertiary" : "primary"} onClick={() => setAugmented(!augmented)}>{ augmented ? "OFF" : "ON" }</Button>
+              <Button level="tertiary" onClick={() => setAugmented(!augmented)}>{ augmented ? "Yes" : "No" }</Button>
             </div>
           </div>
         </div>
