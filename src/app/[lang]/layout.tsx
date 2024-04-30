@@ -6,7 +6,7 @@ import { TRPCReactProvider } from "~/trpc/react";
 import type { Metadata, Viewport } from "next";
 import type { Locale } from "~/app/i18n-config";
 import { getServerAuthSession } from "~/server/auth";
-
+import { GoogleAnalytics } from '@next/third-parties/google'
 import { getDictionary } from "~/app/get-dictionary";
 import ThemeProvider from "./_components/themeProvider";
 import Nav from "./_components/nav";
@@ -93,6 +93,7 @@ export default async function RootLayout({
           </ThemeProvider>
         </TRPCReactProvider>
       </body>
+      <GoogleAnalytics gaId="G-2QS470LRB3" />
     </html>
   );
 }
