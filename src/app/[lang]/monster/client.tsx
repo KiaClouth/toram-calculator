@@ -12,7 +12,7 @@ import {
 } from "@tanstack/react-table";
 import { type getDictionary } from "~/app/get-dictionary";
 import { type Session } from "next-auth";
-import React, { useState, type CSSProperties, useEffect } from "react";
+import React, { useState, type CSSProperties, useEffect, useCallback } from "react";
 import MonsterForm from "./monsterForm";
 import Button from "../_components/button";
 import {
@@ -39,50 +39,55 @@ interface Props {
 
 export default function MonserPageClient(props: Props) {
   const { dictionary, session } = props;
+  const [defaultMonsterList, setDefaultMonsterList] = useState(props.monsterList);
+  const [augmented, setAugmented] = useState(true);
 
-  const defaultMonsterAugmentedList: Monster[] = [];
-  props.monsterList.forEach((monster) => {
-    // 表中记录的是1星状态下的定点王数据， 2 / 3 / 4 星的经验和HP为1星的 2 / 5 / 10 倍；物防、魔防、回避值为1星的 2 / 4 / 6 倍。
-    defaultMonsterAugmentedList.push(
-      {
-        ...monster,
-        name: monster.name + " " + dictionary.ui.monster.monsterDegreeOfDifficulty[1],
-      },
-      {
-        ...monster,
-        id: "",
-        name: monster.name + " " + dictionary.ui.monster.monsterDegreeOfDifficulty[2],
-        baseLv: monster.baseLv !== null ? monster.baseLv + 10 : 0,
-        experience: monster.experience !== null ? monster.experience * 2 : 0,
-        maxhp: monster.maxhp !== null ? monster.maxhp * 2 : 0,
-        physicalDefense: monster.physicalDefense !== null ? monster.physicalDefense * 2 : 0,
-        magicalDefense: monster.magicalDefense !== null ? monster.magicalDefense * 2 : 0,
-      },
-      {
-        ...monster,
-        id: "",
-        name: monster.name + " " + dictionary.ui.monster.monsterDegreeOfDifficulty[3],
-        baseLv: monster.baseLv !== null ? monster.baseLv + 20 : 0,
-        experience: monster.experience !== null ? monster.experience * 5 : 0,
-        maxhp: monster.maxhp !== null ? monster.maxhp * 5 : 0,
-        physicalDefense: monster.physicalDefense !== null ? monster.physicalDefense * 4 : 0,
-        magicalDefense: monster.magicalDefense !== null ? monster.magicalDefense * 4 : 0,
-        avoidance: monster.avoidance !== null ? monster.avoidance * 4 : 0,
-      },
-      {
-        ...monster,
-        id: "",
-        name: monster.name + " " + dictionary.ui.monster.monsterDegreeOfDifficulty[4],
-        baseLv: monster.baseLv !== null ? monster.baseLv + 40 : 0,
-        experience: monster.experience !== null ? monster.experience * 10 : 0,
-        maxhp: monster.maxhp !== null ? monster.maxhp * 10 : 0,
-        physicalDefense: monster.physicalDefense !== null ? monster.physicalDefense * 6 : 0,
-        magicalDefense: monster.magicalDefense !== null ? monster.magicalDefense * 6 : 0,
-        avoidance: monster.avoidance !== null ? monster.avoidance * 6 : 0,
-      },
-    );
-  });
-  const [defaultMonsterList, setDefaultMonsterList] = useState(defaultMonsterAugmentedList);
+  // 计算各星级属性的方法
+  const computeMonsterAugmentedList = useCallback((monsterList: Monster[]) => {
+    const monsterAugmentedList: Monster[] = [];
+    monsterList.forEach((monster) => {
+      // 表中记录的是1星状态下的定点王数据， 2 / 3 / 4 星的经验和HP为1星的 2 / 5 / 10 倍；物防、魔防、回避值为1星的 2 / 4 / 6 倍。
+      monsterAugmentedList.push(
+        {
+          ...monster,
+          name: monster.name + " " + dictionary.ui.monster.monsterDegreeOfDifficulty[1],
+        },
+        {
+          ...monster,
+          id: "",
+          name: monster.name + " " + dictionary.ui.monster.monsterDegreeOfDifficulty[2],
+          baseLv: monster.baseLv !== null ? monster.baseLv + 10 : 0,
+          experience: monster.experience !== null ? monster.experience * 2 : 0,
+          maxhp: monster.maxhp !== null ? monster.maxhp * 2 : 0,
+          physicalDefense: monster.physicalDefense !== null ? monster.physicalDefense * 2 : 0,
+          magicalDefense: monster.magicalDefense !== null ? monster.magicalDefense * 2 : 0,
+        },
+        {
+          ...monster,
+          id: "",
+          name: monster.name + " " + dictionary.ui.monster.monsterDegreeOfDifficulty[3],
+          baseLv: monster.baseLv !== null ? monster.baseLv + 20 : 0,
+          experience: monster.experience !== null ? monster.experience * 5 : 0,
+          maxhp: monster.maxhp !== null ? monster.maxhp * 5 : 0,
+          physicalDefense: monster.physicalDefense !== null ? monster.physicalDefense * 4 : 0,
+          magicalDefense: monster.magicalDefense !== null ? monster.magicalDefense * 4 : 0,
+          avoidance: monster.avoidance !== null ? monster.avoidance * 4 : 0,
+        },
+        {
+          ...monster,
+          id: "",
+          name: monster.name + " " + dictionary.ui.monster.monsterDegreeOfDifficulty[4],
+          baseLv: monster.baseLv !== null ? monster.baseLv + 40 : 0,
+          experience: monster.experience !== null ? monster.experience * 10 : 0,
+          maxhp: monster.maxhp !== null ? monster.maxhp * 10 : 0,
+          physicalDefense: monster.physicalDefense !== null ? monster.physicalDefense * 6 : 0,
+          magicalDefense: monster.magicalDefense !== null ? monster.magicalDefense * 6 : 0,
+          avoidance: monster.avoidance !== null ? monster.avoidance * 6 : 0,
+        },
+      );
+    });
+    return monsterAugmentedList;
+  },[dictionary.ui.monster.monsterDegreeOfDifficulty]);
 
   // 状态管理参数
   const {
@@ -99,11 +104,12 @@ export default function MonserPageClient(props: Props) {
 
   // 搜索框行为函数
   const handleSearchFilterChange = (value: string) => {
+    const currentList = augmented ? computeMonsterAugmentedList(defaultMonsterList) : defaultMonsterList;
     if (value === "" || value === null) {
-      setMonsterList(defaultMonsterList);
+      setMonsterList(currentList);
     }
     // 搜索时需要忽略的数据
-    const hiddenData: Array<keyof Monster> = [
+    const monsterHiddenData: Array<keyof Monster> = [
       "id",
       "state",
       "experience",
@@ -117,10 +123,10 @@ export default function MonserPageClient(props: Props) {
       "createdByUserId",
     ];
     const newMonsterList: Monster[] = [];
-    defaultMonsterList.forEach((monster) => {
+    currentList.forEach((monster) => {
       let filter = false;
       for (const attr in monster) {
-        if (!hiddenData.includes(attr as keyof Monster)) {
+        if (!monsterHiddenData.includes(attr as keyof Monster)) {
           const monsterAttr = monster[attr as keyof Monster]?.toString();
           if (monsterAttr?.match(value)?.input !== undefined) {
             filter = true;
@@ -132,7 +138,7 @@ export default function MonserPageClient(props: Props) {
     setMonsterList(newMonsterList);
   };
 
-  // 弹出层怪物名称列表
+  // 弹出层同名怪物列表
   const [sameNameMonsterList, setSameNameMonsterList] = useState<Monster[]>([]);
   const compusteSameNameMonsterList = (monster: Monster, monsterList: Monster[]) => {
     const list: Monster[] = [];
@@ -147,7 +153,7 @@ export default function MonserPageClient(props: Props) {
   };
 
   // 定义不需要展示的列
-  const hiddenData: Array<keyof Monster> = ["id", "address", "monsterType", "updatedByUserId"];
+  const monsterHiddenData: Array<keyof Monster> = ["id", "address", "monsterType", "updatedByUserId"];
 
   // 列定义
   const columns = React.useMemo<ColumnDef<Monster>[]>(
@@ -320,7 +326,6 @@ export default function MonserPageClient(props: Props) {
 
   // 表格行点击事件
   const handleTrClick = (id: string) => {
-    console.log("id==" + id);
     const targetMonster = monsterList.find((monster) => monster.id === id);
     if (targetMonster) {
       setMonster(targetMonster);
@@ -332,7 +337,7 @@ export default function MonserPageClient(props: Props) {
 
   useEffect(() => {
     console.log("--Monster Client Render");
-    setMonsterList(defaultMonsterList);
+    setMonsterList(augmented ? computeMonsterAugmentedList(defaultMonsterList) : defaultMonsterList);
     // u键监听
     const handleUKeyPress = (e: KeyboardEvent) => {
       if (e.key === "u") {
@@ -347,7 +352,7 @@ export default function MonserPageClient(props: Props) {
       console.log("--Monster Client Unmount");
       document.removeEventListener("keydown", handleUKeyPress);
     };
-  }, [defaultMonsterList, monster, setMonster, setMonsterDialogState, setMonsterFormState, setMonsterList]);
+  }, [augmented, computeMonsterAugmentedList, defaultMonsterList, monster, setMonster, setMonsterDialogState, setMonsterFormState, setMonsterList]);
 
   return (
     <main className="flex flex-col lg:w-[calc(100dvw-96px)] lg:flex-row">
@@ -374,7 +379,7 @@ export default function MonserPageClient(props: Props) {
                 ALL
               </Button>
               {table.getAllLeafColumns().map((column) => {
-                if (hiddenData.includes(column.id as keyof Monster)) {
+                if (monsterHiddenData.includes(column.id as keyof Monster)) {
                   // 默认隐藏的数据
                   return;
                 }
@@ -392,8 +397,10 @@ export default function MonserPageClient(props: Props) {
             </div>
           </div>
           <div className="module flex flex-col gap-3">
-            <div className="title">{dictionary.ui.monster.columnsHidden}</div>
-            <div className="content flex flex-wrap gap-2 "></div>
+            <div className="title">{dictionary.ui.monster.augmented}</div>
+            <div className="content flex flex-wrap gap-2 ">
+              <Button level={augmented ? "tertiary" : "primary"} onClick={() => setAugmented(!augmented)}>{ augmented ? "OFF" : "ON" }</Button>
+            </div>
           </div>
         </div>
       </div>
@@ -472,7 +479,7 @@ export default function MonserPageClient(props: Props) {
                   <tr key={headerGroup.id} className=" flex min-w-full gap-0 border-b-2">
                     {headerGroup.headers.map((header) => {
                       const { column } = header;
-                      if (hiddenData.includes(column.id as keyof Monster)) {
+                      if (monsterHiddenData.includes(column.id as keyof Monster)) {
                         // 默认隐藏的数据
                         return;
                       }
@@ -562,12 +569,12 @@ export default function MonserPageClient(props: Props) {
                   >
                     {row.getVisibleCells().map((cell) => {
                       const { column } = cell;
-                      if (hiddenData.includes(column.id as keyof Monster)) {
+                      if (monsterHiddenData.includes(column.id as keyof Monster)) {
                         // 默认隐藏的数据
                         return;
                       }
 
-                      switch (cell.column.id as Exclude<keyof Monster, keyof typeof hiddenData>) {
+                      switch (cell.column.id as Exclude<keyof Monster, keyof typeof monsterHiddenData>) {
                         case "name":
                           return (
                             <td
@@ -614,7 +621,6 @@ export default function MonserPageClient(props: Props) {
                         // 以下值需要添加百分比符号
                         case "physicalResistance":
                         case "magicalResistance":
-                        case "criticalResistance":
                         case "dodge":
                         case "block":
                         case "normalAttackResistanceModifier":
@@ -631,6 +637,8 @@ export default function MonserPageClient(props: Props) {
                               {flexRender(cell.column.columnDef.cell, cell.getContext())}%
                             </td>
                           );
+
+                        case "criticalResistance":
 
                         default:
                           return (

@@ -34,6 +34,7 @@ const dictionary: dictionary = {
       discription: "Emmm..............",
       columnsHidden: "Columns Hidden",
       filter: "Filter",
+      augmented: "Show All Stars",
       monsterDegreeOfDifficulty: {
         0: "☆☆☆☆",
         1: "★☆☆☆",

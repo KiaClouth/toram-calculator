@@ -34,6 +34,7 @@ const dictionary: dictionary = {
       discription: "表中记录的是1星状态下的定点王数据， 2 / 3 / 4 星的经验和HP为1星的 2 / 5 / 10 倍；物防、魔防、回避值为1星的 2 / 4 / 6 倍。",
       columnsHidden: "隐藏列",
       filter: "过滤",
+      augmented: "是否展示全部星级数据",
       monsterDegreeOfDifficulty: {
         0: "零星",
         1: "一星",

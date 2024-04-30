@@ -46,6 +46,7 @@ interface dictionary {
       searchPlaceholder: string;
       filter: string;
       columnsHidden: string;
+      augmented: string;
       monsterDegreeOfDifficulty: {
         0: string;
         1: string;
