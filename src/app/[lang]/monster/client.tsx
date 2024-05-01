@@ -54,7 +54,7 @@ export default function MonserPageClient(props: Props) {
         },
         {
           ...monster,
-          id: "",
+          id: monster.id + "**",
           name: monster.name + " " + dictionary.ui.monster.monsterDegreeOfDifficulty[2],
           baseLv: monster.baseLv !== null ? monster.baseLv + 10 : 0,
           experience: monster.experience !== null ? monster.experience * 2 : 0,
@@ -64,7 +64,7 @@ export default function MonserPageClient(props: Props) {
         },
         {
           ...monster,
-          id: "",
+          id: monster.id + "***",
           name: monster.name + " " + dictionary.ui.monster.monsterDegreeOfDifficulty[3],
           baseLv: monster.baseLv !== null ? monster.baseLv + 20 : 0,
           experience: monster.experience !== null ? monster.experience * 5 : 0,
@@ -75,7 +75,7 @@ export default function MonserPageClient(props: Props) {
         },
         {
           ...monster,
-          id: "",
+          id: monster.id + "****",
           name: monster.name + " " + dictionary.ui.monster.monsterDegreeOfDifficulty[4],
           baseLv: monster.baseLv !== null ? monster.baseLv + 40 : 0,
           experience: monster.experience !== null ? monster.experience * 10 : 0,
@@ -326,6 +326,7 @@ export default function MonserPageClient(props: Props) {
 
   // 表格行点击事件
   const handleTrClick = (id: string) => {
+    console.log(id);
     const targetMonster = monsterList.find((monster) => monster.id === id);
     if (targetMonster) {
       setMonster(targetMonster);
