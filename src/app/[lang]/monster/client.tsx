@@ -47,44 +47,48 @@ export default function MonserPageClient(props: Props) {
     const monsterAugmentedList: Monster[] = [];
     monsterList.forEach((monster) => {
       // 表中记录的是1星状态下的定点王数据， 2 / 3 / 4 星的经验和HP为1星的 2 / 5 / 10 倍；物防、魔防、回避值为1星的 2 / 4 / 6 倍。
-      monsterAugmentedList.push(
-        {
-          ...monster,
-          name: monster.name + " " + dictionary.ui.monster.monsterDegreeOfDifficulty[1],
-        },
-        {
-          ...monster,
-          id: monster.id + "**",
-          name: monster.name + " " + dictionary.ui.monster.monsterDegreeOfDifficulty[2],
-          baseLv: monster.baseLv !== null ? monster.baseLv + 10 : 0,
-          experience: monster.experience !== null ? monster.experience * 2 : 0,
-          maxhp: monster.maxhp !== null ? monster.maxhp * 2 : 0,
-          physicalDefense: monster.physicalDefense !== null ? monster.physicalDefense * 2 : 0,
-          magicalDefense: monster.magicalDefense !== null ? monster.magicalDefense * 2 : 0,
-        },
-        {
-          ...monster,
-          id: monster.id + "***",
-          name: monster.name + " " + dictionary.ui.monster.monsterDegreeOfDifficulty[3],
-          baseLv: monster.baseLv !== null ? monster.baseLv + 20 : 0,
-          experience: monster.experience !== null ? monster.experience * 5 : 0,
-          maxhp: monster.maxhp !== null ? monster.maxhp * 5 : 0,
-          physicalDefense: monster.physicalDefense !== null ? monster.physicalDefense * 4 : 0,
-          magicalDefense: monster.magicalDefense !== null ? monster.magicalDefense * 4 : 0,
-          avoidance: monster.avoidance !== null ? monster.avoidance * 4 : 0,
-        },
-        {
-          ...monster,
-          id: monster.id + "****",
-          name: monster.name + " " + dictionary.ui.monster.monsterDegreeOfDifficulty[4],
-          baseLv: monster.baseLv !== null ? monster.baseLv + 40 : 0,
-          experience: monster.experience !== null ? monster.experience * 10 : 0,
-          maxhp: monster.maxhp !== null ? monster.maxhp * 10 : 0,
-          physicalDefense: monster.physicalDefense !== null ? monster.physicalDefense * 6 : 0,
-          magicalDefense: monster.magicalDefense !== null ? monster.magicalDefense * 6 : 0,
-          avoidance: monster.avoidance !== null ? monster.avoidance * 6 : 0,
-        },
-      );
+      if (monster.monsterType !== "COMMON_BOSS") {
+        monsterAugmentedList.push(monster);
+      } else {
+        monsterAugmentedList.push(
+          {
+            ...monster,
+            name: monster.name + " " + dictionary.ui.monster.monsterDegreeOfDifficulty[1],
+          },
+          {
+            ...monster,
+            id: monster.id + "**",
+            name: monster.name + " " + dictionary.ui.monster.monsterDegreeOfDifficulty[2],
+            baseLv: monster.baseLv !== null ? monster.baseLv + 10 : 0,
+            experience: monster.experience !== null ? monster.experience * 2 : 0,
+            maxhp: monster.maxhp !== null ? monster.maxhp * 2 : 0,
+            physicalDefense: monster.physicalDefense !== null ? monster.physicalDefense * 2 : 0,
+            magicalDefense: monster.magicalDefense !== null ? monster.magicalDefense * 2 : 0,
+          },
+          {
+            ...monster,
+            id: monster.id + "***",
+            name: monster.name + " " + dictionary.ui.monster.monsterDegreeOfDifficulty[3],
+            baseLv: monster.baseLv !== null ? monster.baseLv + 20 : 0,
+            experience: monster.experience !== null ? monster.experience * 5 : 0,
+            maxhp: monster.maxhp !== null ? monster.maxhp * 5 : 0,
+            physicalDefense: monster.physicalDefense !== null ? monster.physicalDefense * 4 : 0,
+            magicalDefense: monster.magicalDefense !== null ? monster.magicalDefense * 4 : 0,
+            avoidance: monster.avoidance !== null ? monster.avoidance * 4 : 0,
+          },
+          {
+            ...monster,
+            id: monster.id + "****",
+            name: monster.name + " " + dictionary.ui.monster.monsterDegreeOfDifficulty[4],
+            baseLv: monster.baseLv !== null ? monster.baseLv + 40 : 0,
+            experience: monster.experience !== null ? monster.experience * 10 : 0,
+            maxhp: monster.maxhp !== null ? monster.maxhp * 10 : 0,
+            physicalDefense: monster.physicalDefense !== null ? monster.physicalDefense * 6 : 0,
+            magicalDefense: monster.magicalDefense !== null ? monster.magicalDefense * 6 : 0,
+            avoidance: monster.avoidance !== null ? monster.avoidance * 6 : 0,
+          },
+        );
+      }
     });
     return monsterAugmentedList;
   },[dictionary.ui.monster.monsterDegreeOfDifficulty]);
@@ -143,7 +147,7 @@ export default function MonserPageClient(props: Props) {
   const compusteSameNameMonsterList = (monster: Monster, monsterList: Monster[]) => {
     const list: Monster[] = [];
     monsterList.forEach((m) => {
-      m.name === monster.name && list.push(m);
+      m.name === monster.name && m.monsterType === monster.monsterType && list.push(m);
     });
     return list.sort((monsterA, monsterB) => {
       const dateA = new Date(monsterA.updatedAt);

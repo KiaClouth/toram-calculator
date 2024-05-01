@@ -1,6 +1,7 @@
 "use client";
 
 import type { $Enums } from "@prisma/client";
+import type { Skill } from "~/server/api/routers/skill";
 import {
   type Column,
   type ColumnDef,
@@ -14,21 +15,31 @@ import { type Session } from "next-auth";
 import React, { useState, type CSSProperties, useEffect } from "react";
 import SkillForm from "./skillForm";
 import Button from "../_components/button";
-import { IconCloudUpload, IconFilter } from "../_components/iconsList";
+import {
+  IconCloudUpload,
+  IconElementWind,
+  IconElementDark,
+  IconElementEarth,
+  IconElementFire,
+  IconElementLight,
+  IconElementNoElement,
+  IconElementWater,
+  IconFilter,
+} from "../_components/iconsList";
 import Dialog from "../_components/dialog";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { useBearStore } from "~/app/store";
 import { defaultSkill } from "~/app/store";
-import { type Skill } from "~/server/api/routers/skill";
 
-export default function MonserPageClient(props: {
+interface Props {
   dictionary: ReturnType<typeof getDictionary>;
   session: Session | null;
   skillList: Skill[];
-}) {
+}
+
+export default function MonserPageClient(props: Props) {
   const { dictionary, session } = props;
   const [defaultSkillList, setDefaultSkillList] = useState(props.skillList);
-
   // 状态管理参数
   const {
     skill,
@@ -44,11 +55,12 @@ export default function MonserPageClient(props: {
 
   // 搜索框行为函数
   const handleSearchFilterChange = (value: string) => {
+    const currentList = defaultSkillList;
     if (value === "" || value === null) {
-      setSkillList(defaultSkillList);
+      setSkillList(currentList);
     }
     // 搜索时需要忽略的数据
-    const hiddenData: Array<keyof Skill> = [
+    const skillHiddenData: Array<keyof Skill> = [
       "id",
       "state",
       "updatedAt",
@@ -57,10 +69,10 @@ export default function MonserPageClient(props: {
       "createdByUserId",
     ];
     const newSkillList: Skill[] = [];
-    defaultSkillList.forEach((skill) => {
+    currentList.forEach((skill) => {
       let filter = false;
       for (const attr in skill) {
-        if (!hiddenData.includes(attr as keyof Skill)) {
+        if (!skillHiddenData.includes(attr as keyof Skill)) {
           const skillAttr = skill[attr as keyof Skill]?.toString();
           if (skillAttr?.match(value)?.input !== undefined) {
             filter = true;
@@ -72,15 +84,12 @@ export default function MonserPageClient(props: {
     setSkillList(newSkillList);
   };
 
-  // 定义不需要展示的列
-  const hiddenData: Array<keyof Skill> = ["id"];
-
-  // 弹出层怪物名称列表
+  // 弹出层同名怪物列表
   const [sameNameSkillList, setSameNameSkillList] = useState<Skill[]>([]);
   const compusteSameNameSkillList = (skill: Skill, skillList: Skill[]) => {
     const list: Skill[] = [];
     skillList.forEach((m) => {
-      m.name === skill.name && list.push(m);
+      m.name === skill.name && m.skillType === skill.skillType && list.push(m);
     });
     return list.sort((skillA, skillB) => {
       const dateA = new Date(skillA.updatedAt);
@@ -88,6 +97,9 @@ export default function MonserPageClient(props: {
       return dateA.getTime() - dateB.getTime();
     });
   };
+
+  // 定义不需要展示的列
+  const skillHiddenData: Array<keyof Skill> = ["id", "updatedAt", "updatedByUserId", "createdAt", "createdByUserId"];
 
   // 列定义
   const columns = React.useMemo<ColumnDef<Skill>[]>(
@@ -102,23 +114,29 @@ export default function MonserPageClient(props: {
         accessorKey: "name",
         header: () => dictionary.db.models.skill.name,
         cell: (info) => info.getValue(),
-        size: 180,
-      },
-      {
-        accessorKey: "element",
-        header: dictionary.db.models.skill.element,
-        cell: (info) => info.getValue(),
-        size: 180,
+        size: 220,
       },
       {
         accessorKey: "skillTreeName",
-        header: dictionary.db.models.skill.skillTreeName,
+        header: () => dictionary.db.models.skill.skillTreeName,
         cell: (info) => info.getValue(),
-        size: 180,
+        size: 140,
       },
       {
         accessorKey: "skillType",
-        header: dictionary.db.models.skill.skillType,
+        header: () => dictionary.db.models.skill.skillType,
+        cell: (info) => dictionary.db.enums.SkillType[info.getValue<$Enums.SkillType>()],
+        size: 120,
+      },
+      {
+        accessorKey: "element",
+        header: () => dictionary.db.models.skill.element,
+        cell: (info) => dictionary.db.enums.Element[info.getValue<$Enums.Element>()],
+        size: 160,
+      },
+      {
+        accessorKey: "weaponElementDependencyType",
+        header: () => dictionary.db.models.skill.weaponElementDependencyType,
         cell: (info) => info.getValue(),
         size: 180,
       },
@@ -135,13 +153,16 @@ export default function MonserPageClient(props: {
       },
     ],
     [
-      dictionary.db.models.skill.element,
+      dictionary.db.models.skill.updatedAt,
       dictionary.db.models.skill.id,
       dictionary.db.models.skill.name,
       dictionary.db.models.skill.skillTreeName,
       dictionary.db.models.skill.skillType,
-      dictionary.db.models.skill.updatedAt,
+      dictionary.db.models.skill.element,
+      dictionary.db.models.skill.weaponElementDependencyType,
       dictionary.db.models.skill.usageCount,
+      dictionary.db.enums.SkillType,
+      dictionary.db.enums.Element,
     ],
   );
 
@@ -178,17 +199,6 @@ export default function MonserPageClient(props: {
     overscan: 5,
   });
 
-  // 表格行点击事件
-  const handleTrClick = (id: string) => {
-    skillList.forEach((skill) => {
-      if (skill.id !== id) return;
-      setSkill(skill);
-      setSameNameSkillList(compusteSameNameSkillList(skill, skillList));
-      setSkillDialogState(true);
-      setSkillFormState("DISPLAY");
-    });
-  };
-
   // 表头固定
   const getCommonPinningStyles = (column: Column<Skill>): CSSProperties => {
     const isPinned = column.getIsPinned();
@@ -207,11 +217,23 @@ export default function MonserPageClient(props: {
     return styles;
   };
 
+  // 表格行点击事件
+  const handleTrClick = (id: string) => {
+    console.log(id);
+    const targetSkill = skillList.find((skill) => skill.id === id);
+    if (targetSkill) {
+      setSkill(targetSkill);
+      setSameNameSkillList(compusteSameNameSkillList(targetSkill, skillList));
+      setSkillDialogState(true);
+      setSkillFormState("DISPLAY");
+    }
+  };
+
   useEffect(() => {
     console.log("--Skill Client Render");
     setSkillList(defaultSkillList);
     // u键监听
-    const handleEscapeKeyPress = (e: KeyboardEvent) => {
+    const handleUKeyPress = (e: KeyboardEvent) => {
       if (e.key === "u") {
         setSkill(defaultSkill);
         setSameNameSkillList([]);
@@ -219,12 +241,12 @@ export default function MonserPageClient(props: {
         setSkillFormState("CREATE");
       }
     };
-    document.addEventListener("keydown", handleEscapeKeyPress);
+    document.addEventListener("keydown", handleUKeyPress);
     return () => {
       console.log("--Skill Client Unmount");
-      document.removeEventListener("keydown", handleEscapeKeyPress);
+      document.removeEventListener("keydown", handleUKeyPress);
     };
-  }, [defaultSkillList, setSkill, setSkillDialogState, setSkillFormState, setSkillList]);
+  }, [defaultSkillList, skill, setSkill, setSkillDialogState, setSkillFormState, setSkillList]);
 
   return (
     <main className="flex flex-col lg:w-[calc(100dvw-96px)] lg:flex-row">
@@ -251,7 +273,7 @@ export default function MonserPageClient(props: {
                 ALL
               </Button>
               {table.getAllLeafColumns().map((column) => {
-                if (hiddenData.includes(column.id as keyof Skill)) {
+                if (skillHiddenData.includes(column.id as keyof Skill)) {
                   // 默认隐藏的数据
                   return;
                 }
@@ -269,24 +291,23 @@ export default function MonserPageClient(props: {
             </div>
           </div>
           <div className="module flex flex-col gap-3">
-            <div className="title">{dictionary.ui.skill.columnsHidden}</div>
+            <div className="title">{}</div>
             <div className="content flex flex-wrap gap-2 "></div>
           </div>
         </div>
       </div>
-      <div className="Module2 flex flex-1 px-3 backdrop-blur-xl w-full overflow-hidden">
+      <div className="Module2 flex w-full flex-1 overflow-hidden px-3 backdrop-blur-xl">
         <div className="LeftArea sticky top-0 z-10 flex-1"></div>
         <div
           ref={tableContainerRef}
           className={`ModuleContent h-[calc(100dvh-67px)] w-full flex-col overflow-auto lg:h-dvh lg:max-w-[1536px]`}
         >
-          <div className="Title sticky left-0 mt-3 flex flex-col gap-9 py-10 lg:py-5 lg:pb-10 lg:pt-20">
+          <div className="Title sticky left-0 mt-3 flex flex-col gap-9 py-5 lg:pt-20">
             <div className="Row flex flex-col items-center justify-between gap-10 lg:flex-row lg:justify-start lg:gap-4">
-              <h1 className="Text text-nowrap text-left text-3xl lg:bg-transparent lg:text-4xl">
-                {dictionary.ui.skill.pageTitle}
-              </h1>
+              <h1 className="Text text-left text-3xl lg:bg-transparent lg:text-4xl">{dictionary.ui.skill.pageTitle}</h1>
               <div className="Control flex flex-1 gap-2">
                 <input
+                  id="SkillSearchBox"
                   type="search"
                   placeholder={dictionary.ui.skill.searchPlaceholder}
                   className="w-full flex-1 rounded-sm border-transition-color-20 bg-transition-color-8 px-3 py-2 backdrop-blur-xl placeholder:text-accent-color-50 hover:border-accent-color-70 hover:bg-transition-color-8
@@ -298,9 +319,7 @@ export default function MonserPageClient(props: {
                   level="tertiary"
                   className="switch lg:hidden"
                   icon={<IconFilter />}
-                  onClick={() => {
-                    setFilterState(!filterState);
-                  }}
+                  onClick={() => setFilterState(!filterState)}
                 ></Button>
                 <Button // 仅PC端显示
                   className="switch hidden lg:flex"
@@ -333,7 +352,7 @@ export default function MonserPageClient(props: {
                         setSkillFormState("CREATE");
                       }}
                     >
-                      {dictionary.ui.skill.upload} [u]
+                      {dictionary.ui.upload} [u]
                     </Button>
                   </React.Fragment>
                 )}
@@ -350,7 +369,7 @@ export default function MonserPageClient(props: {
                   <tr key={headerGroup.id} className=" flex min-w-full gap-0 border-b-2">
                     {headerGroup.headers.map((header) => {
                       const { column } = header;
-                      if (hiddenData.includes(column.id as keyof Skill)) {
+                      if (skillHiddenData.includes(column.id as keyof Skill)) {
                         // 默认隐藏的数据
                         return;
                       }
@@ -366,7 +385,7 @@ export default function MonserPageClient(props: {
                             {...{
                               onClick: header.column.getToggleSortingHandler(),
                             }}
-                            className={`border-1 flex-1 border-transition-color-8 px-3 py-3 text-left hover:bg-transition-color-8 ${
+                            className={`border-1 flex-1 border-transition-color-8 px-3 py-4 text-left hover:bg-transition-color-8 lg:py-6 ${
                               header.column.getCanSort() ? "cursor-pointer select-none" : ""
                             }`}
                           >
@@ -376,6 +395,41 @@ export default function MonserPageClient(props: {
                               desc: " ↑",
                             }[header.column.getIsSorted() as string] ?? null}
                           </div>
+                          {/* {!header.isPlaceholder &&
+                            header.column.getCanPin() && ( // 固定列
+                              <div className="flex">
+                                {header.column.getIsPinned() !== "left" ? (
+                                  <button
+                                    className="flex-1 rounded bg-transition-color-8 px-1"
+                                    onClick={() => {
+                                      header.column.pin("left");
+                                    }}
+                                  >
+                                    {"←"}
+                                  </button>
+                                ) : null}
+                                {header.column.getIsPinned() ? (
+                                  <button
+                                    className="flex-1 rounded bg-transition-color-8 px-1"
+                                    onClick={() => {
+                                      header.column.pin(false);
+                                    }}
+                                  >
+                                    {"x"}
+                                  </button>
+                                ) : null}
+                                {header.column.getIsPinned() !== "right" ? (
+                                  <button
+                                    className="flex-1 rounded bg-transition-color-8 px-1"
+                                    onClick={() => {
+                                      header.column.pin("right");
+                                    }}
+                                  >
+                                    {"→"}
+                                  </button>
+                                ) : null}
+                              </div>
+                            )} */}
                         </th>
                       );
                     })}
@@ -400,17 +454,17 @@ export default function MonserPageClient(props: {
                       position: "absolute",
                       transform: `translateY(${virtualRow.start}px)`, //this should always be a `style` as it changes on scroll
                     }}
-                    className={`group flex cursor-pointer border-y-1.5 border-transition-color-8 transition-none hover:border-brand-color-1st`}
+                    className={`group flex cursor-pointer border-y-[1px] border-transition-color-8 transition-none hover:rounded hover:border-transparent hover:bg-transition-color-8 hover:font-bold lg:border-y-1.5`}
                     onClick={() => handleTrClick(row.getValue("id"))}
                   >
                     {row.getVisibleCells().map((cell) => {
                       const { column } = cell;
-                      if (hiddenData.includes(column.id as keyof Skill)) {
+                      if (skillHiddenData.includes(column.id as keyof Skill)) {
                         // 默认隐藏的数据
                         return;
                       }
 
-                      switch (cell.column.id as Exclude<keyof Skill, keyof typeof hiddenData>) {
+                      switch (cell.column.id as Exclude<keyof Skill, keyof typeof skillHiddenData>) {
                         case "name":
                           return (
                             <td
@@ -418,7 +472,7 @@ export default function MonserPageClient(props: {
                               style={{
                                 ...getCommonPinningStyles(column),
                               }}
-                              className="flex flex-col justify-center px-3 py-6"
+                              className="flex flex-col justify-center px-3 py-6 lg:py-8"
                             >
                               <span className=" text-lg font-bold">
                                 {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -426,7 +480,31 @@ export default function MonserPageClient(props: {
                             </td>
                           );
 
-                        default: {
+                        case "element": {
+                          const icon =
+                            {
+                              WATER: <IconElementWater className="h-12 w-12" />,
+                              FIRE: <IconElementFire className="h-12 w-12" />,
+                              EARTH: <IconElementEarth className="h-12 w-12" />,
+                              WIND: <IconElementWind className="h-12 w-12" />,
+                              LIGHT: <IconElementLight className="h-12 w-12" />,
+                              DARK: <IconElementDark className="h-12 w-12" />,
+                              NO_ELEMENT: <IconElementNoElement className="h-12 w-12" />,
+                            }[cell.getValue() as keyof typeof $Enums.Element] ?? undefined;
+                          return (
+                            <td
+                              key={cell.id}
+                              style={{
+                                ...getCommonPinningStyles(column),
+                              }}
+                              className={"flex flex-col justify-center px-3 py-6"}
+                            >
+                              {icon}
+                            </td>
+                          );
+                        }
+
+                        default:
                           return (
                             <td
                               key={cell.id}
@@ -449,7 +527,6 @@ export default function MonserPageClient(props: {
                               })(cell)}
                             </td>
                           );
-                        }
                       }
                     })}
                   </tr>
@@ -487,7 +564,12 @@ export default function MonserPageClient(props: {
               </div>
             )}
             {/* <div className="tab flex w-32 flex-col justify-center gap-1 border-r-1.5 border-brand-color-1st p-3"></div> */}
-            <SkillForm dictionary={dictionary} session={session} defaultSkillList={defaultSkillList} setDefaultSkillList={setDefaultSkillList} />
+            <SkillForm
+              dictionary={dictionary}
+              session={session}
+              defaultSkillList={defaultSkillList}
+              setDefaultSkillList={setDefaultSkillList}
+            />
           </div>
         )}
       </Dialog>
