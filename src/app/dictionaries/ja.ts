@@ -35,6 +35,7 @@ const dictionary: dictionary = {
       columnsHidden: "隐藏列",
       filter: "过滤",
       augmented: "是否展示全部星级数据",
+      canNotModify: "系统生成，不可修改",
       monsterDegreeOfDifficulty: {
         0: "零星",
         1: "一星",

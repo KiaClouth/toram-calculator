@@ -35,6 +35,7 @@ const dictionary: dictionary = {
       columnsHidden: "Columns Hidden",
       filter: "Filter",
       augmented: "Show All Stars",
+      canNotModify: "System Generated",
       monsterDegreeOfDifficulty: {
         0: "☆☆☆☆",
         1: "★☆☆☆",

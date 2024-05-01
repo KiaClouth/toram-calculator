@@ -512,8 +512,8 @@ export default function MonsterForm(props: {
           >
             {dictionary.ui.close} [Esc]
           </Button>
-          {monsterFormState == "DISPLAY" && !monster.id.endsWith("*")  && session?.user.id === monster.createdByUserId && (
-            <Button onClick={() => setMonsterFormState("UPDATE")}>{dictionary.ui.modify} [Enter]</Button>
+          {monsterFormState == "DISPLAY"  && session?.user.id === monster.createdByUserId && (
+            monster.id.endsWith("*") ? <Button disabled>{dictionary.ui.monster.canNotModify}</Button> : <Button onClick={() => setMonsterFormState("UPDATE")}>{dictionary.ui.modify} [Enter]</Button>
           )}
           {monsterFormState !== "DISPLAY" && (
             <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
