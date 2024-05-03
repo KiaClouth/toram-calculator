@@ -293,6 +293,8 @@ interface AppState {
   monster: Monster;
   setMonster: (newMonster: Monster) => void;
   monsterPage: {
+    augmented: boolean;
+    setAugmented: (newState: boolean) => void;
     monsterList: Monster[];
     setMonsterList: (newMonsterList: Monster[]) => void;
     monsterDialogState: boolean;
@@ -344,6 +346,13 @@ export const useStore = create<AppState>()(
         }),
       ),
     monsterPage: {
+      augmented: true,
+      setAugmented: (newState: boolean) =>
+        set(
+          produce((state: AppState) => {
+            state.monsterPage.augmented = newState;
+          })
+        ),
       monsterList: [],
       setMonsterList: (newMonsterList: Monster[]) =>
         set(

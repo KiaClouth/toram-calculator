@@ -40,7 +40,6 @@ interface Props {
 export default function MonserPageClient(props: Props) {
   const { dictionary, session } = props;
   const [defaultMonsterList, setDefaultMonsterList] = useState(props.monsterList);
-  const [augmented, setAugmented] = useState(true);
 
   // 计算各星级属性的方法
   const computeMonsterAugmentedList = useCallback(
@@ -98,6 +97,8 @@ export default function MonserPageClient(props: Props) {
 
   // 状态管理参数
   const {
+    augmented,
+    setAugmented,
     monsterList,
     setMonsterList,
     monsterDialogState,

@@ -51,9 +51,10 @@ export default function MonsterForm(props: {
 }) {
   const { dictionary, session, defaultMonsterList, setDefaultMonsterList } = props;
   // 状态管理参数
-  const { monsterDialogState, setMonsterList, setMonsterDialogState, monsterFormState, setMonsterFormState } =
-    useStore((state) => state.monsterPage);
-    const { monster } = useStore((state) => state);
+  const { augmented, monsterDialogState, setMonsterList, setMonsterDialogState, monsterFormState, setMonsterFormState } = useStore(
+    (state) => state.monsterPage,
+  );
+  const { monster, setMonster } = useStore((state) => state);
   let newMonster: Monster;
   const formTitle = {
     CREATE: dictionary.ui.upload,
@@ -559,7 +560,23 @@ export default function MonsterForm(props: {
             (monster.id.endsWith("*") ? (
               <Button disabled>{dictionary.ui.monster.canNotModify}</Button>
             ) : (
-              <Button onClick={() => setMonsterFormState("UPDATE")}>{dictionary.ui.modify} [Enter]</Button>
+              <Button
+                onClick={() => {
+                  // 如果处于所有星级都展示的状态，则一星怪物名称后面会附加额外字段，在此去除
+                  if (monster.monsterType === "COMMON_BOSS" && augmented) {
+                    const name = monster.name;
+                    const lastIndex = name.lastIndexOf(" ");
+                    const result = lastIndex !== -1 ? name.substring(0, lastIndex) : name;
+                    setMonster({
+                      ...monster,
+                      name: result,
+                    });
+                  }
+                  setMonsterFormState("UPDATE");
+                }}
+              >
+                {dictionary.ui.modify} [Enter]
+              </Button>
             ))}
           {monsterFormState !== "DISPLAY" && (
             <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
