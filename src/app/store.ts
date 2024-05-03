@@ -5,8 +5,14 @@ import type { Analyzer } from "@prisma/client";
 import { type SkillEffect, type Skill, type SkillCost, type SkillYield } from "~/server/api/routers/skill";
 import type { Monster } from "~/server/api/routers/monster";
 import type { Character, Cuisine, Fashion } from "~/server/api/routers/character";
-import { type SubWeapon, type AdditionalEquipment, type BodyArmor, type MainWeapon, type SpecialEquipment } from "~/server/api/routers/equipment";
-import type { Crystal, ModifiersList,Modifier } from "~/server/api/routers/crystal";
+import {
+  type SubWeapon,
+  type AdditionalEquipment,
+  type BodyArmor,
+  type MainWeapon,
+  type SpecialEquipment,
+} from "~/server/api/routers/equipment";
+import type { Crystal, ModifiersList, Modifier } from "~/server/api/routers/crystal";
 import type { Consumable } from "~/server/api/routers/consumable";
 import type { Pet } from "~/server/api/routers/pet";
 
@@ -21,8 +27,8 @@ const defaultStatistics = {
   createdAt: new Date(),
   updatedAt: new Date(),
   usageTimestamps: [],
-  viewTimestamps: []
-}
+  viewTimestamps: [],
+};
 
 // 怪物表单的默认值
 export const defaultMonster: Monster = {
@@ -62,8 +68,8 @@ export const defaultSkillEffectCost: SkillCost = {
   id: "",
   name: "MP Cost",
   costFormula: "",
-  skillEffectId: null
-}
+  skillEffectId: null,
+};
 
 export const defaultSkillEffectYield: SkillYield = {
   id: "",
@@ -73,8 +79,8 @@ export const defaultSkillEffectYield: SkillYield = {
   durationType: "FRAME",
   durationValue: 0,
   yieldFormula: "",
-  skillEffectId: null
-}
+  skillEffectId: null,
+};
 
 export const defaultSkillEffect: SkillEffect = {
   id: "",
@@ -86,7 +92,7 @@ export const defaultSkillEffect: SkillEffect = {
   castingDurationFormula: "0",
   skillCost: [defaultSkillEffectCost],
   skillYield: [defaultSkillEffectYield],
-}
+};
 
 export const defaultSkill: Skill = {
   id: "",
@@ -106,13 +112,13 @@ export const defauleModifier: Modifier = {
   id: "",
   modifiersValueType: "FLAT_BONUS",
   value: 0,
-  modifiersName: "STR"
-}
+  modifiersName: "STR",
+};
 
 export const defaultModifiersList: ModifiersList = {
   id: "",
   modifiers: [defauleModifier],
-}
+};
 
 export const defaultCrystal: Crystal = {
   id: "",
@@ -120,10 +126,11 @@ export const defaultCrystal: Crystal = {
   name: "",
   type: "GENERAL",
   front: 0,
+  modifiersList: defaultModifiersList,
   modifiersListId: defaultModifiersList.id,
   raters: [],
   ...defaultStatistics,
-}
+};
 
 export const defaultMainWeapon: MainWeapon = {
   id: "",
@@ -135,9 +142,10 @@ export const defaultMainWeapon: MainWeapon = {
   stability: 0,
   element: "NO_ELEMENT",
   crystal: [defaultCrystal],
+  modifiersList: defaultModifiersList,
   modifiersListId: defaultModifiersList.id,
   ...defaultStatistics,
-}
+};
 
 export const defaultSubWeapon: SubWeapon = {
   id: "",
@@ -148,9 +156,10 @@ export const defaultSubWeapon: SubWeapon = {
   refinement: 0,
   stability: 0,
   element: "NO_ELEMENT",
+  modifiersList: defaultModifiersList,
   modifiersListId: defaultModifiersList.id,
   ...defaultStatistics,
-}
+};
 
 export const defaultBodyArmor: BodyArmor = {
   id: "",
@@ -160,9 +169,10 @@ export const defaultBodyArmor: BodyArmor = {
   refinement: 0,
   baseDef: 0,
   crystal: [defaultCrystal],
+  modifiersList: defaultModifiersList,
   modifiersListId: defaultModifiersList.id,
   ...defaultStatistics,
-}
+};
 
 export const defaultAdditionalEquipment: AdditionalEquipment = {
   id: "",
@@ -170,39 +180,44 @@ export const defaultAdditionalEquipment: AdditionalEquipment = {
   name: "",
   refinement: 0,
   crystal: [defaultCrystal],
+  modifiersList: defaultModifiersList,
   modifiersListId: defaultModifiersList.id,
   ...defaultStatistics,
-}
+};
 
 export const defaultSpecialEquipment: SpecialEquipment = {
   id: "",
   state: "PRIVATE",
   name: "",
   crystal: [defaultCrystal],
+  modifiersList: defaultModifiersList,
   modifiersListId: defaultModifiersList.id,
   ...defaultStatistics,
-}
+};
 
 export const defaultFasion: Fashion = {
+  modifiersList: defaultModifiersList,
   modifiersListId: "",
   updatedAt: new Date(),
-  characterId: ""
-}
+  characterId: "",
+};
 
 export const defaultCuisine: Cuisine = {
+  modifiersList: defaultModifiersList,
   modifiersListId: "",
   updatedAt: new Date(),
-  characterId: ""
-}
+  characterId: "",
+};
 
 export const defaultconsumable: Consumable = {
   id: "",
   state: "PUBLIC",
   name: "",
   raters: [],
+  modifiersList: defaultModifiersList,
   modifiersListId: defaultModifiersList.id,
   ...defaultStatistics,
-}
+};
 
 export const defaultPet: Pet = {
   id: "",
@@ -210,7 +225,7 @@ export const defaultPet: Pet = {
   name: null,
   raters: [],
   ...defaultStatistics,
-}
+};
 
 export const defaultCharacter: Character = {
   id: "",
@@ -223,12 +238,12 @@ export const defaultCharacter: Character = {
     baseVit: 0,
     baseAgi: 0,
     baseDex: 0,
-    characterId: ""
+    characterId: "",
   },
   specialAbi: {
     specialAbiType: "NULL",
     value: 0,
-    characterId: ""
+    characterId: "",
   },
   equipmentList: {
     mainWeapon: defaultMainWeapon,
@@ -241,19 +256,19 @@ export const defaultCharacter: Character = {
     additionalEquipmentId: "",
     specialEquipment: defaultSpecialEquipment,
     specialEquipmentId: "",
-    characterId: ""
+    characterId: "",
   },
   fashion: defaultFasion,
   cuisine: defaultCuisine,
   consumableList: {
     updatedAt: new Date(),
     characterId: "",
-    consumables: [defaultconsumable]
+    consumables: [defaultconsumable],
   },
   skillList: {
     updatedAt: new Date(),
     characterId: "",
-    skills: [defaultSkill]
+    skills: [defaultSkill],
   },
   combos: [],
   pet: defaultPet,
@@ -261,8 +276,7 @@ export const defaultCharacter: Character = {
   modifiersList: defaultModifiersList,
   modifiersListId: defaultModifiersList.id,
   ...defaultStatistics,
-}
-
+};
 
 export const defaultAnalyzer: Analyzer = {
   id: "",
@@ -271,18 +285,16 @@ export const defaultAnalyzer: Analyzer = {
   createdAt: new Date(),
   createdByUserId: null,
   monsterId: null,
-  characterId: null
-}
+  characterId: null,
+};
 
 // 应用客户端状态数据类型定义
 interface AppState {
-  bears: number;
-  increase: (by: number) => void;
+  monster: Monster;
+  setMonster: (newMonster: Monster) => void;
   monsterPage: {
     monsterList: Monster[];
     setMonsterList: (newMonsterList: Monster[]) => void;
-    monster: Monster;
-    setMonster: (newMonster: Monster) => void;
     monsterDialogState: boolean;
     setMonsterDialogState: (newState: boolean) => void;
     monsterFormState: "CREATE" | "UPDATE" | "DISPLAY";
@@ -313,32 +325,30 @@ interface AppState {
     setAnalyzeFormState: (newState: "CREATE" | "UPDATE" | "DISPLAY") => void;
     filterState: boolean;
     setFilterState: (newState: boolean) => void;
-  }
+  };
 }
 
-export const useBearStore = create<AppState>()(
+export const useStore = create<AppState>()(
   (set) => ({
-    bears: 0,
-    increase: (by) => set((state) => ({ bears: state.bears + by })),
+    monster: defaultMonster,
+    setMonster: (newMonster: Monster) =>
+      set(
+        // (state) => ({ // 笨比写法
+        //   monsterPage: {
+        //     ...state.monsterPage,
+        //     monster: newMonster,
+        //   }
+        // })
+        produce((state: AppState) => {
+          state.monster = newMonster;
+        }),
+      ),
     monsterPage: {
       monsterList: [],
       setMonsterList: (newMonsterList: Monster[]) =>
         set(
           produce((state: AppState) => {
             state.monsterPage.monsterList = newMonsterList;
-          }),
-        ),
-      monster: defaultMonster,
-      setMonster: (newMonster: Monster) =>
-        set(
-          // (state) => ({ // 笨比写法
-          //   monsterPage: {
-          //     ...state.monsterPage,
-          //     monster: newMonster,
-          //   }
-          // })
-          produce((state: AppState) => {
-            state.monsterPage.monster = newMonster;
           }),
         ),
       monsterDialogState: false,
@@ -402,35 +412,41 @@ export const useBearStore = create<AppState>()(
     },
     analyzePage: {
       analyzeList: [],
-      setAnalyzeList: (newAnalyzeList: Analyzer[]) => set(
-        produce((state: AppState) => {
-          state.analyzePage.analyzeList = newAnalyzeList;
-        })
-      ),
+      setAnalyzeList: (newAnalyzeList: Analyzer[]) =>
+        set(
+          produce((state: AppState) => {
+            state.analyzePage.analyzeList = newAnalyzeList;
+          }),
+        ),
       analyze: defaultAnalyzer,
-      setAnalyze: (newAnalyze: Analyzer) => set(
-        produce((state: AppState) => {
-          state.analyzePage.analyze = newAnalyze;
-        })),
+      setAnalyze: (newAnalyze: Analyzer) =>
+        set(
+          produce((state: AppState) => {
+            state.analyzePage.analyze = newAnalyze;
+          }),
+        ),
       analyzeDialogState: false,
-      setAnalyzeDialogState: (newState: boolean) => set(
-        produce((state: AppState) => {
-          state.analyzePage.analyzeDialogState = newState;
-        })
-      ),
+      setAnalyzeDialogState: (newState: boolean) =>
+        set(
+          produce((state: AppState) => {
+            state.analyzePage.analyzeDialogState = newState;
+          }),
+        ),
       analyzeFormState: "DISPLAY",
-      setAnalyzeFormState: (newState: "CREATE" | "UPDATE" | "DISPLAY") => set(
-        produce((state: AppState) => {
-          state.analyzePage.analyzeFormState = newState;
-        })
-      ),
+      setAnalyzeFormState: (newState: "CREATE" | "UPDATE" | "DISPLAY") =>
+        set(
+          produce((state: AppState) => {
+            state.analyzePage.analyzeFormState = newState;
+          }),
+        ),
       filterState: false,
-      setFilterState: (newState: boolean) => set(
-        produce((state: AppState) => {
-          state.analyzePage.filterState = newState;
-        })
-      )
-    }
+      setFilterState: (newState: boolean) =>
+        set(
+          produce((state: AppState) => {
+            state.analyzePage.filterState = newState;
+          }),
+        ),
+    },
   }),
 
   // if you need middleware
@@ -446,3 +462,442 @@ export const useBearStore = create<AppState>()(
   //   )
   // )
 );
+
+export const test = {
+  character: {
+    id: "",
+    state: "PUBLIC",
+    name: "测试机体",
+    lv: 265,
+    baseAbi: {
+      baseStr: 0,
+      baseInt: 440,
+      baseVit: 0,
+      baseAgi: 0,
+      baseDex: 247,
+      characterId: "",
+    },
+    specialAbi: {
+      specialAbiType: "NULL",
+      value: 0,
+      characterId: "",
+    },
+    equipmentList: {
+      mainWeapon: {
+        id: "",
+        state: "PRIVATE",
+        name: "暴击残酷之翼",
+        mainWeaType: "MAGIC_DEVICE",
+        baseAtk: 194,
+        refinement: 15,
+        stability: 70,
+        element: "LIGHT",
+        crystal: [
+          {
+            id: "",
+            state: "PRIVATE",
+            name: "寄生甲兽",
+            type: "WEAPONCRYSTAL",
+            front: 0,
+            modifiersList: {
+              id: "",
+              modifiers: [
+                {
+                  id: "",
+                  modifiersValueType: "PERCENTAGE_BONUS",
+                  value: 5,
+                  modifiersName: "MAGICAL_ATK",
+                },
+                {
+                  id: "",
+                  modifiersValueType: "PERCENTAGE_BONUS",
+                  value: 20,
+                  modifiersName: "MAGICAL_PIERCE",
+                },
+                {
+                  id: "",
+                  modifiersValueType: "PERCENTAGE_BONUS",
+                  value: -15,
+                  modifiersName: "CSPD",
+                },
+              ],
+            },
+            modifiersListId: "",
+            raters: [],
+            ...defaultStatistics,
+          },
+          {
+            id: "",
+            state: "PRIVATE",
+            name: "死灵妖兔II",
+            type: "WEAPONCRYSTAL",
+            front: 1,
+            modifiersList: {
+              id: "",
+              modifiers: [
+                {
+                  id: "",
+                  modifiersValueType: "PERCENTAGE_BONUS",
+                  value: 7,
+                  modifiersName: "MAGICAL_ATK",
+                },
+                {
+                  id: "",
+                  modifiersValueType: "PERCENTAGE_BONUS",
+                  value: 14,
+                  modifiersName: "CSPD",
+                },
+                {
+                  id: "",
+                  modifiersValueType: "PERCENTAGE_BONUS",
+                  value: -15,
+                  modifiersName: "MAX_HP",
+                },
+                {
+                  id: "",
+                  modifiersValueType: "FLAT_BONUS",
+                  value: 3,
+                  modifiersName: "ANTICIPATE",
+                },
+              ],
+            },
+            modifiersListId: "",
+            raters: [],
+            ...defaultStatistics,
+          },
+        ],
+        modifiersList: {
+          id: "",
+          modifiers: [
+            {
+              id: "",
+              modifiersValueType: "FLAT_BONUS",
+              value: 0,
+              modifiersName: "STR",
+            },
+          ],
+        },
+        modifiersListId: "",
+        ...defaultStatistics,
+      },
+      mainWeaponId: "",
+      subWeapon: {
+        id: "",
+        state: "PRIVATE",
+        name: "",
+        subWeaType: "NO_WEAPOEN",
+        baseAtk: 0,
+        refinement: 0,
+        stability: 0,
+        element: "NO_ELEMENT",
+        modifiersList: {
+          id: "",
+          modifiers: [
+            {
+              id: "",
+              modifiersValueType: "FLAT_BONUS",
+              value: 0,
+              modifiersName: "STR",
+            },
+          ],
+        },
+        modifiersListId: "",
+        ...defaultStatistics,
+      },
+      subWeaponId: "",
+      bodyArmor: {
+        id: "",
+        state: "PRIVATE",
+        name: "",
+        bodyArmorType: "NORMAL",
+        refinement: 0,
+        baseDef: 0,
+        crystal: [
+          {
+            id: "",
+            state: "PRIVATE",
+            name: "",
+            type: "GENERAL",
+            front: 0,
+            modifiersList: {
+              id: "",
+              modifiers: [
+                {
+                  id: "",
+                  modifiersValueType: "FLAT_BONUS",
+                  value: 0,
+                  modifiersName: "STR",
+                },
+              ],
+            },
+            modifiersListId: "",
+            raters: [],
+            ...defaultStatistics,
+          },
+          {
+            id: "",
+            state: "PRIVATE",
+            name: "",
+            type: "GENERAL",
+            front: 0,
+            modifiersList: {
+              id: "",
+              modifiers: [
+                {
+                  id: "",
+                  modifiersValueType: "FLAT_BONUS",
+                  value: 0,
+                  modifiersName: "STR",
+                },
+              ],
+            },
+            modifiersListId: "",
+            raters: [],
+            ...defaultStatistics,
+          },
+        ],
+        modifiersList: {
+          id: "",
+          modifiers: [
+            {
+              id: "",
+              modifiersValueType: "FLAT_BONUS",
+              value: 0,
+              modifiersName: "STR",
+            },
+          ],
+        },
+        modifiersListId: "",
+        ...defaultStatistics,
+      },
+      bodyArmorId: "",
+      additionalEquipment: {
+        id: "",
+        state: "PRIVATE",
+        name: "",
+        refinement: 0,
+        crystal: [
+          {
+            id: "",
+            state: "PRIVATE",
+            name: "",
+            type: "GENERAL",
+            front: 0,
+            modifiersList: {
+              id: "",
+              modifiers: [
+                {
+                  id: "",
+                  modifiersValueType: "FLAT_BONUS",
+                  value: 0,
+                  modifiersName: "STR",
+                },
+              ],
+            },
+            modifiersListId: "",
+            raters: [],
+            ...defaultStatistics,
+          },
+          {
+            id: "",
+            state: "PRIVATE",
+            name: "",
+            type: "GENERAL",
+            front: 0,
+            modifiersList: {
+              id: "",
+              modifiers: [
+                {
+                  id: "",
+                  modifiersValueType: "FLAT_BONUS",
+                  value: 0,
+                  modifiersName: "STR",
+                },
+              ],
+            },
+            modifiersListId: "",
+            raters: [],
+            ...defaultStatistics,
+          },
+        ],
+        modifiersList: {
+          id: "",
+          modifiers: [
+            {
+              id: "",
+              modifiersValueType: "FLAT_BONUS",
+              value: 0,
+              modifiersName: "STR",
+            },
+          ],
+        },
+        modifiersListId: "",
+        ...defaultStatistics,
+      },
+      additionalEquipmentId: "",
+      specialEquipment: {
+        id: "",
+        state: "PRIVATE",
+        name: "",
+        crystal: [
+          {
+            id: "",
+            state: "PRIVATE",
+            name: "",
+            type: "GENERAL",
+            front: 0,
+            modifiersList: {
+              id: "",
+              modifiers: [
+                {
+                  id: "",
+                  modifiersValueType: "FLAT_BONUS",
+                  value: 0,
+                  modifiersName: "STR",
+                },
+              ],
+            },
+            modifiersListId: "",
+            raters: [],
+            ...defaultStatistics,
+          },
+          {
+            id: "",
+            state: "PRIVATE",
+            name: "",
+            type: "GENERAL",
+            front: 0,
+            modifiersList: {
+              id: "",
+              modifiers: [
+                {
+                  id: "",
+                  modifiersValueType: "FLAT_BONUS",
+                  value: 0,
+                  modifiersName: "STR",
+                },
+              ],
+            },
+            modifiersListId: "",
+            raters: [],
+            ...defaultStatistics,
+          },
+        ],
+        modifiersList: {
+          id: "",
+          modifiers: [
+            {
+              id: "",
+              modifiersValueType: "FLAT_BONUS",
+              value: 0,
+              modifiersName: "STR",
+            },
+          ],
+        },
+        modifiersListId: "",
+        ...defaultStatistics,
+      },
+      specialEquipmentId: "",
+      characterId: "",
+    },
+    fashion: {
+      modifiersList: {
+        id: "",
+        modifiers: [
+          {
+            id: "",
+            modifiersValueType: "FLAT_BONUS",
+            value: 0,
+            modifiersName: "STR",
+          },
+        ],
+      },
+      modifiersListId: "",
+      updatedAt: new Date(),
+      characterId: "",
+    },
+    cuisine: {
+      modifiersList: {
+        id: "",
+        modifiers: [
+          {
+            id: "",
+            modifiersValueType: "FLAT_BONUS",
+            value: 0,
+            modifiersName: "STR",
+          },
+        ],
+      },
+      modifiersListId: "",
+      updatedAt: new Date(),
+      characterId: "",
+    },
+    consumableList: {
+      updatedAt: new Date(),
+      characterId: "",
+      consumables: [
+        {
+          id: "",
+          state: "PUBLIC",
+          name: "",
+          raters: [],
+          modifiersList: {
+            id: "",
+            modifiers: [
+              {
+                id: "",
+                modifiersValueType: "FLAT_BONUS",
+                value: 0,
+                modifiersName: "STR",
+              },
+            ],
+          },
+          modifiersListId: "",
+          ...defaultStatistics,
+        },
+      ],
+    },
+    skillList: {
+      updatedAt: new Date(),
+      characterId: "",
+      skills: [defaultSkill],
+    },
+    combos: [],
+    pet: defaultPet,
+    petId: defaultPet.id,
+    modifiersList: defaultModifiersList,
+    modifiersListId: defaultModifiersList.id,
+    ...defaultStatistics,
+  } satisfies Character,
+  monster: {
+    id: "",
+    state: "PUBLIC",
+    name: "岩龙菲尔岑 四星",
+    monsterType: "COMMON_BOSS",
+    baseLv: 251,
+    experience: 0,
+    address: "",
+    element: "EARTH",
+    radius: 2,
+    maxhp: 31710000,
+    physicalDefense: 6330,
+    physicalResistance: 8,
+    magicalDefense: 4434,
+    magicalResistance: 8,
+    criticalResistance: 20,
+    avoidance: 1896,
+    dodge: 2,
+    block: 8,
+    normalAttackResistanceModifier: 0,
+    physicalAttackResistanceModifier: 0,
+    magicalAttackResistanceModifier: 0,
+    difficultyOfTank: 5,
+    difficultyOfMelee: 5,
+    difficultyOfRanged: 5,
+    possibilityOfRunningAround: 0,
+    specialBehavior: "",
+    raters: [],
+    dataSources: "",
+    ...defaultStatistics,
+  } satisfies Monster,
+};

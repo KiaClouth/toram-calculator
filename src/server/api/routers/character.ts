@@ -1,16 +1,27 @@
 import type { Prisma } from "@prisma/client";
 import { CharacterSchema } from "prisma/generated/zod";
-import { CharacterInputSchema } from "~/schema/characterSchema";
 
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "~/server/api/trpc";
 
 export type Fashion = Prisma.FashionGetPayload<{
-  include: object
-}>
+  include: {
+    modifiersList: {
+      include: {
+        modifiers: true;
+      };
+    };
+  };
+}>;
 
 export type Cuisine = Prisma.CuisineGetPayload<{
-  include: object;  
-}>
+  include: {
+    modifiersList: {
+      include: {
+        modifiers: true;
+      };
+    };
+  };
+}>;
 
 export type Character = Prisma.CharacterGetPayload<{
   include: {
@@ -20,37 +31,135 @@ export type Character = Prisma.CharacterGetPayload<{
       include: {
         mainWeapon: {
           include: {
-            crystal: true;
+            modifiersList: {
+              include: {
+                modifiers: true;
+              };
+            };
+            crystal: {
+              include: {
+                modifiersList: {
+                  include: {
+                    modifiers: true;
+                  };
+                };
+                raters: true;
+              };
+            };
           };
         };
-        subWeapon: true;
+        subWeapon: {
+          include: {
+            modifiersList: {
+              include: {
+                modifiers: true;
+              };
+            };
+          };
+        };
         bodyArmor: {
           include: {
-            crystal: true;
+            modifiersList: {
+              include: {
+                modifiers: true;
+              };
+            };
+            crystal: {
+              include: {
+                modifiersList: {
+                  include: {
+                    modifiers: true;
+                  };
+                };
+                raters: true;
+              };
+            };
           };
         };
         additionalEquipment: {
           include: {
-            crystal: true;
+            modifiersList: {
+              include: {
+                modifiers: true;
+              };
+            };
+            crystal: {
+              include: {
+                modifiersList: {
+                  include: {
+                    modifiers: true;
+                  };
+                };
+                raters: true;
+              };
+            };
           };
         };
         specialEquipment: {
           include: {
-            crystal: true;
+            modifiersList: {
+              include: {
+                modifiers: true;
+              };
+            };
+            crystal: {
+              include: {
+                modifiersList: {
+                  include: {
+                    modifiers: true;
+                  };
+                };
+                raters: true;
+              };
+            };
           };
         };
       };
     };
-    fashion: true;
-    cuisine: true;
+    fashion: {
+      include: {
+        modifiersList: {
+          include: {
+            modifiers: true;
+          };
+        };
+      };
+    };
+    cuisine: {
+      include: {
+        modifiersList: {
+          include: {
+            modifiers: true;
+          };
+        };
+      };
+    };
     consumableList: {
       include: {
-        consumables: true;
+        consumables: {
+          include: {
+            modifiersList: {
+              include: {
+                modifiers: true;
+              };
+            };
+            raters: true;
+          };
+        };
       };
     };
     skillList: {
       include: {
-        skills: true;
+        skills: {
+          include: {
+            skillEffect: {
+              include: {
+                skillCost: true;
+                skillYield: true;
+              };
+            };
+          };
+        };
       };
     };
     combos: true;
@@ -58,8 +167,6 @@ export type Character = Prisma.CharacterGetPayload<{
     modifiersList: true;
   };
 }>;
-
-
 
 export const characterRouter = createTRPCRouter({
   getAll: publicProcedure.query(({ ctx }) => {

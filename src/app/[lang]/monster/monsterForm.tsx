@@ -28,7 +28,7 @@ import { type FieldApi, useForm } from "@tanstack/react-form";
 import { zodValidator } from "@tanstack/zod-form-adapter";
 import { ZodFirstPartyTypeKind, type z } from "zod";
 import { type $Enums } from "@prisma/client";
-import { defaultMonster, useBearStore } from "~/app/store";
+import { defaultMonster, useStore } from "~/app/store";
 import { type Session } from "next-auth";
 import {
   IconElementWater,
@@ -51,8 +51,9 @@ export default function MonsterForm(props: {
 }) {
   const { dictionary, session, defaultMonsterList, setDefaultMonsterList } = props;
   // 状态管理参数
-  const { monster, monsterDialogState, setMonsterList, setMonsterDialogState, monsterFormState, setMonsterFormState } =
-    useBearStore((state) => state.monsterPage);
+  const { monsterDialogState, setMonsterList, setMonsterDialogState, monsterFormState, setMonsterFormState } =
+    useStore((state) => state.monsterPage);
+    const { monster } = useStore((state) => state);
   let newMonster: Monster;
   const formTitle = {
     CREATE: dictionary.ui.upload,

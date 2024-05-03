@@ -35,7 +35,7 @@ import {
   defaultSkillEffect,
   defaultSkillEffectCost,
   defaultSkillEffectYield,
-  useBearStore,
+  useStore,
 } from "~/app/store";
 import { type Session } from "next-auth";
 import type { Skill, SkillEffect } from "~/server/api/routers/skill";
@@ -60,7 +60,7 @@ export default function SkillForm(props: {
   const { dictionary, session, defaultSkillList, setDefaultSkillList } = props;
   // 状态管理参数
   const { skill, skillDialogState, setSkillList, setSkillDialogState, skillFormState, setSkillFormState } =
-    useBearStore((state) => state.skillPage);
+    useStore((state) => state.skillPage);
   let newSkill: Skill;
   const formTitle = {
     CREATE: dictionary.ui.skill.upload,
@@ -600,6 +600,7 @@ export default function SkillForm(props: {
                                                                         level="tertiary"
                                                                         size="sm"
                                                                         onClick={() => subField.removeValue(j)}
+                                                                        className={`${skillFormState === "DISPLAY" ? "hidden" : ""}`}
                                                                       >
                                                                         -
                                                                       </Button>
@@ -853,6 +854,7 @@ export default function SkillForm(props: {
                                                                         level="tertiary"
                                                                         size="sm"
                                                                         onClick={() => subField.removeValue(j)}
+                                                                        className={`${skillFormState === "DISPLAY" ? "hidden" : ""}`}
                                                                       >
                                                                         -
                                                                       </Button>

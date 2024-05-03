@@ -4,7 +4,7 @@ import {
   type DefaultSession,
   type NextAuthOptions,
 } from "next-auth";
-// import DiscordProvider from "next-auth/providers/discord";
+import DiscordProvider from "next-auth/providers/discord";
 import GithubProvider from "next-auth/providers/github"
 import EmailProvider from "next-auth/providers/email"
 
@@ -60,13 +60,13 @@ export const authOptions: NextAuthOptions = {
         timeout: 50000
       }
     }),
-    // DiscordProvider({
-    //   clientId: env.DISCORD_CLIENT_ID,
-    //   clientSecret: env.DISCORD_CLIENT_SECRET,
-    //   httpOptions: {
-    //     timeout: 50000
-    //   }
-    // }),
+    DiscordProvider({
+      clientId: env.DISCORD_CLIENT_ID,
+      clientSecret: env.DISCORD_CLIENT_SECRET,
+      httpOptions: {
+        timeout: 50000
+      }
+    }),
     GithubProvider({
       clientId: env.GITHUB_ID,
       clientSecret: env.GITHUB_SECRET,

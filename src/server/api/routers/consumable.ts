@@ -1,7 +1,12 @@
 import type { Prisma } from "@prisma/client";
 
 export type Consumable = Prisma.ConsumableGetPayload<{
-    include: {
+  include: {
+      modifiersList: {
+        include: {
+          modifiers: true;
+        };
+      }
         raters: true;
   };
 }>;

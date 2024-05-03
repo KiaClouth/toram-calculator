@@ -5,11 +5,11 @@ import { type Session } from "next-auth";
 
 import type { abiType, modifiers } from "./analyzeType";
 import Dialog from "../_components/dialog";
-import { defaultCharacter, defaultMonster, useBearStore } from "~/app/store";
+import { test, useStore } from "~/app/store";
 import { type BodyArmorType, type MainWeaType, type SubWeaType } from "@prisma/client";
 import type { Character } from "~/server/api/routers/character";
 import * as math from "mathjs";
-import { type Skill, type SkillEffect } from "~/server/api/routers/skill";
+import { type SkillEffect } from "~/server/api/routers/skill";
 import { type Monster } from "~/server/api/routers/monster";
 
 export interface Props {
@@ -17,107 +17,70 @@ export interface Props {
   session: Session | null;
 }
 
+interface skillSequenceType {
+  id: string;
+  state: string;
+  skillTreeName: string;
+  name: string;
+  skillDescription: string;
+  level: number;
+  weaponElementDependencyType: string;
+  element: string;
+  skillType: string;
+  skillEffect: Omit<SkillEffect, "condition">;
+}
+
 export default function AnalyzePageClient(props: Props) {
   const { dictionary } = props;
-  const skillSequence: Skill[] = [
+  const skillSequence: skillSequenceType[] = [
     {
       id: "",
       state: "PUBLIC",
       skillTreeName: "MAGIC",
       name: "CJB",
+      skillDescription: "",
       level: 7,
       weaponElementDependencyType: "TRUE",
       element: "NO_ELEMENT",
       skillType: "ACTIVE_SKILL",
-      skillEffect: [
-        {
-          id: "",
-          actionBaseDuration: 13,
-          actionModifiableDuration: 48,
-          belongToskillId: "",
-          castingDurationFormula: "max(0,min((2 - (skillLevel - 1) * 0.25),(1 - (skillLevel - 5) * 0.5)))",
-          description: null,
-          condition: "equalText(primaryAttributes.equipment.mainWeapon.type,'MAGIC_DEVICE')",
-          skillCost: [
-            {
-              id: "",
-              name:"MP Cost",
-              costFormula: "200",
-              skillEffectId: null,
-            },
-          ],
-          skillYield: [
-            {
-              id: "",
-              name: "Damage",
-              triggerTimingType: "ON_USE",
-              delay: 33,
-              yieldFormula: "(C_VMATK + 200) * 500%",
-              skillEffectId: null,
-              durationType: "SKILL",
-              durationValue: 0,
-            },
-            {
-              id: "",
-              name: "MP Cost half",
-              triggerTimingType: "NEXT_SKILL",
-              delay: 0,
-              durationType: "UNLIMITED",
-              durationValue: 0,
-              yieldFormula: "",
-              skillEffectId: null,
-            },
-          ],
-        },
-        {
-          id: "",
-          actionBaseDuration: 13,
-          actionModifiableDuration: 48,
-          belongToskillId: "",
-          castingDurationFormula: "max(0,min((2 - (skillLevel - 1) * 0.25),(1 - (skillLevel - 5) * 0.5)))",
-          description: null,
-          condition: "equalText(primaryAttributes.equipment.mainWeapon.type,'STAFF')",
-          skillCost: [
-            {
-              id: "",
-              name: "MP Cost",
-              costFormula: "200",
-              skillEffectId: null,
-            },
-          ],
-          skillYield: [
-            {
-              id: "",
-              name: "Damage",
-              triggerTimingType: "ON_USE",
-              delay: 33,
-              yieldFormula: "(C_VMATK + 200) * 250%",
-              skillEffectId: null,
-              durationType: "SKILL",
-              durationValue: 0,
-            },
-            {
-              id: "",
-              name: "MP Cost half",
-              triggerTimingType: "NEXT_SKILL",
-              delay: 0,
-              durationType: "UNLIMITED",
-              durationValue: 0,
-              yieldFormula: "",
-              skillEffectId: null,
-            },
-          ],
-        },
-      ],
-      createdByUserId: null,
-      updatedByUserId: null,
-      viewCount: 0,
-      usageCount: 0,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      usageTimestamps: [],
-      viewTimestamps: [],
-      skillDescription: null,
+      skillEffect: {
+        id: "",
+        actionBaseDuration: 13,
+        actionModifiableDuration: 48,
+        belongToskillId: "",
+        castingDurationFormula: "max(0,min((2 - (s.lv - 1) * 0.25),(1 - (s.lv - 5) * 0.5)))",
+        description: null,
+        skillCost: [
+          {
+            id: "",
+            name: "MP Cost",
+            costFormula: "p.baseAttr.mp = p.baseAttr.mp - 200",
+            skillEffectId: null,
+          },
+        ],
+        skillYield: [
+          {
+            id: "",
+            name: "Damage",
+            triggerTimingType: "ON_USE",
+            delay: 33,
+            yieldFormula: "(C_VMATK + 200) * 500%",
+            skillEffectId: null,
+            durationType: "SKILL",
+            durationValue: 0,
+          },
+          {
+            id: "",
+            name: "MP Cost half",
+            triggerTimingType: "NEXT_SKILL",
+            delay: 0,
+            durationType: "UNLIMITED",
+            durationValue: 0,
+            yieldFormula: "",
+            skillEffectId: null,
+          },
+        ],
+      },
     },
     {
       id: "",
@@ -128,51 +91,41 @@ export default function AnalyzePageClient(props: Props) {
       weaponElementDependencyType: "TRUE",
       element: "NO_ELEMENT",
       skillType: "ACTIVE_SKILL",
-      skillDescription: null,
-      skillEffect: [
-        {
-          id: "",
-          actionBaseDuration: 24,
-          actionModifiableDuration: 98,
-          belongToskillId: "",
-          castingDurationFormula: "0",
-          description: null,
-          condition: "equalText(primaryAttributes.equipment.mainWeapon.type,'MAGIC_DEVICE')",
-          skillCost: [
-            {
-              id: "",
-              name: "MP Cost",
-              costFormula: "",
-              skillEffectId: null,
-            },
-          ],
-          skillYield: [
-            {
-              id: "",
-              yieldFormula: "",
-              name: "Damage",
-              triggerTimingType: "ON_USE",
-              delay: 30,
-              durationType: "SKILL",
-              durationValue: 0,
-              skillEffectId: null,
-            },
-          ],
-        },
-      ],
-      createdByUserId: null,
-      updatedByUserId: null,
-      viewCount: 0,
-      usageCount: 0,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      usageTimestamps: [],
-      viewTimestamps: [],
+      skillDescription: "",
+      skillEffect: {
+        id: "",
+        actionBaseDuration: 24,
+        actionModifiableDuration: 98,
+        belongToskillId: "",
+        castingDurationFormula: "0",
+        description: null,
+        skillCost: [
+          {
+            id: "",
+            name: "MP Cost",
+            costFormula: "p.baseAttr.mp = p.baseAttr.mp - 500",
+            skillEffectId: null,
+          },
+        ],
+        skillYield: [
+          {
+            id: "",
+            yieldFormula: "",
+            name: "Damage",
+            triggerTimingType: "ON_USE",
+            delay: 30,
+            durationType: "SKILL",
+            durationValue: 0,
+            skillEffectId: null,
+          },
+        ],
+      },
     },
   ];
 
   // 状态管理参数
-  const { analyzeDialogState, setAnalyzeDialogState } = useBearStore((state) => state.analyzePage);
+  const { analyzeDialogState, setAnalyzeDialogState } = useStore((state) => state.analyzePage);
+  const { monster } = useStore((state) => state);
 
   class CharacterAttr {
     // 武器的能力值-属性转化率
@@ -553,113 +506,133 @@ export default function AnalyzePageClient(props: Props) {
       aspd: modifiers;
       cspd: modifiers;
     };
-    public actualAttributes: {
-      abi: {
-        str: number;
-        int: number;
-        vit: number;
-        agi: number;
-        dex: number;
-        luk: number;
-        tec: number;
-        cri: number;
-        men: number;
-      };
-      baseAttr: {
-        maxHp: number;
-        maxMp: number;
-        aggro: number;
-        range: number;
-        mpRegen: number;
-        hpRegen: number;
-      };
-      damageBooster: {
-        weaAtk: number;
-        katanaAtk: number;
-        pAtk: number;
-        pPie: number;
-        mAtk: number;
-        mPie: number;
-        pCr: number;
-        pCd: number;
-        crT: number;
-        cdT: number;
-        mCr: number;
-        mCd: number;
-      };
-      speedBoster: {
-        aspd: number;
-        cspd: number;
-        am: number;
-        cm: number;
-      };
+    // 最终机体实际数值
+    public abi: {
+      str: number;
+      int: number;
+      vit: number;
+      agi: number;
+      dex: number;
+      luk: number;
+      tec: number;
+      cri: number;
+      men: number;
+    };
+    public baseAttr: {
+      maxHp: number;
+      hp: number;
+      maxMp: number;
+      mp: number;
+      aggro: number;
+      totalAggro: number;
+      range: number;
+      mpRegen: number;
+      hpRegen: number;
+    };
+    public damageBooster: {
+      weaAtk: number;
+      katanaAtk: number;
+      pAtk: number;
+      pPie: number;
+      mAtk: number;
+      mPie: number;
+      pCr: number;
+      pCd: number;
+      crT: number;
+      cdT: number;
+      mCr: number;
+      mCd: number;
+    };
+    public speedBoster: {
+      aspd: number;
+      cspd: number;
+      am: number;
+      cm: number;
     };
     constructor(character: Character) {
-      const mainWeaponType = character.equipmentList?.mainWeapon?.mainWeaType ?? "NO_WEAPOEN"
+      const mainWeaponType = character.equipmentList?.mainWeapon?.mainWeaType ?? "NO_WEAPOEN";
       this.primaryAttributes = {
         lv: character.lv,
         abi: {
           str: {
             baseValue: character.baseAbi?.baseStr ?? 0,
             modifiers: {
-              fixed: [],
-              percentage: [],
+              static: {
+                fixed: [],
+                percentage: [],
+              },
             },
           },
           int: {
             baseValue: character.baseAbi?.baseInt ?? 0,
             modifiers: {
-              fixed: [],
-              percentage: [],
+              static: {
+                fixed: [],
+                percentage: [],
+              },
             },
           },
           vit: {
             baseValue: character.baseAbi?.baseVit ?? 0,
             modifiers: {
-              fixed: [],
-              percentage: [],
+              static: {
+                fixed: [],
+                percentage: [],
+              },
             },
           },
           agi: {
             baseValue: character.baseAbi?.baseAgi ?? 0,
             modifiers: {
-              fixed: [],
-              percentage: [],
+              static: {
+                fixed: [],
+                percentage: [],
+              },
             },
           },
           dex: {
             baseValue: character.baseAbi?.baseDex ?? 0,
             modifiers: {
-              fixed: [],
-              percentage: [],
+              static: {
+                fixed: [],
+                percentage: [],
+              },
             },
           },
           luk: {
             baseValue: character.specialAbi?.specialAbiType === "LUK" ? character.specialAbi.value ?? 0 : 0,
             modifiers: {
-              fixed: [],
-              percentage: [],
+              static: {
+                fixed: [],
+                percentage: [],
+              },
             },
           },
           tec: {
             baseValue: character.specialAbi?.specialAbiType === "TEC" ? character.specialAbi.value ?? 0 : 0,
             modifiers: {
-              fixed: [],
-              percentage: [],
+              static: {
+                fixed: [],
+                percentage: [],
+              },
             },
           },
           men: {
             baseValue: character.specialAbi?.specialAbiType === "MEN" ? character.specialAbi.value ?? 0 : 0,
             modifiers: {
-              fixed: [],
-              percentage: [],
+              static: {
+                fixed: [],
+                percentage: [],
+              },
             },
           },
           cri: {
             baseValue: character.specialAbi?.specialAbiType === "CRI" ? character.specialAbi.value ?? 0 : 0,
             modifiers: {
-              fixed: [],
-              percentage: [],
+              static: {
+                fixed: [],
+                percentage: [],
+              },
             },
           },
         },
@@ -669,8 +642,10 @@ export default function AnalyzePageClient(props: Props) {
             baseAtk: {
               baseValue: character.equipmentList?.mainWeapon?.baseAtk ?? 0,
               modifiers: {
-                fixed: [],
-                percentage: [],
+                static: {
+                  fixed: [],
+                  percentage: [],
+                },
               },
             },
             refinement: character.equipmentList?.mainWeapon?.refinement ?? 0,
@@ -681,8 +656,10 @@ export default function AnalyzePageClient(props: Props) {
             baseAtk: {
               baseValue: character.equipmentList?.subWeapon?.baseAtk ?? 0,
               modifiers: {
-                fixed: [],
-                percentage: [],
+                static: {
+                  fixed: [],
+                  percentage: [],
+                },
               },
             },
             refinement: character.equipmentList?.subWeapon?.refinement ?? 0,
@@ -699,140 +676,164 @@ export default function AnalyzePageClient(props: Props) {
         pPie: {
           baseValue: 0,
           modifiers: {
-            fixed: [],
-            percentage: [],
+            static: {
+              fixed: [],
+              percentage: [],
+            },
           },
         },
         mPie: {
           baseValue: 0,
           modifiers: {
-            fixed: [],
-            percentage: [],
+            static: {
+              fixed: [],
+              percentage: [],
+            },
           },
         },
         pStab: {
           baseValue: 0,
           modifiers: {
-            fixed: [
-              {
-                value: character.equipmentList?.mainWeapon?.stability ?? 0,
-                origin: "mainWeapon.stability",
-              },
-              {
-                value:
-                  math.floor(
-                    CharacterAttr.weaponAbiT[mainWeaponType]
-                      .abi_Attr_Convert.str.stabT *
-                      this.totalValue(this.primaryAttributes.abi.str) +
-                      CharacterAttr.weaponAbiT[mainWeaponType]
-                        .abi_Attr_Convert.int.stabT *
-                        this.totalValue(this.primaryAttributes.abi.int) +
-                      CharacterAttr.weaponAbiT[mainWeaponType]
-                        .abi_Attr_Convert.agi.stabT *
-                        this.totalValue(this.primaryAttributes.abi.agi) +
-                      CharacterAttr.weaponAbiT[mainWeaponType]
-                        .abi_Attr_Convert.dex.stabT *
-                        this.totalValue(this.primaryAttributes.abi.dex),
-                  ) ?? 0,
-                origin: "character.abi",
-              },
-            ],
-            percentage: [],
+            static: {
+              fixed: [
+                {
+                  value: character.equipmentList?.mainWeapon?.stability ?? 0,
+                  origin: "mainWeapon.stability",
+                },
+                {
+                  value:
+                    math.floor(
+                      CharacterAttr.weaponAbiT[mainWeaponType].abi_Attr_Convert.str.stabT *
+                        this.staticTotalValue(this.primaryAttributes.abi.str) +
+                        CharacterAttr.weaponAbiT[mainWeaponType].abi_Attr_Convert.int.stabT *
+                          this.staticTotalValue(this.primaryAttributes.abi.int) +
+                        CharacterAttr.weaponAbiT[mainWeaponType].abi_Attr_Convert.agi.stabT *
+                          this.staticTotalValue(this.primaryAttributes.abi.agi) +
+                        CharacterAttr.weaponAbiT[mainWeaponType].abi_Attr_Convert.dex.stabT *
+                          this.staticTotalValue(this.primaryAttributes.abi.dex),
+                    ) ?? 0,
+                  origin: "character.abi",
+                },
+              ],
+              percentage: [],
+            },
           },
         },
         nDis: {
           baseValue: 100,
           modifiers: {
-            fixed: [],
-            percentage: [],
+            static: {
+              fixed: [],
+              percentage: [],
+            },
           },
         },
         fDis: {
           baseValue: 100,
           modifiers: {
-            fixed: [],
-            percentage: [],
+            static: {
+              fixed: [],
+              percentage: [],
+            },
           },
         },
         crT: {
           baseValue: 0,
           modifiers: {
-            fixed: [],
-            percentage: [],
+            static: {
+              fixed: [],
+              percentage: [],
+            },
           },
         },
         cdT: {
           baseValue: 50,
           modifiers: {
-            fixed: [],
-            percentage: [],
+            static: {
+              fixed: [],
+              percentage: [],
+            },
           },
         },
         weaMatkT: {
-          baseValue:
-            CharacterAttr.weaponAbiT[mainWeaponType]
-              .weaAtk_Matk_Convert,
+          baseValue: CharacterAttr.weaponAbiT[mainWeaponType].weaAtk_Matk_Convert,
           modifiers: {
-            fixed: [],
-            percentage: [],
+            static: {
+              fixed: [],
+              percentage: [],
+            },
           },
         },
         stro: {
           baseValue: 100,
           modifiers: {
-            fixed: [],
-            percentage: [],
+            static: {
+              fixed: [],
+              percentage: [],
+            },
           },
         },
         total: {
           baseValue: 100,
           modifiers: {
-            fixed: [],
-            percentage: [],
+            static: {
+              fixed: [],
+              percentage: [],
+            },
           },
         },
         final: {
           baseValue: 100,
           modifiers: {
-            fixed: [],
-            percentage: [],
+            static: {
+              fixed: [],
+              percentage: [],
+            },
           },
         },
         am: {
           baseValue: 0,
           modifiers: {
-            fixed: [],
-            percentage: [],
+            static: {
+              fixed: [],
+              percentage: [],
+            },
           },
         },
       };
       this.derivedAttributes = {
         maxHP: {
           baseValue: Math.floor(
-            93 + this.primaryAttributes.lv * (127 / 17 + this.totalValue(this.primaryAttributes.abi.vit) / 3),
+            93 + this.primaryAttributes.lv * (127 / 17 + this.staticTotalValue(this.primaryAttributes.abi.vit) / 3),
           ),
           modifiers: {
-            fixed: [],
-            percentage: [],
+            static: {
+              fixed: [],
+              percentage: [],
+            },
           },
         },
         maxMP: {
           baseValue: Math.floor(
             99 +
               this.primaryAttributes.lv +
-              this.totalValue(this.primaryAttributes.abi.int) / 10 +
-              this.totalValue(this.primaryAttributes.abi.tec),
+              this.staticTotalValue(this.primaryAttributes.abi.int) / 10 +
+              this.staticTotalValue(this.primaryAttributes.abi.tec),
           ),
           modifiers: {
-            fixed: [],
-            percentage: [],
+            static: {
+              fixed: [],
+              percentage: [],
+            },
           },
         },
         pCr: {
-          baseValue: 25 + this.totalValue(this.primaryAttributes.abi.cri) / 5,
+          baseValue: 25 + this.staticTotalValue(this.primaryAttributes.abi.cri) / 5,
           modifiers: {
-            fixed: [],
-            percentage: [],
+            static: {
+              fixed: [],
+              percentage: [],
+            },
           },
         },
         pCd: {
@@ -840,78 +841,91 @@ export default function AnalyzePageClient(props: Props) {
             150 +
             Math.floor(
               Math.max(
-                this.totalValue(this.primaryAttributes.abi.str) / 5,
-                this.totalValue(this.primaryAttributes.abi.str) + this.totalValue(this.primaryAttributes.abi.agi),
+                this.staticTotalValue(this.primaryAttributes.abi.str) / 5,
+                this.staticTotalValue(this.primaryAttributes.abi.str) +
+                  this.staticTotalValue(this.primaryAttributes.abi.agi),
               ) / 10,
             ),
           modifiers: {
-            fixed: [],
-            percentage: [],
+            static: {
+              fixed: [],
+              percentage: [],
+            },
           },
         },
         mainWeaAtk: {
-          baseValue: Math.floor(this.totalValue(this.primaryAttributes.equipment.mainWeapon.baseAtk)),
+          baseValue: Math.floor(this.staticTotalValue(this.primaryAttributes.equipment.mainWeapon.baseAtk)),
           modifiers: {
-            fixed: [
-              {
-                value: this.primaryAttributes.equipment.mainWeapon.refinement,
-                origin: "mainWeapon.refinement",
-              },
-            ],
-            percentage: [
-              {
-                value: Math.pow(this.primaryAttributes.equipment.mainWeapon.refinement, 2),
-                origin: "mainWeapon.refinement",
-              },
-            ],
+            static: {
+              fixed: [
+                {
+                  value: this.primaryAttributes.equipment.mainWeapon.refinement,
+                  origin: "mainWeapon.refinement",
+                },
+              ],
+              percentage: [
+                {
+                  value: Math.pow(this.primaryAttributes.equipment.mainWeapon.refinement, 2),
+                  origin: "mainWeapon.refinement",
+                },
+              ],
+            },
           },
         },
         subWeaAtk: {
-          baseValue: this.totalValue(this.primaryAttributes.equipment.subWeapon.baseAtk),
+          baseValue: this.staticTotalValue(this.primaryAttributes.equipment.subWeapon.baseAtk),
           modifiers: {
-            fixed: [],
-            percentage: [],
+            static: {
+              fixed: [],
+              percentage: [],
+            },
           },
         },
         totalWeaMatk: {
           baseValue: 0,
           modifiers: {
-            fixed: [],
-            percentage: [],
+            static: {
+              fixed: [],
+              percentage: [],
+            },
           },
         },
         pAtk: {
           baseValue:
             this.primaryAttributes.lv +
             CharacterAttr.weaponAbiT[mainWeaponType].abi_Attr_Convert.str.pAtkT *
-              this.totalValue(this.primaryAttributes.abi.str) +
+              this.staticTotalValue(this.primaryAttributes.abi.str) +
             CharacterAttr.weaponAbiT[mainWeaponType].abi_Attr_Convert.int.pAtkT *
-              this.totalValue(this.primaryAttributes.abi.int) +
+              this.staticTotalValue(this.primaryAttributes.abi.int) +
             CharacterAttr.weaponAbiT[mainWeaponType].abi_Attr_Convert.agi.pAtkT *
-              this.totalValue(this.primaryAttributes.abi.agi) +
+              this.staticTotalValue(this.primaryAttributes.abi.agi) +
             CharacterAttr.weaponAbiT[mainWeaponType].abi_Attr_Convert.dex.pAtkT *
-              this.totalValue(this.primaryAttributes.abi.dex),
+              this.staticTotalValue(this.primaryAttributes.abi.dex),
           // 武器攻击力在后续附加
           modifiers: {
-            fixed: [],
-            percentage: [],
+            static: {
+              fixed: [],
+              percentage: [],
+            },
           },
         },
         mAtk: {
           baseValue:
             this.primaryAttributes.lv +
             CharacterAttr.weaponAbiT[mainWeaponType].abi_Attr_Convert.str.mAtkT *
-              this.totalValue(this.primaryAttributes.abi.str) +
+              this.staticTotalValue(this.primaryAttributes.abi.str) +
             CharacterAttr.weaponAbiT[mainWeaponType].abi_Attr_Convert.int.mAtkT *
-              this.totalValue(this.primaryAttributes.abi.int) +
+              this.staticTotalValue(this.primaryAttributes.abi.int) +
             CharacterAttr.weaponAbiT[mainWeaponType].abi_Attr_Convert.agi.mAtkT *
-              this.totalValue(this.primaryAttributes.abi.agi) +
+              this.staticTotalValue(this.primaryAttributes.abi.agi) +
             CharacterAttr.weaponAbiT[mainWeaponType].abi_Attr_Convert.dex.mAtkT *
-              this.totalValue(this.primaryAttributes.abi.dex),
+              this.staticTotalValue(this.primaryAttributes.abi.dex),
           // 武器攻击力在后续附加
           modifiers: {
-            fixed: [],
-            percentage: [],
+            static: {
+              fixed: [],
+              percentage: [],
+            },
           },
         },
         aspd: {
@@ -919,89 +933,108 @@ export default function AnalyzePageClient(props: Props) {
             CharacterAttr.weaponAbiT[mainWeaponType].baseAspd +
             this.primaryAttributes.lv +
             CharacterAttr.weaponAbiT[mainWeaponType].abi_Attr_Convert.str.aspdT *
-              this.totalValue(this.primaryAttributes.abi.str) +
+              this.staticTotalValue(this.primaryAttributes.abi.str) +
             CharacterAttr.weaponAbiT[mainWeaponType].abi_Attr_Convert.int.aspdT *
-              this.totalValue(this.primaryAttributes.abi.int) +
+              this.staticTotalValue(this.primaryAttributes.abi.int) +
             CharacterAttr.weaponAbiT[mainWeaponType].abi_Attr_Convert.agi.aspdT *
-              this.totalValue(this.primaryAttributes.abi.agi) +
+              this.staticTotalValue(this.primaryAttributes.abi.agi) +
             CharacterAttr.weaponAbiT[mainWeaponType].abi_Attr_Convert.dex.aspdT *
-              this.totalValue(this.primaryAttributes.abi.dex),
+              this.staticTotalValue(this.primaryAttributes.abi.dex),
           modifiers: {
-            fixed: [],
-            percentage: [],
+            static: {
+              fixed: [],
+              percentage: [],
+            },
           },
         },
         cspd: {
           baseValue:
-            this.totalValue(this.primaryAttributes.abi.dex) * 2.94 +
-            this.totalValue(this.primaryAttributes.abi.agi) * 1.16,
+            this.staticTotalValue(this.primaryAttributes.abi.dex) * 2.94 +
+            this.staticTotalValue(this.primaryAttributes.abi.agi) * 1.16,
           modifiers: {
-            fixed: [],
-            percentage: [],
+            static: {
+              fixed: [],
+              percentage: [],
+            },
           },
         },
       };
-      this.derivedAttributes.pAtk.baseValue += this.totalValue(this.derivedAttributes.mainWeaAtk);
-      // console.log("总武器攻击力：" + this.totalValue(this.derivedAttributes.mainWeaAtk) + ",已附加至攻物攻");
+      this.derivedAttributes.pAtk.baseValue += this.staticTotalValue(this.derivedAttributes.mainWeaAtk);
       this.derivedAttributes.mAtk.baseValue +=
-        this.totalValue(this.systemAttributes.weaMatkT) * this.totalValue(this.derivedAttributes.mainWeaAtk);
-      // console.log(
-      //   "总武器攻击力：" +
-      //     this.totalValue(this.systemAttributes.weaMatkT) * this.totalValue(this.derivedAttributes.mainWeaAtk) +
-      //     ",已附加至魔攻",
-      // );
-
+        this.staticTotalValue(this.systemAttributes.weaMatkT) *
+        this.staticTotalValue(this.derivedAttributes.mainWeaAtk);
+      // 添加加成项
+      // 被动技能加成
+      character.skillList?.skills.forEach((skill) => {
+        if (skill.skillType === "PASSIVE_SKILL") {
+          skill.skillEffect.forEach((effect) => {
+            effect.skillYield.forEach((yielder) => {
+              if (yielder.yieldFormula) {
+                
+              }
+            })
+          })
+        }
+      })
+      // 主武器加成
+      character.equipmentList?.mainWeapon?.modifiersList?.modifiers.forEach((modifier) => {
+        if (modifier.modifiersValueType === "PERCENTAGE_BONUS") { }
+        else if (modifier.modifiersValueType === "FLAT_BONUS") { }
+      })
       // 面板属性
-      this.actualAttributes = {
-        abi: {
-          str: this.totalValue(this.primaryAttributes.abi.str),
-          int: this.totalValue(this.primaryAttributes.abi.int),
-          vit: this.totalValue(this.primaryAttributes.abi.vit),
-          agi: this.totalValue(this.primaryAttributes.abi.agi),
-          dex: this.totalValue(this.primaryAttributes.abi.dex),
-          luk: this.totalValue(this.primaryAttributes.abi.luk),
-          tec: this.totalValue(this.primaryAttributes.abi.tec),
-          cri: this.totalValue(this.primaryAttributes.abi.cri),
-          men: this.totalValue(this.primaryAttributes.abi.men),
-        },
-        baseAttr: {
-          maxHp: this.totalValue(this.derivedAttributes.maxHP),
-          maxMp: this.totalValue(this.derivedAttributes.maxMP),
-          aggro: 0,
-          range: 0,
-          mpRegen: 0,
-          hpRegen: 0,
-        },
-        damageBooster: {
-          weaAtk: this.totalValue(this.derivedAttributes.mainWeaAtk),
-          katanaAtk: 0,
-          pAtk: this.totalValue(this.derivedAttributes.pAtk),
-          pPie: this.totalValue(this.systemAttributes.pPie),
-          mAtk: this.totalValue(this.derivedAttributes.mAtk),
-          mPie: this.totalValue(this.systemAttributes.mPie),
-          pCr: this.totalValue(this.derivedAttributes.pCr),
-          pCd: this.totalValue(this.derivedAttributes.pCd),
-          crT: this.totalValue(this.systemAttributes.crT),
-          cdT: this.totalValue(this.systemAttributes.cdT),
-          mCr: this.totalValue(this.derivedAttributes.pCr) * this.totalValue(this.systemAttributes.crT),
-          mCd: (this.totalValue(this.derivedAttributes.pCd) - 100) * this.totalValue(this.systemAttributes.cdT) + 100,
-        },
-        speedBoster: {
-          aspd: this.totalValue(this.derivedAttributes.aspd),
-          cspd: this.totalValue(this.derivedAttributes.cspd),
-          am: Math.min(
-            50,
-            this.totalValue(this.systemAttributes.am) +
-              Math.max(Math.floor((this.totalValue(this.derivedAttributes.aspd) - 1000) / 180), 0),
+      this.abi = {
+        str: this.staticTotalValue(this.primaryAttributes.abi.str),
+        int: this.staticTotalValue(this.primaryAttributes.abi.int),
+        vit: this.staticTotalValue(this.primaryAttributes.abi.vit),
+        agi: this.staticTotalValue(this.primaryAttributes.abi.agi),
+        dex: this.staticTotalValue(this.primaryAttributes.abi.dex),
+        luk: this.staticTotalValue(this.primaryAttributes.abi.luk),
+        tec: this.staticTotalValue(this.primaryAttributes.abi.tec),
+        cri: this.staticTotalValue(this.primaryAttributes.abi.cri),
+        men: this.staticTotalValue(this.primaryAttributes.abi.men),
+      };
+      this.baseAttr = {
+        maxHp: this.staticTotalValue(this.derivedAttributes.maxHP),
+        hp: this.staticTotalValue(this.derivedAttributes.maxHP),
+        maxMp: this.staticTotalValue(this.derivedAttributes.maxMP),
+        mp: this.staticTotalValue(this.derivedAttributes.maxMP),
+        aggro: 0,
+        totalAggro: 0,
+        range: 0,
+        mpRegen: 0,
+        hpRegen: 0,
+      };
+      this.damageBooster = {
+        weaAtk: this.staticTotalValue(this.derivedAttributes.mainWeaAtk),
+        katanaAtk: 0,
+        pAtk: this.staticTotalValue(this.derivedAttributes.pAtk),
+        pPie: this.staticTotalValue(this.systemAttributes.pPie),
+        mAtk: this.staticTotalValue(this.derivedAttributes.mAtk),
+        mPie: this.staticTotalValue(this.systemAttributes.mPie),
+        pCr: this.staticTotalValue(this.derivedAttributes.pCr),
+        pCd: this.staticTotalValue(this.derivedAttributes.pCd),
+        crT: this.staticTotalValue(this.systemAttributes.crT),
+        cdT: this.staticTotalValue(this.systemAttributes.cdT),
+        mCr: this.staticTotalValue(this.derivedAttributes.pCr) * this.staticTotalValue(this.systemAttributes.crT),
+        mCd:
+          (this.staticTotalValue(this.derivedAttributes.pCd) - 100) * this.staticTotalValue(this.systemAttributes.cdT) +
+          100,
+      };
+      this.speedBoster = {
+        aspd: this.staticTotalValue(this.derivedAttributes.aspd),
+        cspd: this.staticTotalValue(this.derivedAttributes.cspd),
+        am: Math.min(
+          50,
+          this.staticTotalValue(this.systemAttributes.am) +
+            Math.max(Math.floor((this.staticTotalValue(this.derivedAttributes.aspd) - 1000) / 180), 0),
+        ),
+        cm: Math.min(
+          100,
+          Math.min(
+            Math.floor((this.staticTotalValue(this.derivedAttributes.cspd) - 1000) / 180) + 50,
+            Math.floor(this.staticTotalValue(this.derivedAttributes.cspd) / 20),
           ),
-          cm: Math.min(
-            100,
-            Math.min(
-              Math.floor((this.totalValue(this.derivedAttributes.cspd) - 1000) / 180) + 50,
-              Math.floor(this.totalValue(this.derivedAttributes.cspd) / 20),
-            ),
-          ),
-        },
+        ),
       };
     }
 
@@ -1009,179 +1042,277 @@ export default function AnalyzePageClient(props: Props) {
       return m.baseValue;
     };
 
-    public fixedValue = (m: modifiers): number => {
-      const fixedArray = m.modifiers.fixed.map((mod) => mod.value);
+    public staticFixedValue = (m: modifiers): number => {
+      const fixedArray = m.modifiers.static.fixed.map((mod) => mod.value);
       return fixedArray.reduce((a, b) => a + b, 0);
     };
 
-    public percentageValue = (m: modifiers): number => {
-      const percentageArray = m.modifiers.percentage.map((mod) => mod.value);
+    public dynamicFixedValue = (m: modifiers): number => {
+      let value = 0;
+      if (m.modifiers.dynamic?.fixed) {
+        const fixedArray = m.modifiers.dynamic.fixed.map((mod) => mod.value);
+        value = fixedArray.reduce((a, b) => a + b, 0) + this.staticFixedValue(m);
+      }
+      return value;
+    };
+
+    public staticPercentageValue = (m: modifiers): number => {
+      const percentageArray = m.modifiers.static.percentage.map((mod) => mod.value);
       return percentageArray.reduce((a, b) => a + b, 0);
     };
 
-    public totalValue = (m: modifiers): number => {
+    public dynamicPercentageValue = (m: modifiers): number => {
+      let value = 0;
+      if (m.modifiers.dynamic?.percentage) {
+        const percentageArray = m.modifiers.dynamic.percentage.map((mod) => mod.value);
+        value = percentageArray.reduce((a, b) => a + b, 0) + this.staticPercentageValue(m);
+      }
+      return value;
+    };
+
+    public staticTotalValue = (m: modifiers): number => {
       const base = this.baseValue(m);
-      const fixed = this.fixedValue(m);
-      const percentage = this.percentageValue(m);
+      const fixed = this.staticFixedValue(m);
+      const percentage = this.staticPercentageValue(m);
+      return base * (1 + percentage / 100) + fixed;
+    };
+
+    public dynamicTotalValue = (m: modifiers): number => {
+      const base = this.baseValue(m);
+      const fixed = this.dynamicFixedValue(m);
+      const percentage = this.dynamicPercentageValue(m);
       return base * (1 + percentage / 100) + fixed;
     };
   }
 
   class MonsterAttr {
-    hp: modifiers;
-    pDef: modifiers;
-    pRes: modifiers;
-    mDef: modifiers;
-    mRes: modifiers;
+    attr: {
+      hp: modifiers;
+      pDef: modifiers;
+      pRes: modifiers;
+      mDef: modifiers;
+      mRes: modifiers;
+    };
+    hp: number;
+    pDef: number;
+    pRes: number;
+    mDef: number;
+    mRes: number;
     constructor(monsterState: Monster) {
-      this.hp = {
+      this.attr = {
+        hp : {
         baseValue: monsterState.maxhp ?? 0,
         modifiers: {
+          static: {
             fixed: [],
             percentage: [],
           },
-      };
-      this.pDef = {
+        },
+      },
+      pDef : {
         baseValue: monsterState.physicalDefense ?? 0,
         modifiers: {
-          fixed: [],
-          percentage: [],
+          static: {
+            fixed: [],
+            percentage: [],
+          },
         },
-      };
-      this.pRes = {
+      },
+      pRes : {
         baseValue: monsterState.physicalResistance ?? 0,
         modifiers: {
-          fixed: [],
-          percentage: [],
+          static: {
+            fixed: [],
+            percentage: [],
+          },
         },
-      };
-      this.mDef = {
+        },
+        mDef : {
         baseValue: monsterState.magicalDefense ?? 0,
         modifiers: {
-          fixed: [],
-          percentage: [],
+          static: {
+            fixed: [],
+            percentage: [],
+          },
         },
-      };
-      this.mRes = {
+        },
+        mRes : {
         baseValue: monsterState.magicalResistance ?? 0,
         modifiers: {
-          fixed: [],
-          percentage: [],
+          static: {
+            fixed: [],
+            percentage: [],
+          },
         },
-      };
+      },
+      }
+      
+      this.hp = this.dynamicTotalValue(this.attr.hp);
+      this.pDef = this.dynamicTotalValue(this.attr.pDef);
+      this.pRes = this.dynamicTotalValue(this.attr.pRes);
+      this.mDef = this.dynamicTotalValue(this.attr.mDef);
+      this.mRes = this.dynamicTotalValue(this.attr.mRes);
     }
-  }
 
-  // class State {
-  //   p: {
-  //     maxHp: number;
-  //     hp: number;
-  //     maxMp: number;
-  //     mp: number;
-  //     aggro: number;
-  //     hpRegen: number;
-  //     mpRegen: number;
-
-  //     weaAtk: number;
-  //     katanaAtk: number;
-  //     pAtk: number;
-  //     pPie: number;
-  //     mAtk: number;
-  //     mPie: number;
-  //   };
-  //   m: {
-  //     maxHp: number;
-  //     hp: number;
-  //     pDef: number;
-  //     pRes: number;
-  //     mDef: number;
-  //     mRes: number;
-  //     cRes: number;
-  //     avo: number;
-  //     dod: number;
-  //     blo: number;
-  //     nRatio: number;
-  //     pRatio: number;
-  //     mRatio: number;
-  //   };
-  //   constructor(character: Character, monster: Monster) {
-  //     this.p = {};
-  //     this.m = {};
-  //   }
-  // }
-
-  interface SkillData {
-    index: number;
-    name: string;
-    aDuration: {
-      baseValue: number;
-      actualValue: number;
+    public baseValue = (m: modifiers): number => {
+      return m.baseValue;
     };
-    cDuration: {
-      baseValue: number;
-      actualValue: number;
+
+    public staticFixedValue = (m: modifiers): number => {
+      const fixedArray = m.modifiers.static.fixed.map((mod) => mod.value);
+      return fixedArray.reduce((a, b) => a + b, 0);
     };
-    frameDatas: FrameData[];
+
+    public dynamicFixedValue = (m: modifiers): number => {
+      let value = 0;
+      if (m.modifiers.dynamic?.fixed) {
+        const fixedArray = m.modifiers.dynamic.fixed.map((mod) => mod.value);
+        value = fixedArray.reduce((a, b) => a + b, 0) + this.staticFixedValue(m);
+      }
+      return value;
+    };
+
+    public staticPercentageValue = (m: modifiers): number => {
+      const percentageArray = m.modifiers.static.percentage.map((mod) => mod.value);
+      return percentageArray.reduce((a, b) => a + b, 0);
+    };
+
+    public dynamicPercentageValue = (m: modifiers): number => {
+      let value = 0;
+      if (m.modifiers.dynamic?.percentage) {
+        const percentageArray = m.modifiers.dynamic.percentage.map((mod) => mod.value);
+        value = percentageArray.reduce((a, b) => a + b, 0) + this.staticPercentageValue(m);
+      }
+      return value;
+    };
+
+    public staticTotalValue = (m: modifiers): number => {
+      const base = this.baseValue(m);
+      const fixed = this.staticFixedValue(m);
+      const percentage = this.staticPercentageValue(m);
+      return base * (1 + percentage / 100) + fixed;
+    };
+
+    public dynamicTotalValue = (m: modifiers): number => {
+      const base = this.baseValue(m);
+      const fixed = this.dynamicFixedValue(m);
+      const percentage = this.dynamicPercentageValue(m);
+      return base * (1 + percentage / 100) + fixed;
+    };
   }
 
   interface FrameData {
-    frame: number;
+    skillAttr: {
+      currentSkillName: string;
+      remainingFramesOfTheSkill: number;
+    };
     characterAttr: CharacterAttr;
     monsterAttr: MonsterAttr;
   }
 
-  const calculateFrameData = (skillSequence: Skill[], character: Character, monster: Monster) => {
-    const skillDatas: SkillData[] = [];
+  interface eventSequenceType {
+    frame: number;
+    event: () => void;
+    origin: string;
+  }
+
+  const calculateFrameData = (skillSequence: skillSequenceType[], character: Character, monster: Monster) => {
+    const frameDatas: FrameData[] = [];
+    let skillIndex = 0;
+    let remainingFramesOfTheSkill = 1;
+    let eventSequence: eventSequenceType[] = [];
     const characterAttr = new CharacterAttr(character);
     const monsterAttr = new MonsterAttr(monster);
-    let skillIndex = 0;
-
-    for (const skill of skillSequence) {
-      const frameDatas: FrameData[] = [];
+    // 设置上限20分钟 = 60 * 60 * 20
+    for (let frame = 0; frame < 72000; frame++) {
+      remainingFramesOfTheSkill--;
+      monsterAttr.attr.hp.modifiers.static.fixed.push({
+        value: -100000,
+        origin: "系统自动减损"
+      })
+      // 检查是否存在死亡
+      if (characterAttr.baseAttr.hp <= 0) {
+        console.log("角色死亡");
+        break;
+      }
+      if (monsterAttr.hp <= 0) {
+        console.log("怪物死亡");
+        break;
+      }
+      // 技能计算
+      if (skillIndex >= skillSequence.length) {
+        console.log("技能序列执行完毕");
+        break;
+      }
+      const currentSkill = skillSequence[skillIndex]!;
+      console.log("当前技能：" + currentSkill.name);
       const computeArg = {
-        ...characterAttr,
-        ...monsterAttr,
-        skillLevel: skill.level,
+        p: {
+          ...characterAttr,
+        },
+        m: {
+          ...monsterAttr,
+        },
+        s: {
+          lv: currentSkill.level,
+        },
       };
-      // 确定技能效果
-      let currentEffect: SkillEffect | null = null;
-      for (const effect of skill.skillEffect) {
-        if (math.evaluate(effect.condition, { ...computeArg })) {
-          currentEffect = effect;
-        }
-      }
-      if (!currentEffect) {
-        console.log("技能[" + skill.name + "]没有可发动的效果");
-        continue;
-      }
-      // 计算与帧相关的技能效果参数
-      const aDurationBaseValue = currentEffect.actionBaseDuration;
-      const aDurationActualValue =
-        currentEffect.actionBaseDuration +
-        (currentEffect.actionModifiableDuration * (100 - characterAttr.actualAttributes.speedBoster.am)) / 100;
-      const cDurationBaseValue = math.evaluate(currentEffect.castingDurationFormula, { ...computeArg }) as number;
-      const cDurationActualValue = math.evaluate(currentEffect.castingDurationFormula, { ...computeArg }) as number;
-      for (let frame = 0; frame < aDurationActualValue + cDurationActualValue; frame++) {
-        // 将当前帧的角色状态数据添加到结果数组中
-        frameDatas.push({ frame, characterAttr, monsterAttr });
-      }
-      skillDatas.push({
-        index: skillIndex,
-        name: skill.name ?? "null",
-        aDuration: {
-          baseValue: aDurationBaseValue,
-          actualValue: aDurationActualValue,
-        },
-        cDuration: {
-          baseValue: cDurationBaseValue,
-          actualValue: cDurationActualValue,
-        },
-        frameDatas: frameDatas,
-      });
-      skillIndex++;
-    }
 
-    return skillDatas;
+      // 当前技能执行完毕时，计算下一个技能动作总帧数
+      if (remainingFramesOfTheSkill === 0) {
+        if (frame > 0) {
+          skillIndex++;
+        }
+        const nextSkill = skillSequence[skillIndex];
+        if (!nextSkill) {
+          console.log("末端技能为："+ currentSkill.name +"。技能序列执行完毕");
+          break;
+        }
+        // 计算与帧相关的技能效果参数
+        // 固定动画时长
+        const aDurationBaseValue = nextSkill.skillEffect.actionBaseDuration;
+        // 可加速动画时长
+        const aDurationActualValue =
+          nextSkill.skillEffect.actionBaseDuration +
+          (nextSkill.skillEffect.actionModifiableDuration * (100 - characterAttr.speedBoster.am)) / 100;
+        // 固定咏唱时长
+        const cDurationBaseValue = math.evaluate(nextSkill.skillEffect.castingDurationFormula, {
+          ...computeArg,
+        }) as number;
+        // 可加速咏唱时长
+        const cDurationActualValue = math.evaluate(nextSkill.skillEffect.castingDurationFormula, {
+          ...computeArg,
+        }) as number;
+        remainingFramesOfTheSkill =
+          aDurationBaseValue + aDurationActualValue + cDurationBaseValue + cDurationActualValue;
+      }
+
+      // 定义新序列防止删除元素时索引发生混乱
+      const newEventSequence: eventSequenceType[] = [];
+      eventSequence.forEach((event) => {
+        event.frame -= 1;
+        // 执行当前帧需要做的事
+        if (event.frame === 0) {
+          event.event();
+        }
+        // 将未来需要做的事放在新序列中
+        if (event.frame > 0) {
+          newEventSequence.push(event);
+        }
+      });
+      // 将新序列赋值
+      eventSequence = newEventSequence;
+
+      frameDatas.push({
+        skillAttr: {
+          currentSkillName: currentSkill.name,
+          remainingFramesOfTheSkill: remainingFramesOfTheSkill
+        },
+        characterAttr: characterAttr,
+        monsterAttr: monsterAttr,
+      });
+    }
+    return frameDatas;
   };
 
   useEffect(() => {
@@ -1213,38 +1344,37 @@ export default function AnalyzePageClient(props: Props) {
             </div>
             <div></div>
           </div>
-          <div className="Content flex w-fit gap-2 bg-transition-color-8 p-4">
-            {calculateFrameData(skillSequence, defaultCharacter, defaultMonster).map((skillData, skillIndex) => (
-              <div key={skillData.name + skillIndex} className="frame flex flex-col gap-1">
-                <span className="w-full bg-brand-color-1st p-2 text-primary-color">
-                  {skillData.name + " : " + skillData.frameDatas.length + " frames"}
-                </span>
+          <div className="Content flex w-fit bg-transition-color-8 p-4">
+            {calculateFrameData(skillSequence, test.character, test.monster).map((frameData, frameIndex) => (
+              <div key={frameIndex} className="frame flex flex-col gap-1">
                 <div className="frameData flex">
-                  {skillData.frameDatas.map((frameData, frameIndex) => {
-                    return (
-                      <div
-                        key={skillData.name + ".frameData." + frameIndex}
-                        className="group relative min-h-6 border-2 border-brand-color-2nd"
-                      >
-                        <div className="absolute -left-4 bottom-6 z-10 hidden w-[50dvw] flex-col gap-2 rounded bg-primary-color-90 p-4 shadow-2xl shadow-transition-color-20 backdrop-blur-xl group-hover:flex">
-                          <span className="Title bg-transition-color-8 p-2">{"Frame : " + frameData.frame}</span>
-                          <br />
-                          <div className="CharacterAttr flex flex-col gap-1">
-                            <span className="Title">CharacterAttr</span>
-                            <span className="Content bg-transition-color-8">
-                              {JSON.stringify(frameData.characterAttr.actualAttributes, null, 2)}
-                            </span>
-                          </div>
-                          <div className="CharacterAttr flex flex-col gap-1">
-                            <span className="Title">MonsterAttr</span>
-                            <span className="Content bg-transition-color-8">
-                              {JSON.stringify(frameData.monsterAttr, null, 2)}
-                            </span>
-                          </div>
-                        </div>
+                  <div
+                    className="group relative min-h-6 border-2 border-brand-color-2nd"
+                  >
+                    <div className="absolute -left-4 bottom-6 z-10 hidden w-[50dvw] flex-col gap-2 rounded bg-primary-color-90 p-4 shadow-2xl shadow-transition-color-20 backdrop-blur-xl group-hover:flex">
+                      <span className="Title bg-transition-color-8 p-2">{"Frame : " + frameIndex}</span>
+                      <br />
+                      <div className="SkillAttr flex flex-col gap-1">
+                        <span className="Title">Skill</span>
+                        <span className="Content bg-transition-color-8">
+                          {JSON.stringify(frameData.skillAttr, null, 2)}
+                        </span>
                       </div>
-                    );
-                  })}
+                      <div className="CharacterAttr flex flex-col gap-1">
+                        <span className="Title">CharacterAttr</span>
+                        <span className="Content bg-transition-color-8">
+                          {JSON.stringify(frameData.characterAttr.baseAttr, null, 2)}
+                          {JSON.stringify(frameData.characterAttr.speedBoster, null, 2)}
+                        </span>
+                      </div>
+                      <div className="CharacterAttr flex flex-col gap-1">
+                        <span className="Title">MonsterAttr</span>
+                        <span className="Content bg-transition-color-8">
+                          {JSON.stringify(frameData.monsterAttr.hp, null, 2)}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             ))}

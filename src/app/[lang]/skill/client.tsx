@@ -28,7 +28,7 @@ import {
 } from "../_components/iconsList";
 import Dialog from "../_components/dialog";
 import { useVirtualizer } from "@tanstack/react-virtual";
-import { useBearStore } from "~/app/store";
+import { useStore } from "~/app/store";
 import { defaultSkill } from "~/app/store";
 
 interface Props {
@@ -51,7 +51,7 @@ export default function MonserPageClient(props: Props) {
     setSkillFormState,
     filterState,
     setFilterState,
-  } = useBearStore((state) => state.skillPage);
+  } = useStore((state) => state.skillPage);
 
   // 搜索框行为函数
   const handleSearchFilterChange = (value: string) => {

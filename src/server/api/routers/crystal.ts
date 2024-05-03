@@ -1,17 +1,22 @@
 import type { Prisma } from "@prisma/client";
 
 export type Modifier = Prisma.ModifierGetPayload<{
-    include: object;
-}>
+  include: object;
+}>;
 
 export type ModifiersList = Prisma.ModifiersListGetPayload<{
-    include: {
-        modifiers: true;
-    };
-}>
+  include: {
+    modifiers: true;
+  };
+}>;
 
 export type Crystal = Prisma.CrystalGetPayload<{
-    include: {
-        raters: true;
+  include: {
+    raters: true;
+    modifiersList: {
+      include: {
+        modifiers: true;
+      };
+    };
   };
 }>;

@@ -338,9 +338,9 @@ const dictionary: dictionary = {
         skillYield: "作用效果",
         id: "ID",
         condition: "生效条件",
-        actionBaseDuration: "固定动作时长",
-        actionModifiableDuration: "可加速动作时长",
-        castingDurationFormula: "基础咏唱时长计算公式",
+        actionBaseDuration: "固定动作时长（帧）",
+        actionModifiableDuration: "可加速动作时长（帧）",
+        castingDurationFormula: "基础咏唱时长计算公式（秒）",
         belongToskillId: "所属技能",
         description: "效果说明"
       },
