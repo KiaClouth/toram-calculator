@@ -403,7 +403,12 @@ export default function SkillForm(props: {
                                         <span className="">
                                           {dictionary.db.models.skill[key as keyof tSkill] + " " + (i + 1)}
                                         </span>
-                                        <Button level="tertiary" size="sm" onClick={() => field.removeValue(i)}>
+                                        <Button
+                                          level="tertiary"
+                                          size="sm"
+                                          onClick={() => field.removeValue(i)}
+                                          className={`${skillFormState === "DISPLAY" ? "hidden" : ""}`}
+                                        >
                                           -
                                         </Button>
                                       </div>
