@@ -1063,8 +1063,8 @@ export default function SkillForm(props: {
                                                                                             id={subsubField.name}
                                                                                             name={subsubField.name}
                                                                                             value={
-                                                                                              (subsubField.state
-                                                                                                .value as string) ?? ""
+                                                                                              subsubField.state.value ??
+                                                                                              ""
                                                                                             }
                                                                                             type={inputType}
                                                                                             onBlur={
