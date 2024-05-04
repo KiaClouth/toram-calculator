@@ -15,12 +15,12 @@ export type modifiers = {
         origin: string;
       }[];
     };
-    dynamic?: {
-      fixed?: {
+    dynamic: {
+      fixed: {
         value: number;
         origin: string;
       }[];
-      percentage?: {
+      percentage: {
         value: number;
         origin: string;
       }[];

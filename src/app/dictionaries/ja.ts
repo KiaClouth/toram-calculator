@@ -1,11 +1,11 @@
 import { type dictionary } from "./type";
 const dictionary: dictionary = {
   ui: {
-    add: "",
-    create: "",
-    remove: "",
-    update: "",
-    open: "",
+    add: "添加",
+    create: "创建",
+    remove: "删除",
+    update: "更新",
+    open: "打开",
     upload: "上传怪物数据",
     save: "保存",
     reset: "清空",
@@ -31,7 +31,7 @@ const dictionary: dictionary = {
     monster: {
       searchPlaceholder: "这里是搜索框~",
       pageTitle: "怪物信息表",
-      discription: "表中记录的应该是1星状态下的定点王数据， 2 / 3 / 4 星的经验和HP为1星的 2 / 5 / 10 倍；物防、魔防、回避值为1星的 2 / 4 / 6 倍。",
+      discription: "表中记录的是1星状态下的定点王数据， 2 / 3 / 4 星的经验和HP为1星的 2 / 5 / 10 倍；物防、魔防、回避值为1星的 2 / 4 / 6 倍。",
       columnsHidden: "隐藏列",
       filter: "过滤",
       augmented: "是否展示全部星级数据",
@@ -45,7 +45,7 @@ const dictionary: dictionary = {
       },
       monsterForm: {
         discription: "上传定点boss数据时请使用一星数据，系统将按规则自动计算其余星级数据。",
-      }
+      },
     },
     skill: {
       searchPlaceholder: "这里是搜索框~",
@@ -56,7 +56,7 @@ const dictionary: dictionary = {
       cancel: "取消",
       close: "关闭",
       pageTitle: "技能信息表",
-      discription: "啊啦啦啦啦，这里是本页的描述信息。但是还没有想好写什么~",
+      discription: "此页面正在开发中，请勿使用",
       columnsHidden: "隐藏列",
       filter: "过滤",
     },
@@ -195,7 +195,7 @@ const dictionary: dictionary = {
       },
       SpecialAbiType: {
         NULL: "无",
-        LUK: "Luk",
+        LUK: "幸运",
         CRI: "暴击",
         TEC: "技巧",
         MEN: "异抗"
@@ -210,7 +210,7 @@ const dictionary: dictionary = {
         KNUCKLE: "拳套",
         HALBERD: "旋风枪",
         KATANA: "拔刀剑",
-        BOWGUN: ""
+        BOWGUN: "弩"
       },
       SubWeaType: {
         NO_WEAPOEN: "空",
@@ -247,23 +247,16 @@ const dictionary: dictionary = {
         USER: "常规用户",
         ADMIN: "管理员"
       },
-      TriggerTimingType: {
-        ON_USE: "使用时",
-        PER_SECOND: "每秒",
-        PER_USE_SKILL: "每次使用技能时",
-        NEXT_SKILL: "下一个技能"
+      YieldType: {
+        ImmediateEffect: "立即效果",
+        PersistentEffect: "持续型效果"
       },
       WeaponElementDependencyType: {
         TRUE: "继承",
         FALSE: "不继承"
       },
-      DurationType: {
-        FRAME: "",
-        SKILL: "",
-        UNLIMITED: ""
-      },
       ComboType: {
-        NULL: "NULL",
+        NULL: "未设置",
       }
     },
     models: {
@@ -302,8 +295,8 @@ const dictionary: dictionary = {
         updatedAt: "更新于",
         usageTimestamps: "被使用记录",
         viewTimestamps: "被查看记录",
-        raters: "",
-        dataSources: ""
+        raters: "评分列表",
+        dataSources: "数据来源"
       },
       skill: {
         id: "ID",
@@ -323,7 +316,7 @@ const dictionary: dictionary = {
         weaponElementDependencyType: "属性是否继承武器",
         element: "自身元素属性",
         skillEffect: "技能效果",
-        skillDescription: ""
+        skillDescription: "技能说明"
       },
       user: {
         id: "账号ID",
@@ -334,31 +327,32 @@ const dictionary: dictionary = {
         role: "身份类型"
       },
       skillEffect: {
-        skillCost: "",
-        skillYield: "",
-        id: "",
-        condition: "",
-        actionBaseDuration: "",
-        actionModifiableDuration: "",
-        castingDurationFormula: "",
-        belongToskillId: "",
-        description: ""
+        id: "ID",
+        condition: "生效条件",
+        description: "条件说明",
+        actionBaseDurationFormula: "固定动作时长（帧）",
+        actionModifiableDurationFormula: "可加速动作时长（帧）",
+        castingBaseDurationFormula: "基础咏唱时长计算公式（秒）",
+        castingModifiableDurationFormula: "可加速咏唱时长计算公式（秒）",
+        skillWindUpFormula: "技能前摇计算公式（秒）",
+        skillRecoveryFormula: "技能后摇计算公式（秒）",
+        belongToskillId: "所属技能",
+        skillCost: "技能消耗",
+        skillYield: "作用效果",
       },
       skillCost: {
-        id: "",
-        name: "",
+        id: "ID",
         costFormula: "计算公式",
-        skillEffectId: ""
+        skillEffectId: "所属技能效果",
+        name: "名称"
       },
       skillYield: {
-        id: "",
-        name: "",
-        triggerTimingType: "触发时机",
-        delay: "延迟时长",
-        durationType: "持续类型",
-        durationValue: "持续值",
-        yieldFormula: "计算公式",
-        skillEffectId: ""
+        id: "ID",
+        name: "名称",
+        yieldType: "效果类型",
+        mutationTimingFormula: "效果发生变化的时机计算公式",
+        yieldFormula: "效果计算公式",
+        skillEffectId: "所属技能效果",
       }
     },
   },

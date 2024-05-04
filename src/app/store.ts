@@ -74,10 +74,8 @@ export const defaultSkillEffectCost: SkillCost = {
 export const defaultSkillEffectYield: SkillYield = {
   id: "",
   name: "",
-  triggerTimingType: "ON_USE",
-  delay: 0,
-  durationType: "FRAME",
-  durationValue: 0,
+  yieldType: "ImmediateEffect",
+  mutationTimingFormula: "",
   yieldFormula: "",
   skillEffectId: null,
 };
@@ -86,12 +84,15 @@ export const defaultSkillEffect: SkillEffect = {
   id: "",
   condition: "",
   description: "",
-  actionBaseDuration: 24,
-  actionModifiableDuration: 98,
-  belongToskillId: "",
-  castingDurationFormula: "0",
+  actionBaseDurationFormula: "13",
+  actionModifiableDurationFormula: "48",
+  castingBaseDurationFormula: "0",
+  castingModifiableDurationFormula: "0",
+  skillWindUpFormula: "0",
+  skillRecoveryFormula: "0",
   skillCost: [defaultSkillEffectCost],
   skillYield: [defaultSkillEffectYield],
+  belongToskillId: "",
 };
 
 export const defaultSkill: Skill = {

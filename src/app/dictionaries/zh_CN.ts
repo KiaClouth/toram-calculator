@@ -247,20 +247,13 @@ const dictionary: dictionary = {
         USER: "常规用户",
         ADMIN: "管理员"
       },
-      TriggerTimingType: {
-        ON_USE: "使用时",
-        PER_SECOND: "每秒",
-        PER_USE_SKILL: "每次使用技能时",
-        NEXT_SKILL: "下一个技能"
+      YieldType: {
+        ImmediateEffect: "立即效果",
+        PersistentEffect: "持续型效果"
       },
       WeaponElementDependencyType: {
         TRUE: "继承",
         FALSE: "不继承"
-      },
-      DurationType: {
-        FRAME: "指定帧数",
-        SKILL: "指定技能数",
-        UNLIMITED: "无限"
       },
       ComboType: {
         NULL: "未设置",
@@ -334,15 +327,18 @@ const dictionary: dictionary = {
         role: "身份类型"
       },
       skillEffect: {
-        skillCost: "技能消耗",
-        skillYield: "作用效果",
         id: "ID",
         condition: "生效条件",
-        actionBaseDuration: "固定动作时长（帧）",
-        actionModifiableDuration: "可加速动作时长（帧）",
-        castingDurationFormula: "基础咏唱时长计算公式（秒）",
+        description: "条件说明",
+        actionBaseDurationFormula: "固定动作时长（帧）",
+        actionModifiableDurationFormula: "可加速动作时长（帧）",
+        castingBaseDurationFormula: "基础咏唱时长计算公式（秒）",
+        castingModifiableDurationFormula: "可加速咏唱时长计算公式（秒）",
+        skillWindUpFormula: "技能前摇计算公式（秒）",
+        skillRecoveryFormula: "技能后摇计算公式（秒）",
         belongToskillId: "所属技能",
-        description: "效果说明"
+        skillCost: "技能消耗",
+        skillYield: "作用效果",
       },
       skillCost: {
         id: "ID",
@@ -352,13 +348,11 @@ const dictionary: dictionary = {
       },
       skillYield: {
         id: "ID",
-        triggerTimingType: "触发时机",
-        delay: "延迟时长",
-        durationType: "持续类型",
-        durationValue: "持续值",
-        yieldFormula: "计算公式",
+        name: "名称",
+        yieldType: "效果类型",
+        mutationTimingFormula: "效果发生变化的时机计算公式",
+        yieldFormula: "效果计算公式",
         skillEffectId: "所属技能效果",
-        name: "名称"
       }
     },
   },

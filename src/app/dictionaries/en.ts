@@ -247,23 +247,16 @@ const dictionary: dictionary = {
         USER: "User",
         ADMIN: "Admin",
       },
-      TriggerTimingType: {
-        ON_USE: "onUse",
-        PER_SECOND: "perSecond",
-        PER_USE_SKILL: "perUseSkill",
-        NEXT_SKILL: "nextSkill",
-      },
       WeaponElementDependencyType: {
         TRUE: "yes",
         FALSE: "no"
       },
-      DurationType: {
-        FRAME: "Frame",
-        SKILL: "Skill",
-        UNLIMITED: "Unlimited"
-      },
       ComboType: {
         NULL: "Null",
+      },
+      YieldType: {
+        ImmediateEffect: "ImmediateEffect",
+        PersistentEffect: "PersistentEffect",
       }
     },
     models: {
@@ -338,9 +331,12 @@ const dictionary: dictionary = {
         skillYield: "SkillYield",
         id: "ID",
         condition: "Condition",
-        actionBaseDuration: "ActionBaseDuration",
-        actionModifiableDuration: "ActionModifiableDuration",
-        castingDurationFormula: "CastingDurationFormula",
+        actionBaseDurationFormula: "ActionBaseDuration",
+        actionModifiableDurationFormula: "ActionModifiableDuration",
+        castingBaseDurationFormula: "CastingDurationFormula",
+        castingModifiableDurationFormula: "CastingModifiableDurationFormula",
+        skillWindUpFormula: "SkillWindUpFormula",
+        skillRecoveryFormula: "SkillRecoveryFormula",
         belongToskillId: "BelongToskillId",
         description: "Description"
       },
@@ -353,12 +349,10 @@ const dictionary: dictionary = {
       skillYield: {
         id: "ID",
         name: "Name",
-        triggerTimingType: "TriggerTiming",
-        delay: "Delay",
-        durationType: "DurationType",
-        durationValue: "DurationValue",
+        yieldType: "YieldType",
+        mutationTimingFormula: "MutationTimingFormula",
         yieldFormula: "YieldFormula",
-        skillEffectId: "SkillEffectId"
+        skillEffectId: "SkillEffectId",
       }
     },
   },

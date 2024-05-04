@@ -45,11 +45,14 @@ export default function AnalyzePageClient(props: Props) {
       skillType: "ACTIVE_SKILL",
       skillEffect: {
         id: "",
-        actionBaseDuration: 13,
-        actionModifiableDuration: 48,
-        belongToskillId: "",
-        castingDurationFormula: "max(0,min((2 - (s.lv - 1) * 0.25),(1 - (s.lv - 5) * 0.5)))",
         description: null,
+        actionBaseDurationFormula: "13",
+        actionModifiableDurationFormula: "48",
+        castingBaseDurationFormula: "0",
+        castingModifiableDurationFormula: "max(0,min((2 - (s.lv - 1) * 0.25),(1 - (s.lv - 5) * 0.5)))",
+        skillWindUpFormula: "0",
+        skillRecoveryFormula: "0",
+        belongToskillId: "",
         skillCost: [
           {
             id: "",
@@ -62,22 +65,18 @@ export default function AnalyzePageClient(props: Props) {
           {
             id: "",
             name: "Damage",
-            triggerTimingType: "ON_USE",
-            delay: 33,
+            yieldType: "ImmediateEffect",
             yieldFormula: "(C_VMATK + 200) * 500%",
+            mutationTimingFormula: null,
             skillEffectId: null,
-            durationType: "SKILL",
-            durationValue: 0,
           },
           {
             id: "",
             name: "MP Cost half",
-            triggerTimingType: "NEXT_SKILL",
-            delay: 0,
-            durationType: "UNLIMITED",
-            durationValue: 0,
+            yieldType: "PersistentEffect",
             yieldFormula: "",
             skillEffectId: null,
+            mutationTimingFormula: "",
           },
         ],
       },
@@ -94,10 +93,13 @@ export default function AnalyzePageClient(props: Props) {
       skillDescription: "",
       skillEffect: {
         id: "",
-        actionBaseDuration: 24,
-        actionModifiableDuration: 98,
+        actionBaseDurationFormula: "24",
+        actionModifiableDurationFormula: "98",
+        castingBaseDurationFormula: "0",
+        castingModifiableDurationFormula: "8",
+        skillWindUpFormula: "0",
+        skillRecoveryFormula: "0",
         belongToskillId: "",
-        castingDurationFormula: "0",
         description: null,
         skillCost: [
           {
@@ -112,11 +114,9 @@ export default function AnalyzePageClient(props: Props) {
             id: "",
             yieldFormula: "",
             name: "Damage",
-            triggerTimingType: "ON_USE",
-            delay: 30,
-            durationType: "SKILL",
-            durationValue: 0,
             skillEffectId: null,
+            yieldType: "ImmediateEffect",
+            mutationTimingFormula: null,
           },
         ],
       },
@@ -519,6 +519,8 @@ export default function AnalyzePageClient(props: Props) {
       men: number;
     };
     public baseAttr: {
+      mainWeaponType: MainWeaType;
+      subWeaponType: SubWeaType;
       maxHp: number;
       hp: number;
       maxMp: number;
@@ -551,6 +553,8 @@ export default function AnalyzePageClient(props: Props) {
     };
     constructor(character: Character) {
       const mainWeaponType = character.equipmentList?.mainWeapon?.mainWeaType ?? "NO_WEAPOEN";
+      const subWeaponType = character.equipmentList?.subWeapon?.subWeaType ?? "NO_WEAPOEN";
+      // 计算基础值
       this.primaryAttributes = {
         lv: character.lv,
         abi: {
@@ -558,6 +562,10 @@ export default function AnalyzePageClient(props: Props) {
             baseValue: character.baseAbi?.baseStr ?? 0,
             modifiers: {
               static: {
+                fixed: [],
+                percentage: [],
+              },
+              dynamic: {
                 fixed: [],
                 percentage: [],
               },
@@ -570,12 +578,20 @@ export default function AnalyzePageClient(props: Props) {
                 fixed: [],
                 percentage: [],
               },
+              dynamic: {
+                fixed: [],
+                percentage: [],
+              },
             },
           },
           vit: {
             baseValue: character.baseAbi?.baseVit ?? 0,
             modifiers: {
               static: {
+                fixed: [],
+                percentage: [],
+              },
+              dynamic: {
                 fixed: [],
                 percentage: [],
               },
@@ -588,12 +604,20 @@ export default function AnalyzePageClient(props: Props) {
                 fixed: [],
                 percentage: [],
               },
+              dynamic: {
+                fixed: [],
+                percentage: [],
+              },
             },
           },
           dex: {
             baseValue: character.baseAbi?.baseDex ?? 0,
             modifiers: {
               static: {
+                fixed: [],
+                percentage: [],
+              },
+              dynamic: {
                 fixed: [],
                 percentage: [],
               },
@@ -606,12 +630,20 @@ export default function AnalyzePageClient(props: Props) {
                 fixed: [],
                 percentage: [],
               },
+              dynamic: {
+                fixed: [],
+                percentage: [],
+              },
             },
           },
           tec: {
             baseValue: character.specialAbi?.specialAbiType === "TEC" ? character.specialAbi.value ?? 0 : 0,
             modifiers: {
               static: {
+                fixed: [],
+                percentage: [],
+              },
+              dynamic: {
                 fixed: [],
                 percentage: [],
               },
@@ -624,12 +656,20 @@ export default function AnalyzePageClient(props: Props) {
                 fixed: [],
                 percentage: [],
               },
+              dynamic: {
+                fixed: [],
+                percentage: [],
+              },
             },
           },
           cri: {
             baseValue: character.specialAbi?.specialAbiType === "CRI" ? character.specialAbi.value ?? 0 : 0,
             modifiers: {
               static: {
+                fixed: [],
+                percentage: [],
+              },
+              dynamic: {
                 fixed: [],
                 percentage: [],
               },
@@ -646,6 +686,10 @@ export default function AnalyzePageClient(props: Props) {
                   fixed: [],
                   percentage: [],
                 },
+                dynamic: {
+                  fixed: [],
+                  percentage: [],
+                },
               },
             },
             refinement: character.equipmentList?.mainWeapon?.refinement ?? 0,
@@ -657,6 +701,10 @@ export default function AnalyzePageClient(props: Props) {
               baseValue: character.equipmentList?.subWeapon?.baseAtk ?? 0,
               modifiers: {
                 static: {
+                  fixed: [],
+                  percentage: [],
+                },
+                dynamic: {
                   fixed: [],
                   percentage: [],
                 },
@@ -680,12 +728,20 @@ export default function AnalyzePageClient(props: Props) {
               fixed: [],
               percentage: [],
             },
+            dynamic: {
+              fixed: [],
+              percentage: [],
+            },
           },
         },
         mPie: {
           baseValue: 0,
           modifiers: {
             static: {
+              fixed: [],
+              percentage: [],
+            },
+            dynamic: {
               fixed: [],
               percentage: [],
             },
@@ -717,12 +773,20 @@ export default function AnalyzePageClient(props: Props) {
               ],
               percentage: [],
             },
+            dynamic: {
+              fixed: [],
+              percentage: [],
+            },
           },
         },
         nDis: {
           baseValue: 100,
           modifiers: {
             static: {
+              fixed: [],
+              percentage: [],
+            },
+            dynamic: {
               fixed: [],
               percentage: [],
             },
@@ -735,12 +799,20 @@ export default function AnalyzePageClient(props: Props) {
               fixed: [],
               percentage: [],
             },
+            dynamic: {
+              fixed: [],
+              percentage: [],
+            },
           },
         },
         crT: {
           baseValue: 0,
           modifiers: {
             static: {
+              fixed: [],
+              percentage: [],
+            },
+            dynamic: {
               fixed: [],
               percentage: [],
             },
@@ -753,12 +825,20 @@ export default function AnalyzePageClient(props: Props) {
               fixed: [],
               percentage: [],
             },
+            dynamic: {
+              fixed: [],
+              percentage: [],
+            },
           },
         },
         weaMatkT: {
           baseValue: CharacterAttr.weaponAbiT[mainWeaponType].weaAtk_Matk_Convert,
           modifiers: {
             static: {
+              fixed: [],
+              percentage: [],
+            },
+            dynamic: {
               fixed: [],
               percentage: [],
             },
@@ -771,12 +851,20 @@ export default function AnalyzePageClient(props: Props) {
               fixed: [],
               percentage: [],
             },
+            dynamic: {
+              fixed: [],
+              percentage: [],
+            },
           },
         },
         total: {
           baseValue: 100,
           modifiers: {
             static: {
+              fixed: [],
+              percentage: [],
+            },
+            dynamic: {
               fixed: [],
               percentage: [],
             },
@@ -789,12 +877,20 @@ export default function AnalyzePageClient(props: Props) {
               fixed: [],
               percentage: [],
             },
+            dynamic: {
+              fixed: [],
+              percentage: [],
+            },
           },
         },
         am: {
           baseValue: 0,
           modifiers: {
             static: {
+              fixed: [],
+              percentage: [],
+            },
+            dynamic: {
               fixed: [],
               percentage: [],
             },
@@ -808,6 +904,10 @@ export default function AnalyzePageClient(props: Props) {
           ),
           modifiers: {
             static: {
+              fixed: [],
+              percentage: [],
+            },
+            dynamic: {
               fixed: [],
               percentage: [],
             },
@@ -825,12 +925,20 @@ export default function AnalyzePageClient(props: Props) {
               fixed: [],
               percentage: [],
             },
+            dynamic: {
+              fixed: [],
+              percentage: [],
+            },
           },
         },
         pCr: {
           baseValue: 25 + this.staticTotalValue(this.primaryAttributes.abi.cri) / 5,
           modifiers: {
             static: {
+              fixed: [],
+              percentage: [],
+            },
+            dynamic: {
               fixed: [],
               percentage: [],
             },
@@ -848,6 +956,10 @@ export default function AnalyzePageClient(props: Props) {
             ),
           modifiers: {
             static: {
+              fixed: [],
+              percentage: [],
+            },
+            dynamic: {
               fixed: [],
               percentage: [],
             },
@@ -870,6 +982,10 @@ export default function AnalyzePageClient(props: Props) {
                 },
               ],
             },
+            dynamic: {
+              fixed: [],
+              percentage: [],
+            },
           },
         },
         subWeaAtk: {
@@ -879,12 +995,20 @@ export default function AnalyzePageClient(props: Props) {
               fixed: [],
               percentage: [],
             },
+            dynamic: {
+              fixed: [],
+              percentage: [],
+            },
           },
         },
         totalWeaMatk: {
           baseValue: 0,
           modifiers: {
             static: {
+              fixed: [],
+              percentage: [],
+            },
+            dynamic: {
               fixed: [],
               percentage: [],
             },
@@ -907,6 +1031,10 @@ export default function AnalyzePageClient(props: Props) {
               fixed: [],
               percentage: [],
             },
+            dynamic: {
+              fixed: [],
+              percentage: [],
+            },
           },
         },
         mAtk: {
@@ -923,6 +1051,10 @@ export default function AnalyzePageClient(props: Props) {
           // 武器攻击力在后续附加
           modifiers: {
             static: {
+              fixed: [],
+              percentage: [],
+            },
+            dynamic: {
               fixed: [],
               percentage: [],
             },
@@ -945,6 +1077,10 @@ export default function AnalyzePageClient(props: Props) {
               fixed: [],
               percentage: [],
             },
+            dynamic: {
+              fixed: [],
+              percentage: [],
+            },
           },
         },
         cspd: {
@@ -953,6 +1089,10 @@ export default function AnalyzePageClient(props: Props) {
             this.staticTotalValue(this.primaryAttributes.abi.agi) * 1.16,
           modifiers: {
             static: {
+              fixed: [],
+              percentage: [],
+            },
+            dynamic: {
               fixed: [],
               percentage: [],
             },
@@ -970,17 +1110,17 @@ export default function AnalyzePageClient(props: Props) {
           skill.skillEffect.forEach((effect) => {
             effect.skillYield.forEach((yielder) => {
               if (yielder.yieldFormula) {
-                
               }
-            })
-          })
+            });
+          });
         }
-      })
+      });
       // 主武器加成
       character.equipmentList?.mainWeapon?.modifiersList?.modifiers.forEach((modifier) => {
-        if (modifier.modifiersValueType === "PERCENTAGE_BONUS") { }
-        else if (modifier.modifiersValueType === "FLAT_BONUS") { }
-      })
+        if (modifier.modifiersValueType === "PERCENTAGE_BONUS") {
+        } else if (modifier.modifiersValueType === "FLAT_BONUS") {
+        }
+      });
       // 面板属性
       this.abi = {
         str: this.staticTotalValue(this.primaryAttributes.abi.str),
@@ -994,6 +1134,8 @@ export default function AnalyzePageClient(props: Props) {
         men: this.staticTotalValue(this.primaryAttributes.abi.men),
       };
       this.baseAttr = {
+        mainWeaponType: mainWeaponType,
+        subWeaponType: subWeaponType,
         maxHp: this.staticTotalValue(this.derivedAttributes.maxHP),
         hp: this.staticTotalValue(this.derivedAttributes.maxHP),
         maxMp: this.staticTotalValue(this.derivedAttributes.maxMP),
@@ -1037,6 +1179,11 @@ export default function AnalyzePageClient(props: Props) {
         ),
       };
     }
+
+    public inherit = (otherCharacter: CharacterAttr) => {
+      const copy = JSON.parse(JSON.stringify(otherCharacter)) as CharacterAttr;
+      Object.assign(this, copy);
+    };
 
     public baseValue = (m: modifiers): number => {
       return m.baseValue;
@@ -1093,66 +1240,80 @@ export default function AnalyzePageClient(props: Props) {
       mDef: modifiers;
       mRes: modifiers;
     };
-    hp: number;
-    pDef: number;
-    pRes: number;
-    mDef: number;
-    mRes: number;
     constructor(monsterState: Monster) {
       this.attr = {
-        hp : {
-        baseValue: monsterState.maxhp ?? 0,
-        modifiers: {
-          static: {
-            fixed: [],
-            percentage: [],
+        hp: {
+          baseValue: monsterState.maxhp ?? 0,
+          modifiers: {
+            static: {
+              fixed: [],
+              percentage: [],
+            },
+            dynamic: {
+              fixed: [],
+              percentage: [],
+            },
           },
         },
-      },
-      pDef : {
-        baseValue: monsterState.physicalDefense ?? 0,
-        modifiers: {
-          static: {
-            fixed: [],
-            percentage: [],
+        pDef: {
+          baseValue: monsterState.physicalDefense ?? 0,
+          modifiers: {
+            static: {
+              fixed: [],
+              percentage: [],
+            },
+            dynamic: {
+              fixed: [],
+              percentage: [],
+            },
           },
         },
-      },
-      pRes : {
-        baseValue: monsterState.physicalResistance ?? 0,
-        modifiers: {
-          static: {
-            fixed: [],
-            percentage: [],
+        pRes: {
+          baseValue: monsterState.physicalResistance ?? 0,
+          modifiers: {
+            static: {
+              fixed: [],
+              percentage: [],
+            },
+            dynamic: {
+              fixed: [],
+              percentage: [],
+            },
           },
         },
-        },
-        mDef : {
-        baseValue: monsterState.magicalDefense ?? 0,
-        modifiers: {
-          static: {
-            fixed: [],
-            percentage: [],
+        mDef: {
+          baseValue: monsterState.magicalDefense ?? 0,
+          modifiers: {
+            static: {
+              fixed: [],
+              percentage: [],
+            },
+            dynamic: {
+              fixed: [],
+              percentage: [],
+            },
           },
         },
-        },
-        mRes : {
-        baseValue: monsterState.magicalResistance ?? 0,
-        modifiers: {
-          static: {
-            fixed: [],
-            percentage: [],
+        mRes: {
+          baseValue: monsterState.magicalResistance ?? 0,
+          modifiers: {
+            static: {
+              fixed: [],
+              percentage: [],
+            },
+            dynamic: {
+              fixed: [],
+              percentage: [],
+            },
           },
         },
-      },
-      }
-      
-      this.hp = this.dynamicTotalValue(this.attr.hp);
-      this.pDef = this.dynamicTotalValue(this.attr.pDef);
-      this.pRes = this.dynamicTotalValue(this.attr.pRes);
-      this.mDef = this.dynamicTotalValue(this.attr.mDef);
-      this.mRes = this.dynamicTotalValue(this.attr.mRes);
+      };
     }
+
+    public inherit = (otherMonsterAttr: MonsterAttr) => {
+      const copy = JSON.parse(JSON.stringify(otherMonsterAttr)) as MonsterAttr;
+      Object.assign(this, copy);
+    };
 
     public baseValue = (m: modifiers): number => {
       return m.baseValue;
@@ -1204,7 +1365,7 @@ export default function AnalyzePageClient(props: Props) {
   interface FrameData {
     skillAttr: {
       currentSkillName: string;
-      remainingFramesOfTheSkill: number;
+      skillFrame: number;
     };
     characterAttr: CharacterAttr;
     monsterAttr: MonsterAttr;
@@ -1219,33 +1380,31 @@ export default function AnalyzePageClient(props: Props) {
   const calculateFrameData = (skillSequence: skillSequenceType[], character: Character, monster: Monster) => {
     const frameDatas: FrameData[] = [];
     let skillIndex = 0;
-    let remainingFramesOfTheSkill = 1;
+    let skillFrame = 0;
+    let skillTotalFrame = 0;
     let eventSequence: eventSequenceType[] = [];
-    const characterAttr = new CharacterAttr(character);
-    const monsterAttr = new MonsterAttr(monster);
+    const tempCharacterAttr = new CharacterAttr(character);
+    const tempMonsterAttr = new MonsterAttr(monster);
+
     // 设置上限20分钟 = 60 * 60 * 20
-    for (let frame = 0; frame < 72000; frame++) {
-      remainingFramesOfTheSkill--;
-      monsterAttr.attr.hp.modifiers.static.fixed.push({
+    for (let frame = 0; frame < 7200; frame++) {
+      // debugger;
+      // 每帧需要做的事
+      // 读取上一帧的数据
+      const characterAttr = new CharacterAttr(character);
+      characterAttr.inherit(tempCharacterAttr);
+      const monsterAttr = new MonsterAttr(monster);
+      monsterAttr.inherit(tempMonsterAttr);
+
+      monsterAttr.attr.hp.modifiers.dynamic.fixed.push({
         value: -100000,
-        origin: "系统自动减损"
-      })
-      // 检查是否存在死亡
-      if (characterAttr.baseAttr.hp <= 0) {
-        console.log("角色死亡");
-        break;
-      }
-      if (monsterAttr.hp <= 0) {
-        console.log("怪物死亡");
-        break;
-      }
-      // 技能计算
-      if (skillIndex >= skillSequence.length) {
-        console.log("技能序列执行完毕");
-        break;
-      }
+        origin: "系统自动减损" + frame,
+      });
+
+      frame !== 0 && skillFrame++;
       const currentSkill = skillSequence[skillIndex]!;
-      console.log("当前技能：" + currentSkill.name);
+      console.log("当前帧位于技能：" + currentSkill.name + "中");
+
       const computeArg = {
         p: {
           ...characterAttr,
@@ -1255,36 +1414,19 @@ export default function AnalyzePageClient(props: Props) {
         },
         s: {
           lv: currentSkill.level,
+          skillFrame,
         },
       };
 
-      // 当前技能执行完毕时，计算下一个技能动作总帧数
-      if (remainingFramesOfTheSkill === 0) {
-        if (frame > 0) {
-          skillIndex++;
-        }
-        const nextSkill = skillSequence[skillIndex];
-        if (!nextSkill) {
-          console.log("末端技能为："+ currentSkill.name +"。技能序列执行完毕");
-          break;
-        }
-        // 计算与帧相关的技能效果参数
-        // 固定动画时长
-        const aDurationBaseValue = nextSkill.skillEffect.actionBaseDuration;
-        // 可加速动画时长
-        const aDurationActualValue =
-          nextSkill.skillEffect.actionBaseDuration +
-          (nextSkill.skillEffect.actionModifiableDuration * (100 - characterAttr.speedBoster.am)) / 100;
-        // 固定咏唱时长
-        const cDurationBaseValue = math.evaluate(nextSkill.skillEffect.castingDurationFormula, {
-          ...computeArg,
-        }) as number;
-        // 可加速咏唱时长
-        const cDurationActualValue = math.evaluate(nextSkill.skillEffect.castingDurationFormula, {
-          ...computeArg,
-        }) as number;
-        remainingFramesOfTheSkill =
-          aDurationBaseValue + aDurationActualValue + cDurationBaseValue + cDurationActualValue;
+      // 基于当前状态的公式计算方法
+      const evaluate = (formula: string) => {
+        return math.evaluate(formula, { ...computeArg }) as number | void;
+      };
+
+      // 检查是否存在死亡
+      if (computeArg.m.dynamicTotalValue(computeArg.m.attr.hp) <= 0) {
+        console.log("怪物死亡");
+        break;
       }
 
       // 定义新序列防止删除元素时索引发生混乱
@@ -1303,14 +1445,57 @@ export default function AnalyzePageClient(props: Props) {
       // 将新序列赋值
       eventSequence = newEventSequence;
 
+      // 执行一个新的技能时，计算相关参数
+      if (skillFrame === skillTotalFrame) {
+        // 每使用一个技能时需要做的事
+        if (frame > 0) {
+          skillIndex++;
+          // 技能计算完成后重置计数
+          skillFrame = 0;
+        }
+        const newSkill = skillSequence[skillIndex];
+        if (!newSkill) {
+          console.log("末端技能为：" + currentSkill.name + "，技能序列执行完毕");
+          break;
+        }
+        // console.log("执行到：" + newSkill.name);
+        // 计算与帧相关的技能效果参数
+        // 固定动画时长
+        const aDurationBaseValue = evaluate(newSkill.skillEffect.actionBaseDurationFormula) as number;
+        // console.log("动画固定时长（帧）：" + aDurationBaseValue);
+        // 可加速动画时长
+        const aDurationModifiableValue = evaluate(newSkill.skillEffect.actionModifiableDurationFormula) as number;
+        // console.log("动画可加速时长（帧）：" + aDurationModifiableValue);
+        // 实际动画时长
+        const aDurationActualValue =
+          aDurationBaseValue + aDurationModifiableValue * ((100 - computeArg.p.speedBoster.am) / 100);
+        // console.log("当前行动速度：" + computeArg.p.speedBoster.am + "%，动画实际时长（帧）：" + aDurationActualValue);
+
+        // 固定咏唱时长
+        const cDurationBaseValue = evaluate(newSkill.skillEffect.castingBaseDurationFormula) as number;
+        // console.log("咏唱固定时长（秒）：" + cDurationBaseValue);
+        // 可加速咏唱时长
+        const cDurationModifiableValue = evaluate(newSkill.skillEffect.castingModifiableDurationFormula) as number;
+        // console.log("咏唱可加速时长（秒）：" + cDurationModifiableValue);
+        // 实际咏唱时长
+        const cDurationActualValue =
+          cDurationBaseValue + cDurationModifiableValue * ((100 - computeArg.p.speedBoster.cm) / 100);
+        // console.log("当前咏唱缩减" + computeArg.p.speedBoster.cm + "%，咏唱实际时长（秒）：" + cDurationActualValue);
+        skillTotalFrame = math.floor(aDurationActualValue + cDurationActualValue * 60);
+        // console.log("技能总时长（帧）：" + skillTotalFrame);
+      }
+
       frameDatas.push({
         skillAttr: {
           currentSkillName: currentSkill.name,
-          remainingFramesOfTheSkill: remainingFramesOfTheSkill
+          skillFrame: skillFrame,
         },
         characterAttr: characterAttr,
         monsterAttr: monsterAttr,
       });
+      // 将当前状态储存供下一帧使用
+      tempCharacterAttr.inherit(characterAttr);
+      tempMonsterAttr.inherit(monsterAttr);
     }
     return frameDatas;
   };
@@ -1348,9 +1533,7 @@ export default function AnalyzePageClient(props: Props) {
             {calculateFrameData(skillSequence, test.character, test.monster).map((frameData, frameIndex) => (
               <div key={frameIndex} className="frame flex flex-col gap-1">
                 <div className="frameData flex">
-                  <div
-                    className="group relative min-h-6 border-2 border-brand-color-2nd"
-                  >
+                  <div className="group relative min-h-6 border-2 border-brand-color-2nd">
                     <div className="absolute -left-4 bottom-6 z-10 hidden w-[50dvw] flex-col gap-2 rounded bg-primary-color-90 p-4 shadow-2xl shadow-transition-color-20 backdrop-blur-xl group-hover:flex">
                       <span className="Title bg-transition-color-8 p-2">{"Frame : " + frameIndex}</span>
                       <br />
@@ -1370,7 +1553,7 @@ export default function AnalyzePageClient(props: Props) {
                       <div className="CharacterAttr flex flex-col gap-1">
                         <span className="Title">MonsterAttr</span>
                         <span className="Content bg-transition-color-8">
-                          {JSON.stringify(frameData.monsterAttr.hp, null, 2)}
+                          {JSON.stringify(frameData.monsterAttr.dynamicTotalValue(frameData.monsterAttr.attr.hp), null, 2)}
                         </span>
                       </div>
                     </div>
