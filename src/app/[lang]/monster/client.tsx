@@ -290,7 +290,7 @@ export default function MonserPageClient(props: Props) {
     initialState: {
       sorting: [
         {
-          id: "usageCount",
+          id: "experience",
           desc: true, // 默认按热度降序排列
         },
       ],
