@@ -303,7 +303,7 @@ export default function MonserPageClient(props: Props) {
   // 表格虚拟滚动
   const rowVirtualizer = useVirtualizer({
     count: table.getRowModel().rows.length,
-    estimateSize: () => 33, // estimate row height for accurate scrollbar dragging
+    estimateSize: () => 112, // estimate row height for accurate scrollbar dragging
     getScrollElement: () => tableContainerRef.current,
     // measure dynamic row height, except in firefox because it measures table border height incorrectly
     measureElement:
@@ -331,17 +331,63 @@ export default function MonserPageClient(props: Props) {
     return styles;
   };
 
-  // 表格行点击事件
-  const handleTrClick = (id: string) => {
-    console.log(id);
-    const targetMonster = monsterList.find((monster) => monster.id === id);
-    if (targetMonster) {
-      setMonster(targetMonster);
-      setSameNameMonsterList(compusteSameNameMonsterList(targetMonster, monsterList));
-      setMonsterDialogState(true);
-      setMonsterFormState("DISPLAY");
-    }
+  const handleMouseDown = (id: string, e: React.MouseEvent) => {
+    if (e.button !== 0) return;
+    const startX = e.pageX;
+    const startY = e.pageY;
+    let isDragging = false;
+    let offsetX = 0;
+    let offsetY = 0;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      offsetX = e.pageX - startX;
+      offsetY = e.pageY - startY;
+      if (!isDragging) {
+        // 判断是否开始拖动
+        isDragging = Math.abs(offsetX) > 3 || Math.abs(offsetY) > 3;
+      }
+      if (isDragging) {
+        e.preventDefault();
+        e.stopPropagation();
+        if (tableContainerRef.current?.parentElement) {
+          tableContainerRef.current.style.transition = "none";
+          tableContainerRef.current.parentElement.style.transition = "none";
+          // tableContainerRef.current.scrollTop -= offsetY / 100;
+          tableContainerRef.current.scrollLeft += offsetX / 100;
+        }
+      }
+    };
+
+    const handleMouseUp = () => {
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+      if (!isDragging) {
+        console.log(id);
+        const targetMonster = monsterList.find((monster) => monster.id === id);
+        if (targetMonster) {
+          setMonster(targetMonster);
+          setSameNameMonsterList(compusteSameNameMonsterList(targetMonster, monsterList));
+          setMonsterDialogState(true);
+          setMonsterFormState("DISPLAY");
+        }
+      }
+    };
+
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUp);
   };
+
+  // 表格行点击事件
+  // const handleTrClick = (id: string) => {
+  //   console.log(id);
+  //   const targetMonster = monsterList.find((monster) => monster.id === id);
+  //   if (targetMonster) {
+  //     setMonster(targetMonster);
+  //     setSameNameMonsterList(compusteSameNameMonsterList(targetMonster, monsterList));
+  //     setMonsterDialogState(true);
+  //     setMonsterFormState("DISPLAY");
+  //   }
+  // };
 
   useEffect(() => {
     console.log("--Monster Client Render");
@@ -583,7 +629,8 @@ export default function MonserPageClient(props: Props) {
                       transform: `translateY(${virtualRow.start}px)`, //this should always be a `style` as it changes on scroll
                     }}
                     className={`group flex cursor-pointer border-y-[1px] border-transition-color-8 transition-none hover:rounded hover:border-transparent hover:bg-transition-color-8 hover:font-bold lg:border-y-1.5`}
-                    onClick={() => handleTrClick(row.getValue("id"))}
+                    // onClick={() => handleTrClick(row.getValue("id"))}
+                    onMouseDown={(e) => handleMouseDown(row.getValue("id"), e)}
                   >
                     {row.getVisibleCells().map((cell) => {
                       const { column } = cell;
