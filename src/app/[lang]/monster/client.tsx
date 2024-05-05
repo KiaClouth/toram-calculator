@@ -425,13 +425,13 @@ export default function MonserPageClient(props: Props) {
           className={`Content flex h-dvh w-dvw flex-col gap-4 overflow-y-auto px-6 pt-8 lg:absolute lg:left-0 lg:top-0 lg:w-[260px]`}
         >
           <div className="Title flex items-center justify-between">
-            <h1 className="text-lg">{dictionary.ui.monster.filter}</h1>
+            <h1 className="text-lg">{dictionary.ui.filter}</h1>
             <Button level="tertiary" onClick={() => setFilterState(!filterState)}>
               X
             </Button>
           </div>
           <div className="module flex flex-col gap-3">
-            <div className="title">{dictionary.ui.monster.columnsHidden}</div>
+            <div className="title">{dictionary.ui.columnsHidden}</div>
             <div className="content flex flex-wrap gap-2 ">
               <Button
                 size="sm"
@@ -483,7 +483,7 @@ export default function MonserPageClient(props: Props) {
                 <input
                   id="MonsterSearchBox"
                   type="search"
-                  placeholder={dictionary.ui.monster.searchPlaceholder}
+                  placeholder={dictionary.ui.searchPlaceholder}
                   className="w-full flex-1 rounded-sm border-transition-color-20 bg-transition-color-8 px-3 py-2 backdrop-blur-xl placeholder:text-accent-color-50 hover:border-accent-color-70 hover:bg-transition-color-8
                   focus:border-accent-color-70 focus:outline-none lg:flex-1 lg:rounded-none lg:border-b-1.5 lg:bg-transparent lg:px-5 lg:font-normal"
                   onChange={(e) => handleSearchFilterChange(e.target.value)}

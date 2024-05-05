@@ -64,8 +64,8 @@ export default function SkillForm(props: {
   );
   let newSkill: Skill;
   const formTitle = {
-    CREATE: dictionary.ui.skill.upload,
-    UPDATE: dictionary.ui.skill.modify,
+    CREATE: dictionary.ui.upload,
+    UPDATE: dictionary.ui.modify,
     DISPLAY: skill.name,
   }[skillFormState];
   const [dataUploadingState, setDataUploadingState] = React.useState(false);
@@ -1340,10 +1340,10 @@ export default function SkillForm(props: {
               setSkillDialogState(!skillDialogState);
             }}
           >
-            {dictionary.ui.skill.close} [Esc]
+            {dictionary.ui.close} [Esc]
           </Button>
           {skillFormState == "DISPLAY" && session?.user && (
-            <Button onClick={() => setSkillFormState("UPDATE")}>{dictionary.ui.skill.modify} [Enter]</Button>
+            <Button onClick={() => setSkillFormState("UPDATE")}>{dictionary.ui.modify} [Enter]</Button>
           )}
           {skillFormState !== "DISPLAY" && (
             <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
@@ -1356,7 +1356,7 @@ export default function SkillForm(props: {
                     console.log(form.state.values);
                   }}
                 >
-                  {dataUploadingState ? dictionary.ui.skill.upload + "..." : dictionary.ui.skill.upload + " [Enter]"}
+                  {dataUploadingState ? dictionary.ui.upload + "..." : dictionary.ui.upload + " [Enter]"}
                 </Button>
               )}
             </form.Subscribe>

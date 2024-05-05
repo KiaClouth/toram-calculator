@@ -12,6 +12,9 @@ const dictionary: dictionary = {
     modify: "Modify",
     cancel: "Cancel",
     close: "close",
+    columnsHidden: "Columns Hidden",
+    filter: "Filter",
+    searchPlaceholder: "Search something ~",
     root: {
       home: "Home",
       monsters: "Monsters",
@@ -29,11 +32,8 @@ const dictionary: dictionary = {
       goodEvening: "Good Evening ~",
     },
     monster: {
-      searchPlaceholder: "Search something ~",
       pageTitle: "Monster Information Table",
       discription: "Emmm..............",
-      columnsHidden: "Columns Hidden",
-      filter: "Filter",
       augmented: "Show All Stars",
       canNotModify: "System Generated",
       monsterDegreeOfDifficulty: {
@@ -48,18 +48,13 @@ const dictionary: dictionary = {
       }
     },
     skill: {
-      searchPlaceholder: "Search something ~",
-      upload: "Upload",
-      save: "Save",
-      reset: "Reset",
-      modify: "Modify",
-      cancel: "Cancel",
-      close: "Close",
       pageTitle: "Skill Information Table",
       discription: "Emmm..............",
-      columnsHidden: "Columns Hidden",
-      filter: "Filter",
     },
+    analyze: {
+      pageTitle: "Analyzer",
+      discription: "Emmm..............",
+    }
   },
   db: {
     enums: {

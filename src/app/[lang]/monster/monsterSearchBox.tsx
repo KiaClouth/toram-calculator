@@ -58,7 +58,7 @@ export default function LongSearchBox(props: {
       <div className="SearchBox hidden z-10 lg:flex flex-1 flex-col-reverse lg:flex-col">
         <input
           type="search"
-          placeholder={dictionary.ui.monster.searchPlaceholder}
+          placeholder={dictionary.ui.searchPlaceholder}
           list="options"
           className=" lg:flex-1 lg:font-normal backdrop-blur-xl border-b-1.5 border-transition-color-20 px-5 py-2 placeholder:text-accent-color-50 bg-transparent hover:bg-transition-color-20 hover:border-accent-color-70 focus:border-accent-color-70 focus:outline-none"
           onChange={(e) => handleChange(e.target.value)}

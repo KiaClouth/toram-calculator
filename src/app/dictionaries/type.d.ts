@@ -24,6 +24,9 @@ interface dictionary {
     cancel: string;
     open: string;
     close: string;
+    searchPlaceholder: string;
+    filter: string;
+    columnsHidden: string;
     root: {
       home: string;
       monsters: string;
@@ -43,9 +46,6 @@ interface dictionary {
     monster: {
       pageTitle: string;
       discription: string;
-      searchPlaceholder: string;
-      filter: string;
-      columnsHidden: string;
       augmented: string;
       canNotModify: string;
       monsterDegreeOfDifficulty: {
@@ -62,16 +62,11 @@ interface dictionary {
     skill: {
       pageTitle: string;
       discription: string;
-      searchPlaceholder: string;
-      upload: string;
-      save: string;
-      reset: string;
-      modify: string;
-      cancel: string;
-      close: string;
-      filter: string;
-      columnsHidden: string;
     };
+    analyze: {
+      pageTitle: string;
+      discription: string;
+    }
   };
   db: {
     enums: ConvertToAllString<typeof $Enums>;

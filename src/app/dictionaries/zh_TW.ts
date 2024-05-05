@@ -6,12 +6,15 @@ const dictionary: dictionary = {
     remove: "删除",
     update: "更新",
     open: "打开",
-    upload: "上传怪物数据",
+    upload: "上传",
     save: "保存",
     reset: "清空",
     modify: "修改",
     cancel: "取消",
     close: "关闭",
+    searchPlaceholder: "这里是搜索框~",
+    columnsHidden: "隐藏列",
+    filter: "过滤",
     root: {
       home: "首页",
       monsters: "怪物",
@@ -29,11 +32,8 @@ const dictionary: dictionary = {
       goodEvening: "晚上好(。-ω-)zzz",
     },
     monster: {
-      searchPlaceholder: "这里是搜索框~",
       pageTitle: "怪物信息表",
       discription: "表中记录的是1星状态下的定点王数据， 2 / 3 / 4 星的经验和HP为1星的 2 / 5 / 10 倍；物防、魔防、回避值为1星的 2 / 4 / 6 倍。",
-      columnsHidden: "隐藏列",
-      filter: "过滤",
       augmented: "是否展示全部星级数据",
       canNotModify: "系统生成，不可修改",
       monsterDegreeOfDifficulty: {
@@ -48,18 +48,13 @@ const dictionary: dictionary = {
       },
     },
     skill: {
-      searchPlaceholder: "这里是搜索框~",
-      upload: "上传技能数据",
-      save: "保存",
-      reset: "清空",
-      modify: "修改",
-      cancel: "取消",
-      close: "关闭",
       pageTitle: "技能信息表",
       discription: "此页面正在开发中，请勿使用",
-      columnsHidden: "隐藏列",
-      filter: "过滤",
     },
+    analyze: {
+      pageTitle: "流程计算器",
+      discription: "正在开发中，请勿使用",
+    }
   },
   db: {
     enums: {

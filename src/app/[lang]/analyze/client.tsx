@@ -125,7 +125,7 @@ export default function AnalyzePageClient(props: Props) {
 
   // 状态管理参数
   const { analyzeDialogState, setAnalyzeDialogState } = useStore((state) => state.analyzePage);
-  const { monster } = useStore((state) => state);
+  // const { monster } = useStore((state) => state);
 
   class CharacterAttr {
     // 武器的能力值-属性转化率
@@ -472,7 +472,7 @@ export default function AnalyzePageClient(props: Props) {
         };
         BodyArmor: {
           type: BodyArmorType;
-          baseDef: number;
+          baseDef: modifiers;
           refinement: number;
         };
       };
@@ -491,6 +491,7 @@ export default function AnalyzePageClient(props: Props) {
       total: modifiers;
       final: modifiers;
       am: modifiers;
+      cm: modifiers;
     };
     public derivedAttributes: {
       // 衍生属性：基础值自由数值决定，玩家只能定义加成项的
@@ -506,54 +507,10 @@ export default function AnalyzePageClient(props: Props) {
       aspd: modifiers;
       cspd: modifiers;
     };
-    // 最终机体实际数值
-    public abi: {
-      str: number;
-      int: number;
-      vit: number;
-      agi: number;
-      dex: number;
-      luk: number;
-      tec: number;
-      cri: number;
-      men: number;
-    };
-    public baseAttr: {
-      mainWeaponType: MainWeaType;
-      subWeaponType: SubWeaType;
-      maxHp: number;
-      hp: number;
-      maxMp: number;
-      mp: number;
-      aggro: number;
-      totalAggro: number;
-      range: number;
-      mpRegen: number;
-      hpRegen: number;
-    };
-    public damageBooster: {
-      weaAtk: number;
-      katanaAtk: number;
-      pAtk: number;
-      pPie: number;
-      mAtk: number;
-      mPie: number;
-      pCr: number;
-      pCd: number;
-      crT: number;
-      cdT: number;
-      mCr: number;
-      mCd: number;
-    };
-    public speedBoster: {
-      aspd: number;
-      cspd: number;
-      am: number;
-      cm: number;
-    };
     constructor(character: Character) {
       const mainWeaponType = character.equipmentList?.mainWeapon?.mainWeaType ?? "NO_WEAPOEN";
       const subWeaponType = character.equipmentList?.subWeapon?.subWeaType ?? "NO_WEAPOEN";
+      const bodyArmorType = character.equipmentList?.bodyArmor?.bodyArmorType ?? "NORMAL";
       // 计算基础值
       this.primaryAttributes = {
         lv: character.lv,
@@ -696,7 +653,7 @@ export default function AnalyzePageClient(props: Props) {
             stability: character.equipmentList?.mainWeapon?.stability ?? 0,
           },
           subWeapon: {
-            type: character.equipmentList?.subWeapon?.subWeaType ?? "NO_WEAPOEN",
+            type: subWeaponType,
             baseAtk: {
               baseValue: character.equipmentList?.subWeapon?.baseAtk ?? 0,
               modifiers: {
@@ -714,8 +671,20 @@ export default function AnalyzePageClient(props: Props) {
             stability: character.equipmentList?.subWeapon?.stability ?? 0,
           },
           BodyArmor: {
-            type: character.equipmentList?.bodyArmor?.bodyArmorType ?? "NORMAL",
-            baseDef: character.equipmentList?.bodyArmor?.baseDef ?? 0,
+            type: bodyArmorType,
+            baseDef: {
+              baseValue: character.equipmentList?.bodyArmor?.baseDef ?? 0,
+              modifiers: {
+                static: {
+                  fixed: [],
+                  percentage: []
+                },
+                dynamic: {
+                  fixed: [],
+                  percentage: []
+                }
+              }
+            },
             refinement: character.equipmentList?.bodyArmor?.refinement ?? 0,
           },
         },
@@ -884,6 +853,19 @@ export default function AnalyzePageClient(props: Props) {
           },
         },
         am: {
+          baseValue: 0,
+          modifiers: {
+            static: {
+              fixed: [],
+              percentage: [],
+            },
+            dynamic: {
+              fixed: [],
+              percentage: [],
+            },
+          },
+        },
+        cm: {
           baseValue: 0,
           modifiers: {
             static: {
@@ -1121,63 +1103,6 @@ export default function AnalyzePageClient(props: Props) {
         } else if (modifier.modifiersValueType === "FLAT_BONUS") {
         }
       });
-      // 面板属性
-      this.abi = {
-        str: this.staticTotalValue(this.primaryAttributes.abi.str),
-        int: this.staticTotalValue(this.primaryAttributes.abi.int),
-        vit: this.staticTotalValue(this.primaryAttributes.abi.vit),
-        agi: this.staticTotalValue(this.primaryAttributes.abi.agi),
-        dex: this.staticTotalValue(this.primaryAttributes.abi.dex),
-        luk: this.staticTotalValue(this.primaryAttributes.abi.luk),
-        tec: this.staticTotalValue(this.primaryAttributes.abi.tec),
-        cri: this.staticTotalValue(this.primaryAttributes.abi.cri),
-        men: this.staticTotalValue(this.primaryAttributes.abi.men),
-      };
-      this.baseAttr = {
-        mainWeaponType: mainWeaponType,
-        subWeaponType: subWeaponType,
-        maxHp: this.staticTotalValue(this.derivedAttributes.maxHP),
-        hp: this.staticTotalValue(this.derivedAttributes.maxHP),
-        maxMp: this.staticTotalValue(this.derivedAttributes.maxMP),
-        mp: this.staticTotalValue(this.derivedAttributes.maxMP),
-        aggro: 0,
-        totalAggro: 0,
-        range: 0,
-        mpRegen: 0,
-        hpRegen: 0,
-      };
-      this.damageBooster = {
-        weaAtk: this.staticTotalValue(this.derivedAttributes.mainWeaAtk),
-        katanaAtk: 0,
-        pAtk: this.staticTotalValue(this.derivedAttributes.pAtk),
-        pPie: this.staticTotalValue(this.systemAttributes.pPie),
-        mAtk: this.staticTotalValue(this.derivedAttributes.mAtk),
-        mPie: this.staticTotalValue(this.systemAttributes.mPie),
-        pCr: this.staticTotalValue(this.derivedAttributes.pCr),
-        pCd: this.staticTotalValue(this.derivedAttributes.pCd),
-        crT: this.staticTotalValue(this.systemAttributes.crT),
-        cdT: this.staticTotalValue(this.systemAttributes.cdT),
-        mCr: this.staticTotalValue(this.derivedAttributes.pCr) * this.staticTotalValue(this.systemAttributes.crT),
-        mCd:
-          (this.staticTotalValue(this.derivedAttributes.pCd) - 100) * this.staticTotalValue(this.systemAttributes.cdT) +
-          100,
-      };
-      this.speedBoster = {
-        aspd: this.staticTotalValue(this.derivedAttributes.aspd),
-        cspd: this.staticTotalValue(this.derivedAttributes.cspd),
-        am: Math.min(
-          50,
-          this.staticTotalValue(this.systemAttributes.am) +
-            Math.max(Math.floor((this.staticTotalValue(this.derivedAttributes.aspd) - 1000) / 180), 0),
-        ),
-        cm: Math.min(
-          100,
-          Math.min(
-            Math.floor((this.staticTotalValue(this.derivedAttributes.cspd) - 1000) / 180) + 50,
-            Math.floor(this.staticTotalValue(this.derivedAttributes.cspd) / 20),
-          ),
-        ),
-      };
     }
 
     public inherit = (otherCharacter: CharacterAttr) => {
@@ -1189,7 +1114,7 @@ export default function AnalyzePageClient(props: Props) {
       return m.baseValue;
     };
 
-    public staticFixedValue = (m: modifiers): number => {
+    private staticFixedValue = (m: modifiers): number => {
       const fixedArray = m.modifiers.static.fixed.map((mod) => mod.value);
       return fixedArray.reduce((a, b) => a + b, 0);
     };
@@ -1203,7 +1128,7 @@ export default function AnalyzePageClient(props: Props) {
       return value;
     };
 
-    public staticPercentageValue = (m: modifiers): number => {
+    private staticPercentageValue = (m: modifiers): number => {
       const percentageArray = m.modifiers.static.percentage.map((mod) => mod.value);
       return percentageArray.reduce((a, b) => a + b, 0);
     };
@@ -1217,7 +1142,7 @@ export default function AnalyzePageClient(props: Props) {
       return value;
     };
 
-    public staticTotalValue = (m: modifiers): number => {
+    private staticTotalValue = (m: modifiers): number => {
       const base = this.baseValue(m);
       const fixed = this.staticFixedValue(m);
       const percentage = this.staticPercentageValue(m);
@@ -1319,7 +1244,7 @@ export default function AnalyzePageClient(props: Props) {
       return m.baseValue;
     };
 
-    public staticFixedValue = (m: modifiers): number => {
+    private staticFixedValue = (m: modifiers): number => {
       const fixedArray = m.modifiers.static.fixed.map((mod) => mod.value);
       return fixedArray.reduce((a, b) => a + b, 0);
     };
@@ -1333,7 +1258,7 @@ export default function AnalyzePageClient(props: Props) {
       return value;
     };
 
-    public staticPercentageValue = (m: modifiers): number => {
+    private staticPercentageValue = (m: modifiers): number => {
       const percentageArray = m.modifiers.static.percentage.map((mod) => mod.value);
       return percentageArray.reduce((a, b) => a + b, 0);
     };
@@ -1468,7 +1393,7 @@ export default function AnalyzePageClient(props: Props) {
         // console.log("动画可加速时长（帧）：" + aDurationModifiableValue);
         // 实际动画时长
         const aDurationActualValue =
-          aDurationBaseValue + aDurationModifiableValue * ((100 - computeArg.p.speedBoster.am) / 100);
+          aDurationBaseValue + aDurationModifiableValue * ((100 - computeArg.p.dynamicTotalValue(computeArg.p.systemAttributes.am)) / 100);
         // console.log("当前行动速度：" + computeArg.p.speedBoster.am + "%，动画实际时长（帧）：" + aDurationActualValue);
 
         // 固定咏唱时长
@@ -1479,7 +1404,7 @@ export default function AnalyzePageClient(props: Props) {
         // console.log("咏唱可加速时长（秒）：" + cDurationModifiableValue);
         // 实际咏唱时长
         const cDurationActualValue =
-          cDurationBaseValue + cDurationModifiableValue * ((100 - computeArg.p.speedBoster.cm) / 100);
+          cDurationBaseValue + cDurationModifiableValue * ((100 - computeArg.p.dynamicTotalValue(computeArg.p.systemAttributes.cm)) / 100);
         // console.log("当前咏唱缩减" + computeArg.p.speedBoster.cm + "%，咏唱实际时长（秒）：" + cDurationActualValue);
         skillTotalFrame = math.floor(aDurationActualValue + cDurationActualValue * 60);
         // console.log("技能总时长（帧）：" + skillTotalFrame);
@@ -1514,18 +1439,18 @@ export default function AnalyzePageClient(props: Props) {
         <div className={`ModuleContent h-[calc(100dvh-67px)] w-full flex-col overflow-auto lg:h-dvh lg:max-w-[1536px]`}>
           <div className="Title sticky left-0 mt-3 flex flex-col gap-9 py-5 lg:pt-20">
             <div className="Row flex flex-col items-center justify-between gap-10 lg:flex-row lg:justify-start lg:gap-4">
-              <h1 className="Text text-left text-3xl lg:bg-transparent lg:text-4xl">Title</h1>
+              <h1 className="Text text-left text-3xl lg:bg-transparent lg:text-4xl">{dictionary.ui.analyze.pageTitle}</h1>
               <div className="Control flex flex-1 gap-2">
                 <input
                   type="search"
-                  placeholder={dictionary.ui.monster.searchPlaceholder}
+                  placeholder={dictionary.ui.searchPlaceholder}
                   className="w-full flex-1 rounded-sm border-transition-color-20 bg-transition-color-8 px-3 py-2 backdrop-blur-xl placeholder:text-accent-color-50 hover:border-accent-color-70 hover:bg-transition-color-8
                   focus:border-accent-color-70 focus:outline-none lg:flex-1 lg:rounded-none lg:border-b-1.5 lg:bg-transparent lg:px-5 lg:font-normal"
                 />
               </div>
             </div>
             <div className="Discription my-3 hidden rounded-sm bg-transition-color-8 p-3 lg:block">
-              {dictionary.ui.monster.discription}
+              {dictionary.ui.analyze.discription}
             </div>
             <div></div>
           </div>
@@ -1535,25 +1460,24 @@ export default function AnalyzePageClient(props: Props) {
                 <div className="frameData flex">
                   <div className="group relative min-h-6 border-2 border-brand-color-2nd">
                     <div className="absolute -left-4 bottom-6 z-10 hidden w-[50dvw] flex-col gap-2 rounded bg-primary-color-90 p-4 shadow-2xl shadow-transition-color-20 backdrop-blur-xl group-hover:flex">
-                      <span className="Title bg-transition-color-8 p-2">{"Frame : " + frameIndex}</span>
-                      <br />
                       <div className="SkillAttr flex flex-col gap-1">
                         <span className="Title">Skill</span>
                         <span className="Content bg-transition-color-8">
-                          {JSON.stringify(frameData.skillAttr, null, 2)}
+                          {JSON.stringify(frameData.skillAttr.currentSkillName, null, 2)} : {JSON.stringify(frameData.skillAttr.skillFrame, null, 2)}
                         </span>
                       </div>
                       <div className="CharacterAttr flex flex-col gap-1">
                         <span className="Title">CharacterAttr</span>
                         <span className="Content bg-transition-color-8">
-                          {JSON.stringify(frameData.characterAttr.baseAttr, null, 2)}
-                          {JSON.stringify(frameData.characterAttr.speedBoster, null, 2)}
+                          asp:{JSON.stringify(frameData.characterAttr.dynamicTotalValue(frameData.characterAttr.derivedAttributes.aspd), null, 2)}
+                          <br />
+                          cspd:{JSON.stringify(frameData.characterAttr.dynamicTotalValue(frameData.characterAttr.derivedAttributes.cspd), null, 2)}
                         </span>
                       </div>
                       <div className="CharacterAttr flex flex-col gap-1">
                         <span className="Title">MonsterAttr</span>
                         <span className="Content bg-transition-color-8">
-                          {JSON.stringify(frameData.monsterAttr.dynamicTotalValue(frameData.monsterAttr.attr.hp), null, 2)}
+                          hp:{JSON.stringify(frameData.monsterAttr.dynamicTotalValue(frameData.monsterAttr.attr.hp), null, 2)}
                         </span>
                       </div>
                     </div>
