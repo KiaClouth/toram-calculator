@@ -235,8 +235,15 @@ const dictionary: dictionary = {
         PASSIVE_SKILL: "被动技能"
       },
       SkillTreeName: {
-        SWORLD: "剑系技能树",
-        MAGIC: "魔法技能树"
+        BLADE: "剑系技能树",
+        MAGIC: "魔法技能树",
+        SHOT: "射击技能树",
+        MARTIAL: "格斗技能树",
+        DUALSWORD: "双剑技能树",
+        HALBERD: "斧枪技能树",
+        MONONOFU: "武士技能树",
+        CRUSHER: "粉碎者技能树",
+        SPRITE: "灵魂技能树"
       },
       UserRole: {
         USER: "常规用户",

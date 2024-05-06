@@ -652,8 +652,15 @@ model SkillList {
 }
 
 enum SkillTreeName {
-    SWORLD
+    BLADE
+    SHOT
     MAGIC
+    MARTIAL
+    DUALSWORD
+    HALBERD
+    MONONOFU
+    CRUSHER
+    SPRITE
 }
 
 enum WeaponElementDependencyType {
@@ -665,7 +672,7 @@ enum WeaponElementDependencyType {
 model Skill {
     id                          String                      @id @default(uuid())
     state                       State                       @default(PRIVATE)
-    skillTreeName               SkillTreeName               @default(SWORLD)
+    skillTreeName               SkillTreeName               @default(BLADE)
     name                        String?                     @default("SYSTEM")
     level                       Int                         @default(10)
     skillType                   SkillType                   @default(ACTIVE_SKILL)

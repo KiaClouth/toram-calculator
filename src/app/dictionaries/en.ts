@@ -235,8 +235,15 @@ const dictionary: dictionary = {
         PASSIVE_SKILL: "PassiveSkill"
       },
       SkillTreeName: {
-        SWORLD: "SWorld",
-        MAGIC: "Magic",
+        BLADE: "Blade SkillTree",
+        MAGIC: "Magic SkillTree",
+        SHOT: "Shot SkillTree",
+        MARTIAL: "Martial SkillTree",
+        DUALSWORD: "DualSword SkillTree",
+        HALBERD: "Halberd SkillTree",
+        MONONOFU: "Mononofu SkillTree",
+        CRUSHER: "Crusher SkillTree",
+        SPRITE: "Sprite SkillTree"
       },
       UserRole: {
         USER: "User",

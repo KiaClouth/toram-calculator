@@ -101,7 +101,7 @@ export const defaultSkill: Skill = {
   name: "",
   level: 0,
   skillDescription: "",
-  skillTreeName: "SWORLD",
+  skillTreeName: "BLADE",
   skillType: "ACTIVE_SKILL",
   weaponElementDependencyType: "TRUE",
   element: "NO_ELEMENT",
