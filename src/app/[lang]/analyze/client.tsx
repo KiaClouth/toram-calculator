@@ -2,6 +2,7 @@
 import React, { useEffect } from "react";
 import { type getDictionary } from "~/app/get-dictionary";
 import { type Session } from "next-auth";
+import _ from "lodash-es";
 
 import type { modifiers } from "./analyzeType";
 import Dialog from "../_components/dialog";
@@ -37,6 +38,54 @@ export default function AnalyzePageClient(props: Props) {
       id: "",
       state: "PUBLIC",
       skillTreeName: "MAGIC",
+      name: "MFP-CT",
+      skillDescription: "",
+      level: 10,
+      weaponElementDependencyType: "TRUE",
+      element: "NO_ELEMENT",
+      skillType: "ACTIVE_SKILL",
+      skillEffect: {
+        id: "",
+        description: null,
+        actionBaseDurationFormula: "13",
+        actionModifiableDurationFormula: "48",
+        castingBaseDurationFormula: "0",
+        castingModifiableDurationFormula: "0",
+        skillWindUpFormula: "0",
+        skillRecoveryFormula: "0",
+        belongToskillId: "",
+        skillCost: [
+          {
+            id: "",
+            name: "MP Cost",
+            costFormula: "0",
+            skillEffectId: null,
+          },
+        ],
+        skillYield: [
+          {
+            id: "",
+            name: "添加魔法炮层数计数器",
+            yieldType: "ImmediateEffect",
+            yieldFormula: "p.mfp = 0",
+            mutationTimingFormula: null,
+            skillEffectId: null,
+          },
+          {
+            id: "",
+            name: "魔法炮层数自动增长行为",
+            yieldType: "PersistentEffect",
+            mutationTimingFormula: "frame % 60 == 0",
+            yieldFormula: "p.mfp = p.mfp + ( p.mfp >= 100 ? 1/3 : 1 )",
+            skillEffectId: null,
+          },
+        ],
+      },
+    },
+    {
+      id: "",
+      state: "PUBLIC",
+      skillTreeName: "MAGIC",
       name: "CJB",
       skillDescription: "",
       level: 7,
@@ -66,7 +115,7 @@ export default function AnalyzePageClient(props: Props) {
             id: "",
             name: "Damage",
             yieldType: "ImmediateEffect",
-            yieldFormula: "(C_VMATK + 200) * 500%",
+            yieldFormula: "(vMatk + 200) * 500%",
             mutationTimingFormula: null,
             skillEffectId: null,
           },
@@ -1235,12 +1284,14 @@ export default function AnalyzePageClient(props: Props) {
   }
 
   class MonsterAttr {
+    lv: number;
     hp: modifiers;
     pDef: modifiers;
     pRes: modifiers;
     mDef: modifiers;
     mRes: modifiers;
     constructor(monsterState: Monster) {
+      this.lv = monsterState.baseLv ?? 0;
       this.hp = {
         baseValue: monsterState.maxhp ?? 0,
         modifiers: {
@@ -1308,6 +1359,17 @@ export default function AnalyzePageClient(props: Props) {
       };
     }
 
+    get state() {
+      return {
+        lv: this.lv,
+        hp: this.dynamicTotalValue(this.hp),
+        pDef: this.dynamicTotalValue(this.pDef),
+        pRes: this.dynamicTotalValue(this.pRes),
+        mDef: this.dynamicTotalValue(this.mDef),
+        mRes: this.dynamicTotalValue(this.mRes),
+      };
+    }
+
     public inherit = (otherMonsterAttr: MonsterAttr) => {
       const copy = JSON.parse(JSON.stringify(otherMonsterAttr)) as MonsterAttr;
       Object.assign(this, copy);
@@ -1345,7 +1407,7 @@ export default function AnalyzePageClient(props: Props) {
       return value;
     };
 
-    public staticTotalValue = (m: modifiers): number => {
+    private staticTotalValue = (m: modifiers): number => {
       const base = this.baseValue(m);
       const fixed = this.staticFixedValue(m);
       const percentage = this.staticPercentageValue(m);
@@ -1370,11 +1432,8 @@ export default function AnalyzePageClient(props: Props) {
   }
 
   interface eventSequenceType {
-    counter: {
-      type: "PerFrame" | "PerSkill";
-      value: number;
-    };
-    event: () => void;
+    condition: string;
+    behavior: string;
     origin: string;
   }
 
@@ -1388,7 +1447,7 @@ export default function AnalyzePageClient(props: Props) {
     const tempMonsterAttr = new MonsterAttr(monster);
 
     // 设置上限20分钟 = 60 * 60 * 20
-    for (let frame = 0; frame < 7200; frame++) {
+    for (let frame = 0; frame < 720; frame++) {
       // debugger;
       // 每帧需要做的事
       frame !== 0 && skillFrame++;
@@ -1402,17 +1461,59 @@ export default function AnalyzePageClient(props: Props) {
 
       // 定义计算上下文
       const computeArg = {
-        p: {
-          ...characterAttr,
-        },
-        m: {
-          ...monsterAttr,
-        },
+        p: characterAttr,
+        m: monsterAttr,
         s: {
           lv: currentSkill.level,
           skillFrame,
         },
+        get frame() {
+          return frame;
+        },
+        get vMatk() {
+          return (
+            ((this.p.state.mAtk + this.p.state.lv - this.m.state.lv) * (100 - this.m.state.mRes)) / 100 -
+            (100 - this.p.state.mPie) * this.m.state.mDef
+          );
+        },
+        get vPatk() {
+          return (
+            ((this.p.state.pAtk + this.p.state.lv - this.m.state.lv) * (100 - this.m.state.pRes)) / 100 -
+            (100 - this.p.state.pPie) * this.m.state.pDef
+          );
+        },
       };
+    
+      // /**
+      //  * 根据给定的表达式更新嵌套对象的属性值
+      //  * @param {Object} obj 要操作的对象
+      //  * @param {string} path 要操作属性的路径,如 'a.b.c'
+      //  * @param {string} expression 表达式,如 'x + 200' 或 'x + 10%'
+      //  */
+      // function updateObjectByExpression(path: string, expression: string, origin: string) {
+      //   const currentValue = _.get(computeArg, path, 0) as unknown as modifiers; // 获取当前值,如果不存在则为 0
+      //   const parsedExpression = expression.replace(/x/g, currentValue.toString()); // 将 x 替换为当前值
+      //   const newValue = evaluate(parsedExpression); // 计算新值
+  
+      //   // 根据新值的类型更新对象
+      //   if (typeof newValue === "number" && !Number.isInteger(newValue)) {
+      //     // 如果新值是浮点数,则将百分比添加到 modifiers.percentage 中
+      //     const percentage = newValue;
+      //     const oldValue = _.get(computeArg, `${path}.modifiers.dynamic.percentage`, []) as unknown as modifiers["modifiers"]["dynamic"]["percentage"];
+      //     _.set(computeArg, `${path}.modifiers.dynamic.percentage`, [...oldValue, {
+      //       value: percentage,
+      //       origin
+      //     }]);
+      //   } else {
+      //     // 否则将固定值添加到 modifiers.fixed 中
+      //     const fixed = newValue;
+      //     const oldValue = _.get(computeArg, `${path}.modifiers.dynamic.fixed`, []) as unknown as modifiers["modifiers"]["dynamic"]["fixed"];
+      //     _.set(computeArg, `${path}.modifiers.dynamic.fixed`, [...oldValue, {
+      //       value: fixed,
+      //       origin
+      //     }])
+      //   }
+      // }
 
       // 封装当前状态的公式计算方法
       const evaluate = (formula: string) => {
@@ -1433,16 +1534,23 @@ export default function AnalyzePageClient(props: Props) {
       // 定义新序列防止删除元素时索引发生混乱
       const newEventSequence: eventSequenceType[] = [];
       eventSequence.forEach((event) => {
-        if (event.counter.type === "PerFrame") {
-          event.counter.value--;
+        if (evaluate(event.condition)) {
           // 执行当前帧需要做的事
-          if (event.counter.value === 0) {
-            event.event();
+          // console.log("上下文：", computeArg);
+          // console.log("当前Frame：" + frame + "，条件：" + event.condition + "成立，执行：" + event.behavior);
+          const node = math.parse(event.behavior);
+          if (node.type === "AssignmentNode") {
+            const nodeString = node.toString();
+            // console.log("发现赋值节点：", nodeString);
+            // 寻找赋值对象
+            const attr = nodeString.substring(0, nodeString.indexOf("=")).trim();
+            console.log("赋值对象：", attr);
+            // updateObjectByExpression(attr, nodeString.substring(nodeString.indexOf("=") + 1), event.origin);
           }
+          // console.log("结果：", computeArg)
+        } else {
           // 将未来需要做的事放在新序列中
-          if (event.counter.value > 0) {
-            newEventSequence.push(event);
-          }
+          newEventSequence.push(event);
         }
       });
 
@@ -1454,20 +1562,6 @@ export default function AnalyzePageClient(props: Props) {
           // 重置技能帧计数
           skillFrame = 0;
         }
-        // 执行由技能数触发的效果
-        eventSequence.forEach((event) => {
-          if (event.counter.type === "PerSkill") {
-            event.counter.value--;
-            // 执行当前技能发动时额外需要做的事
-            if (event.counter.value === 0) {
-              event.event();
-            }
-            // 将未来需要做的事放在新序列中
-            if (event.counter.value > 0) {
-              newEventSequence.push(event);
-            }
-          }
-        });
         const newSkill = skillSequence[skillIndex];
         if (!newSkill) {
           console.log("末端技能为：" + currentSkill.name + "，技能序列执行完毕");
@@ -1500,27 +1594,31 @@ export default function AnalyzePageClient(props: Props) {
         skillTotalFrame = math.floor(aDurationActualValue + cDurationActualValue * 60);
         // console.log("技能总时长（帧）：" + skillTotalFrame);
 
-        newSkill.skillEffect.skillCost.map((cost) => {
-          const node = math.parse(cost.costFormula);
-          node.traverse(function (node, path, parent) {
-            switch (node.type) {
-              // case 'OperatorNode':
-              //   console.log(node.type, node.op)
-              //   break
-              // case 'ConstantNode':
-              //   console.log(node.type, node.value)
-              //   break
-              // case 'SymbolNode':
-              //   console.log(node.type, node.name)
-              //   break
-              default:
-                console.log(node.type)
-            }
-          })
+        // newSkill.skillEffect.skillCost.map((cost) => {
+        //   const node = math.parse(cost.costFormula);
+        //   node.traverse(function (node) {
+        //     switch (node.type) {
+        //       case "OperatorNode":
+        //         console.log(node.type, node.toString());
+        //         break;
+        //       case "ConstantNode":
+        //         console.log(node.type, node.toString());
+        //         break;
+        //       case "SymbolNode":
+        //         console.log(node.type, node.toString());
+        //         break;
+        //       default:
+        //         console.log(node.type, node.toString());
+        //     }
+        //   });
+        // });
+        newSkill.skillEffect.skillYield.forEach((yield_) => {
+          newEventSequence.push({
+            behavior: yield_.yieldFormula,
+            condition: yield_.mutationTimingFormula ?? "true",
+            origin: newSkill.name,
+          });
         });
-        // newSkill.skillEffect.skillYield.map((yield_) => {
-
-        // })
       }
 
       frameDatas.push({
@@ -1612,11 +1710,7 @@ export default function AnalyzePageClient(props: Props) {
                             <span className="Title">MonsterAttr</span>
                             <span className="Content bg-transition-color-8">
                               hp:
-                              {JSON.stringify(
-                                frameData.monsterAttr.dynamicTotalValue(frameData.monsterAttr.hp),
-                                null,
-                                2,
-                              )}
+                              {JSON.stringify(frameData.monsterAttr.state.hp, null, 2)}
                             </span>
                           </div>
                         </div>

@@ -252,7 +252,6 @@ export const skillRouter = createTRPCRouter({
     }),
 
   update: protectedProcedure.input(SkillInputSchema).mutation(async ({ ctx, input }) => {
-    console.log(input);
     // 检查用户权限
     // if (ctx.session.user.role !== "ADMIN") {
     //   console.log(
