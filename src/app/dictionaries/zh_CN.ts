@@ -250,8 +250,8 @@ const dictionary: dictionary = {
         ADMIN: "管理员"
       },
       YieldType: {
-        ImmediateEffect: "立即效果",
-        PersistentEffect: "持续型效果"
+        ImmediateEffect: "即时效果（仅作用一次）",
+        PersistentEffect: "持续型效果（在被删除前，一直有效）"
       },
       WeaponElementDependencyType: {
         TRUE: "继承",

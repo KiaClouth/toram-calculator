@@ -121,9 +121,30 @@ export default function SkillForm(props: {
       DISPLAY: skill,
     }[skillFormState],
     onSubmit: async ({ value }) => {
+      console.log("submit", value);
       setDataUploadingState(true);
       newSkill = {
         ...value,
+        id: skill.id,
+        skillEffect: value.skillEffect.map((skillEffect, skillEffectIndex) => {
+          return {
+            ...skillEffect,
+            id: skill.skillEffect[skillEffectIndex]?.id ?? skillEffect.id,
+            belongToskillId: skill.skillEffect[skillEffectIndex]?.belongToskillId ?? skill.id,  
+            skillCost: skillEffect.skillCost.map((skillCost, skillCostIndex) => {
+              return {
+                ...skillCost,
+                id: skill.skillEffect[skillEffectIndex]?.skillCost[skillCostIndex]?.id ?? skillCost.id,
+              };
+            }),
+            skillYield: skillEffect.skillYield.map((skillYield, skillYieldIndex) => {
+              return {
+                ...skillYield,
+                id: skill.skillEffect[skillEffectIndex]?.skillYield[skillYieldIndex]?.id ?? skillYield.id,
+              };
+            }),
+          };
+        }),
         createdAt: new Date(),
         updatedAt: new Date(),
         usageCount: 0,
@@ -140,7 +161,10 @@ export default function SkillForm(props: {
           break;
 
         case "UPDATE":
-          updateSkill.mutate(newSkill);
+          {
+            updateSkill.mutate(newSkill);
+            console.log("update skill", updateSkill);
+          }
           break;
 
         default:
@@ -1352,9 +1376,6 @@ export default function SkillForm(props: {
                   type="submit"
                   level="primary"
                   disabled={!(canSubmit && !dataUploadingState)}
-                  onClick={() => {
-                    console.log(form.state.values);
-                  }}
                 >
                   {dataUploadingState ? dictionary.ui.upload + "..." : dictionary.ui.upload + " [Enter]"}
                 </Button>

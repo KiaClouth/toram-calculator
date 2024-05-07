@@ -502,7 +502,7 @@ export default function AnalyzePageClient(props: Props) {
     pCd: modifiers;
     mainWeaAtk: modifiers;
     subWeaAtk: modifiers;
-    totalWeaMatk: modifiers;
+    totalWeaAtk: modifiers;
     pAtk: modifiers;
     mAtk: modifiers;
     unsheatheAtk: modifiers;
@@ -976,7 +976,7 @@ export default function AnalyzePageClient(props: Props) {
           },
         },
       };
-      this.totalWeaMatk = {
+      this.totalWeaAtk = {
         baseValue: 0,
         modifiers: {
           static: {
@@ -1196,6 +1196,42 @@ export default function AnalyzePageClient(props: Props) {
       const percentage = this.dynamicPercentageValue(m);
       return base * (1 + percentage / 100) + fixed;
     };
+
+    get state() {
+      return {
+        lv: this.lv,
+        str: this.dynamicTotalValue(this.str),
+        int: this.dynamicTotalValue(this.int),
+        vit: this.dynamicTotalValue(this.vit),
+        agi: this.dynamicTotalValue(this.agi),
+        dex: this.dynamicTotalValue(this.dex),
+        luk: this.dynamicTotalValue(this.luk),
+        tec: this.dynamicTotalValue(this.tec),
+        cri: this.dynamicTotalValue(this.cri),
+        men: this.dynamicTotalValue(this.men),
+        pPie: this.dynamicTotalValue(this.pPie),
+        mPie: this.dynamicTotalValue(this.mPie),
+        pStab: this.dynamicTotalValue(this.pStab),
+        nDis: this.dynamicTotalValue(this.nDis),
+        fDis: this.dynamicTotalValue(this.fDis),
+        crT: this.dynamicTotalValue(this.crT),
+        cdT: this.dynamicTotalValue(this.cdT),
+        mainWeaAtk: this.dynamicTotalValue(this.mainWeaAtk),
+        subWeaAtk: this.dynamicTotalValue(this.subWeaAtk),
+        totalWeaAtk: this.dynamicTotalValue(this.totalWeaAtk),
+        pAtk: this.dynamicTotalValue(this.pAtk),
+        mAtk: this.dynamicTotalValue(this.mAtk),
+        unsheatheAtk: this.dynamicTotalValue(this.unsheatheAtk),
+        aspd: this.dynamicTotalValue(this.aspd),
+        cspd: this.dynamicTotalValue(this.cspd),
+        am: this.dynamicTotalValue(this.am),
+        cm: this.dynamicTotalValue(this.cm),
+        hp: this.dynamicTotalValue(this.hp),
+        mp: this.dynamicTotalValue(this.mp),
+        ampr: this.dynamicTotalValue(this.ampr),
+        aggro: this.dynamicTotalValue(this.aggro),
+      };
+    }
   }
 
   class MonsterAttr {
@@ -1380,7 +1416,6 @@ export default function AnalyzePageClient(props: Props) {
 
       // 封装当前状态的公式计算方法
       const evaluate = (formula: string) => {
-        console.log(formula, computeArg);
         return math.evaluate(formula, { ...computeArg }) as number | void;
       };
 
@@ -1465,9 +1500,24 @@ export default function AnalyzePageClient(props: Props) {
         skillTotalFrame = math.floor(aDurationActualValue + cDurationActualValue * 60);
         // console.log("技能总时长（帧）：" + skillTotalFrame);
 
-        // newSkill.skillEffect.skillCost.map((cost) => {
-        //   evaluate(cost.costFormula);
-        // });
+        newSkill.skillEffect.skillCost.map((cost) => {
+          const node = math.parse(cost.costFormula);
+          node.traverse(function (node, path, parent) {
+            switch (node.type) {
+              case 'OperatorNode':
+                console.log(node.type, node.op)
+                break
+              case 'ConstantNode':
+                console.log(node.type, node.value)
+                break
+              case 'SymbolNode':
+                console.log(node.type, node.name)
+                break
+              default:
+                console.log(node.type)
+            }
+          })
+        });
         // newSkill.skillEffect.skillYield.map((yield_) => {
 
         // })
@@ -1548,19 +1598,14 @@ export default function AnalyzePageClient(props: Props) {
                           <div className="CharacterAttr flex flex-col gap-1">
                             <span className="Title">CharacterAttr</span>
                             <span className="Content bg-transition-color-8">
-                              asp:
-                              {JSON.stringify(
-                                frameData.characterAttr.dynamicTotalValue(frameData.characterAttr.aspd),
-                                null,
-                                2,
-                              )}
+                              mp:
+                              {JSON.stringify(frameData.characterAttr.state.mp, null, 2)}
+                              <br />
+                              aspd:
+                              {JSON.stringify(frameData.characterAttr.state.aspd, null, 2)}
                               <br />
                               cspd:
-                              {JSON.stringify(
-                                frameData.characterAttr.dynamicTotalValue(frameData.characterAttr.cspd),
-                                null,
-                                2,
-                              )}
+                              {JSON.stringify(frameData.characterAttr.state.cspd, null, 2)}
                             </span>
                           </div>
                           <div className="CharacterAttr flex flex-col gap-1">

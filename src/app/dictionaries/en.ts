@@ -235,15 +235,15 @@ const dictionary: dictionary = {
         PASSIVE_SKILL: "PassiveSkill"
       },
       SkillTreeName: {
-        BLADE: "Blade SkillTree",
-        MAGIC: "Magic SkillTree",
-        SHOT: "Shot SkillTree",
-        MARTIAL: "Martial SkillTree",
-        DUALSWORD: "DualSword SkillTree",
-        HALBERD: "Halberd SkillTree",
-        MONONOFU: "Mononofu SkillTree",
-        CRUSHER: "Crusher SkillTree",
-        SPRITE: "Sprite SkillTree"
+        BLADE: "Blade Skill",
+        MAGIC: "Magic Skill",
+        SHOT: "Shot Skill",
+        MARTIAL: "Martial Skill",
+        DUALSWORD: "DualSword Skill",
+        HALBERD: "Halberd Skill",
+        MONONOFU: "Mononofu Skill",
+        CRUSHER: "Crusher Skill",
+        SPRITE: "Sprite Skill"
       },
       UserRole: {
         USER: "User",
@@ -315,7 +315,7 @@ const dictionary: dictionary = {
         skillType: "SkillType",
         level: "Level",
         skillTreeName: "TreeName",
-        weaponElementDependencyType: "WeaponElementDependencyType",
+        weaponElementDependencyType: "WEDT",
         element: "Element",
         skillEffect: "SkillEffect",
         skillDescription: ""
