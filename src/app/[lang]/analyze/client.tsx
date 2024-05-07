@@ -1504,15 +1504,15 @@ export default function AnalyzePageClient(props: Props) {
           const node = math.parse(cost.costFormula);
           node.traverse(function (node, path, parent) {
             switch (node.type) {
-              case 'OperatorNode':
-                console.log(node.type, node.op)
-                break
-              case 'ConstantNode':
-                console.log(node.type, node.value)
-                break
-              case 'SymbolNode':
-                console.log(node.type, node.name)
-                break
+              // case 'OperatorNode':
+              //   console.log(node.type, node.op)
+              //   break
+              // case 'ConstantNode':
+              //   console.log(node.type, node.value)
+              //   break
+              // case 'SymbolNode':
+              //   console.log(node.type, node.name)
+              //   break
               default:
                 console.log(node.type)
             }
