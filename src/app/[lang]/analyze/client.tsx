@@ -2,7 +2,6 @@
 import React, { useEffect } from "react";
 import { type getDictionary } from "~/app/get-dictionary";
 import { type Session } from "next-auth";
-import _ from "lodash-es";
 
 import type { modifiers } from "./analyzeType";
 import Dialog from "../_components/dialog";
@@ -10,7 +9,7 @@ import { test, useStore } from "~/app/store";
 import { type BodyArmorType, type MainWeaType, type SubWeaType } from "@prisma/client";
 import type { Character } from "~/server/api/routers/character";
 import * as math from "mathjs";
-import { Skill, type SkillEffect } from "~/server/api/routers/skill";
+import { type SkillEffect } from "~/server/api/routers/skill";
 import { type Monster } from "~/server/api/routers/monster";
 
 export interface Props {
@@ -184,6 +183,53 @@ export default function AnalyzePageClient(props: Props) {
   // 状态管理参数
   const { analyzeDialogState, setAnalyzeDialogState } = useStore((state) => state.analyzePage);
   // const { monster } = useStore((state) => state);
+
+  // 参数统计方法
+  const baseValue = (m: modifiers): number => {
+    return m.baseValue;
+  };
+
+  const staticFixedValue = (m: modifiers): number => {
+    const fixedArray = m.modifiers.static.fixed.map((mod) => mod.value);
+    return fixedArray.reduce((a, b) => a + b, 0);
+  };
+
+  const dynamicFixedValue = (m: modifiers): number => {
+    let value = 0;
+    if (m.modifiers.dynamic?.fixed) {
+      const fixedArray = m.modifiers.dynamic.fixed.map((mod) => mod.value);
+      value = fixedArray.reduce((a, b) => a + b, 0) + staticFixedValue(m);
+    }
+    return value;
+  };
+
+  const staticPercentageValue = (m: modifiers): number => {
+    const percentageArray = m.modifiers.static.percentage.map((mod) => mod.value);
+    return percentageArray.reduce((a, b) => a + b, 0);
+  };
+
+  const dynamicPercentageValue = (m: modifiers): number => {
+    let value = 0;
+    if (m.modifiers.dynamic?.percentage) {
+      const percentageArray = m.modifiers.dynamic.percentage.map((mod) => mod.value);
+      value = percentageArray.reduce((a, b) => a + b, 0) + staticPercentageValue(m);
+    }
+    return value;
+  };
+
+  const staticTotalValue = (m: modifiers): number => {
+    const base = baseValue(m);
+    const fixed = staticFixedValue(m);
+    const percentage = staticPercentageValue(m);
+    return base * (1 + percentage / 100) + fixed;
+  };
+
+  const dynamicTotalValue = (m: modifiers): number => {
+    const base = baseValue(m);
+    const fixed = dynamicFixedValue(m);
+    const percentage = dynamicPercentageValue(m);
+    return base * (1 + percentage / 100) + fixed;
+  };
 
   class CharacterClass {
     // 武器的能力值-属性转化率
@@ -788,14 +834,13 @@ export default function AnalyzePageClient(props: Props) {
               {
                 value:
                   math.floor(
-                    CharacterClass.weaponAbiT[mainWeaponType].abi_Attr_Convert.str.stabT *
-                      this.staticTotalValue(this._str) +
+                    CharacterClass.weaponAbiT[mainWeaponType].abi_Attr_Convert.str.stabT * staticTotalValue(this._str) +
                       CharacterClass.weaponAbiT[mainWeaponType].abi_Attr_Convert.int.stabT *
-                        this.staticTotalValue(this._int) +
+                        staticTotalValue(this._int) +
                       CharacterClass.weaponAbiT[mainWeaponType].abi_Attr_Convert.agi.stabT *
-                        this.staticTotalValue(this._agi) +
+                        staticTotalValue(this._agi) +
                       CharacterClass.weaponAbiT[mainWeaponType].abi_Attr_Convert.dex.stabT *
-                        this.staticTotalValue(this._dex),
+                        staticTotalValue(this._dex),
                   ) ?? 0,
                 origin: "character.abi",
               },
@@ -966,7 +1011,7 @@ export default function AnalyzePageClient(props: Props) {
       };
 
       this._maxHP = {
-        baseValue: Math.floor(93 + this.lv * (127 / 17 + this.staticTotalValue(this._vit) / 3)),
+        baseValue: Math.floor(93 + this.lv * (127 / 17 + staticTotalValue(this._vit) / 3)),
         modifiers: {
           static: {
             fixed: [],
@@ -979,7 +1024,7 @@ export default function AnalyzePageClient(props: Props) {
         },
       };
       this._maxMP = {
-        baseValue: Math.floor(99 + this.lv + this.staticTotalValue(this._int) / 10 + this.staticTotalValue(this._tec)),
+        baseValue: Math.floor(99 + this.lv + staticTotalValue(this._int) / 10 + staticTotalValue(this._tec)),
         modifiers: {
           static: {
             fixed: [],
@@ -992,7 +1037,7 @@ export default function AnalyzePageClient(props: Props) {
         },
       };
       this._pCr = {
-        baseValue: 25 + this.staticTotalValue(this._cri) / 5,
+        baseValue: 25 + staticTotalValue(this._cri) / 5,
         modifiers: {
           static: {
             fixed: [],
@@ -1008,10 +1053,7 @@ export default function AnalyzePageClient(props: Props) {
         baseValue:
           150 +
           Math.floor(
-            Math.max(
-              this.staticTotalValue(this._str) / 5,
-              this.staticTotalValue(this._str) + this.staticTotalValue(this._agi),
-            ) / 10,
+            Math.max(staticTotalValue(this._str) / 5, staticTotalValue(this._str) + staticTotalValue(this._agi)) / 10,
           ),
         modifiers: {
           static: {
@@ -1025,7 +1067,7 @@ export default function AnalyzePageClient(props: Props) {
         },
       };
       this._mainWeaponAtk = {
-        baseValue: Math.floor(this.staticTotalValue(this._mainWeapon.baseAtk)),
+        baseValue: Math.floor(staticTotalValue(this._mainWeapon.baseAtk)),
         modifiers: {
           static: {
             fixed: [
@@ -1048,7 +1090,7 @@ export default function AnalyzePageClient(props: Props) {
         },
       };
       this._subWeaponAtk = {
-        baseValue: this.staticTotalValue(this._subWeapon.baseAtk),
+        baseValue: staticTotalValue(this._subWeapon.baseAtk),
         modifiers: {
           static: {
             fixed: [],
@@ -1076,11 +1118,11 @@ export default function AnalyzePageClient(props: Props) {
       this._pAtk = {
         baseValue:
           this.lv +
-          this.staticTotalValue(this._mainWeaponAtk) +
-          CharacterClass.weaponAbiT[mainWeaponType].abi_Attr_Convert.str.pAtkT * this.staticTotalValue(this._str) +
-          CharacterClass.weaponAbiT[mainWeaponType].abi_Attr_Convert.int.pAtkT * this.staticTotalValue(this._int) +
-          CharacterClass.weaponAbiT[mainWeaponType].abi_Attr_Convert.agi.pAtkT * this.staticTotalValue(this._agi) +
-          CharacterClass.weaponAbiT[mainWeaponType].abi_Attr_Convert.dex.pAtkT * this.staticTotalValue(this._dex),
+          staticTotalValue(this._mainWeaponAtk) +
+          CharacterClass.weaponAbiT[mainWeaponType].abi_Attr_Convert.str.pAtkT * staticTotalValue(this._str) +
+          CharacterClass.weaponAbiT[mainWeaponType].abi_Attr_Convert.int.pAtkT * staticTotalValue(this._int) +
+          CharacterClass.weaponAbiT[mainWeaponType].abi_Attr_Convert.agi.pAtkT * staticTotalValue(this._agi) +
+          CharacterClass.weaponAbiT[mainWeaponType].abi_Attr_Convert.dex.pAtkT * staticTotalValue(this._dex),
         modifiers: {
           static: {
             fixed: [],
@@ -1095,11 +1137,11 @@ export default function AnalyzePageClient(props: Props) {
       this._mAtk = {
         baseValue:
           this.lv +
-          this.staticTotalValue(this._weaMatkT) * this.staticTotalValue(this._mainWeaponAtk) +
-          CharacterClass.weaponAbiT[mainWeaponType].abi_Attr_Convert.str.mAtkT * this.staticTotalValue(this._str) +
-          CharacterClass.weaponAbiT[mainWeaponType].abi_Attr_Convert.int.mAtkT * this.staticTotalValue(this._int) +
-          CharacterClass.weaponAbiT[mainWeaponType].abi_Attr_Convert.agi.mAtkT * this.staticTotalValue(this._agi) +
-          CharacterClass.weaponAbiT[mainWeaponType].abi_Attr_Convert.dex.mAtkT * this.staticTotalValue(this._dex),
+          staticTotalValue(this._weaMatkT) * staticTotalValue(this._mainWeaponAtk) +
+          CharacterClass.weaponAbiT[mainWeaponType].abi_Attr_Convert.str.mAtkT * staticTotalValue(this._str) +
+          CharacterClass.weaponAbiT[mainWeaponType].abi_Attr_Convert.int.mAtkT * staticTotalValue(this._int) +
+          CharacterClass.weaponAbiT[mainWeaponType].abi_Attr_Convert.agi.mAtkT * staticTotalValue(this._agi) +
+          CharacterClass.weaponAbiT[mainWeaponType].abi_Attr_Convert.dex.mAtkT * staticTotalValue(this._dex),
         // 武器攻击力在后续附加
         modifiers: {
           static: {
@@ -1116,10 +1158,10 @@ export default function AnalyzePageClient(props: Props) {
         baseValue:
           CharacterClass.weaponAbiT[mainWeaponType].baseAspd +
           this.lv +
-          CharacterClass.weaponAbiT[mainWeaponType].abi_Attr_Convert.str.aspdT * this.staticTotalValue(this._str) +
-          CharacterClass.weaponAbiT[mainWeaponType].abi_Attr_Convert.int.aspdT * this.staticTotalValue(this._int) +
-          CharacterClass.weaponAbiT[mainWeaponType].abi_Attr_Convert.agi.aspdT * this.staticTotalValue(this._agi) +
-          CharacterClass.weaponAbiT[mainWeaponType].abi_Attr_Convert.dex.aspdT * this.staticTotalValue(this._dex),
+          CharacterClass.weaponAbiT[mainWeaponType].abi_Attr_Convert.str.aspdT * staticTotalValue(this._str) +
+          CharacterClass.weaponAbiT[mainWeaponType].abi_Attr_Convert.int.aspdT * staticTotalValue(this._int) +
+          CharacterClass.weaponAbiT[mainWeaponType].abi_Attr_Convert.agi.aspdT * staticTotalValue(this._agi) +
+          CharacterClass.weaponAbiT[mainWeaponType].abi_Attr_Convert.dex.aspdT * staticTotalValue(this._dex),
         modifiers: {
           static: {
             fixed: [],
@@ -1132,7 +1174,7 @@ export default function AnalyzePageClient(props: Props) {
         },
       };
       this._cspd = {
-        baseValue: this.staticTotalValue(this._dex) * 2.94 + this.staticTotalValue(this._agi) * 1.16,
+        baseValue: staticTotalValue(this._dex) * 2.94 + staticTotalValue(this._agi) * 1.16,
         modifiers: {
           static: {
             fixed: [],
@@ -1146,7 +1188,7 @@ export default function AnalyzePageClient(props: Props) {
       };
 
       this._hp = {
-        baseValue: this.staticTotalValue(this._maxHP),
+        baseValue: staticTotalValue(this._maxHP),
         modifiers: {
           static: {
             fixed: [],
@@ -1159,7 +1201,7 @@ export default function AnalyzePageClient(props: Props) {
         },
       };
       this._mp = {
-        baseValue: this.staticTotalValue(this._maxMP),
+        baseValue: staticTotalValue(this._maxMP),
         modifiers: {
           static: {
             fixed: [],
@@ -1172,7 +1214,7 @@ export default function AnalyzePageClient(props: Props) {
         },
       };
       this._ampr = {
-        baseValue: 10 + this.staticTotalValue(this._maxMP) / 10,
+        baseValue: 10 + staticTotalValue(this._maxMP) / 10,
         modifiers: {
           static: {
             fixed: [],
@@ -1208,81 +1250,42 @@ export default function AnalyzePageClient(props: Props) {
       const copy = JSON.parse(JSON.stringify(otherCharacter)) as CharacterClass;
       Object.assign(this, copy);
     };
-    private baseValue = (m: modifiers): number => {
-      return m.baseValue;
-    };
-    private staticFixedValue = (m: modifiers): number => {
-      const fixedArray = m.modifiers.static.fixed.map((mod) => mod.value);
-      return fixedArray.reduce((a, b) => a + b, 0);
-    };
-    private dynamicFixedValue = (m: modifiers): number => {
-      let value = 0;
-      if (m.modifiers.dynamic?.fixed) {
-        const fixedArray = m.modifiers.dynamic.fixed.map((mod) => mod.value);
-        value = fixedArray.reduce((a, b) => a + b, 0) + this.staticFixedValue(m);
-      }
-      return value;
-    };
-    private staticPercentageValue = (m: modifiers): number => {
-      const percentageArray = m.modifiers.static.percentage.map((mod) => mod.value);
-      return percentageArray.reduce((a, b) => a + b, 0);
-    };
-    private dynamicPercentageValue = (m: modifiers): number => {
-      let value = 0;
-      if (m.modifiers.dynamic?.percentage) {
-        const percentageArray = m.modifiers.dynamic.percentage.map((mod) => mod.value);
-        value = percentageArray.reduce((a, b) => a + b, 0) + this.staticPercentageValue(m);
-      }
-      return value;
-    };
-    private staticTotalValue = (m: modifiers): number => {
-      const base = this.baseValue(m);
-      const fixed = this.staticFixedValue(m);
-      const percentage = this.staticPercentageValue(m);
-      return base * (1 + percentage / 100) + fixed;
-    };
-    private dynamicTotalValue = (m: modifiers): number => {
-      const base = this.baseValue(m);
-      const fixed = this.dynamicFixedValue(m);
-      const percentage = this.dynamicPercentageValue(m);
-      return base * (1 + percentage / 100) + fixed;
-    };
 
     get lv() {
       return this._lv;
     }
     get str() {
-      return this.dynamicTotalValue(this._str);
+      return dynamicTotalValue(this._str);
     }
     get int() {
-      return this.dynamicTotalValue(this._int);
+      return dynamicTotalValue(this._int);
     }
     get vit() {
-      return this.dynamicTotalValue(this._vit);
+      return dynamicTotalValue(this._vit);
     }
     get dex() {
-      return this.dynamicTotalValue(this._dex);
+      return dynamicTotalValue(this._dex);
     }
     get agi() {
-      return this.dynamicTotalValue(this._agi);
+      return dynamicTotalValue(this._agi);
     }
     get luk() {
-      return this.dynamicTotalValue(this._luk);
+      return dynamicTotalValue(this._luk);
     }
     get tec() {
-      return this.dynamicTotalValue(this._tec);
+      return dynamicTotalValue(this._tec);
     }
     get cri() {
-      return this.dynamicTotalValue(this._cri);
+      return dynamicTotalValue(this._cri);
     }
     get men() {
-      return this.dynamicTotalValue(this._men);
+      return dynamicTotalValue(this._men);
     }
     get mainWeaponType() {
       return this._mainWeapon.type;
     }
     get mainWeaponBaseAtk() {
-      return this.dynamicTotalValue(this._mainWeapon.baseAtk);
+      return dynamicTotalValue(this._mainWeapon.baseAtk);
     }
     get mainWeaponRefinement() {
       return this._mainWeapon.refinement;
@@ -1294,7 +1297,7 @@ export default function AnalyzePageClient(props: Props) {
       return this._subWeapon.type;
     }
     get subWeaponBaseAtk() {
-      return this.dynamicTotalValue(this._subWeapon.baseAtk);
+      return dynamicTotalValue(this._subWeapon.baseAtk);
     }
     get subWeaponRefinement() {
       return this._subWeapon.refinement;
@@ -1306,97 +1309,97 @@ export default function AnalyzePageClient(props: Props) {
       return this._bodyArmor.type;
     }
     get bodyArmorBaseDef() {
-      return this.dynamicTotalValue(this._bodyArmor.baseDef);
+      return dynamicTotalValue(this._bodyArmor.baseDef);
     }
     get bodyArmorRefinement() {
       return this._bodyArmor.refinement;
     }
     get pPie() {
-      return this.dynamicTotalValue(this._pPie);
+      return dynamicTotalValue(this._pPie);
     }
     get mPie() {
-      return this.dynamicTotalValue(this._mPie);
+      return dynamicTotalValue(this._mPie);
     }
     get pStab() {
-      return this.dynamicTotalValue(this._pStab);
+      return dynamicTotalValue(this._pStab);
     }
     get nDis() {
-      return this.dynamicTotalValue(this._nDis);
+      return dynamicTotalValue(this._nDis);
     }
     get fDis() {
-      return this.dynamicTotalValue(this._fDis);
+      return dynamicTotalValue(this._fDis);
     }
     get crT() {
-      return this.dynamicTotalValue(this._crT);
+      return dynamicTotalValue(this._crT);
     }
     get cdT() {
-      return this.dynamicTotalValue(this._cdT);
+      return dynamicTotalValue(this._cdT);
     }
     get weaMatkT() {
-      return this.dynamicTotalValue(this._weaMatkT);
+      return dynamicTotalValue(this._weaMatkT);
     }
     get stro() {
-      return this.dynamicTotalValue(this._stro);
+      return dynamicTotalValue(this._stro);
     }
     get unsheatheAtk() {
-      return this.dynamicTotalValue(this._unsheatheAtk);
+      return dynamicTotalValue(this._unsheatheAtk);
     }
     get total() {
-      return this.dynamicTotalValue(this._total);
+      return dynamicTotalValue(this._total);
     }
     get final() {
-      return this.dynamicTotalValue(this._final);
+      return dynamicTotalValue(this._final);
     }
     get am() {
-      return this.dynamicTotalValue(this._am);
+      return dynamicTotalValue(this._am);
     }
     get cm() {
-      return this.dynamicTotalValue(this._cm);
+      return dynamicTotalValue(this._cm);
     }
     get aggro() {
-      return this.dynamicTotalValue(this._aggro);
+      return dynamicTotalValue(this._aggro);
     }
     get maxHP() {
-      return this.dynamicTotalValue(this._maxHP);
+      return dynamicTotalValue(this._maxHP);
     }
     get maxMP() {
-      return this.dynamicTotalValue(this._maxMP);
+      return dynamicTotalValue(this._maxMP);
     }
     get pCr() {
-      return this.dynamicTotalValue(this._pCr);
+      return dynamicTotalValue(this._pCr);
     }
     get pCd() {
-      return this.dynamicTotalValue(this._pCd);
+      return dynamicTotalValue(this._pCd);
     }
     get mainWeaponAtk() {
-      return this.dynamicTotalValue(this._mainWeaponAtk);
+      return dynamicTotalValue(this._mainWeaponAtk);
     }
     get subWeaponAtk() {
-      return this.dynamicTotalValue(this._subWeaponAtk);
+      return dynamicTotalValue(this._subWeaponAtk);
     }
     get totalWeaponAtk() {
-      return this.dynamicTotalValue(this._totalWeaponAtk);
+      return dynamicTotalValue(this._totalWeaponAtk);
     }
     get pAtk() {
-      return this.dynamicTotalValue(this._pAtk);
+      return dynamicTotalValue(this._pAtk);
     }
     get mAtk() {
-      return this.dynamicTotalValue(this._mAtk);
+      return dynamicTotalValue(this._mAtk);
     }
     get aspd() {
-      return this.dynamicTotalValue(this._aspd);
+      return dynamicTotalValue(this._aspd);
     }
     get cspd() {
-      return this.dynamicTotalValue(this._cspd);
+      return dynamicTotalValue(this._cspd);
     }
     get hp() {
-      return this.dynamicTotalValue(this._hp);
+      return dynamicTotalValue(this._hp);
     }
     get mp() {
-      return this.dynamicTotalValue(this._mp);
+      return dynamicTotalValue(this._mp);
     }
     get ampr() {
-      return this.dynamicTotalValue(this._ampr);
+      return dynamicTotalValue(this._ampr);
     }
   }
 
@@ -1407,10 +1410,12 @@ export default function AnalyzePageClient(props: Props) {
     _pRes: modifiers;
     _mDef: modifiers;
     _mRes: modifiers;
-    constructor(monsterState: Monster) {
-      this._lv = monsterState.baseLv ?? 0;
+    _cRes: modifiers;
+    test: number;
+    constructor(monster: Monster) {
+      this._lv = monster.baseLv ?? 0;
       this._hp = {
-        baseValue: monsterState.maxhp ?? 0,
+        baseValue: monster.maxhp ?? 0,
         modifiers: {
           static: {
             fixed: [],
@@ -1423,7 +1428,7 @@ export default function AnalyzePageClient(props: Props) {
         },
       };
       this._pDef = {
-        baseValue: monsterState.physicalDefense ?? 0,
+        baseValue: monster.physicalDefense ?? 0,
         modifiers: {
           static: {
             fixed: [],
@@ -1436,7 +1441,7 @@ export default function AnalyzePageClient(props: Props) {
         },
       };
       this._pRes = {
-        baseValue: monsterState.physicalResistance ?? 0,
+        baseValue: monster.physicalResistance ?? 0,
         modifiers: {
           static: {
             fixed: [],
@@ -1449,7 +1454,7 @@ export default function AnalyzePageClient(props: Props) {
         },
       };
       this._mDef = {
-        baseValue: monsterState.magicalDefense ?? 0,
+        baseValue: monster.magicalDefense ?? 0,
         modifiers: {
           static: {
             fixed: [],
@@ -1462,7 +1467,84 @@ export default function AnalyzePageClient(props: Props) {
         },
       };
       this._mRes = {
-        baseValue: monsterState.magicalResistance ?? 0,
+        baseValue: monster.magicalResistance ?? 0,
+        modifiers: {
+          static: {
+            fixed: [],
+            percentage: [],
+          },
+          dynamic: {
+            fixed: [],
+            percentage: [],
+          },
+        },
+      };
+      this._cRes = {
+        baseValue: monster.criticalResistance ?? 0,
+        modifiers: {
+          static: {
+            fixed: [],
+            percentage: [],
+          },
+          dynamic: {
+            fixed: [],
+            percentage: [],
+          },
+        },
+      };
+      this.test = 200;
+    }
+    get lv() {
+      return this._lv;
+    }
+    get hp() {
+      return dynamicTotalValue(this._hp);
+    }
+    get pDef() {
+      return dynamicTotalValue(this._pDef);
+    }
+    get pRes() {
+      return dynamicTotalValue(this._pRes);
+    }
+    get mDef() {
+      return dynamicTotalValue(this._mDef);
+    }
+    get mRes() {
+      return dynamicTotalValue(this._mRes);
+    }
+    get cRes() {
+      return dynamicTotalValue(this._cRes);
+    }
+
+    public inherit = (otherMonsterClass: MonsterClass) => {
+      const copy = JSON.parse(JSON.stringify(otherMonsterClass)) as MonsterClass;
+      Object.assign(this, copy);
+    };
+  }
+
+  class SkillClass {
+    _lv: number;
+    _am: modifiers;
+    _cm: modifiers;
+    constructor(skill: tSkill, character: Character, monster: Monster) {
+      const c = new CharacterClass(character);
+      const m = new MonsterClass(monster);
+      this._lv = skill.level ?? 0;
+      this._am = {
+        baseValue: c.am,
+        modifiers: {
+          static: {
+            fixed: [],
+            percentage: [],
+          },
+          dynamic: {
+            fixed: [],
+            percentage: [],
+          },
+        },
+      };
+      this._cm = {
+        baseValue: c.cm,
         modifiers: {
           static: {
             fixed: [],
@@ -1478,80 +1560,22 @@ export default function AnalyzePageClient(props: Props) {
     get lv() {
       return this._lv;
     }
-    get hp() {
-      return this.dynamicTotalValue(this._hp);
+    get am() {
+      return dynamicTotalValue(this._am);
     }
-    get pDef() {
-      return this.dynamicTotalValue(this._pDef);
+    get cm() {
+      return dynamicTotalValue(this._cm);
     }
-    get pRes() {
-      return this.dynamicTotalValue(this._pRes);
-    }
-    get mDef() {
-      return this.dynamicTotalValue(this._mDef);
-    }
-    get mRes() {
-      return this.dynamicTotalValue(this._mRes);
-    }
-
-    public inherit = (otherMonsterClass: MonsterClass) => {
-      const copy = JSON.parse(JSON.stringify(otherMonsterClass)) as MonsterClass;
-      Object.assign(this, copy);
-    };
-
-    public baseValue = (m: modifiers): number => {
-      return m.baseValue;
-    };
-
-    private staticFixedValue = (m: modifiers): number => {
-      const fixedArray = m.modifiers.static.fixed.map((mod) => mod.value);
-      return fixedArray.reduce((a, b) => a + b, 0);
-    };
-
-    public dynamicFixedValue = (m: modifiers): number => {
-      let value = 0;
-      if (m.modifiers.dynamic?.fixed) {
-        const fixedArray = m.modifiers.dynamic.fixed.map((mod) => mod.value);
-        value = fixedArray.reduce((a, b) => a + b, 0) + this.staticFixedValue(m);
-      }
-      return value;
-    };
-
-    private staticPercentageValue = (m: modifiers): number => {
-      const percentageArray = m.modifiers.static.percentage.map((mod) => mod.value);
-      return percentageArray.reduce((a, b) => a + b, 0);
-    };
-
-    public dynamicPercentageValue = (m: modifiers): number => {
-      let value = 0;
-      if (m.modifiers.dynamic?.percentage) {
-        const percentageArray = m.modifiers.dynamic.percentage.map((mod) => mod.value);
-        value = percentageArray.reduce((a, b) => a + b, 0) + this.staticPercentageValue(m);
-      }
-      return value;
-    };
-
-    private staticTotalValue = (m: modifiers): number => {
-      const base = this.baseValue(m);
-      const fixed = this.staticFixedValue(m);
-      const percentage = this.staticPercentageValue(m);
-      return base * (1 + percentage / 100) + fixed;
-    };
-
-    public dynamicTotalValue = (m: modifiers): number => {
-      const base = this.baseValue(m);
-      const fixed = this.dynamicFixedValue(m);
-      const percentage = this.dynamicPercentageValue(m);
-      return base * (1 + percentage / 100) + fixed;
-    };
   }
 
-  class SkillClass {
-    _lv: number;
-    constructor(skill: tSkill, character: Character, monster: Monster) {
-      const c = new CharacterClass(character);
-      const m = new MonsterClass(monster);
-      this._lv = skill.level ?? 0;
+  class TestClass {
+    a: number;
+    b: string;
+    c: boolean;
+    constructor() {
+      this.a = 100;
+      this.b = "ssss";
+      this.c = false;
     }
   }
 
@@ -1587,6 +1611,7 @@ export default function AnalyzePageClient(props: Props) {
       const characterAttr = new CharacterClass(character);
       const monsterAttr = new MonsterClass(monster);
       const currentSkill = skillSequence[skillIndex]!;
+      const skillAttr = new SkillClass(currentSkill, character, monster);
 
       // 读取上一帧的数据
       characterAttr.inherit(tempCharacterClass);
@@ -1596,10 +1621,11 @@ export default function AnalyzePageClient(props: Props) {
       const computeArg = {
         p: characterAttr,
         m: monsterAttr,
-        s: {
-          skillFrame,
-          lv: currentSkill.level,
-          amModifiers: [],
+        s: skillAttr,
+        t: {
+          get a() {
+            return 0;
+          }
         },
         get frame() {
           return frame;
@@ -1609,8 +1635,7 @@ export default function AnalyzePageClient(props: Props) {
         },
         get vMatk() {
           return (
-            ((this.p.mAtk + this.p.lv - this.m.lv) * (100 - this.m.mRes)) / 100 -
-            (100 - this.p.mPie) * this.m.mDef
+            ((this.p.mAtk + this.p.lv - this.m.lv) * (100 - this.m.mRes)) / 100 - (100 - this.p.mPie) * this.m.mDef
           );
         },
         get vPatk() {
@@ -1622,6 +1647,8 @@ export default function AnalyzePageClient(props: Props) {
 
       // 封装当前状态的公式计算方法
       const evaluate = (formula: string) => {
+        // console.log(formula, computeArg);
+        console.log(math.evaluate("t.a", {...computeArg}));
         return math.evaluate(formula, { ...computeArg }) as number | void;
       };
 
@@ -1671,9 +1698,9 @@ export default function AnalyzePageClient(props: Props) {
           console.log("末端技能为：" + currentSkill.name + "，技能序列执行完毕");
           break;
         }
-        // 动态计算当前行动速度和咏唱加速
-        const currentAm = computeArg.p.am;
-        const currentCm = computeArg.p.cm;
+        // 动态计算当前动作加速和咏唱加速
+        const currentAm = math.max(50, math.min(0, computeArg.s.am));
+        const currentCm = math.max(50, math.min(0, computeArg.s.cm));
         // console.log("执行到：" + newSkill.name);
         // 计算与帧相关的技能效果参数
         // 固定动画时长
@@ -1687,10 +1714,12 @@ export default function AnalyzePageClient(props: Props) {
         // console.log("当前行动速度：" + currentAm + "%，动画实际时长（帧）：" + aDurationActualValue);
 
         // 固定咏唱时长
-        const cDurationBaseValue = evaluate(newSkill.skillEffect.chantingBaseDurationFormula) as number;
+        const cDurationBaseValue = evaluate(newSkill.skillEffect.chantingBaseDurationFormula as string) as number;
         // console.log("咏唱固定时长（秒）：" + cDurationBaseValue);
         // 可加速咏唱时长
-        const cDurationModifiableValue = evaluate(newSkill.skillEffect.chantingModifiableDurationFormula) as number;
+        const cDurationModifiableValue = evaluate(
+          newSkill.skillEffect.chantingModifiableDurationFormula as string,
+        ) as number;
         // console.log("咏唱可加速时长（秒）：" + cDurationModifiableValue);
         // 实际咏唱时长
         const cDurationActualValue = cDurationBaseValue + (cDurationModifiableValue * (100 - currentCm)) / 100;
@@ -1716,13 +1745,13 @@ export default function AnalyzePageClient(props: Props) {
         //     }
         //   });
         // });
-        newSkill.skillEffect.skillYield.forEach((yield_) => {
-          newEventSequence.push({
-            behavior: yield_.yieldFormula,
-            condition: yield_.mutationTimingFormula ?? "true",
-            origin: newSkill.name,
-          });
-        });
+        // newSkill.skillEffect.skillYield.forEach((yield_) => {
+        //   newEventSequence.push({
+        //     behavior: yield_.yieldFormula,
+        //     condition: yield_.mutationTimingFormula ?? "true",
+        //     origin: newSkill.name,
+        //   });
+        // });
       }
 
       frameDatas.push({

@@ -562,7 +562,7 @@ export default function MonsterForm(props: {
             ) : (
               <Button
                 onClick={() => {
-                  // 如果处于所有星级都展示的状态，则一星怪物名称后面会附加额外字段，在此去除
+                  // 如果处于所有星级都展示的状态，则一星怪物名称后面会附加额外字段，进入编辑状态前去除
                   if (monster.monsterType === "COMMON_BOSS" && augmented) {
                     const name = monster.name;
                     const lastIndex = name.lastIndexOf(" ");
