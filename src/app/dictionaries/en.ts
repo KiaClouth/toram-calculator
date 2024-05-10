@@ -259,6 +259,11 @@ const dictionary: dictionary = {
       YieldType: {
         ImmediateEffect: "ImmediateEffect",
         PersistentEffect: "PersistentEffect",
+      },
+      SkillExtraActionType: {
+        None: "None",
+        Chanting: "Chanting",
+        Charging: "Charging",
       }
     },
     models: {
@@ -335,12 +340,15 @@ const dictionary: dictionary = {
         condition: "Condition",
         actionBaseDurationFormula: "ActionBaseDuration",
         actionModifiableDurationFormula: "ActionModifiableDuration",
-        castingBaseDurationFormula: "CastingDurationFormula",
-        castingModifiableDurationFormula: "CastingModifiableDurationFormula",
+        skillExtraActionType: "",
+        chargingBaseDurationFormula: "",
+        chargingModifiableDurationFormula: "",
+        chantingBaseDurationFormula: "ChantingBaseDurationFormula",
+        chantingModifiableDurationFormula: "ChantingModifiableDurationFormula",
         skillWindUpFormula: "SkillWindUpFormula",
         skillRecoveryFormula: "SkillRecoveryFormula",
         belongToskillId: "BelongToskillId",
-        description: "Description"
+        description: "Description",
       },
       skillCost: {
         id: "ID",

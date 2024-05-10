@@ -250,8 +250,8 @@ const dictionary: dictionary = {
         ADMIN: "管理员"
       },
       YieldType: {
-        ImmediateEffect: "立即效果",
-        PersistentEffect: "持续型效果"
+        ImmediateEffect: "即时效果（仅作用一次）",
+        PersistentEffect: "持续型效果（在被删除前，一直有效）"
       },
       WeaponElementDependencyType: {
         TRUE: "继承",
@@ -259,6 +259,11 @@ const dictionary: dictionary = {
       },
       ComboType: {
         NULL: "未设置",
+      },
+      SkillExtraActionType: {
+        None: "无",
+        Chanting: "咏唱",
+        Charging: "蓄力"
       }
     },
     models: {
@@ -334,8 +339,11 @@ const dictionary: dictionary = {
         description: "条件说明",
         actionBaseDurationFormula: "固定动作时长（帧）",
         actionModifiableDurationFormula: "可加速动作时长（帧）",
-        castingBaseDurationFormula: "基础咏唱时长计算公式（秒）",
-        castingModifiableDurationFormula: "可加速咏唱时长计算公式（秒）",
+        skillExtraActionType: "额外动作",
+        chargingBaseDurationFormula: "固定蓄力时长计算公式（秒）",
+        chargingModifiableDurationFormula: "可加速蓄力时长计算公式（秒）",
+        chantingBaseDurationFormula: "固定咏唱时长计算公式（秒）",
+        chantingModifiableDurationFormula: "可加速咏唱时长计算公式（秒）",
         skillWindUpFormula: "技能前摇计算公式（秒）",
         skillRecoveryFormula: "技能后摇计算公式（秒）",
         belongToskillId: "所属技能",

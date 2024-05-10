@@ -701,21 +701,30 @@ enum SkillType {
     PASSIVE_SKILL
 }
 
+enum SkillExtraActionType {
+    None
+    Chanting
+    Charging
+}
+
 // 技能效果
 model SkillEffect {
-    id                               String       @id @default(cuid())
-    condition                        String
-    description                      String?
-    actionBaseDurationFormula        String       @default("13")
-    actionModifiableDurationFormula  String       @default("48")
-    castingBaseDurationFormula       String       @default("0")
-    castingModifiableDurationFormula String       @default("0")
-    skillWindUpFormula               String?      @default("0")
-    skillRecoveryFormula             String?
-    skillCost                        SkillCost[]
-    skillYield                       SkillYield[]
-    belongToSkill                    Skill        @relation(fields: [belongToskillId], references: [id], onDelete: Cascade)
-    belongToskillId                  String
+    id                                String               @id @default(cuid())
+    condition                         String
+    description                       String?
+    actionBaseDurationFormula         String               @default("13")
+    actionModifiableDurationFormula   String               @default("48")
+    skillExtraActionType              SkillExtraActionType @default(None)
+    chantingBaseDurationFormula       String               @default("0")
+    chantingModifiableDurationFormula String               @default("0")
+    chargingBaseDurationFormula       String               @default("0")
+    chargingModifiableDurationFormula String               @default("0")
+    skillWindUpFormula                String?              @default("0")
+    skillRecoveryFormula              String?
+    skillCost                         SkillCost[]
+    skillYield                        SkillYield[]
+    belongToSkill                     Skill                @relation(fields: [belongToskillId], references: [id], onDelete: Cascade)
+    belongToskillId                   String
 }
 
 // 技能消耗
