@@ -6,8 +6,9 @@ import { type Session } from "next-auth";
 import type { modifiers } from "./analyzeType";
 import Dialog from "../_components/dialog";
 import { test, useStore } from "~/app/store";
-import { type BodyArmorType, type MainWeaType, type SubWeaType } from "@prisma/client";
+import { $Enums, type BodyArmorType, type MainWeaType, type SubWeaType } from "@prisma/client";
 import type { Character } from "~/server/api/routers/character";
+import _ from "lodash-es";
 import * as math from "mathjs";
 import { type SkillEffect } from "~/server/api/routers/skill";
 import { type Monster } from "~/server/api/routers/monster";
@@ -33,6 +34,57 @@ interface tSkill {
 export default function AnalyzePageClient(props: Props) {
   const { dictionary } = props;
   const skillSequence: tSkill[] = [
+    {
+      id: "",
+      state: "PUBLIC",
+      skillTreeName: "MAGIC",
+      name: "神速掌握",
+      skillDescription: "",
+      level: 10,
+      weaponElementDependencyType: "TRUE",
+      element: "NO_ELEMENT",
+      skillType: "ACTIVE_SKILL",
+      skillEffect: {
+        id: "",
+        description: null,
+        actionBaseDurationFormula: "13",
+        actionModifiableDurationFormula: "48",
+        skillExtraActionType: "None",
+        chargingBaseDurationFormula: "",
+        chargingModifiableDurationFormula: "",
+        chantingBaseDurationFormula: "0",
+        chantingModifiableDurationFormula: "0",
+        skillWindUpFormula: "13",
+        skillRecoveryFormula: "0",
+        belongToskillId: "",
+        skillCost: [
+          {
+            id: "",
+            name: "MP Cost",
+            costFormula: "100",
+            skillEffectId: null,
+          },
+        ],
+        skillYield: [
+          {
+            id: "",
+            name: "角色行动速度+10%",
+            yieldType: "ImmediateEffect",
+            yieldFormula: "p.am + 10%",
+            mutationTimingFormula: null,
+            skillEffectId: null,
+          },
+          {
+            id: "",
+            name: "角色攻速+300",
+            yieldType: "ImmediateEffect",
+            mutationTimingFormula: null,
+            yieldFormula: "p.aspd + 300",
+            skillEffectId: null,
+          },
+        ],
+      },
+    },
     {
       id: "",
       state: "PUBLIC",
@@ -77,8 +129,8 @@ export default function AnalyzePageClient(props: Props) {
             id: "",
             name: "魔法炮层数自动增长行为",
             yieldType: "PersistentEffect",
-            mutationTimingFormula: "frame % 60 == 0",
-            yieldFormula: "p.mfp = p.mfp + ( p.mfp >= 100 ? 1/3 : 1 )",
+            mutationTimingFormula: "frame % 60 == 0 and frame > 0",
+            yieldFormula: "p.mfp + ( p.mfp >= 100 ? 1/3 : 1 )",
             skillEffectId: null,
           },
         ],
@@ -120,7 +172,7 @@ export default function AnalyzePageClient(props: Props) {
             id: "",
             name: "Damage",
             yieldType: "ImmediateEffect",
-            yieldFormula: "(vMatk + 200) * 500%",
+            yieldFormula: "m.hp - (vMatk + 200) * 500%",
             mutationTimingFormula: null,
             skillEffectId: null,
           },
@@ -130,7 +182,7 @@ export default function AnalyzePageClient(props: Props) {
             yieldType: "PersistentEffect",
             yieldFormula: "",
             skillEffectId: null,
-            mutationTimingFormula: "",
+            mutationTimingFormula: "false",
           },
         ],
       },
@@ -169,7 +221,7 @@ export default function AnalyzePageClient(props: Props) {
         skillYield: [
           {
             id: "",
-            yieldFormula: "",
+            yieldFormula: "1+1",
             name: "Damage",
             skillEffectId: null,
             yieldType: "ImmediateEffect",
@@ -239,6 +291,7 @@ export default function AnalyzePageClient(props: Props) {
         baseHit: number;
         baseAspd: number;
         weaAtk_Matk_Convert: number;
+        weaAtk_Patk_Convert: number;
         abi_Attr_Convert: Record<
           "str" | "int" | "agi" | "dex",
           { pAtkT: number; mAtkT: number; aspdT: number; stabT: number }
@@ -275,6 +328,7 @@ export default function AnalyzePageClient(props: Props) {
           },
         },
         weaAtk_Matk_Convert: 0,
+        weaAtk_Patk_Convert: 1,
       },
       KATANA: {
         baseHit: 0.3,
@@ -306,6 +360,7 @@ export default function AnalyzePageClient(props: Props) {
           },
         },
         weaAtk_Matk_Convert: 0,
+        weaAtk_Patk_Convert: 1,
       },
       TWO_HANDS_SWORD: {
         baseHit: 0.15,
@@ -337,6 +392,7 @@ export default function AnalyzePageClient(props: Props) {
           },
         },
         weaAtk_Matk_Convert: 0,
+        weaAtk_Patk_Convert: 1,
       },
       BOW: {
         baseHit: 0.1,
@@ -368,6 +424,7 @@ export default function AnalyzePageClient(props: Props) {
           },
         },
         weaAtk_Matk_Convert: 0,
+        weaAtk_Patk_Convert: 1,
       },
       BOWGUN: {
         baseHit: 0.05,
@@ -399,6 +456,7 @@ export default function AnalyzePageClient(props: Props) {
           },
         },
         weaAtk_Matk_Convert: 0,
+        weaAtk_Patk_Convert: 1,
       },
       STAFF: {
         baseHit: 0.3,
@@ -430,6 +488,7 @@ export default function AnalyzePageClient(props: Props) {
           },
         },
         weaAtk_Matk_Convert: 1,
+        weaAtk_Patk_Convert: 1,
       },
       MAGIC_DEVICE: {
         baseHit: 0.1,
@@ -461,10 +520,11 @@ export default function AnalyzePageClient(props: Props) {
           },
         },
         weaAtk_Matk_Convert: 1,
+        weaAtk_Patk_Convert: 1,
       },
       KNUCKLE: {
         baseHit: 0.1,
-        baseAspd: 100,
+        baseAspd: 120,
         abi_Attr_Convert: {
           str: {
             aspdT: 0.1,
@@ -488,10 +548,11 @@ export default function AnalyzePageClient(props: Props) {
             pAtkT: 0.5,
             stabT: 0.025,
             mAtkT: 0,
-            aspdT: 0,
+            aspdT: 0.1,
           },
         },
         weaAtk_Matk_Convert: 0.5,
+        weaAtk_Patk_Convert: 1,
       },
       HALBERD: {
         baseHit: 0.25,
@@ -523,6 +584,7 @@ export default function AnalyzePageClient(props: Props) {
           },
         },
         weaAtk_Matk_Convert: 0,
+        weaAtk_Patk_Convert: 1,
       },
       NO_WEAPOEN: {
         baseHit: 50,
@@ -554,11 +616,32 @@ export default function AnalyzePageClient(props: Props) {
           },
         },
         weaAtk_Matk_Convert: 0,
+        weaAtk_Patk_Convert: 1,
       },
     };
 
     // 自由数值：玩家可定义基础值和加成项的，不由其他数值转化而来，但是会参与衍生属性计算的数值
     _lv: number;
+    mainWeapon: {
+      type: MainWeaType;
+      _baseAtk: modifiers;
+      baseAtk: number;
+      refinement: number;
+      stability: number;
+    };
+    subWeapon: {
+      type: SubWeaType;
+      _baseAtk: modifiers;
+      baseAtk: number;
+      refinement: number;
+      stability: number;
+    };
+    bodyArmor: {
+      type: BodyArmorType;
+      _baseDef: modifiers;
+      baseDef: number;
+      refinement: number;
+    };
     _str: modifiers;
     _int: modifiers;
     _vit: modifiers;
@@ -568,23 +651,6 @@ export default function AnalyzePageClient(props: Props) {
     _cri: modifiers;
     _tec: modifiers;
     _men: modifiers;
-    _mainWeapon: {
-      type: MainWeaType;
-      baseAtk: modifiers;
-      refinement: number;
-      stability: number;
-    };
-    _subWeapon: {
-      type: SubWeaType;
-      baseAtk: modifiers;
-      refinement: number;
-      stability: number;
-    };
-    _bodyArmor: {
-      type: BodyArmorType;
-      baseDef: modifiers;
-      refinement: number;
-    };
     // 系统数值：由系统决定基础值，加成项由自由数值决定的
     _pPie: modifiers;
     _mPie: modifiers;
@@ -593,6 +659,7 @@ export default function AnalyzePageClient(props: Props) {
     _fDis: modifiers;
     _crT: modifiers;
     _cdT: modifiers;
+    _weaPatkT: modifiers;
     _weaMatkT: modifiers;
     _unsheatheAtk: modifiers;
     _stro: modifiers;
@@ -625,6 +692,62 @@ export default function AnalyzePageClient(props: Props) {
       // 计算基础值
 
       this._lv = character.lv;
+      this.mainWeapon = {
+        type: mainWeaponType,
+        _baseAtk: {
+          baseValue: character.equipmentList?.mainWeapon?.baseAtk ?? 0,
+          modifiers: {
+            static: {
+              fixed: [],
+              percentage: [],
+            },
+            dynamic: {
+              fixed: [],
+              percentage: [],
+            },
+          },
+        },
+        baseAtk: 0,
+        refinement: character.equipmentList?.mainWeapon?.refinement ?? 0,
+        stability: character.equipmentList?.mainWeapon?.stability ?? 0,
+      };
+      this.subWeapon = {
+        type: subWeaponType,
+        _baseAtk: {
+          baseValue: character.equipmentList?.subWeapon?.baseAtk ?? 0,
+          modifiers: {
+            static: {
+              fixed: [],
+              percentage: [],
+            },
+            dynamic: {
+              fixed: [],
+              percentage: [],
+            },
+          },
+        },
+        baseAtk: 0,
+        refinement: character.equipmentList?.subWeapon?.refinement ?? 0,
+        stability: character.equipmentList?.subWeapon?.stability ?? 0,
+      };
+      this.bodyArmor = {
+        type: bodyArmorType,
+        _baseDef: {
+          baseValue: character.equipmentList?.bodyArmor?.baseDef ?? 0,
+          modifiers: {
+            static: {
+              fixed: [],
+              percentage: [],
+            },
+            dynamic: {
+              fixed: [],
+              percentage: [],
+            },
+          },
+        },
+        baseDef: 0,
+        refinement: character.equipmentList?.bodyArmor?.refinement ?? 0,
+      };
       this._str = {
         baseValue: character.baseAbi?.baseStr ?? 0,
         modifiers: {
@@ -742,59 +865,6 @@ export default function AnalyzePageClient(props: Props) {
           },
         },
       };
-      this._mainWeapon = {
-        type: mainWeaponType,
-        baseAtk: {
-          baseValue: character.equipmentList?.mainWeapon?.baseAtk ?? 0,
-          modifiers: {
-            static: {
-              fixed: [],
-              percentage: [],
-            },
-            dynamic: {
-              fixed: [],
-              percentage: [],
-            },
-          },
-        },
-        refinement: character.equipmentList?.mainWeapon?.refinement ?? 0,
-        stability: character.equipmentList?.mainWeapon?.stability ?? 0,
-      };
-      this._subWeapon = {
-        type: subWeaponType,
-        baseAtk: {
-          baseValue: character.equipmentList?.subWeapon?.baseAtk ?? 0,
-          modifiers: {
-            static: {
-              fixed: [],
-              percentage: [],
-            },
-            dynamic: {
-              fixed: [],
-              percentage: [],
-            },
-          },
-        },
-        refinement: character.equipmentList?.subWeapon?.refinement ?? 0,
-        stability: character.equipmentList?.subWeapon?.stability ?? 0,
-      };
-      this._bodyArmor = {
-        type: bodyArmorType,
-        baseDef: {
-          baseValue: character.equipmentList?.bodyArmor?.baseDef ?? 0,
-          modifiers: {
-            static: {
-              fixed: [],
-              percentage: [],
-            },
-            dynamic: {
-              fixed: [],
-              percentage: [],
-            },
-          },
-        },
-        refinement: character.equipmentList?.bodyArmor?.refinement ?? 0,
-      };
 
       this._pPie = {
         baseValue: 0,
@@ -834,13 +904,14 @@ export default function AnalyzePageClient(props: Props) {
               {
                 value:
                   math.floor(
-                    CharacterClass.weaponAbiT[mainWeaponType].abi_Attr_Convert.str.stabT * staticTotalValue(this._str) +
+                    CharacterClass.weaponAbiT[mainWeaponType].abi_Attr_Convert.str.stabT *
+                      dynamicTotalValue(this._str) +
                       CharacterClass.weaponAbiT[mainWeaponType].abi_Attr_Convert.int.stabT *
-                        staticTotalValue(this._int) +
+                        dynamicTotalValue(this._int) +
                       CharacterClass.weaponAbiT[mainWeaponType].abi_Attr_Convert.agi.stabT *
-                        staticTotalValue(this._agi) +
+                        dynamicTotalValue(this._agi) +
                       CharacterClass.weaponAbiT[mainWeaponType].abi_Attr_Convert.dex.stabT *
-                        staticTotalValue(this._dex),
+                        dynamicTotalValue(this._dex),
                   ) ?? 0,
                 origin: "character.abi",
               },
@@ -894,6 +965,19 @@ export default function AnalyzePageClient(props: Props) {
       };
       this._cdT = {
         baseValue: 50,
+        modifiers: {
+          static: {
+            fixed: [],
+            percentage: [],
+          },
+          dynamic: {
+            fixed: [],
+            percentage: [],
+          },
+        },
+      };
+      this._weaPatkT = {
+        baseValue: CharacterClass.weaponAbiT[mainWeaponType].weaAtk_Patk_Convert,
         modifiers: {
           static: {
             fixed: [],
@@ -1011,7 +1095,7 @@ export default function AnalyzePageClient(props: Props) {
       };
 
       this._maxHP = {
-        baseValue: Math.floor(93 + this.lv * (127 / 17 + staticTotalValue(this._vit) / 3)),
+        baseValue: Math.floor(93 + this._lv * (127 / 17 + dynamicTotalValue(this._vit) / 3)),
         modifiers: {
           static: {
             fixed: [],
@@ -1024,7 +1108,7 @@ export default function AnalyzePageClient(props: Props) {
         },
       };
       this._maxMP = {
-        baseValue: Math.floor(99 + this.lv + staticTotalValue(this._int) / 10 + staticTotalValue(this._tec)),
+        baseValue: Math.floor(99 + this._lv + dynamicTotalValue(this._int) / 10 + dynamicTotalValue(this._tec)),
         modifiers: {
           static: {
             fixed: [],
@@ -1037,7 +1121,7 @@ export default function AnalyzePageClient(props: Props) {
         },
       };
       this._pCr = {
-        baseValue: 25 + staticTotalValue(this._cri) / 5,
+        baseValue: 25 + dynamicTotalValue(this._cri) / 5,
         modifiers: {
           static: {
             fixed: [],
@@ -1053,7 +1137,8 @@ export default function AnalyzePageClient(props: Props) {
         baseValue:
           150 +
           Math.floor(
-            Math.max(staticTotalValue(this._str) / 5, staticTotalValue(this._str) + staticTotalValue(this._agi)) / 10,
+            Math.max(dynamicTotalValue(this._str) / 5, dynamicTotalValue(this._str) + dynamicTotalValue(this._agi)) /
+              10,
           ),
         modifiers: {
           static: {
@@ -1067,18 +1152,18 @@ export default function AnalyzePageClient(props: Props) {
         },
       };
       this._mainWeaponAtk = {
-        baseValue: Math.floor(staticTotalValue(this._mainWeapon.baseAtk)),
+        baseValue: Math.floor(dynamicTotalValue(this.mainWeapon._baseAtk)),
         modifiers: {
           static: {
             fixed: [
               {
-                value: this._mainWeapon.refinement,
+                value: this.mainWeapon.refinement,
                 origin: "mainWeapon.refinement",
               },
             ],
             percentage: [
               {
-                value: Math.pow(this._mainWeapon.refinement, 2),
+                value: Math.pow(this.mainWeapon.refinement, 2),
                 origin: "mainWeapon.refinement",
               },
             ],
@@ -1090,7 +1175,7 @@ export default function AnalyzePageClient(props: Props) {
         },
       };
       this._subWeaponAtk = {
-        baseValue: staticTotalValue(this._subWeapon.baseAtk),
+        baseValue: dynamicTotalValue(this.subWeapon._baseAtk),
         modifiers: {
           static: {
             fixed: [],
@@ -1117,12 +1202,12 @@ export default function AnalyzePageClient(props: Props) {
       };
       this._pAtk = {
         baseValue:
-          this.lv +
-          staticTotalValue(this._mainWeaponAtk) +
-          CharacterClass.weaponAbiT[mainWeaponType].abi_Attr_Convert.str.pAtkT * staticTotalValue(this._str) +
-          CharacterClass.weaponAbiT[mainWeaponType].abi_Attr_Convert.int.pAtkT * staticTotalValue(this._int) +
-          CharacterClass.weaponAbiT[mainWeaponType].abi_Attr_Convert.agi.pAtkT * staticTotalValue(this._agi) +
-          CharacterClass.weaponAbiT[mainWeaponType].abi_Attr_Convert.dex.pAtkT * staticTotalValue(this._dex),
+          this._lv +
+          dynamicTotalValue(this._mainWeaponAtk) +
+          CharacterClass.weaponAbiT[mainWeaponType].abi_Attr_Convert.str.pAtkT * dynamicTotalValue(this._str) +
+          CharacterClass.weaponAbiT[mainWeaponType].abi_Attr_Convert.int.pAtkT * dynamicTotalValue(this._int) +
+          CharacterClass.weaponAbiT[mainWeaponType].abi_Attr_Convert.agi.pAtkT * dynamicTotalValue(this._agi) +
+          CharacterClass.weaponAbiT[mainWeaponType].abi_Attr_Convert.dex.pAtkT * dynamicTotalValue(this._dex),
         modifiers: {
           static: {
             fixed: [],
@@ -1136,12 +1221,12 @@ export default function AnalyzePageClient(props: Props) {
       };
       this._mAtk = {
         baseValue:
-          this.lv +
-          staticTotalValue(this._weaMatkT) * staticTotalValue(this._mainWeaponAtk) +
-          CharacterClass.weaponAbiT[mainWeaponType].abi_Attr_Convert.str.mAtkT * staticTotalValue(this._str) +
-          CharacterClass.weaponAbiT[mainWeaponType].abi_Attr_Convert.int.mAtkT * staticTotalValue(this._int) +
-          CharacterClass.weaponAbiT[mainWeaponType].abi_Attr_Convert.agi.mAtkT * staticTotalValue(this._agi) +
-          CharacterClass.weaponAbiT[mainWeaponType].abi_Attr_Convert.dex.mAtkT * staticTotalValue(this._dex),
+          this._lv +
+          dynamicTotalValue(this._weaMatkT) * dynamicTotalValue(this._mainWeaponAtk) +
+          CharacterClass.weaponAbiT[mainWeaponType].abi_Attr_Convert.str.mAtkT * dynamicTotalValue(this._str) +
+          CharacterClass.weaponAbiT[mainWeaponType].abi_Attr_Convert.int.mAtkT * dynamicTotalValue(this._int) +
+          CharacterClass.weaponAbiT[mainWeaponType].abi_Attr_Convert.agi.mAtkT * dynamicTotalValue(this._agi) +
+          CharacterClass.weaponAbiT[mainWeaponType].abi_Attr_Convert.dex.mAtkT * dynamicTotalValue(this._dex),
         // 武器攻击力在后续附加
         modifiers: {
           static: {
@@ -1157,11 +1242,11 @@ export default function AnalyzePageClient(props: Props) {
       this._aspd = {
         baseValue:
           CharacterClass.weaponAbiT[mainWeaponType].baseAspd +
-          this.lv +
-          CharacterClass.weaponAbiT[mainWeaponType].abi_Attr_Convert.str.aspdT * staticTotalValue(this._str) +
-          CharacterClass.weaponAbiT[mainWeaponType].abi_Attr_Convert.int.aspdT * staticTotalValue(this._int) +
-          CharacterClass.weaponAbiT[mainWeaponType].abi_Attr_Convert.agi.aspdT * staticTotalValue(this._agi) +
-          CharacterClass.weaponAbiT[mainWeaponType].abi_Attr_Convert.dex.aspdT * staticTotalValue(this._dex),
+          this._lv +
+          CharacterClass.weaponAbiT[mainWeaponType].abi_Attr_Convert.str.aspdT * dynamicTotalValue(this._str) +
+          CharacterClass.weaponAbiT[mainWeaponType].abi_Attr_Convert.int.aspdT * dynamicTotalValue(this._int) +
+          CharacterClass.weaponAbiT[mainWeaponType].abi_Attr_Convert.agi.aspdT * dynamicTotalValue(this._agi) +
+          CharacterClass.weaponAbiT[mainWeaponType].abi_Attr_Convert.dex.aspdT * dynamicTotalValue(this._dex),
         modifiers: {
           static: {
             fixed: [],
@@ -1174,7 +1259,7 @@ export default function AnalyzePageClient(props: Props) {
         },
       };
       this._cspd = {
-        baseValue: staticTotalValue(this._dex) * 2.94 + staticTotalValue(this._agi) * 1.16,
+        baseValue: dynamicTotalValue(this._dex) * 2.94 + dynamicTotalValue(this._agi) * 1.16,
         modifiers: {
           static: {
             fixed: [],
@@ -1188,7 +1273,7 @@ export default function AnalyzePageClient(props: Props) {
       };
 
       this._hp = {
-        baseValue: staticTotalValue(this._maxHP),
+        baseValue: dynamicTotalValue(this._maxHP),
         modifiers: {
           static: {
             fixed: [],
@@ -1201,7 +1286,7 @@ export default function AnalyzePageClient(props: Props) {
         },
       };
       this._mp = {
-        baseValue: staticTotalValue(this._maxMP),
+        baseValue: dynamicTotalValue(this._maxMP),
         modifiers: {
           static: {
             fixed: [],
@@ -1214,7 +1299,7 @@ export default function AnalyzePageClient(props: Props) {
         },
       };
       this._ampr = {
-        baseValue: 10 + staticTotalValue(this._maxMP) / 10,
+        baseValue: 10 + dynamicTotalValue(this._maxMP) / 10,
         modifiers: {
           static: {
             fixed: [],
@@ -1250,160 +1335,10 @@ export default function AnalyzePageClient(props: Props) {
       const copy = JSON.parse(JSON.stringify(otherCharacter)) as CharacterClass;
       Object.assign(this, copy);
     };
-
-    get lv() {
-      return this._lv;
-    }
-    get str() {
-      return dynamicTotalValue(this._str);
-    }
-    get int() {
-      return dynamicTotalValue(this._int);
-    }
-    get vit() {
-      return dynamicTotalValue(this._vit);
-    }
-    get dex() {
-      return dynamicTotalValue(this._dex);
-    }
-    get agi() {
-      return dynamicTotalValue(this._agi);
-    }
-    get luk() {
-      return dynamicTotalValue(this._luk);
-    }
-    get tec() {
-      return dynamicTotalValue(this._tec);
-    }
-    get cri() {
-      return dynamicTotalValue(this._cri);
-    }
-    get men() {
-      return dynamicTotalValue(this._men);
-    }
-    get mainWeaponType() {
-      return this._mainWeapon.type;
-    }
-    get mainWeaponBaseAtk() {
-      return dynamicTotalValue(this._mainWeapon.baseAtk);
-    }
-    get mainWeaponRefinement() {
-      return this._mainWeapon.refinement;
-    }
-    get mainWeaponStability() {
-      return this._mainWeapon.stability;
-    }
-    get subWeaponType() {
-      return this._subWeapon.type;
-    }
-    get subWeaponBaseAtk() {
-      return dynamicTotalValue(this._subWeapon.baseAtk);
-    }
-    get subWeaponRefinement() {
-      return this._subWeapon.refinement;
-    }
-    get subWeaponStability() {
-      return this._subWeapon.stability;
-    }
-    get bodyArmorType() {
-      return this._bodyArmor.type;
-    }
-    get bodyArmorBaseDef() {
-      return dynamicTotalValue(this._bodyArmor.baseDef);
-    }
-    get bodyArmorRefinement() {
-      return this._bodyArmor.refinement;
-    }
-    get pPie() {
-      return dynamicTotalValue(this._pPie);
-    }
-    get mPie() {
-      return dynamicTotalValue(this._mPie);
-    }
-    get pStab() {
-      return dynamicTotalValue(this._pStab);
-    }
-    get nDis() {
-      return dynamicTotalValue(this._nDis);
-    }
-    get fDis() {
-      return dynamicTotalValue(this._fDis);
-    }
-    get crT() {
-      return dynamicTotalValue(this._crT);
-    }
-    get cdT() {
-      return dynamicTotalValue(this._cdT);
-    }
-    get weaMatkT() {
-      return dynamicTotalValue(this._weaMatkT);
-    }
-    get stro() {
-      return dynamicTotalValue(this._stro);
-    }
-    get unsheatheAtk() {
-      return dynamicTotalValue(this._unsheatheAtk);
-    }
-    get total() {
-      return dynamicTotalValue(this._total);
-    }
-    get final() {
-      return dynamicTotalValue(this._final);
-    }
-    get am() {
-      return dynamicTotalValue(this._am);
-    }
-    get cm() {
-      return dynamicTotalValue(this._cm);
-    }
-    get aggro() {
-      return dynamicTotalValue(this._aggro);
-    }
-    get maxHP() {
-      return dynamicTotalValue(this._maxHP);
-    }
-    get maxMP() {
-      return dynamicTotalValue(this._maxMP);
-    }
-    get pCr() {
-      return dynamicTotalValue(this._pCr);
-    }
-    get pCd() {
-      return dynamicTotalValue(this._pCd);
-    }
-    get mainWeaponAtk() {
-      return dynamicTotalValue(this._mainWeaponAtk);
-    }
-    get subWeaponAtk() {
-      return dynamicTotalValue(this._subWeaponAtk);
-    }
-    get totalWeaponAtk() {
-      return dynamicTotalValue(this._totalWeaponAtk);
-    }
-    get pAtk() {
-      return dynamicTotalValue(this._pAtk);
-    }
-    get mAtk() {
-      return dynamicTotalValue(this._mAtk);
-    }
-    get aspd() {
-      return dynamicTotalValue(this._aspd);
-    }
-    get cspd() {
-      return dynamicTotalValue(this._cspd);
-    }
-    get hp() {
-      return dynamicTotalValue(this._hp);
-    }
-    get mp() {
-      return dynamicTotalValue(this._mp);
-    }
-    get ampr() {
-      return dynamicTotalValue(this._ampr);
-    }
   }
 
   class MonsterClass {
+    _name: string;
     _lv: number;
     _hp: modifiers;
     _pDef: modifiers;
@@ -1411,8 +1346,8 @@ export default function AnalyzePageClient(props: Props) {
     _mDef: modifiers;
     _mRes: modifiers;
     _cRes: modifiers;
-    test: number;
     constructor(monster: Monster) {
+      this._name = monster.name;
       this._lv = monster.baseLv ?? 0;
       this._hp = {
         baseValue: monster.maxhp ?? 0,
@@ -1492,28 +1427,6 @@ export default function AnalyzePageClient(props: Props) {
           },
         },
       };
-      this.test = 200;
-    }
-    get lv() {
-      return this._lv;
-    }
-    get hp() {
-      return dynamicTotalValue(this._hp);
-    }
-    get pDef() {
-      return dynamicTotalValue(this._pDef);
-    }
-    get pRes() {
-      return dynamicTotalValue(this._pRes);
-    }
-    get mDef() {
-      return dynamicTotalValue(this._mDef);
-    }
-    get mRes() {
-      return dynamicTotalValue(this._mRes);
-    }
-    get cRes() {
-      return dynamicTotalValue(this._cRes);
     }
 
     public inherit = (otherMonsterClass: MonsterClass) => {
@@ -1531,7 +1444,7 @@ export default function AnalyzePageClient(props: Props) {
       const m = new MonsterClass(monster);
       this._lv = skill.level ?? 0;
       this._am = {
-        baseValue: c.am,
+        baseValue: dynamicTotalValue(c._am),
         modifiers: {
           static: {
             fixed: [],
@@ -1544,7 +1457,7 @@ export default function AnalyzePageClient(props: Props) {
         },
       };
       this._cm = {
-        baseValue: c.cm,
+        baseValue: dynamicTotalValue(c._cm),
         modifiers: {
           static: {
             fixed: [],
@@ -1556,26 +1469,6 @@ export default function AnalyzePageClient(props: Props) {
           },
         },
       };
-    }
-    get lv() {
-      return this._lv;
-    }
-    get am() {
-      return dynamicTotalValue(this._am);
-    }
-    get cm() {
-      return dynamicTotalValue(this._cm);
-    }
-  }
-
-  class TestClass {
-    a: number;
-    b: string;
-    c: boolean;
-    constructor() {
-      this.a = 100;
-      this.b = "ssss";
-      this.c = false;
     }
   }
 
@@ -1589,9 +1482,11 @@ export default function AnalyzePageClient(props: Props) {
   }
 
   interface eventSequenceType {
+    type: $Enums.YieldType;
     condition: string;
     behavior: string;
     origin: string;
+    registrationFrame: number;
   }
 
   const calculateFrameData = (skillSequence: tSkill[], character: Character, monster: Monster) => {
@@ -1600,6 +1495,7 @@ export default function AnalyzePageClient(props: Props) {
     let skillFrame = 0;
     let skillTotalFrame = 0;
     let eventSequence: eventSequenceType[] = [];
+    let tempComputeArg = {};
     const tempCharacterClass = new CharacterClass(character);
     const tempMonsterClass = new MonsterClass(monster);
 
@@ -1618,14 +1514,195 @@ export default function AnalyzePageClient(props: Props) {
       monsterAttr.inherit(tempMonsterClass);
 
       // 定义计算上下文
-      const computeArg = {
-        p: characterAttr,
-        m: monsterAttr,
-        s: skillAttr,
-        t: {
-          get a() {
-            return 0;
-          }
+      let computeArg = {
+        p: {
+          get lv() {
+            return characterAttr._lv;
+          },
+          get str() {
+            return dynamicTotalValue(characterAttr._str);
+          },
+          get int() {
+            return dynamicTotalValue(characterAttr._int);
+          },
+          get vit() {
+            return dynamicTotalValue(characterAttr._vit);
+          },
+          get dex() {
+            return dynamicTotalValue(characterAttr._dex);
+          },
+          get agi() {
+            return dynamicTotalValue(characterAttr._agi);
+          },
+          get luk() {
+            return dynamicTotalValue(characterAttr._luk);
+          },
+          get tec() {
+            return dynamicTotalValue(characterAttr._tec);
+          },
+          get cri() {
+            return dynamicTotalValue(characterAttr._cri);
+          },
+          get men() {
+            return dynamicTotalValue(characterAttr._men);
+          },
+          get mainWeaponType() {
+            return characterAttr.mainWeapon.type;
+          },
+          get mainWeaponBaseAtk() {
+            return dynamicTotalValue(characterAttr.mainWeapon._baseAtk);
+          },
+          get mainWeaponRefinement() {
+            return characterAttr.mainWeapon.refinement;
+          },
+          get mainWeaponStability() {
+            return characterAttr.mainWeapon.stability;
+          },
+          get subWeaponType() {
+            return characterAttr.subWeapon.type;
+          },
+          get subWeaponBaseAtk() {
+            return dynamicTotalValue(characterAttr.subWeapon._baseAtk);
+          },
+          get subWeaponRefinement() {
+            return characterAttr.subWeapon.refinement;
+          },
+          get subWeaponStability() {
+            return characterAttr.subWeapon.stability;
+          },
+          get bodyArmorType() {
+            return characterAttr.bodyArmor.type;
+          },
+          get bodyArmorBaseDef() {
+            return dynamicTotalValue(characterAttr.bodyArmor._baseDef);
+          },
+          get bodyArmorRefinement() {
+            return characterAttr.bodyArmor.refinement;
+          },
+          get pPie() {
+            return dynamicTotalValue(characterAttr._pPie);
+          },
+          get mPie() {
+            return dynamicTotalValue(characterAttr._mPie);
+          },
+          get pStab() {
+            return dynamicTotalValue(characterAttr._pStab);
+          },
+          get nDis() {
+            return dynamicTotalValue(characterAttr._nDis);
+          },
+          get fDis() {
+            return dynamicTotalValue(characterAttr._fDis);
+          },
+          get crT() {
+            return dynamicTotalValue(characterAttr._crT);
+          },
+          get cdT() {
+            return dynamicTotalValue(characterAttr._cdT);
+          },
+          get weaMatkT() {
+            return dynamicTotalValue(characterAttr._weaMatkT);
+          },
+          get stro() {
+            return dynamicTotalValue(characterAttr._stro);
+          },
+          get unsheatheAtk() {
+            return dynamicTotalValue(characterAttr._unsheatheAtk);
+          },
+          get total() {
+            return dynamicTotalValue(characterAttr._total);
+          },
+          get final() {
+            return dynamicTotalValue(characterAttr._final);
+          },
+          get am() {
+            return dynamicTotalValue(characterAttr._am);
+          },
+          get cm() {
+            return dynamicTotalValue(characterAttr._cm);
+          },
+          get aggro() {
+            return dynamicTotalValue(characterAttr._aggro);
+          },
+          get maxHP() {
+            return dynamicTotalValue(characterAttr._maxHP);
+          },
+          get maxMP() {
+            return dynamicTotalValue(characterAttr._maxMP);
+          },
+          get pCr() {
+            return dynamicTotalValue(characterAttr._pCr);
+          },
+          get pCd() {
+            return dynamicTotalValue(characterAttr._pCd);
+          },
+          get mainWeaponAtk() {
+            return dynamicTotalValue(characterAttr._mainWeaponAtk);
+          },
+          get subWeaponAtk() {
+            return dynamicTotalValue(characterAttr._subWeaponAtk);
+          },
+          get totalWeaponAtk() {
+            return dynamicTotalValue(characterAttr._totalWeaponAtk);
+          },
+          get pAtk() {
+            return dynamicTotalValue(characterAttr._pAtk);
+          },
+          get mAtk() {
+            return dynamicTotalValue(characterAttr._mAtk);
+          },
+          get aspd() {
+            return dynamicTotalValue(characterAttr._aspd);
+          },
+          get cspd() {
+            return dynamicTotalValue(characterAttr._cspd);
+          },
+          get hp() {
+            return dynamicTotalValue(characterAttr._hp);
+          },
+          get mp() {
+            return dynamicTotalValue(characterAttr._mp);
+          },
+          get ampr() {
+            return dynamicTotalValue(characterAttr._ampr);
+          },
+        },
+        m: {
+          get name() {
+            return monsterAttr._name;
+          },
+          get lv() {
+            return monsterAttr._lv;
+          },
+          get hp() {
+            return dynamicTotalValue(monsterAttr._hp);
+          },
+          get pDef() {
+            return dynamicTotalValue(monsterAttr._pDef);
+          },
+          get mDef() {
+            return dynamicTotalValue(monsterAttr._mDef);
+          },
+          get pRes() {
+            return dynamicTotalValue(monsterAttr._pRes);
+          },
+          get mRes() {
+            return dynamicTotalValue(monsterAttr._mRes);
+          },
+          get cRes() {
+            return dynamicTotalValue(monsterAttr._cRes);
+          },
+        },
+        s: {
+          get lv() {
+            return skillAttr._lv;
+          },
+          get am() {
+            return dynamicTotalValue(skillAttr._am);
+          },
+          get cm() {
+            return dynamicTotalValue(skillAttr._cm);
+          },
         },
         get frame() {
           return frame;
@@ -1635,25 +1712,33 @@ export default function AnalyzePageClient(props: Props) {
         },
         get vMatk() {
           return (
-            ((this.p.mAtk + this.p.lv - this.m.lv) * (100 - this.m.mRes)) / 100 - (100 - this.p.mPie) * this.m.mDef
+            ((dynamicTotalValue(characterAttr._mAtk) + characterAttr._lv - monsterAttr._lv) *
+              (100 - dynamicTotalValue(monsterAttr._mRes))) /
+              100 -
+            ((100 - dynamicTotalValue(characterAttr._pPie)) / 100) * dynamicTotalValue(monsterAttr._pDef)
           );
         },
         get vPatk() {
           return (
-            ((this.p.pAtk + this.p.lv - this.m.lv) * (100 - this.m.pRes)) / 100 - (100 - this.p.pPie) * this.m.pDef
+            ((dynamicTotalValue(characterAttr._pAtk) + characterAttr._lv - monsterAttr._lv) *
+              (100 - dynamicTotalValue(monsterAttr._pRes))) /
+              100 -
+            ((100 - dynamicTotalValue(characterAttr._mPie)) / 100) * dynamicTotalValue(monsterAttr._mDef)
           );
         },
       };
 
+      // 合并上一帧的计算结果
+      computeArg = _.merge(tempComputeArg, computeArg);
+
       // 封装当前状态的公式计算方法
       const evaluate = (formula: string) => {
         // console.log(formula, computeArg);
-        console.log(math.evaluate("t.a", {...computeArg}));
         return math.evaluate(formula, { ...computeArg }) as number | void;
       };
 
       monsterAttr._hp.modifiers.dynamic.fixed.push({
-        value: -100000,
+        value: -50000,
         origin: "测试阶段系统自动减损" + frame,
       });
 
@@ -1663,29 +1748,220 @@ export default function AnalyzePageClient(props: Props) {
         break;
       }
 
-      // 定义新序列防止删除元素时索引发生混乱
-      const newEventSequence: eventSequenceType[] = [];
-      eventSequence.forEach((event) => {
+      // 执行并更新事件队列
+      const nextEventSequence: eventSequenceType[] = [];
+      // console.log("当前帧：", frame, "事件队列：", eventSequence);
+      eventSequence.forEach((event, index) => {
+        // console.log(
+        //   "当前帧：",
+        //   frame,
+        //   "事件队列：",
+        //   eventSequence,
+        //   "第" + index + "个事件来源：" + event.origin,
+        //   "类型为：",
+        //   event.type,
+        //   "条件：",
+        //   event.condition,
+        // );
         if (evaluate(event.condition)) {
           // 执行当前帧需要做的事
           // console.log("上下文：", computeArg);
-          // console.log("当前Frame：" + frame + "，条件：" + event.condition + "成立，执行：" + event.behavior);
+          console.log("条件成立，执行：" + event.behavior);
           const node = math.parse(event.behavior);
-          if (node.type === "AssignmentNode") {
-            const nodeString = node.toString();
-            // console.log("发现赋值节点：", nodeString);
-            // 寻找赋值对象
-            const attr = nodeString.substring(0, nodeString.indexOf("=")).trim();
-            console.log("赋值对象：", attr);
+          const nodeString = node.toString();
+          switch (node.type) {
+            case "AssignmentNode":
+              {
+                const attr = nodeString.substring(0, nodeString.indexOf("=")).trim();
+                const formula = nodeString.substring(nodeString.indexOf("=") + 1, nodeString.length).trim();
+                console.log("发现赋值节点：" + nodeString);
+                console.log("赋值对象：", attr);
+                console.log("值表达式结果：", evaluate(formula));
+                _.set(computeArg, attr, evaluate(formula));
+              }
+
+              break;
+
+            default:
+              {
+                console.log("非赋值表达式：" + nodeString + " 判定为：" + node.type);
+                // 非赋值表达式说明该行为是对当前战斗环境已有属性进行增减,从第一个加减号开始分解表达式
+                const match = event.behavior.match(/(.+?)([+\-])(.+)/);
+                if (match) {
+                  const targetStr = _.trim(match[1]);
+                  const operatorStr = match[2];
+                  const formulaStr = _.trim(match[3]);
+                  // 如果能够发现加减乘除运算符，则对符号左右侧字符串进行验证
+                  console.log("表达式拆解为：1:[" + targetStr + "]   2:[" + operatorStr + "]   3:[" + formulaStr + "]");
+                  // 查找对应对象的内部属性值
+                  const targetStrSplit = targetStr.split(".");
+                  if (targetStrSplit.length > 1) {
+                    switch (targetStrSplit[0]) {
+                      case "p":
+                        {
+                          let finalPath = "";
+                          targetStrSplit.forEach((item, index) => {
+                            if (index !== 0) {
+                              const tempPath = index === targetStrSplit.length - 1 ? "_" + item : item + ".";
+                              finalPath = finalPath + tempPath;
+                            }
+                          });
+                          let target: modifiers | number | undefined;
+                          if (_.get(characterAttr, finalPath)) {
+                            console.log("最终路径：", "characterAttr." + finalPath);
+                            // 如果在characterAttr找到了对应的属性
+                            target = _.get(characterAttr, finalPath) as modifiers;
+                            console.log("依据最终路径，在characterAttr中找到了：", target);
+                            // 先判断值类型，依据字符串结尾是否具有百分比符号分为百分比加成和常数加成
+                            const perMatch = formulaStr.match(/^([\s\S]+?)\s*(%?)$/);
+                            if (perMatch) {
+                              // 表达式非空时
+                              if (perMatch[2] === "%") {
+                                // 当末尾存在百分比符号时，尝试将计算结果添加进百分比数组中
+                                console.log("表达式值为百分比类型，非百分号部分：", perMatch[1]);
+                                if (perMatch[1]) {
+                                  // 尝试计算表达式结果
+                                  const result = evaluate(perMatch[1]);
+                                  if (result) {
+                                    // 表达能够正确计算的话
+                                    console.log("第3部分计算结果", result);
+                                    // 根据运算符类型，将计算结果添加进百分比数组中
+                                    if (operatorStr === "+") {
+                                      target.modifiers.dynamic.percentage.push({
+                                        value: result,
+                                        origin: event.origin,
+                                      });
+                                    } else if (operatorStr === "-") {
+                                      target.modifiers.dynamic.percentage.push({
+                                        value: -result,
+                                        origin: event.origin,
+                                      });
+                                    } else {
+                                      console.log("未知运算符");
+                                    }
+                                  } else {
+                                    // 表达式计算结果为空时
+                                    console.log("第3部分没有返回值");
+                                  }
+                                }
+                              } else {
+                                // 否则，尝试将计算结果添加进常数值数组中
+                                const result = evaluate(formulaStr);
+                                if (result) {
+                                  // 表达能够正确计算的话
+                                  console.log("第3部分计算结果", result);
+                                  // 根据运算符类型，将计算结果添加进百分比数组中
+                                  if (operatorStr === "+") {
+                                    target.modifiers.dynamic.fixed.push({
+                                      value: result,
+                                      origin: event.origin,
+                                    });
+                                  } else if (operatorStr === "-") {
+                                    target.modifiers.dynamic.fixed.push({
+                                      value: -result,
+                                      origin: event.origin,
+                                    });
+                                  } else {
+                                    console.log("未知运算符");
+                                  }
+                                } else {
+                                  // 表达式计算结果为空时
+                                  console.log("第3部分没有返回值");
+                                }
+                              }
+                            } else {
+                              console.log("第3部分为空");
+                            }
+                            console.log("修改后的属性值为：", target);
+                          } else if (_.get(computeArg, targetStr) !== undefined) {
+                            console.log("最终路径：", "computeArg." + targetStr);
+                            // 如果在计算上下文中寻找了对应的自定属性
+                            target = _.get(computeArg, targetStr) as number;
+                            console.log("依据最终路径，在computeArg中找到了：", target);
+                            // 先判断值类型，依据字符串结尾是否具有百分比符号分为百分比加成和常数加成
+                            const perMatch = formulaStr.match(/^([\s\S]+?)\s*(%?)$/);
+                            if (perMatch) {
+                              if (perMatch[2] === "%") {
+                                // 当末尾存在百分比符号时，尝试更新属性
+                                console.log("表达式值为百分比类型，非百分号部分：", perMatch[1]);
+                                if (perMatch[1]) {
+                                  // 尝试计算表达式结果
+                                  const result = evaluate(perMatch[1]);
+                                  if (result) {
+                                    // 表达能够正确计算的话
+                                    console.log("表达式值计算结果", result);
+                                    // 根据运算符类型，更新属性
+                                    if (operatorStr === "+") {
+                                      target += (target * result) / 100;
+                                    } else if (operatorStr === "-") {
+                                      target -= (target * result) / 100;
+                                    } else {
+                                      console.log("未知运算符");
+                                    }
+                                  } else {
+                                    // 表达式计算结果为空时
+                                    console.log("表达式值没有返回值");
+                                  }
+                                }
+                              } else {
+                                console.log("表达式值为常数类型，常数部分：", perMatch[1]);
+                                // 否则，尝试更新属性
+                                const result = evaluate(formulaStr);
+                                if (result) {
+                                  // 表达能够正确计算的话
+                                  console.log("表达式值计算结果", result);
+                                  // 根据运算符类型，更新对应属性
+                                  if (operatorStr === "+") {
+                                    target += result;
+                                  } else if (operatorStr === "-") {
+                                    target -= result;
+                                  } else {
+                                    console.log("未知运算符");
+                                  }
+                                } else {
+                                  // 表达式计算结果为空时
+                                  console.log("表达式值没有返回值");
+                                }
+                              }
+                            }
+                            _.set(computeArg, targetStr, target);
+                            console.log("修改后的属性值为：", target);
+                          } else {
+                            console.log("在计算上下文中没有找到对应的自定义属性:" + targetStr);
+                          }
+                        }
+                        break;
+
+                      case "m":
+                        break;
+
+                      case "s":
+
+                      default:
+                        break;
+                    }
+                  }
+                } else {
+                  // 如果未匹配到，则返回空字符串或其他你希望的默认值
+                  console.log("在：" + event.behavior + "中没有匹配到内容");
+                }
+              }
+              break;
           }
-          // console.log("结果：", computeArg)
+          console.log("----------结果：", computeArg);
+          // 不论是否已执行，将持续型事件加入后续队列
+          event.type === "PersistentEffect" && nextEventSequence.push(event);
         } else {
-          // 将未来需要做的事放在新序列中
-          newEventSequence.push(event);
+          // console.log("条件不成立，将事件：", event, "放入后续队列");
+          // 条件不成立，则放入后续队列
+          event.type === "ImmediateEffect" && nextEventSequence.push(event);
+          // 不论是否已执行，将持续型事件加入后续队列
+          event.type === "PersistentEffect" && nextEventSequence.push(event);
         }
+        // console.log("----------后续队列：", nextEventSequence);
       });
 
-      // 当前技能执行完毕时，计算下一个技能的持续时长
+      // 当前技能执行完毕时
       if (skillFrame === skillTotalFrame) {
         // 每使用一个技能时需要做的事
         if (frame > 0) {
@@ -1698,6 +1974,28 @@ export default function AnalyzePageClient(props: Props) {
           console.log("末端技能为：" + currentSkill.name + "，技能序列执行完毕");
           break;
         }
+        console.log("执行到技能：" + newSkill.name);
+
+        // 判断是否具备发动条件
+        newSkill.skillEffect.skillCost.map((cost) => {
+          // console.log(cost.costFormula);
+          // const node = math.parse(cost.costFormula);
+          // node.traverse(function (node) {
+          //   switch (node.type) {
+          //     case "OperatorNode":
+          //       console.log(node.type, node.toString());
+          //       break;
+          //     case "ConstantNode":
+          //       console.log(node.type, node.toString());
+          //       break;
+          //     case "SymbolNode":
+          //       console.log(node.type, node.toString());
+          //       break;
+          //     default:
+          //       console.log(node.type, node.toString());
+          //   }
+          // });
+        });
         // 动态计算当前动作加速和咏唱加速
         const currentAm = math.max(50, math.min(0, computeArg.s.am));
         const currentCm = math.max(50, math.min(0, computeArg.s.cm));
@@ -1712,14 +2010,11 @@ export default function AnalyzePageClient(props: Props) {
         // 实际动画时长
         const aDurationActualValue = aDurationBaseValue + (aDurationModifiableValue * (100 - currentAm)) / 100;
         // console.log("当前行动速度：" + currentAm + "%，动画实际时长（帧）：" + aDurationActualValue);
-
         // 固定咏唱时长
-        const cDurationBaseValue = evaluate(newSkill.skillEffect.chantingBaseDurationFormula as string) as number;
+        const cDurationBaseValue = evaluate(newSkill.skillEffect.chantingBaseDurationFormula) as number;
         // console.log("咏唱固定时长（秒）：" + cDurationBaseValue);
         // 可加速咏唱时长
-        const cDurationModifiableValue = evaluate(
-          newSkill.skillEffect.chantingModifiableDurationFormula as string,
-        ) as number;
+        const cDurationModifiableValue = evaluate(newSkill.skillEffect.chantingModifiableDurationFormula) as number;
         // console.log("咏唱可加速时长（秒）：" + cDurationModifiableValue);
         // 实际咏唱时长
         const cDurationActualValue = cDurationBaseValue + (cDurationModifiableValue * (100 - currentCm)) / 100;
@@ -1727,31 +2022,66 @@ export default function AnalyzePageClient(props: Props) {
         skillTotalFrame = math.floor(aDurationActualValue + cDurationActualValue * 60);
         // console.log("技能总时长（帧）：" + skillTotalFrame);
 
-        // newSkill.skillEffect.skillCost.map((cost) => {
-        //   const node = math.parse(cost.costFormula);
-        //   node.traverse(function (node) {
-        //     switch (node.type) {
-        //       case "OperatorNode":
-        //         console.log(node.type, node.toString());
-        //         break;
-        //       case "ConstantNode":
-        //         console.log(node.type, node.toString());
-        //         break;
-        //       case "SymbolNode":
-        //         console.log(node.type, node.toString());
-        //         break;
-        //       default:
-        //         console.log(node.type, node.toString());
-        //     }
-        //   });
-        // });
-        // newSkill.skillEffect.skillYield.forEach((yield_) => {
-        //   newEventSequence.push({
-        //     behavior: yield_.yieldFormula,
-        //     condition: yield_.mutationTimingFormula ?? "true",
-        //     origin: newSkill.name,
-        //   });
-        // });
+        // 计算技能前摇
+        let skillWindUp = 100000000;
+        // 判断前摇计算公式是否包含百分比符号，未注明前摇时长的技能效果都默认在技能动画完全执行完毕后生效
+        const perMatch = newSkill.skillEffect.skillWindUpFormula?.match(/^([\s\S]+?)\s*(%?)$/);
+        if (perMatch) {
+          // 表达式非空时
+          if (perMatch[2] === "%") {
+            // 当末尾存在百分比符号时，转换未固定帧数
+            // console.log("技能前摇表达式为百分比形式");
+            if (perMatch[1]) {
+              // 尝试计算表达式结果
+              const result = evaluate(perMatch[1]);
+              if (result) {
+                // console.log("前摇百分比表达式计算结果", result);
+                skillWindUp = math.floor((skillTotalFrame * result) / 100);
+              } else {
+                // console.log("前摇百分比表达式计算结果为空，默认为技能总时长：" + skillTotalFrame + "帧");
+                skillWindUp = skillTotalFrame;
+              }
+            }
+          } else {
+            // 否则，尝试将计算结果添加进常数值数组中
+            if (perMatch[1]) {
+              const result = evaluate(perMatch[1]);
+              if (result) {
+                // console.log("前摇常数表达式计算结果", result);
+                skillWindUp = math.floor(result);
+              } else {
+                // console.log("前摇常数表达式计算结果为空，默认为技能总时长：" + skillTotalFrame + "帧");
+                skillWindUp = skillTotalFrame;
+              }
+            } else {
+              console.log("perMatch[1]为空");
+            }
+          }
+        } else {
+          console.log("未注明前摇值，默认为技能总时长：" + skillTotalFrame + "帧");
+        }
+
+        // 依据技能效果向事件队列添加事件
+        newSkill.skillEffect.skillYield.forEach((yield_) => {
+          let baseCondition = yield_.mutationTimingFormula;
+          if (yield_.mutationTimingFormula === "null" || !yield_.mutationTimingFormula) {
+            baseCondition = "true";
+          }
+          nextEventSequence.push(
+            _.cloneDeep({
+              type: yield_.yieldType,
+              behavior: yield_.yieldFormula,
+              condition: "frame > " + (frame + skillWindUp) + " and " + baseCondition,
+              origin: newSkill.name,
+              registrationFrame: frame,
+            }),
+          );
+          console.log(
+            "已添加技能：" + newSkill.name + "的技能效果：" + yield_.yieldFormula,
+            "事件队列：",
+            nextEventSequence,
+          );
+        });
       }
 
       frameDatas.push({
@@ -1762,10 +2092,10 @@ export default function AnalyzePageClient(props: Props) {
         characterAttr: characterAttr,
         monsterAttr: monsterAttr,
       });
-
       // 将新序列赋值
-      eventSequence = newEventSequence;
+      eventSequence = _.cloneDeep(nextEventSequence);
       // 将当前状态储存供下一帧使用
+      tempComputeArg = computeArg;
       tempCharacterClass.inherit(characterAttr);
       tempMonsterClass.inherit(monsterAttr);
     }
@@ -1812,42 +2142,54 @@ export default function AnalyzePageClient(props: Props) {
                 <span className="Value text-8xl">{math.floor(test.monster.maxhp / (result.length / 60))}</span>
               </div>
             </div>
-            <div className="TimeLine flex w-fit bg-transition-color-8 p-4">
+            <div className="TimeLine flex w-fit flex-wrap gap-y-4 bg-transition-color-8 p-4">
               {result.map((frameData, frameIndex) => {
                 return (
                   <div key={frameIndex} className="frame flex flex-col gap-1">
                     <div className="frameData flex">
-                      <div className="group relative min-h-6 border-2 border-brand-color-2nd">
-                        <div className="absolute -left-4 bottom-6 z-10 hidden w-[50dvw] flex-col gap-2 rounded bg-primary-color-90 p-4 shadow-2xl shadow-transition-color-20 backdrop-blur-xl group-hover:flex">
+                      <button className="group relative min-h-12 border-2 border-brand-color-2nd">
+                        <div className="absolute text-left -left-4 bottom-12 z-10 hidden w-[50dvw] flex-col gap-2 rounded bg-primary-color-90 p-4 shadow-2xl shadow-transition-color-20 backdrop-blur-xl group-hover:flex group-hover:z-20 group-focus:flex">
+                          <div className="FrameAttr flex flex-col gap-1">
+                            <span className="Title">当前帧属性</span>
+                            <span className="Content bg-transition-color-8">
+                              第 {math.floor(frameIndex / 60)} 秒的第 {frameIndex % 60} 帧
+                              <br />
+                            </span>
+                          </div>
                           <div className="SkillAttr flex flex-col gap-1">
                             <span className="Title">Skill</span>
                             <span className="Content bg-transition-color-8">
-                              {JSON.stringify(frameData.skillAttr.currentSkillName, null, 2)} :{" "}
-                              {JSON.stringify(frameData.skillAttr.skillFrame, null, 2)}
+                              技能名称：{JSON.stringify(frameData.skillAttr.currentSkillName, null, 2)} : <br />
+                              当前位于技能的第：{JSON.stringify(frameData.skillAttr.skillFrame, null, 2)}帧
+                              <br />
                             </span>
                           </div>
                           <div className="CharacterClass flex flex-col gap-1">
                             <span className="Title">CharacterClass</span>
                             <span className="Content bg-transition-color-8">
                               mp:
-                              {JSON.stringify(frameData.characterAttr.mp, null, 2)}
+                              {JSON.stringify(dynamicTotalValue(frameData.characterAttr._mp), null, 2)}
                               <br />
                               aspd:
-                              {JSON.stringify(frameData.characterAttr.aspd, null, 2)}
+                              {JSON.stringify(dynamicTotalValue(frameData.characterAttr._aspd), null, 2)}
                               <br />
                               cspd:
-                              {JSON.stringify(frameData.characterAttr.cspd, null, 2)}
+                              {JSON.stringify(dynamicTotalValue(frameData.characterAttr._cspd), null, 2)}
                             </span>
                           </div>
-                          <div className="CharacterClass flex flex-col gap-1">
+                          <div className="MonsterClass flex flex-col gap-1">
                             <span className="Title">MonsterClass</span>
                             <span className="Content bg-transition-color-8">
+                              Name:
+                              {frameData.monsterAttr._name}
+                              <br />
                               hp:
-                              {JSON.stringify(frameData.monsterAttr.hp, null, 2)}
+                              {JSON.stringify(dynamicTotalValue(frameData.monsterAttr._hp), null, 2)}
+                              <br />
                             </span>
                           </div>
                         </div>
-                      </div>
+                      </button>
                     </div>
                   </div>
                 );
