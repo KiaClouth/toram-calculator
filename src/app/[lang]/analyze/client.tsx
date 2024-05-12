@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import { type getDictionary } from "~/app/get-dictionary";
 import { type Session } from "next-auth";
 
-import type { modifiers } from "./analyzeType";
+import type { computerArgType, modifiers, pTpye } from "./analyzeType";
 import Dialog from "../_components/dialog";
 import { test, useStore } from "~/app/store";
 import { $Enums, type BodyArmorType, type MainWeaType, type SubWeaType } from "@prisma/client";
@@ -12,6 +12,7 @@ import _ from "lodash-es";
 import * as math from "mathjs";
 import { type SkillEffect } from "~/server/api/routers/skill";
 import { type Monster } from "~/server/api/routers/monster";
+import Button from "../_components/button";
 
 export interface Props {
   dictionary: ReturnType<typeof getDictionary>;
@@ -70,7 +71,7 @@ export default function AnalyzePageClient(props: Props) {
             id: "",
             name: "角色行动速度+10%",
             yieldType: "ImmediateEffect",
-            yieldFormula: "p.am + 10%",
+            yieldFormula: "p.am + 10",
             mutationTimingFormula: null,
             skillEffectId: null,
           },
@@ -89,7 +90,109 @@ export default function AnalyzePageClient(props: Props) {
       id: "",
       state: "PUBLIC",
       skillTreeName: "MAGIC",
-      name: "MFP-CT",
+      name: "神速掌握",
+      skillDescription: "",
+      level: 10,
+      weaponElementDependencyType: "TRUE",
+      element: "NO_ELEMENT",
+      skillType: "ACTIVE_SKILL",
+      skillEffect: {
+        id: "",
+        description: null,
+        actionBaseDurationFormula: "13",
+        actionModifiableDurationFormula: "48",
+        skillExtraActionType: "None",
+        chargingBaseDurationFormula: "",
+        chargingModifiableDurationFormula: "",
+        chantingBaseDurationFormula: "0",
+        chantingModifiableDurationFormula: "0",
+        skillWindUpFormula: "13",
+        skillRecoveryFormula: "0",
+        belongToskillId: "",
+        skillCost: [
+          {
+            id: "",
+            name: "MP Cost",
+            costFormula: "100",
+            skillEffectId: null,
+          },
+        ],
+        skillYield: [
+          {
+            id: "",
+            name: "角色行动速度+10%",
+            yieldType: "ImmediateEffect",
+            yieldFormula: "p.am + 10",
+            mutationTimingFormula: null,
+            skillEffectId: null,
+          },
+          {
+            id: "",
+            name: "角色攻速+300",
+            yieldType: "ImmediateEffect",
+            mutationTimingFormula: null,
+            yieldFormula: "p.aspd + 300",
+            skillEffectId: null,
+          },
+        ],
+      },
+    },
+    {
+      id: "",
+      state: "PUBLIC",
+      skillTreeName: "MAGIC",
+      name: "神速掌握",
+      skillDescription: "",
+      level: 10,
+      weaponElementDependencyType: "TRUE",
+      element: "NO_ELEMENT",
+      skillType: "ACTIVE_SKILL",
+      skillEffect: {
+        id: "",
+        description: null,
+        actionBaseDurationFormula: "13",
+        actionModifiableDurationFormula: "48",
+        skillExtraActionType: "None",
+        chargingBaseDurationFormula: "",
+        chargingModifiableDurationFormula: "",
+        chantingBaseDurationFormula: "0",
+        chantingModifiableDurationFormula: "0",
+        skillWindUpFormula: "13",
+        skillRecoveryFormula: "0",
+        belongToskillId: "",
+        skillCost: [
+          {
+            id: "",
+            name: "MP Cost",
+            costFormula: "100",
+            skillEffectId: null,
+          },
+        ],
+        skillYield: [
+          {
+            id: "",
+            name: "角色行动速度+10%",
+            yieldType: "ImmediateEffect",
+            yieldFormula: "p.am + 10",
+            mutationTimingFormula: null,
+            skillEffectId: null,
+          },
+          {
+            id: "",
+            name: "角色攻速+300",
+            yieldType: "ImmediateEffect",
+            mutationTimingFormula: null,
+            yieldFormula: "p.aspd + 300",
+            skillEffectId: null,
+          },
+        ],
+      },
+    },
+    {
+      id: "",
+      state: "PUBLIC",
+      skillTreeName: "MAGIC",
+      name: "魔法炮充填",
       skillDescription: "",
       level: 10,
       weaponElementDependencyType: "TRUE",
@@ -140,7 +243,7 @@ export default function AnalyzePageClient(props: Props) {
       id: "",
       state: "PUBLIC",
       skillTreeName: "MAGIC",
-      name: "CJB",
+      name: "冲击波",
       skillDescription: "",
       level: 7,
       weaponElementDependencyType: "TRUE",
@@ -191,7 +294,7 @@ export default function AnalyzePageClient(props: Props) {
       id: "",
       state: "PUBLIC",
       skillTreeName: "MAGIC",
-      name: "BN",
+      name: "爆能",
       level: 10,
       weaponElementDependencyType: "TRUE",
       element: "NO_ELEMENT",
@@ -1436,15 +1539,19 @@ export default function AnalyzePageClient(props: Props) {
   }
 
   class SkillClass {
+    _name: string;
     _lv: number;
     _am: modifiers;
     _cm: modifiers;
-    constructor(skill: tSkill, character: Character, monster: Monster) {
-      const c = new CharacterClass(character);
-      const m = new MonsterClass(monster);
+    constructor(skill: tSkill, character: CharacterClass, monster: MonsterClass) {
+      const c = character;
+      const m = monster;
+      this._name = skill.name;
       this._lv = skill.level ?? 0;
       this._am = {
-        baseValue: dynamicTotalValue(c._am),
+        get baseValue() {
+          return dynamicTotalValue(c._am);
+        },
         modifiers: {
           static: {
             fixed: [],
@@ -1457,7 +1564,9 @@ export default function AnalyzePageClient(props: Props) {
         },
       };
       this._cm = {
-        baseValue: dynamicTotalValue(c._cm),
+        get baseValue() {
+          return dynamicTotalValue(c._cm);
+        },
         modifiers: {
           static: {
             fixed: [],
@@ -1472,15 +1581,6 @@ export default function AnalyzePageClient(props: Props) {
     }
   }
 
-  interface FrameData {
-    skillAttr: {
-      currentSkillName: string;
-      skillFrame: number;
-    };
-    characterAttr: CharacterClass;
-    monsterAttr: MonsterClass;
-  }
-
   interface eventSequenceType {
     type: $Enums.YieldType;
     condition: string;
@@ -1490,12 +1590,13 @@ export default function AnalyzePageClient(props: Props) {
   }
 
   const calculateFrameData = (skillSequence: tSkill[], character: Character, monster: Monster) => {
-    const frameDatas: FrameData[] = [];
+    const frameDatas: computerArgType[] = [];
     let skillIndex = 0;
     let skillFrame = 0;
     let skillTotalFrame = 0;
     let eventSequence: eventSequenceType[] = [];
     let tempComputeArg = {};
+    let computeArg: computerArgType;
     const tempCharacterClass = new CharacterClass(character);
     const tempMonsterClass = new MonsterClass(monster);
 
@@ -1507,14 +1608,14 @@ export default function AnalyzePageClient(props: Props) {
       const characterAttr = new CharacterClass(character);
       const monsterAttr = new MonsterClass(monster);
       const currentSkill = skillSequence[skillIndex]!;
-      const skillAttr = new SkillClass(currentSkill, character, monster);
 
       // 读取上一帧的数据
       characterAttr.inherit(tempCharacterClass);
       monsterAttr.inherit(tempMonsterClass);
+      const skillAttr = new SkillClass(currentSkill, characterAttr, monsterAttr);
 
       // 定义计算上下文
-      let computeArg = {
+      computeArg = {
         p: {
           get lv() {
             return characterAttr._lv;
@@ -1694,6 +1795,9 @@ export default function AnalyzePageClient(props: Props) {
           },
         },
         s: {
+          get name() {
+            return skillAttr._name;
+          },
           get lv() {
             return skillAttr._lv;
           },
@@ -1709,6 +1813,9 @@ export default function AnalyzePageClient(props: Props) {
         },
         get skillIdex() {
           return skillIndex;
+        },
+        get skillFrame() {
+          return skillFrame;
         },
         get vMatk() {
           return (
@@ -1765,7 +1872,6 @@ export default function AnalyzePageClient(props: Props) {
         // );
         if (evaluate(event.condition)) {
           // 执行当前帧需要做的事
-          // console.log("上下文：", computeArg);
           console.log("条件成立，执行：" + event.behavior);
           const node = math.parse(event.behavior);
           const nodeString = node.toString();
@@ -1997,8 +2103,8 @@ export default function AnalyzePageClient(props: Props) {
           // });
         });
         // 动态计算当前动作加速和咏唱加速
-        const currentAm = math.max(50, math.min(0, computeArg.s.am));
-        const currentCm = math.max(50, math.min(0, computeArg.s.cm));
+        const currentAm = math.min(50, math.max(0, computeArg.s.am));
+        const currentCm = math.min(50, math.max(0, computeArg.s.cm));
         // console.log("执行到：" + newSkill.name);
         // 计算与帧相关的技能效果参数
         // 固定动画时长
@@ -2084,14 +2190,7 @@ export default function AnalyzePageClient(props: Props) {
         });
       }
 
-      frameDatas.push({
-        skillAttr: {
-          currentSkillName: currentSkill.name,
-          skillFrame: skillFrame,
-        },
-        characterAttr: characterAttr,
-        monsterAttr: monsterAttr,
-      });
+      frameDatas.push(_.cloneDeep(computeArg));
       // 将新序列赋值
       eventSequence = _.cloneDeep(nextEventSequence);
       // 将当前状态储存供下一帧使用
@@ -2103,6 +2202,33 @@ export default function AnalyzePageClient(props: Props) {
   };
 
   const result = calculateFrameData(skillSequence, test.character, test.monster);
+
+  // 预定义的颜色数组
+  const colors: string[] = [];
+  // 生成 14 个颜色值
+  for (let i = 0; i < 15; i++) {
+    const hue = math.floor((i * (360 / 15)) % 360); // 色相值，从蓝色开始逐渐增加
+    const saturation = "60%"; // 饱和度设置为 100%
+    const lightness = "50%"; // 亮度设置为 50%
+
+    // 将 HSL 颜色值转换为 CSS 格式的字符串
+    const color = `hsl(${hue}, ${saturation}, ${lightness})`;
+
+    colors.push(color);
+  }
+
+  function stringToColor(str: string) {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      hash += str.charCodeAt(i);
+    }
+
+    // 将散列值映射到颜色数组的索引范围内
+    const index = hash % colors.length;
+
+    // 返回对应索引的颜色值
+    return colors[index];
+  }
 
   useEffect(() => {
     console.log("--ComboAnalyze Client Render");
@@ -2136,19 +2262,41 @@ export default function AnalyzePageClient(props: Props) {
             <div></div>
           </div>
           <div className="Content flex flex-col">
-            <div className="Result my-10 flex items-end">
-              <div className="DPS flex items-end gap-2">
-                <span className="Key py-2 text-sm">DPS</span>
-                <span className="Value text-8xl">{math.floor(test.monster.maxhp / (result.length / 60))}</span>
+            <div className="SkillSequence flex flex-col items-start lg:items-center gap-4 lg:flex-row">
+              <div className="Title">流程:</div>
+              <div className="Content flex gap-2 flex-wrap">
+                {skillSequence.map((skill, index) => {
+                  return (
+                    <Button key={index} size="sm" level="tertiary">
+                      {skill.name}
+                    </Button>
+                  );
+                })}
               </div>
             </div>
-            <div className="TimeLine flex w-fit flex-wrap gap-y-4 bg-transition-color-8 p-4">
+            <div className="Result my-10 flex items-end">
+              <div className="DPS flex items-end gap-2 bg-brand-color-3rd rounded flex-1 p-4 lg:bg-transparent lg:p-0">
+                <span className="Key py-2 text-sm">DPS</span>
+                <span className="Value text-6xl lg:text-8xl">{math.floor(test.monster.maxhp / (result.length / 60))}</span>
+              </div>
+            </div>
+            <div className="TimeLine flex w-fit flex-wrap gap-y-4 bg-transition-color-8 lg:p-4">
               {result.map((frameData, frameIndex) => {
                 return (
-                  <div key={frameIndex} className="frame flex flex-col gap-1">
+                  <div key={frameIndex} className="frame relative flex flex-col gap-1">
+                    {frameData.skillFrame === 1 && (
+                      <div className="skillName pointer-events-none absolute left-2 top-1/2 z-10 -translate-y-1/2 text-nowrap text-primary-color">
+                        {frameData.s.name}
+                      </div>
+                    )}
                     <div className="frameData flex">
-                      <button className="group relative min-h-12 border-2 border-brand-color-2nd">
-                        <div className="absolute text-left -left-4 bottom-12 z-10 hidden w-[50dvw] flex-col gap-2 rounded bg-primary-color-90 p-4 shadow-2xl shadow-transition-color-20 backdrop-blur-xl group-hover:flex group-hover:z-20 group-focus:flex">
+                      <button
+                        className="group relative min-h-12 w-[3px] lg:w-[6px]"
+                        style={{
+                          backgroundColor: stringToColor(frameData.s.name + frameData.skillIdex),
+                        }}
+                      >
+                        <div className="absolute -left-4 bottom-12 z-10 hidden lg:w-[50dvw] flex-col gap-2 rounded bg-primary-color p-4 text-left shadow-2xl shadow-transition-color-20 backdrop-blur-xl lg:group-hover:z-20 lg:group-hover:flex">
                           <div className="FrameAttr flex flex-col gap-1">
                             <span className="Title">当前帧属性</span>
                             <span className="Content bg-transition-color-8">
@@ -2159,34 +2307,65 @@ export default function AnalyzePageClient(props: Props) {
                           <div className="SkillAttr flex flex-col gap-1">
                             <span className="Title">Skill</span>
                             <span className="Content bg-transition-color-8">
-                              技能名称：{JSON.stringify(frameData.skillAttr.currentSkillName, null, 2)} : <br />
-                              当前位于技能的第：{JSON.stringify(frameData.skillAttr.skillFrame, null, 2)}帧
+                              技能名称：{frameData.s.name} <br />
+                              技能序号：{frameData.skillIdex + 1} <br />
+                              当前位于技能的第：{frameData.skillFrame}帧
+                              <br />
+                            </span>
+                          </div>
+                        </div>
+                        <div className="fixed left-1/2 -translate-x-1/2 top-0 lg:top-[2dvh] z-10 hidden max-h-[80dvh] lg:max-h-[80dvh] w-full flex-col gap-2 overflow-auto lg:rounded lg:border-1.5 border-brand-color-1st bg-primary-color p-4 text-left shadow-2xl shadow-transition-color-20 backdrop-blur-xl group-hover:z-20 group-focus:flex lg:max-w-[calc(92dvw-67px)]">
+                          <div className="FrameAttr flex flex-col gap-1">
+                            <span className="Title">当前帧属性</span>
+                            <span className="Content bg-transition-color-8 p-2">
+                              第 {math.floor(frameIndex / 60)} 秒的第 {frameIndex % 60} 帧
+                              <br />
+                            </span>
+                          </div>
+                          <div className="SkillAttr flex flex-col gap-1">
+                            <span className="Title">Skill</span>
+                            <span className="Content bg-transition-color-8 p-2">
+                              技能名称：{frameData.s.name} <br />
+                              技能序号：{frameData.skillIdex + 1} <br />
+                              当前位于技能的第：{frameData.skillFrame}帧
                               <br />
                             </span>
                           </div>
                           <div className="CharacterClass flex flex-col gap-1">
                             <span className="Title">CharacterClass</span>
-                            <span className="Content bg-transition-color-8">
-                              mp:
-                              {JSON.stringify(dynamicTotalValue(frameData.characterAttr._mp), null, 2)}
-                              <br />
-                              aspd:
-                              {JSON.stringify(dynamicTotalValue(frameData.characterAttr._aspd), null, 2)}
-                              <br />
-                              cspd:
-                              {JSON.stringify(dynamicTotalValue(frameData.characterAttr._cspd), null, 2)}
-                            </span>
+                            <div className="Content flex flex-wrap lg:gap-1 bg-transition-color-8 outline-[1px]">
+                              {Object.entries(frameData.p).map(([key, value]) => {
+                                return (
+                                  <div key={key} className="lg:basis-1/8 px-3 py-1 m-1 border-[1px] border-brand-color-1st rounded-sm">
+                                    <span className="Key text-accent-color-70 text-sm">{key}</span>
+                                    <br />
+                                    <span className="Value font-bold">
+                                      {typeof value === "object" && "modifiers" in value
+                                        ? dynamicTotalValue(value as modifiers)
+                                        : value.toString()}
+                                    </span>
+                                  </div>
+                                );
+                              })}
+                            </div>
                           </div>
                           <div className="MonsterClass flex flex-col gap-1">
                             <span className="Title">MonsterClass</span>
-                            <span className="Content bg-transition-color-8">
-                              Name:
-                              {frameData.monsterAttr._name}
-                              <br />
-                              hp:
-                              {JSON.stringify(dynamicTotalValue(frameData.monsterAttr._hp), null, 2)}
-                              <br />
-                            </span>
+                            <div className="Content flex flex-wrap lg:gap-1 bg-transition-color-8 outline-[1px]">
+                              {Object.entries(frameData.m).map(([key, value]) => {
+                                return (
+                                  <div key={key} className="lg:basis-1/8 px-3 py-1 m-1 border-[1px] border-brand-color-1st rounded-sm">
+                                    <span className="Key text-accent-color-70 text-sm">{key}</span>
+                                    <br />
+                                    <span className="Value font-bold">
+                                      {typeof value === "object" && "modifiers" in value
+                                        ? dynamicTotalValue(value as modifiers)
+                                        : value.toString()}
+                                    </span>
+                                  </div>
+                                );
+                              })}
+                            </div>
                           </div>
                         </div>
                       </button>
