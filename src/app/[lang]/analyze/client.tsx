@@ -359,7 +359,7 @@ export default function AnalyzePageClient(props: Props) {
         case "progress":
           {
             const result = computeResult as string;
-            setComputeResult(<div className="Result my-10 flex items-end">计算到:{result}</div>);
+            setComputeResult(<div className="Result my-10 flex items-end">{result}</div>);
           }
           break;
         case "success":
@@ -392,9 +392,9 @@ export default function AnalyzePageClient(props: Props) {
                               <button
                                 className="group relative min-h-12 w-[3px] lg:w-[6px]"
                               >
-                                <div className="absolute -left-4 bottom-12 z-10 hidden flex-col gap-2 rounded bg-primary-color p-4 text-left shadow-2xl shadow-transition-color-20 backdrop-blur-xl lg:w-[50dvw] lg:group-hover:z-20 lg:group-hover:flex">
+                                <div className="absolute w-fit min-w-[300px] -left-4 bottom-12 z-10 hidden flex-col gap-2 rounded bg-primary-color p-4 text-left shadow-2xl shadow-transition-color-20 backdrop-blur-xl lg:group-hover:z-20 lg:group-hover:flex">
                                   <div className="FrameAttr flex flex-col gap-1">
-                                    <span className="Title">当前帧属性</span>
+                                    <span className="Title">当前 {frame} 帧</span>
                                     <span className="Content bg-transition-color-8">
                                       第 {math.floor(frame / 60)} 秒的第 {frame % 60} 帧
                                       <br />
@@ -403,7 +403,7 @@ export default function AnalyzePageClient(props: Props) {
                                   <div className="SkillAttr flex flex-col gap-1">
                                     <span className="Title">Skill</span>
                                     <span className="Content bg-transition-color-8">
-                                      位于 {skill.name} 的第：{frameIndex}帧
+                                      {skill.name} 的第：{frameIndex} / {skill.skillDuration} 帧
                                       <br />
                                     </span>
                                   </div>
