@@ -1,5 +1,4 @@
 "use client";
-
 import * as math from "mathjs";
 import React, { useEffect, useRef, useState } from "react";
 import { type getDictionary } from "~/app/get-dictionary";
@@ -8,7 +7,7 @@ import { type Session } from "next-auth";
 import { test, useStore } from "~/app/store";
 import Button from "../_components/button";
 import Dialog from "../_components/dialog";
-import { analyzeWorkerInput, analyzeWorkerOutput, computerArgType, type tSkill } from "./worker";
+import { type analyzeWorkerInput, type SkillData, type analyzeWorkerOutput, type tSkill } from "./worker";
 
 export interface Props {
   dictionary: ReturnType<typeof getDictionary>;
@@ -365,109 +364,104 @@ export default function AnalyzePageClient(props: Props) {
           break;
         case "success":
           {
-            const result = computeResult as computerArgType[];
+            const result = computeResult as SkillData[];
             setComputeResult(
               <>
                 <div className="Result my-10 flex items-end">
                   <div className="DPS flex flex-1 items-end gap-2 rounded bg-brand-color-3rd p-4 lg:bg-transparent lg:p-0">
                     <span className="Key py-2 text-sm">DPS</span>
-                    <span className="Value text-6xl lg:text-8xl">
+                    <span className="Value text-primary-color text-6xl lg:text-8xl lg:text-accent-color">
                       {math.floor(test.monster.maxhp / (result.length / 60))}
                     </span>
                   </div>
                 </div>
-                <div className="TimeLine flex w-fit flex-wrap gap-y-4 bg-transition-color-8 lg:p-4">
-                  {result.map((frameData, frameIndex) => {
-                    // 降低渲染数量
-                    if (frameIndex % 5 !== 0) {
-                      return null;
-                    }
+                <div className="TimeLine flex flex-1 flex-wrap gap-y-4 bg-transition-color-8 gap-2 lg:p-4">
+                  {result.map((skill, skillIndex) => {
                     return (
-                      <div key={frameIndex} className="frame relative flex flex-col gap-1">
-                        {frameData.skillFrame === 1 && (
-                          <div className="skillName pointer-events-none absolute left-2 top-1/2 z-10 -translate-y-1/2 text-nowrap text-primary-color">
-                            {frameData.s.name}
-                          </div>
-                        )}
-                        <div className="frameData flex">
-                          <button
-                            className="group relative min-h-12 w-[3px] lg:w-[6px]"
-                            style={{
-                              backgroundColor: stringToColor(frameData.s.name + frameData.skillIdex),
-                            }}
-                          >
-                            <div className="absolute -left-4 bottom-12 z-10 hidden flex-col gap-2 rounded bg-primary-color p-4 text-left shadow-2xl shadow-transition-color-20 backdrop-blur-xl lg:w-[50dvw] lg:group-hover:z-20 lg:group-hover:flex">
-                              <div className="FrameAttr flex flex-col gap-1">
-                                <span className="Title">当前帧属性</span>
-                                <span className="Content bg-transition-color-8">
-                                  第 {math.floor(frameIndex / 60)} 秒的第 {frameIndex % 60} 帧
-                                  <br />
-                                </span>
-                              </div>
-                              <div className="SkillAttr flex flex-col gap-1">
-                                <span className="Title">Skill</span>
-                                <span className="Content bg-transition-color-8">
-                                  技能名称：{frameData.s.name} <br />
-                                  技能序号：{frameData.skillIdex + 1} <br />
-                                  当前位于技能的第：{frameData.skillFrame}帧
-                                  <br />
-                                </span>
-                              </div>
-                            </div>
-                            <div className="fixed left-1/2 top-0 z-10 hidden max-h-[80dvh] w-full -translate-x-1/2 flex-col gap-2 overflow-auto border-brand-color-1st bg-primary-color p-4 text-left shadow-2xl shadow-transition-color-20 backdrop-blur-xl group-hover:z-20 group-focus:flex lg:top-[2dvh] lg:max-h-[80dvh] lg:max-w-[calc(92dvw-67px)] lg:rounded lg:border-1.5">
-                              <div className="FrameAttr flex flex-col gap-1">
-                                <span className="Title">当前帧属性</span>
-                                <span className="Content bg-transition-color-8 p-2">
-                                  第 {math.floor(frameIndex / 60)} 秒的第 {frameIndex % 60} 帧
-                                  <br />
-                                </span>
-                              </div>
-                              <div className="SkillAttr flex flex-col gap-1">
-                                <span className="Title">Skill</span>
-                                <span className="Content bg-transition-color-8 p-2">
-                                  技能名称：{frameData.s.name} <br />
-                                  技能序号：{frameData.skillIdex + 1} <br />
-                                  当前位于技能的第：{frameData.skillFrame}帧
-                                  <br />
-                                </span>
-                              </div>
-                              <div className="CharacterClass flex flex-col gap-1">
-                                <span className="Title">CharacterClass</span>
-                                <div className="Content flex flex-wrap bg-transition-color-8 outline-[1px] lg:gap-1">
-                                  {Object.entries(frameData.p).map(([key, value]) => {
-                                    return (
-                                      <div
-                                        key={key}
-                                        className="lg:basis-1/8 m-1 rounded-sm border-[1px] border-brand-color-1st px-3 py-1"
-                                      >
-                                        <span className="Key text-sm text-accent-color-70">{key}</span>
-                                        <br />
-                                        <span className="Value font-bold">{value.toString()}</span>
-                                      </div>
-                                    );
-                                  })}
-                                </div>
-                              </div>
-                              <div className="MonsterClass flex flex-col gap-1">
-                                <span className="Title">MonsterClass</span>
-                                <div className="Content flex flex-wrap bg-transition-color-8 outline-[1px] lg:gap-1">
-                                  {Object.entries(frameData.m).map(([key, value]) => {
-                                    return (
-                                      <div
-                                        key={key}
-                                        className="lg:basis-1/8 m-1 rounded-sm border-[1px] border-brand-color-1st px-3 py-1"
-                                      >
-                                        <span className="Key text-sm text-accent-color-70">{key}</span>
-                                        <br />
-                                        <span className="Value font-bold">{value.toString()}</span>
-                                      </div>
-                                    );
-                                  })}
-                                </div>
-                              </div>
-                            </div>
-                          </button>
+                      <div key={skill.name + skillIndex} className={`SkillData relative flex rounded-sm`} style={{
+                        width: 3 * skill.skillDuration,
+                        backgroundColor: stringToColor(skill.name)
+                      }}>
+                        <div className="skillName pointer-events-none absolute left-2 top-1/2 z-10 -translate-y-1/2 text-nowrap text-primary-color">
+                          {skill.name}
                         </div>
+                        {skill.stateFramesData.map((frameData, frameIndex) => {
+                          const frame = skill.passedFrames + frameIndex;
+                          return (
+                            <div key={skill.name + frameIndex} className="SkillContent flex flex-row">
+                              <button
+                                className="group relative min-h-12 w-[3px] lg:w-[6px]"
+                              >
+                                <div className="absolute -left-4 bottom-12 z-10 hidden flex-col gap-2 rounded bg-primary-color p-4 text-left shadow-2xl shadow-transition-color-20 backdrop-blur-xl lg:w-[50dvw] lg:group-hover:z-20 lg:group-hover:flex">
+                                  <div className="FrameAttr flex flex-col gap-1">
+                                    <span className="Title">当前帧属性</span>
+                                    <span className="Content bg-transition-color-8">
+                                      第 {math.floor(frame / 60)} 秒的第 {frame % 60} 帧
+                                      <br />
+                                    </span>
+                                  </div>
+                                  <div className="SkillAttr flex flex-col gap-1">
+                                    <span className="Title">Skill</span>
+                                    <span className="Content bg-transition-color-8">
+                                      位于 {skill.name} 的第：{frameIndex}帧
+                                      <br />
+                                    </span>
+                                  </div>
+                                </div>
+                                <div className="fixed left-1/2 top-0 z-10 hidden max-h-[80dvh] w-full -translate-x-1/2 flex-col gap-2 overflow-auto border-brand-color-1st bg-primary-color p-4 text-left shadow-2xl shadow-transition-color-20 backdrop-blur-xl group-hover:z-20 group-focus:flex lg:top-[2dvh] lg:max-h-[80dvh] lg:max-w-[calc(92dvw-67px)] lg:rounded lg:border-1.5">
+                                  <div className="FrameAttr flex flex-col gap-1">
+                                    <span className="Title">当前帧属性</span>
+                                    <span className="Content bg-transition-color-8">
+                                      第 {math.floor(frame / 60)} 秒的第 {frame % 60} 帧
+                                      <br />
+                                    </span>
+                                  </div>
+                                  <div className="SkillAttr flex flex-col gap-1">
+                                    <span className="Title">Skill</span>
+                                    <span className="Content bg-transition-color-8">
+                                      位于 {skill.name} 的第：{frameIndex}帧
+                                      <br />
+                                    </span>
+                                  </div>
+                                  <div className="CharacterClass flex flex-col gap-1">
+                                    <span className="Title">CharacterClass</span>
+                                    <div className="Content flex flex-wrap bg-transition-color-8 outline-[1px] lg:gap-1">
+                                      {Object.entries(frameData.character).map(([key, value]) => {
+                                        return (
+                                          <div
+                                            key={key}
+                                            className="lg:basis-1/8 m-1 rounded-sm border-[1px] border-brand-color-1st px-3 py-1"
+                                          >
+                                            <span className="Key text-sm text-accent-color-70">{key}</span>
+                                            <br />
+                                            <span className="Value font-bold">{JSON.stringify(value)}</span>
+                                          </div>
+                                        );
+                                      })}
+                                    </div>
+                                  </div>
+                                  <div className="MonsterClass flex flex-col gap-1">
+                                    <span className="Title">MonsterClass</span>
+                                    <div className="Content flex flex-wrap bg-transition-color-8 outline-[1px] lg:gap-1">
+                                      {Object.entries(frameData.monster).map(([key, value]) => {
+                                        return (
+                                          <div
+                                            key={key}
+                                            className="lg:basis-1/8 m-1 rounded-sm border-[1px] border-brand-color-1st px-3 py-1"
+                                          >
+                                            <span className="Key text-sm text-accent-color-70">{key}</span>
+                                            <br />
+                                            <span className="Value font-bold">{JSON.stringify(value)}</span>
+                                          </div>
+                                        );
+                                      })}
+                                    </div>
+                                  </div>
+                                </div>
+                              </button>
+                            </div>
+                          );
+                        })}
                       </div>
                     );
                   })}
@@ -503,7 +497,7 @@ export default function AnalyzePageClient(props: Props) {
     const workerMessage: analyzeWorkerInput = {
       type: "start",
       arg: {
-        skillSequence: skillSequence.concat(skillSequence).concat(skillSequence).concat(skillSequence).concat(skillSequence).concat(skillSequence).concat(skillSequence).concat(skillSequence).concat(skillSequence).concat(skillSequence),
+        skillSequence: skillSequence,
         character: test.character,
         monster: test.monster,
       },
