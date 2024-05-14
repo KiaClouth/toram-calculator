@@ -580,8 +580,7 @@ export default function AnalyzePageClient(props: Props) {
                 </div>
               </div>
             </div>
-
-            <div className="functionArea fixed w-dvw bg-primary-color bottom-0 left-0 flex justify-end border-t-1.5 border-brand-color-1st p-3">
+            <div className="functionArea fixed w-dvw lg:w-full bg-primary-color bottom-0 left-0 flex justify-end border-t-1.5 border-brand-color-1st p-3">
               <div className="btnGroup flex gap-2">
                 <Button
                   onClick={() => {

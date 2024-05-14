@@ -1,5 +1,5 @@
 import React from "react";
-import { type modifiers, type CharacterData, type MonsterData, type SkillData } from "./worker";
+import { type modifiers, type CharacterData, type MonsterData, type SkillData, dynamicTotalValue } from "./worker";
 
 // 类型谓词函数，用于检查对象是否符合目标类型
 function isTargetType(obj: unknown): obj is modifiers {
@@ -32,7 +32,10 @@ export const ObjectRenderer = (props: { data?: SkillData | CharacterData | Monst
             key={currentPath}
             className="Modifiers flex flex-col lg:flex-row w-full gap-1 lg:gap-4 rounded-sm border-[1px] border-brand-color-1st p-1"
           >
-            <span className="Key lg:w-[20%] bg-brand-color-1st px-1 lg:px-3 py-1 text-accent-color-70">{key}</span>
+            <span className="TotalValue lg:w-[20%] bg-brand-color-1st px-1 lg:px-3 py-1">
+              <div className="Key text-accent-color-70">{key}：</div>
+              <div className="Value font-bold">{dynamicTotalValue(value)}</div>
+            </span>
             <div className="Values flex flex-1 flex-wrap gap-1 lg:gap-4">
               <div className="BaseVlaue flex w-[25%] lg:w-[10%] flex-col">
                 <span className="BaseValueName text-sm text-accent-color-70">BaseValue</span>
