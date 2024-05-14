@@ -7,6 +7,8 @@ import { type Monster } from "~/server/api/routers/monster";
 import { type SkillEffect } from "~/server/api/routers/skill";
 import { type Modifier } from "~/server/api/routers/crystal";
 
+const fps = 60;
+
 export type analyzeWorkerInput = {
   type: "start" | "stop";
   arg?: {
@@ -1831,7 +1833,7 @@ export class SkillData {
     this.skillChantingFrames = math.floor(
       this.chantingBaseDuration + (this.chantingModifiableDuration * (100 - this.cm)) / 100,
     );
-    this.skillDuration = this.skillActionFrames + this.skillChantingFrames;
+    this.skillDuration = this.skillActionFrames + this.skillChantingFrames * fps;
     this.skillWindUp = skillWindUpComputer(skill.skillEffect.skillWindUpFormula, this.skillDuration, computeArg);
     console.log(
       "实例化SkillData，技能序号：" + this.index,
