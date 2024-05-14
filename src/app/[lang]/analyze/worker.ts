@@ -250,7 +250,7 @@ export const characterModifiersApplicator = (character: Character, characterData
   console.log("已收集的角色属性：", modifiersData);
   modifiersData.forEach((modifierData) => {
     // 属性添加
-    const node = math.parse(modifierData.modifier.ModifierFormula as string);
+    const node = math.parse(modifierData.modifier.ModifierFormula);
     const nodeString = node.toString();
     switch (node.type) {
       case "AssignmentNode":
@@ -264,7 +264,7 @@ export const characterModifiersApplicator = (character: Character, characterData
         {
           console.log("非赋值表达式：" + nodeString + " 判定为：" + node.type);
           // 非赋值表达式说明该行为是对当前角色已有属性进行增减,从第一个加减号开始分解表达式
-          const match = (modifierData.modifier.ModifierFormula as string).match(/(.+?)([+\-])(.+)/);
+          const match = (modifierData.modifier.ModifierFormula).match(/(.+?)([+\-])(.+)/);
           if (match) {
             const targetStr = _.trim(match[1]);
             const operatorStr = match[2];
