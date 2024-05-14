@@ -4,6 +4,7 @@ import * as math from "mathjs";
 import { type Character } from "~/server/api/routers/character";
 import { type Monster } from "~/server/api/routers/monster";
 import { type SkillEffect } from "~/server/api/routers/skill";
+import { Modifier } from "~/server/api/routers/crystal";
 
 export type analyzeWorkerInput = {
   type: "start" | "stop";
@@ -193,6 +194,172 @@ export const dynamicTotalValue = (m: modifiers): number => {
   const fixed = dynamicFixedValue(m);
   const percentage = dynamicPercentageValue(m);
   return base * (1 + percentage / 100) + fixed;
+};
+
+export const characterModifierCollector = (
+  character: Character,
+): {
+  origin: string;
+  modifier: Modifier;
+}[] => {
+  // 类型谓词函数，用于检查对象是否符合目标类型
+  function isTargetType(obj: unknown, currentPath: string[]): obj is Modifier {
+    // 检查对象是否为目标类型
+    const isModifier =
+      typeof obj === "object" &&
+      obj !== null &&
+      "ModifierId" in obj &&
+      "ModifierFormula" in obj &&
+      typeof obj.ModifierId === "string" &&
+      typeof obj.ModifierFormula === "string";
+    console.log("当前路径：", currentPath.join("."), "正在检查属性：", obj, "是否符合Modifier类型，结论：", isModifier);
+    return isModifier;
+  }
+
+  // 递归收集对象中所有符合目标类型的属性
+  const result: { origin: string; modifier: Modifier }[] = [];
+
+  function recurse(value: unknown, currentPath: string[]): void {
+    if (isTargetType(value, currentPath)) {
+      console.log("收集到一个符合条件的对象：", value);
+      const name = currentPath.join(".");
+      result.push({ origin: name, modifier: value });
+    }
+
+    if (_.isObject(value) && !_.isArray(value)) {
+      _.forOwn(value, (subValue, key) => {
+        recurse(subValue, [...currentPath, key]);
+      });
+    }
+
+    if (_.isArray(value)) {
+      value.forEach((subValue) => {
+        recurse(subValue, currentPath);
+      });
+    }
+  }
+
+  recurse(character, []);
+  return result;
+};
+
+// 角色属性应用
+export const characterModifiersApplicator = (character: Character, characterData: CharacterData): void => {
+  console.log("角色属性应用");
+  const modifiersData = characterModifierCollector(character);
+  console.log("已收集的角色属性：", modifiersData);
+  modifiersData.forEach((modifierData) => {
+    // 属性添加
+    const node = math.parse(modifierData.modifier.ModifierFormula as string);
+    const nodeString = node.toString();
+    switch (node.type) {
+      case "AssignmentNode":
+        {
+          console.log("发现赋值节点：" + nodeString + ", 角色属性不允许使用赋值，放弃此属性");
+        }
+
+        break;
+
+      default:
+        {
+          console.log("非赋值表达式：" + nodeString + " 判定为：" + node.type);
+          // 非赋值表达式说明该行为是对当前角色已有属性进行增减,从第一个加减号开始分解表达式
+          const match = (modifierData.modifier.ModifierFormula as string).match(/(.+?)([+\-])(.+)/);
+          if (match) {
+            const targetStr = _.trim(match[1]);
+            const operatorStr = match[2];
+            const formulaStr = _.trim(match[3]);
+            // 如果能够发现加减运算符，则对符号左右侧字符串进行验证
+            console.log("表达式拆解为：1:[" + targetStr + "]   2:[" + operatorStr + "]   3:[" + formulaStr + "]");
+            // 查找对应对象的内部属性值
+            const targetStrSplit = targetStr.split(".");
+            if (targetStrSplit.length > 0) {
+              {
+                let finalPath = "";
+                targetStrSplit.forEach((item, index) => {
+                  const tempPath = index === targetStrSplit.length - 1 ? "_" + item : item + ".";
+                  finalPath = finalPath + tempPath;
+                });
+                let target: modifiers | number | undefined;
+                console.log("最终路径：", finalPath);
+                if (_.get(characterData, finalPath)) {
+                  // 如果在characterAttr找到了对应的属性
+                  target = _.get(characterData, finalPath) as modifiers;
+                  console.log("依据最终路径，在characterAttr中找到了：", target);
+                  // 先判断值类型，依据字符串结尾是否具有百分比符号分为百分比加成和常数加成
+                  const perMatch = formulaStr.match(/^([\s\S]+?)\s*(%?)$/);
+                  if (perMatch) {
+                    // 表达式非空时
+                    if (perMatch[2] === "%") {
+                      // 当末尾存在百分比符号时，尝试将计算结果添加进百分比数组中
+                      console.log("表达式值为百分比类型，非百分号部分：", perMatch[1]);
+                      if (perMatch[1]) {
+                        // 尝试计算表达式结果
+                        const result = math.evaluate(perMatch[1], {...characterData}) as number;
+                        if (result) {
+                          // 表达能够正确计算的话
+                          console.log("表达式计算结果", result);
+                          // 根据运算符类型，将计算结果添加进百分比数组中
+                          if (operatorStr === "+") {
+                            target.modifiers.static.percentage.push({
+                              value: result,
+                              origin: modifierData.origin,
+                            });
+                          } else if (operatorStr === "-") {
+                            target.modifiers.static.percentage.push({
+                              value: -result,
+                              origin: modifierData.origin,
+                            });
+                          } else {
+                            console.log("未知运算符");
+                          }
+                        } else {
+                          // 表达式计算结果为空时
+                          console.log("表达式没有返回值");
+                        }
+                      }
+                    } else {
+                      // 否则，尝试将计算结果添加进常数值数组中
+                      const result = math.evaluate(formulaStr, {...characterData}) as number;
+                      if (result) {
+                        // 表达能够正确计算的话
+                        console.log("表达式计算结果", result);
+                        // 根据运算符类型，将计算结果添加进百分比数组中
+                        if (operatorStr === "+") {
+                          target.modifiers.static.fixed.push({
+                            value: result,
+                            origin: modifierData.origin,
+                          });
+                        } else if (operatorStr === "-") {
+                          target.modifiers.static.fixed.push({
+                            value: -result,
+                            origin: modifierData.origin,
+                          });
+                        } else {
+                          console.log("未知运算符");
+                        }
+                      } else {
+                        // 表达式计算结果为空时
+                        console.log("表达式没有返回值");
+                      }
+                    }
+                  } else {
+                    console.log("表达式为空");
+                  }
+                  console.log("修改后的属性值为：", target);
+                } else {
+                  console.log("在计算上下文中没有找到对应的自定义属性:" + targetStr);
+                }
+              }
+            }
+          } else {
+            // 如果未匹配到，则返回空字符串或其他你希望的默认值
+            console.log("在：" + modifierData.modifier.ModifierFormula + "中没有匹配到内容");
+          }
+        }
+        break;
+    }
+  });
 };
 
 export class CharacterData {
@@ -598,6 +765,7 @@ export class CharacterData {
   _mp: modifiers;
 
   constructor(character: Character) {
+    console.log("正在实例化CharacterData");
     const mainWeaponType = character.equipmentList?.mainWeapon?.mainWeaType ?? "NO_WEAPOEN";
     const subWeaponType = character.equipmentList?.subWeapon?.subWeaType ?? "NO_WEAPOEN";
     const bodyArmorType = character.equipmentList?.bodyArmor?.bodyArmorType ?? "NORMAL";
@@ -1219,23 +1387,8 @@ export class CharacterData {
       },
     };
     // 添加加成项
-    // 被动技能加成
-    character.skillList?.skills.forEach((skill) => {
-      if (skill.skillType === "PASSIVE_SKILL") {
-        skill.skillEffect.forEach((effect) => {
-          effect.skillYield.forEach((yielder) => {
-            if (yielder.yieldFormula) {
-            }
-          });
-        });
-      }
-    });
-    // 主武器加成
-    character.equipmentList?.mainWeapon?.modifiersList?.modifiers.forEach((modifier) => {
-      if (modifier.modifiersValueType === "PERCENTAGE_BONUS") {
-      } else if (modifier.modifiersValueType === "FLAT_BONUS") {
-      }
-    });
+    characterModifiersApplicator(character, this);
+    console.log("实例化完毕，this：", this);
   }
 
   get str() {

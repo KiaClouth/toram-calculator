@@ -113,10 +113,8 @@ export const defaultSkill: Skill = {
 };
 
 export const defauleModifier: Modifier = {
-  id: "",
-  modifiersValueType: "FLAT_BONUS",
-  value: 0,
-  modifiersName: "STR",
+    ModifierId: "",
+    ModifierFormula: "",
 };
 
 export const defaultModifiersList: ModifiersList = {
@@ -516,22 +514,16 @@ export const test = {
               id: "",
               modifiers: [
                 {
-                  id: "",
-                  modifiersValueType: "PERCENTAGE_BONUS",
-                  value: 5,
-                  modifiersName: "MAGICAL_ATK",
+                  ModifierId: "",
+                  ModifierFormula: "mAtk + 5%",
                 },
                 {
-                  id: "",
-                  modifiersValueType: "PERCENTAGE_BONUS",
-                  value: 20,
-                  modifiersName: "MAGICAL_PIERCE",
+                  ModifierId: "",
+                  ModifierFormula: "mPie + 20",
                 },
                 {
-                  id: "",
-                  modifiersValueType: "PERCENTAGE_BONUS",
-                  value: -15,
-                  modifiersName: "CSPD",
+                  ModifierId: "",
+                  ModifierFormula: "cspd - 15%",
                 },
               ],
             },
@@ -549,28 +541,20 @@ export const test = {
               id: "",
               modifiers: [
                 {
-                  id: "",
-                  modifiersValueType: "PERCENTAGE_BONUS",
-                  value: 7,
-                  modifiersName: "MAGICAL_ATK",
+                  ModifierId: "",
+                  ModifierFormula: "mAtk + 7%",
                 },
                 {
-                  id: "",
-                  modifiersValueType: "PERCENTAGE_BONUS",
-                  value: 14,
-                  modifiersName: "CSPD",
+                  ModifierId: "",
+                  ModifierFormula: "cspd + 14%",
                 },
                 {
-                  id: "",
-                  modifiersValueType: "PERCENTAGE_BONUS",
-                  value: -15,
-                  modifiersName: "MAX_HP",
+                  ModifierId: "",
+                  ModifierFormula: "maxHp - 15%",
                 },
                 {
-                  id: "",
-                  modifiersValueType: "FLAT_BONUS",
-                  value: 3,
-                  modifiersName: "ANTICIPATE",
+                  ModifierId: "",
+                  ModifierFormula: "am + 3",
                 },
               ],
             },
@@ -583,10 +567,8 @@ export const test = {
           id: "",
           modifiers: [
             {
-              id: "",
-              modifiersValueType: "FLAT_BONUS",
-              value: 0,
-              modifiersName: "STR",
+              ModifierId: "",
+              ModifierFormula: "",
             },
           ],
         },
@@ -607,10 +589,8 @@ export const test = {
           id: "",
           modifiers: [
             {
-              id: "",
-              modifiersValueType: "FLAT_BONUS",
-              value: 0,
-              modifiersName: "STR",
+              ModifierId: "",
+              ModifierFormula: "",
             },
           ],
         },
@@ -636,10 +616,8 @@ export const test = {
               id: "",
               modifiers: [
                 {
-                  id: "",
-                  modifiersValueType: "FLAT_BONUS",
-                  value: 0,
-                  modifiersName: "STR",
+                  ModifierId: "",
+                  ModifierFormula: "",
                 },
               ],
             },
@@ -657,10 +635,8 @@ export const test = {
               id: "",
               modifiers: [
                 {
-                  id: "",
-                  modifiersValueType: "FLAT_BONUS",
-                  value: 0,
-                  modifiersName: "STR",
+                  ModifierId: "",
+                  ModifierFormula: "",
                 },
               ],
             },
@@ -673,10 +649,8 @@ export const test = {
           id: "",
           modifiers: [
             {
-              id: "",
-              modifiersValueType: "FLAT_BONUS",
-              value: 0,
-              modifiersName: "STR",
+              ModifierId: "",
+              ModifierFormula: "",
             },
           ],
         },
@@ -700,10 +674,8 @@ export const test = {
               id: "",
               modifiers: [
                 {
-                  id: "",
-                  modifiersValueType: "FLAT_BONUS",
-                  value: 0,
-                  modifiersName: "STR",
+                  ModifierId: "",
+                  ModifierFormula: "",
                 },
               ],
             },
@@ -721,10 +693,8 @@ export const test = {
               id: "",
               modifiers: [
                 {
-                  id: "",
-                  modifiersValueType: "FLAT_BONUS",
-                  value: 0,
-                  modifiersName: "STR",
+                  ModifierId: "",
+                  ModifierFormula: "",
                 },
               ],
             },
@@ -737,10 +707,8 @@ export const test = {
           id: "",
           modifiers: [
             {
-              id: "",
-              modifiersValueType: "FLAT_BONUS",
-              value: 0,
-              modifiersName: "STR",
+              ModifierId: "",
+              ModifierFormula: "",
             },
           ],
         },
@@ -763,10 +731,8 @@ export const test = {
               id: "",
               modifiers: [
                 {
-                  id: "",
-                  modifiersValueType: "FLAT_BONUS",
-                  value: 0,
-                  modifiersName: "STR",
+                  ModifierId: "",
+                  ModifierFormula: "",
                 },
               ],
             },
@@ -784,10 +750,8 @@ export const test = {
               id: "",
               modifiers: [
                 {
-                  id: "",
-                  modifiersValueType: "FLAT_BONUS",
-                  value: 0,
-                  modifiersName: "STR",
+                  ModifierId: "",
+                  ModifierFormula: "",
                 },
               ],
             },
@@ -800,10 +764,8 @@ export const test = {
           id: "",
           modifiers: [
             {
-              id: "",
-              modifiersValueType: "FLAT_BONUS",
-              value: 0,
-              modifiersName: "STR",
+              ModifierId: "",
+              ModifierFormula: "",
             },
           ],
         },
@@ -818,10 +780,8 @@ export const test = {
         id: "",
         modifiers: [
           {
-            id: "",
-            modifiersValueType: "FLAT_BONUS",
-            value: 0,
-            modifiersName: "STR",
+            ModifierId: "",
+            ModifierFormula: "",
           },
         ],
       },
@@ -834,10 +794,8 @@ export const test = {
         id: "",
         modifiers: [
           {
-            id: "",
-            modifiersValueType: "FLAT_BONUS",
-            value: 0,
-            modifiersName: "STR",
+            ModifierId: "",
+            ModifierFormula: "",
           },
         ],
       },
@@ -858,10 +816,8 @@ export const test = {
             id: "",
             modifiers: [
               {
-                id: "",
-                modifiersValueType: "FLAT_BONUS",
-                value: 0,
-                modifiersName: "STR",
+                ModifierId: "",
+                ModifierFormula: "",
               },
             ],
           },

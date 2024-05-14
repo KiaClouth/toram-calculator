@@ -7,7 +7,8 @@ import { type Session } from "next-auth";
 import { test, useStore } from "~/app/store";
 import Button from "../_components/button";
 import Dialog from "../_components/dialog";
-import { type analyzeWorkerInput, type SkillData, type analyzeWorkerOutput, type tSkill } from "./worker";
+import { type analyzeWorkerInput, type SkillData, type analyzeWorkerOutput, type tSkill, modifiers } from "./worker";
+import { ObjectRenderer } from "./objectRender";
 
 export interface Props {
   dictionary: ReturnType<typeof getDictionary>;
@@ -320,6 +321,8 @@ export default function AnalyzePageClient(props: Props) {
   const workerRef = useRef<Worker>();
   const { analyzeDialogState, setAnalyzeDialogState } = useStore((state) => state.analyzePage);
   const [computeResult, setComputeResult] = useState<React.ReactNode>(null);
+  const [dialogSkillData, setDialogSkillData] = useState<SkillData | null>(null);
+  const [dialogSkillFrame, setDialogSkillFrame] = useState<number>(0);
 
   useEffect(() => {
     console.log("--ComboAnalyze Client Render");
@@ -368,35 +371,44 @@ export default function AnalyzePageClient(props: Props) {
             setComputeResult(
               <>
                 <div className="Result my-10 flex items-end">
-                  <div className="DPS flex flex-1 items-end gap-2 rounded bg-brand-color-3rd p-4 lg:bg-transparent lg:p-0">
+                  <div className="DPS flex flex-col flex-1 gap-2 ">
                     <span className="Key py-2 text-sm">DPS</span>
-                    <span className="Value text-primary-color text-6xl lg:text-8xl lg:text-accent-color">
+                    <span className="Value p-4 text-6xl border-y-[1px] border-brand-color-1st lg:border-none lg:p-0 lg:text-8xl lg:text-accent-color">
                       {math.floor(test.monster.maxhp / (result.length / 60))}
                     </span>
                   </div>
                 </div>
-                <div className="TimeLine flex flex-1 flex-wrap gap-y-4 bg-transition-color-8 gap-2 lg:p-4">
+                <div className="TimeLine flex flex-1 flex-wrap gap-2 gap-y-4 bg-transition-color-8 lg:p-4">
                   {result.map((skill, skillIndex) => {
                     return (
-                      <div key={skill.name + skillIndex} className={`SkillData relative flex rounded-sm`} style={{
-                        width: 3 * skill.skillDuration,
-                        backgroundColor: stringToColor(skill.name)
-                      }}>
+                      <div
+                        key={skill.name + skillIndex}
+                        className={`SkillData relative flex rounded-sm`}
+                        style={{
+                          width: 3 * skill.skillDuration,
+                          backgroundColor: stringToColor(skill.name),
+                        }}
+                      >
                         <div className="skillName pointer-events-none absolute left-2 top-1/2 z-10 -translate-y-1/2 text-nowrap text-primary-color">
                           {skill.name}
                         </div>
                         {skill.stateFramesData.map((frameData, frameIndex) => {
-                          const frame = skill.passedFrames + frameIndex;
                           return (
                             <div key={skill.name + frameIndex} className="SkillContent flex flex-row">
                               <button
+                                onClick={() => {
+                                  setDialogSkillData(skill);
+                                  setDialogSkillFrame(frameIndex);
+                                  setAnalyzeDialogState(true);
+                                }}
                                 className="group relative min-h-12 w-[3px] lg:w-[6px]"
                               >
-                                <div className="absolute w-fit min-w-[300px] -left-4 bottom-12 z-10 hidden flex-col gap-2 rounded bg-primary-color p-4 text-left shadow-2xl shadow-transition-color-20 backdrop-blur-xl lg:group-hover:z-20 lg:group-hover:flex">
+                                <div className="absolute -left-4 bottom-12 z-10 hidden w-fit min-w-[300px] flex-col gap-2 rounded bg-primary-color p-4 text-left shadow-2xl shadow-transition-color-20 backdrop-blur-xl lg:group-hover:z-20 lg:group-hover:flex">
                                   <div className="FrameAttr flex flex-col gap-1">
-                                    <span className="Title">当前 {frame} 帧</span>
+                                    <span className="Title">当前 {skill.passedFrames + frameIndex} 帧</span>
                                     <span className="Content bg-transition-color-8">
-                                      第 {math.floor(frame / 60)} 秒的第 {frame % 60} 帧
+                                      第 {math.floor((skill.passedFrames + frameIndex) / 60)} 秒的第{" "}
+                                      {(skill.passedFrames + frameIndex) % 60} 帧
                                       <br />
                                     </span>
                                   </div>
@@ -406,56 +418,6 @@ export default function AnalyzePageClient(props: Props) {
                                       {skill.name} 的第：{frameIndex} / {skill.skillDuration} 帧
                                       <br />
                                     </span>
-                                  </div>
-                                </div>
-                                <div className="fixed left-1/2 top-0 z-10 hidden max-h-[80dvh] w-full -translate-x-1/2 flex-col gap-2 overflow-auto border-brand-color-1st bg-primary-color p-4 text-left shadow-2xl shadow-transition-color-20 backdrop-blur-xl group-hover:z-20 group-focus:flex lg:top-[2dvh] lg:max-h-[80dvh] lg:max-w-[calc(92dvw-67px)] lg:rounded lg:border-1.5">
-                                  <div className="FrameAttr flex flex-col gap-1">
-                                    <span className="Title">当前帧属性</span>
-                                    <span className="Content bg-transition-color-8">
-                                      第 {math.floor(frame / 60)} 秒的第 {frame % 60} 帧
-                                      <br />
-                                    </span>
-                                  </div>
-                                  <div className="SkillAttr flex flex-col gap-1">
-                                    <span className="Title">Skill</span>
-                                    <span className="Content bg-transition-color-8">
-                                      位于 {skill.name} 的第：{frameIndex}帧
-                                      <br />
-                                    </span>
-                                  </div>
-                                  <div className="CharacterClass flex flex-col gap-1">
-                                    <span className="Title">CharacterClass</span>
-                                    <div className="Content flex flex-wrap bg-transition-color-8 outline-[1px] lg:gap-1">
-                                      {Object.entries(frameData.character).map(([key, value]) => {
-                                        return (
-                                          <div
-                                            key={key}
-                                            className="lg:basis-1/8 m-1 rounded-sm border-[1px] border-brand-color-1st px-3 py-1"
-                                          >
-                                            <span className="Key text-sm text-accent-color-70">{key}</span>
-                                            <br />
-                                            <span className="Value font-bold">{JSON.stringify(value)}</span>
-                                          </div>
-                                        );
-                                      })}
-                                    </div>
-                                  </div>
-                                  <div className="MonsterClass flex flex-col gap-1">
-                                    <span className="Title">MonsterClass</span>
-                                    <div className="Content flex flex-wrap bg-transition-color-8 outline-[1px] lg:gap-1">
-                                      {Object.entries(frameData.monster).map(([key, value]) => {
-                                        return (
-                                          <div
-                                            key={key}
-                                            className="lg:basis-1/8 m-1 rounded-sm border-[1px] border-brand-color-1st px-3 py-1"
-                                          >
-                                            <span className="Key text-sm text-accent-color-70">{key}</span>
-                                            <br />
-                                            <span className="Value font-bold">{JSON.stringify(value)}</span>
-                                          </div>
-                                        );
-                                      })}
-                                    </div>
                                   </div>
                                 </div>
                               </button>
@@ -490,7 +452,7 @@ export default function AnalyzePageClient(props: Props) {
         workerRef.current.terminate();
       }
     };
-  }, []);
+  }, [setAnalyzeDialogState]);
 
   const startCompute = () => {
     setComputeResult(null);
@@ -573,14 +535,65 @@ export default function AnalyzePageClient(props: Props) {
       </div>
 
       <Dialog state={analyzeDialogState} setState={setAnalyzeDialogState}>
-        {
-          analyzeDialogState && null
-          //   <AnalyzeForm
-          //   dictionary={dictionary}
-          //   session={session}
-          //   setDefaultAnalyzeList={setDefaultAnalyzeList}
-          // />
-        }
+        {analyzeDialogState && (
+          <div className="Content flex w-full flex-col gap-4 overflow-y-auto rounded px-3 2xl:w-[1536px]">
+            <div className="Title flex items-center gap-6 pt-4">
+              {/* <div className="h-[2px] flex-1 bg-accent-color"></div> */}
+              <span className="text-lg font-bold lg:text-2xl">当前帧属性</span>
+              <div className="h-[2px] flex-1 bg-accent-color"></div>
+            </div>
+            <div className="Content flex flex-col gap-4 gap-y-8">
+              <div className="FrameAttr flex flex-col gap-1">
+                <span className="Content bg-transition-color-8 p-2">
+                  帧信息： 第 {math.floor(((dialogSkillData?.passedFrames ?? 0) + dialogSkillFrame) / 60)} 秒的第{" "}
+                  {(dialogSkillData?.passedFrames ?? 0) + (dialogSkillFrame % 60)} 帧
+                  <br />
+                </span>
+              </div>
+              <div className="SkillAttr flex flex-col gap-1">
+                <div className="Title flex items-center gap-6 pt-4">
+                  <span className="Title text-base font-bold lg:text-xl">Skill</span>
+                  <div className="h-[1px] flex-1 bg-transition-color-20"></div>
+                </div>
+                <span className="Content bg-transition-color-8 p-2">
+                  帧信息： 位于 {dialogSkillData?.name} 的第：{dialogSkillFrame}帧
+                  <br />
+                </span>
+              </div>
+
+              <div className="CharacterClass flex flex-col gap-1 p-2">
+                <div className="Title flex items-center gap-6 pt-4">
+                  <span className="Title text-base font-bold lg:text-xl">Character</span>
+                  <div className="h-[1px] flex-1 bg-transition-color-20"></div>
+                </div>
+                <div className="Content flex flex-wrap bg-transition-color-8 outline-[1px] lg:gap-1">
+                  <ObjectRenderer data={dialogSkillData?.stateFramesData[dialogSkillFrame]?.character} />
+                </div>
+              </div>
+              <div className="MonsterClass flex flex-col gap-1 p-2">
+                <div className="Title flex items-center gap-6 pt-4">
+                  <span className="Title text-base font-bold lg:text-xl">Monster</span>
+                  <div className="h-[1px] flex-1 bg-transition-color-20"></div>
+                </div>
+                <div className="Content flex flex-wrap bg-transition-color-8 outline-[1px] lg:gap-1">
+                  <ObjectRenderer data={dialogSkillData?.stateFramesData[dialogSkillFrame]?.monster} />
+                </div>
+              </div>
+            </div>
+
+            <div className="functionArea fixed w-dvw bg-primary-color bottom-0 left-0 flex justify-end border-t-1.5 border-brand-color-1st p-3">
+              <div className="btnGroup flex gap-2">
+                <Button
+                  onClick={() => {
+                    setAnalyzeDialogState(false);
+                  }}
+                >
+                  {dictionary.ui.close} [Esc]
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
       </Dialog>
     </main>
   );

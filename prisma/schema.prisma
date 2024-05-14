@@ -337,11 +337,9 @@ enum ModifiersName {
 
 // 单项加成数据模型
 model Modifier {
-    id                 String             @id @default(cuid())
-    modifiersValueType ModifiersValueType @default(PERCENTAGE_BONUS)
-    value              Float              @default(0)
-    modifiersName      ModifiersName      @default(ITEM_COOLDOWN)
-    belongTo           ModifiersList[]
+    ModifierId                    String             @id @default(cuid())
+    ModifierFormula               String
+    belongToModifiersList ModifiersList[]
 }
 
 // 加成项集（附魔等）模型
