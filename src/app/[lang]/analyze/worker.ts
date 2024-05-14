@@ -4,7 +4,7 @@ import * as math from "mathjs";
 import { type Character } from "~/server/api/routers/character";
 import { type Monster } from "~/server/api/routers/monster";
 import { type SkillEffect } from "~/server/api/routers/skill";
-import { Modifier } from "~/server/api/routers/crystal";
+import { type Modifier } from "~/server/api/routers/crystal";
 
 export type analyzeWorkerInput = {
   type: "start" | "stop";
