@@ -1,3 +1,4 @@
+"use client";
 import _ from "lodash-es";
 import { type MainWeaType, type SubWeaType, type BodyArmorType, type $Enums } from "@prisma/client";
 import * as math from "mathjs";
@@ -193,7 +194,7 @@ export const dynamicTotalValue = (m: modifiers): number => {
   const base = baseValue(m);
   const fixed = dynamicFixedValue(m);
   const percentage = dynamicPercentageValue(m);
-  return base * (1 + percentage / 100) + fixed;
+  return math.floor(base * (1 + percentage / 100) + fixed);
 };
 
 export const characterModifierCollector = (
@@ -264,7 +265,7 @@ export const characterModifiersApplicator = (character: Character, characterData
         {
           console.log("非赋值表达式：" + nodeString + " 判定为：" + node.type);
           // 非赋值表达式说明该行为是对当前角色已有属性进行增减,从第一个加减号开始分解表达式
-          const match = (modifierData.modifier.ModifierFormula).match(/(.+?)([+\-])(.+)/);
+          const match = modifierData.modifier.ModifierFormula.match(/(.+?)([+\-])(.+)/);
           if (match) {
             const targetStr = _.trim(match[1]);
             const operatorStr = match[2];
@@ -295,7 +296,7 @@ export const characterModifiersApplicator = (character: Character, characterData
                       console.log("表达式值为百分比类型，非百分号部分：", perMatch[1]);
                       if (perMatch[1]) {
                         // 尝试计算表达式结果
-                        const result = math.evaluate(perMatch[1], {...characterData}) as number;
+                        const result = math.evaluate(perMatch[1], { ...characterData }) as number;
                         if (result) {
                           // 表达能够正确计算的话
                           console.log("表达式计算结果", result);
@@ -320,7 +321,7 @@ export const characterModifiersApplicator = (character: Character, characterData
                       }
                     } else {
                       // 否则，尝试将计算结果添加进常数值数组中
-                      const result = math.evaluate(formulaStr, {...characterData}) as number;
+                      const result = math.evaluate(formulaStr, { ...characterData }) as number;
                       if (result) {
                         // 表达能够正确计算的话
                         console.log("表达式计算结果", result);

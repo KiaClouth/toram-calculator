@@ -32,7 +32,7 @@ export const ObjectRenderer = (props: { data?: SkillData | CharacterData | Monst
             key={currentPath}
             className="Modifiers flex flex-col lg:flex-row w-full gap-1 lg:gap-4 rounded-sm border-[1px] border-brand-color-1st p-1"
           >
-            <span className="TotalValue lg:w-[20%] bg-brand-color-1st px-1 lg:px-3 py-1">
+            <span className="TotalValue lg:w-[17%] bg-brand-color-1st px-1 lg:px-3 py-1">
               <div className="Key text-accent-color-70">{key}：</div>
               <div className="Value font-bold">{dynamicTotalValue(value)}</div>
             </span>
@@ -137,5 +137,5 @@ export const ObjectRenderer = (props: { data?: SkillData | CharacterData | Monst
     });
   };
 
-  return <div className="RenderObject flex w-full flex-col p-1 gap-1 lg:gap-0">{renderObject(data)}</div>;
+  return <div className="RenderObject flex w-full flex-col p-1 gap-1">{renderObject(data)}</div>;
 };

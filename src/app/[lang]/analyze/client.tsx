@@ -536,13 +536,13 @@ export default function AnalyzePageClient(props: Props) {
 
       <Dialog state={analyzeDialogState} setState={setAnalyzeDialogState}>
         {analyzeDialogState && (
-          <div className="Content flex w-full flex-col gap-4 overflow-y-auto rounded px-3 2xl:w-[1536px]">
+          <div className="Content flex w-full flex-col gap-4 rounded px-3 2xl:w-[1536px] h-dvh">
             <div className="Title flex items-center gap-6 pt-4">
               {/* <div className="h-[2px] flex-1 bg-accent-color"></div> */}
               <span className="text-lg font-bold lg:text-2xl">当前帧属性</span>
               <div className="h-[2px] flex-1 bg-accent-color"></div>
             </div>
-            <div className="Content flex flex-col gap-4 gap-y-8">
+            <div className="Content flex flex-col gap-4 gap-y-8 overflow-y-auto">
               <div className="FrameAttr flex flex-col gap-1">
                 <span className="Content bg-transition-color-8 p-2">
                   帧信息： 第 {math.floor(((dialogSkillData?.passedFrames ?? 0) + dialogSkillFrame) / 60)} 秒的第{" "}
@@ -580,7 +580,7 @@ export default function AnalyzePageClient(props: Props) {
                 </div>
               </div>
             </div>
-            <div className="functionArea fixed w-dvw lg:w-full bg-primary-color bottom-0 left-0 flex justify-end border-t-1.5 border-brand-color-1st p-3">
+            <div className="functionArea bg-primary-color flex justify-end border-t-1.5 border-brand-color-1st p-3">
               <div className="btnGroup flex gap-2">
                 <Button
                   onClick={() => {
