@@ -222,7 +222,7 @@ export const characterModifierCollector = (
 
   function recurse(value: unknown, currentPath: string[]): void {
     if (isTargetType(value, currentPath)) {
-      console.log("收集到一个符合条件的对象：", value);
+      console.log("收集到一个符合条件的对象：", value, "当前路径：", currentPath.join("."));
       const name = currentPath.join(".");
       result.push({ origin: name, modifier: value });
     }
@@ -234,8 +234,8 @@ export const characterModifierCollector = (
     }
 
     if (_.isArray(value)) {
-      value.forEach((subValue) => {
-        recurse(subValue, currentPath);
+      value.forEach((subValue, index) => {
+        recurse(subValue, [...currentPath, index.toString()]);
       });
     }
   }
