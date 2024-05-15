@@ -12,7 +12,7 @@ export default async function CharacterPage({
 }) {
   const dictionary = getDictionary(lang);
   const session = await getServerAuthSession();
-  const characterList = await sApi.character.getAll.query();
+  const characterList = await sApi.character.getUserVisbleList.query();
   return (
     <CharacterPageClient
       dictionary={dictionary}

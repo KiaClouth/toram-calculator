@@ -767,16 +767,16 @@ export class CharacterData {
 
   constructor(character: Character) {
     console.log("正在实例化CharacterData");
-    const mainWeaponType = character.equipmentList?.mainWeapon?.mainWeaType ?? "NO_WEAPOEN";
-    const subWeaponType = character.equipmentList?.subWeapon?.subWeaType ?? "NO_WEAPOEN";
-    const bodyArmorType = character.equipmentList?.bodyArmor?.bodyArmorType ?? "NORMAL";
+    const mainWeaponType = character.mainWeapon?.mainWeaType ?? "NO_WEAPOEN";
+    const subWeaponType = character.subWeapon?.subWeaType ?? "NO_WEAPOEN";
+    const bodyArmorType = character.bodyArmor?.bodyArmorType ?? "NORMAL";
     // 计算基础值
 
     this.lv = character.lv;
     this.mainWeapon = {
       type: mainWeaponType,
       _baseAtk: {
-        baseValue: character.equipmentList?.mainWeapon?.baseAtk ?? 0,
+        baseValue: character.mainWeapon?.baseAtk ?? 0,
         modifiers: {
           static: {
             fixed: [],
@@ -788,13 +788,13 @@ export class CharacterData {
           },
         },
       },
-      refinement: character.equipmentList?.mainWeapon?.refinement ?? 0,
-      stability: character.equipmentList?.mainWeapon?.stability ?? 0,
+      refinement: character.mainWeapon?.refinement ?? 0,
+      stability: character.mainWeapon?.stability ?? 0,
     };
     this.subWeapon = {
       type: subWeaponType,
       _baseAtk: {
-        baseValue: character.equipmentList?.subWeapon?.baseAtk ?? 0,
+        baseValue: character.subWeapon?.baseAtk ?? 0,
         modifiers: {
           static: {
             fixed: [],
@@ -806,13 +806,13 @@ export class CharacterData {
           },
         },
       },
-      refinement: character.equipmentList?.subWeapon?.refinement ?? 0,
-      stability: character.equipmentList?.subWeapon?.stability ?? 0,
+      refinement: character.subWeapon?.refinement ?? 0,
+      stability: character.subWeapon?.stability ?? 0,
     };
     this.bodyArmor = {
       type: bodyArmorType,
       _baseDef: {
-        baseValue: character.equipmentList?.bodyArmor?.baseDef ?? 0,
+        baseValue: character.bodyArmor?.baseDef ?? 0,
         modifiers: {
           static: {
             fixed: [],
@@ -824,10 +824,10 @@ export class CharacterData {
           },
         },
       },
-      refinement: character.equipmentList?.bodyArmor?.refinement ?? 0,
+      refinement: character.bodyArmor?.refinement ?? 0,
     };
     this._str = {
-      baseValue: character.baseAbi?.baseStr ?? 0,
+      baseValue: character.baseStr ?? 0,
       modifiers: {
         static: {
           fixed: [],
@@ -840,7 +840,7 @@ export class CharacterData {
       },
     };
     this._int = {
-      baseValue: character.baseAbi?.baseInt ?? 0,
+      baseValue: character.baseInt ?? 0,
       modifiers: {
         static: {
           fixed: [],
@@ -853,7 +853,7 @@ export class CharacterData {
       },
     };
     this._vit = {
-      baseValue: character.baseAbi?.baseVit ?? 0,
+      baseValue: character.baseVit ?? 0,
       modifiers: {
         static: {
           fixed: [],
@@ -866,7 +866,7 @@ export class CharacterData {
       },
     };
     this._agi = {
-      baseValue: character.baseAbi?.baseAgi ?? 0,
+      baseValue: character.baseAgi ?? 0,
       modifiers: {
         static: {
           fixed: [],
@@ -879,7 +879,7 @@ export class CharacterData {
       },
     };
     this._dex = {
-      baseValue: character.baseAbi?.baseDex ?? 0,
+      baseValue: character.baseDex ?? 0,
       modifiers: {
         static: {
           fixed: [],
@@ -892,7 +892,7 @@ export class CharacterData {
       },
     };
     this._luk = {
-      baseValue: character.specialAbi?.specialAbiType === "LUK" ? character.specialAbi.value ?? 0 : 0,
+      baseValue: character.specialAbiType === "LUK" ? character.specialAbiValue ?? 0 : 0,
       modifiers: {
         static: {
           fixed: [],
@@ -905,7 +905,7 @@ export class CharacterData {
       },
     };
     this._tec = {
-      baseValue: character.specialAbi?.specialAbiType === "TEC" ? character.specialAbi.value ?? 0 : 0,
+      baseValue: character.specialAbiType === "TEC" ? character.specialAbiValue ?? 0 : 0,
       modifiers: {
         static: {
           fixed: [],
@@ -918,7 +918,7 @@ export class CharacterData {
       },
     };
     this._men = {
-      baseValue: character.specialAbi?.specialAbiType === "MEN" ? character.specialAbi.value ?? 0 : 0,
+      baseValue: character.specialAbiType === "MEN" ? character.specialAbiValue ?? 0 : 0,
       modifiers: {
         static: {
           fixed: [],
@@ -931,7 +931,7 @@ export class CharacterData {
       },
     };
     this._cri = {
-      baseValue: character.specialAbi?.specialAbiType === "CRI" ? character.specialAbi.value ?? 0 : 0,
+      baseValue: character.specialAbiType === "CRI" ? character.specialAbiValue ?? 0 : 0,
       modifiers: {
         static: {
           fixed: [],
@@ -976,7 +976,7 @@ export class CharacterData {
         static: {
           fixed: [
             {
-              value: character.equipmentList?.mainWeapon?.stability ?? 0,
+              value: character.mainWeapon?.stability ?? 0,
               origin: "mainWeapon.stability",
             },
             {

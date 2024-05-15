@@ -45,8 +45,9 @@ const dictionary: dictionary = {
         4: "★★★★",
       },
       monsterForm: {
-        discription: "When uploading fixed-point boss data, please use one-star data, and the system will automatically calculate the data for other star levels according to the rules.",
-      }
+        discription:
+          "When uploading fixed-point boss data, please use one-star data, and the system will automatically calculate the data for other star levels according to the rules.",
+      },
     },
     skill: {
       pageTitle: "Skill Information Table",
@@ -62,18 +63,18 @@ const dictionary: dictionary = {
           type: "Type",
           _baseAtk: "BaseAtk",
           refinement: "Refinement",
-          stability: "Stability"
+          stability: "Stability",
         },
         subWeapon: {
           type: "Type",
           _baseAtk: "BaseAtk",
           refinement: "Refinement",
-          stability: "Stability"
+          stability: "Stability",
         },
         bodyArmor: {
           type: "Type",
           _baseDef: "BaseDef",
-          refinement: "Refinement"
+          refinement: "Refinement",
         },
         _str: "Str",
         _int: "Int",
@@ -140,8 +141,12 @@ const dictionary: dictionary = {
       actualValue: "Actual",
       baseValue: "Base",
       staticModifiers: "StaticModifiers",
-      dynamicModifiers: "DynamicModifiers"
-    }
+      dynamicModifiers: "DynamicModifiers",
+    },
+    character: {
+      pageTitle: "Skill Information Table",
+      discription: "Emmm..............",
+    },
   },
   db: {
     enums: {
@@ -171,7 +176,7 @@ const dictionary: dictionary = {
         LUK: "Luk",
         CRI: "Cri",
         TEC: "Tec",
-        MEN: "Men"
+        MEN: "Men",
       },
       MainWeaType: {
         NO_WEAPOEN: "no-weapon",
@@ -199,7 +204,7 @@ const dictionary: dictionary = {
       BodyArmorType: {
         NORMAL: "Normal",
         LIGHT: "Light",
-        HEAVY: "Heavy"
+        HEAVY: "Heavy",
       },
       CrystalType: {
         GENERAL: "General",
@@ -210,7 +215,7 @@ const dictionary: dictionary = {
       },
       SkillType: {
         ACTIVE_SKILL: "ActiveSkill",
-        PASSIVE_SKILL: "PassiveSkill"
+        PASSIVE_SKILL: "PassiveSkill",
       },
       SkillTreeName: {
         BLADE: "Blade Skill",
@@ -221,7 +226,7 @@ const dictionary: dictionary = {
         HALBERD: "Halberd Skill",
         MONONOFU: "Mononofu Skill",
         CRUSHER: "Crusher Skill",
-        SPRITE: "Sprite Skill"
+        SPRITE: "Sprite Skill",
       },
       UserRole: {
         USER: "User",
@@ -229,7 +234,7 @@ const dictionary: dictionary = {
       },
       WeaponElementDependencyType: {
         TRUE: "yes",
-        FALSE: "no"
+        FALSE: "no",
       },
       ComboType: {
         NULL: "Null",
@@ -242,7 +247,13 @@ const dictionary: dictionary = {
         None: "None",
         Chanting: "Chanting",
         Charging: "Charging",
-      }
+      },
+      CharacterType: {
+        Tank: "Tank",
+        Mage: "",
+        Ranger: "",
+        Marksman: "",
+      },
     },
     models: {
       monster: {
@@ -281,7 +292,7 @@ const dictionary: dictionary = {
         usageTimestamps: "UsageTimestamps",
         viewTimestamps: "ViewTimestamps",
         raters: "Raters",
-        dataSources: ""
+        dataSources: "",
       },
       skill: {
         id: "ID",
@@ -301,7 +312,7 @@ const dictionary: dictionary = {
         weaponElementDependencyType: "WEDT",
         element: "Element",
         skillEffect: "SkillEffect",
-        skillDescription: ""
+        skillDescription: "",
       },
       user: {
         id: "ID",
@@ -309,7 +320,7 @@ const dictionary: dictionary = {
         email: "Email",
         emailVerified: "EmailVerified",
         image: "Image",
-        role: "Role"
+        role: "Role",
       },
       skillEffect: {
         skillCost: "SkillCost",
@@ -332,7 +343,7 @@ const dictionary: dictionary = {
         id: "ID",
         name: "Name",
         costFormula: "CostFormula",
-        skillEffectId: "SkillEffectId"
+        skillEffectId: "SkillEffectId",
       },
       skillYield: {
         id: "ID",
@@ -341,7 +352,33 @@ const dictionary: dictionary = {
         mutationTimingFormula: "MutationTimingFormula",
         yieldFormula: "YieldFormula",
         skillEffectId: "SkillEffectId",
-      }
+      },
+      character: {
+        baseAbi: "",
+        specialAbi: "",
+        equipmentList: "",
+        fashion: "",
+        cuisine: "",
+        consumableList: "",
+        skillList: "",
+        combos: "",
+        pet: "",
+        modifiersList: "",
+        id: "",
+        state: "",
+        name: "",
+        lv: "",
+        petId: "",
+        modifiersListId: "",
+        createdByUserId: "",
+        viewCount: "",
+        usageCount: "",
+        createdAt: "",
+        updatedAt: "",
+        usageTimestamps: "",
+        viewTimestamps: "",
+        characterType: "",
+      },
     },
   },
 };

@@ -143,6 +143,10 @@ const dictionary: dictionary = {
       staticModifiers: "常态加成",
       dynamicModifiers: "临时加成",
     },
+    character: {
+      pageTitle: "技能信息表",
+      discription: "此页面正在开发中，请勿使用",
+    },
   },
   db: {
     enums: {
@@ -244,6 +248,12 @@ const dictionary: dictionary = {
         Chanting: "咏唱",
         Charging: "蓄力",
       },
+      CharacterType: {
+        Tank: "坦克",
+        Mage: "",
+        Ranger: "",
+        Marksman: ""
+      }
     },
     models: {
       monster: {
@@ -343,6 +353,32 @@ const dictionary: dictionary = {
         yieldFormula: "效果计算公式",
         skillEffectId: "所属技能效果",
       },
+      character: {
+        baseAbi: "基础能力值",
+        specialAbi: "特殊能力值",
+        equipmentList: "装备配置",
+        fashion: "时装",
+        cuisine: "料理",
+        consumableList: "消耗品列表",
+        skillList: "技能列表",
+        combos: "连击列表",
+        pet: "宠物",
+        modifiersList: "额外加成",
+        id: "Id",
+        state: "状态",
+        name: "名称",
+        lv: "等级",
+        petId: "宠物Id",
+        modifiersListId: "额外加成Id",
+        createdByUserId: "创建者Id",
+        viewCount: "被查看次数",
+        usageCount: "被使用次数",
+        createdAt: "创建于",
+        updatedAt: "更新于",
+        usageTimestamps: "被使用记录",
+        viewTimestamps: "被查看记录",
+        characterType: ""
+      }
     },
   },
 };

@@ -19,7 +19,9 @@ const actualValueClass = "Value text-nowrap rounded-sm px-1 ";
 const baseValueClass = " Value text-nowrap rounded-sm px-1 text-accent-color-70 ";
 const modifierStaticClass = " Value text-nowrap rounded-sm px-1 text-accent-color-70 ";
 const modifierDynamicClass = " Value text-nowrap rounded-sm px-1 text-accent-color-70 ";
+// 由于tailwind编译时生成对应class，此处class将不会生效
 const columns = 8;
+const columnsWidth = " lg:w-[calc((100%-" + (columns - 1) * 4 + "px)/" + columns + ")] ";
 
 // 用于递归遍历对象并生成DOM结构的组件
 export const ObjectRenderer = (props: {
@@ -47,7 +49,7 @@ export const ObjectRenderer = (props: {
           return (
             <div
               key={currentPath}
-              className={`Object flex flex-col gap-1 rounded-sm border-[1px] border-transition-color-20 p-1 ${!currentPath.includes(".") && "lg:w-[calc((100%-" + (columns - 1) * 4 + "px)/" + columns + ")]"}`}
+              className={`Object flex flex-col gap-1 rounded-sm border-[1px] border-transition-color-20 p-1 ${!currentPath.includes(".") && columnsWidth}`}
             >
               <span className="text-brand-color-2nd">{currentPath}</span>
               {renderObject(value, [...path, key], d[key] as Record<string, string | number | object> | undefined)}
@@ -57,7 +59,7 @@ export const ObjectRenderer = (props: {
           return (
             <div
               key={currentPath}
-              className={`Modifiers flex w-full flex-none flex-col gap-1 rounded-sm bg-transition-color-8 p-1 ${!(value.modifiers.static.fixed.length > 0 || value.modifiers.static.percentage.length > 0) && !currentPath.includes(".") && "lg:w-[calc((100%-" + (columns - 1) * 4 + "px)/" + columns + ")]"}`}
+              className={`Modifiers flex w-full flex-none flex-col gap-1 rounded-sm bg-transition-color-8 p-1 ${!(value.modifiers.static.fixed.length > 0 || value.modifiers.static.percentage.length > 0) && !currentPath.includes(".") && columnsWidth}`}
             >
               <div className="Key text-sm font-bold">{d[key] as string | number ?? key}：</div>
 
@@ -179,7 +181,7 @@ export const ObjectRenderer = (props: {
         return (
           <div
             key={currentPath}
-            className={`String flex w-full flex-none flex-col gap-1 rounded-sm bg-transition-color-8 p-1 lg:gap-4 ${!currentPath.includes(".") && "lg:w-[calc((100%-12px)/4)]"}`}
+            className={`String flex w-full flex-none flex-col gap-1 rounded-sm bg-transition-color-8 p-1 lg:gap-4 ${!currentPath.includes(".") && columnsWidth}`}
           >
             <span className={`TotalValue flex w-full flex-col rounded-sm p-1`}>
               <div className="Key text-sm font-bold">{d[key] as string | number ?? key}：</div>

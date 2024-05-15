@@ -1,10 +1,10 @@
 import { create } from "zustand";
 import { produce } from "immer";
 
-import type { Analyzer } from "@prisma/client";
+import type { Analyzer, Combo } from "@prisma/client";
 import { type SkillEffect, type Skill, type SkillCost, type SkillYield } from "~/server/api/routers/skill";
 import type { Monster } from "~/server/api/routers/monster";
-import type { Character, Cuisine, Fashion } from "~/server/api/routers/character";
+import type { Character } from "~/server/api/routers/character";
 import {
   type SubWeapon,
   type AdditionalEquipment,
@@ -113,8 +113,8 @@ export const defaultSkill: Skill = {
 };
 
 export const defauleModifier: Modifier = {
-    ModifierId: "",
-    ModifierFormula: "",
+  ModifierId: "",
+  ModifierFormula: "",
 };
 
 export const defaultModifiersList: ModifiersList = {
@@ -197,21 +197,7 @@ export const defaultSpecialEquipment: SpecialEquipment = {
   ...defaultStatistics,
 };
 
-export const defaultFasion: Fashion = {
-  modifiersList: defaultModifiersList,
-  modifiersListId: "",
-  updatedAt: new Date(),
-  characterId: "",
-};
-
-export const defaultCuisine: Cuisine = {
-  modifiersList: defaultModifiersList,
-  modifiersListId: "",
-  updatedAt: new Date(),
-  characterId: "",
-};
-
-export const defaultconsumable: Consumable = {
+export const defaultConsumable: Consumable = {
   id: "",
   state: "PUBLIC",
   name: "",
@@ -229,49 +215,43 @@ export const defaultPet: Pet = {
   ...defaultStatistics,
 };
 
+export const defaultCombos: Combo = {
+  id: "",
+  state: "PRIVATE",
+  name: null,
+  createdAt: new Date(),
+  createdByUserId: null,
+};
+
 export const defaultCharacter: Character = {
   id: "",
   state: "PUBLIC",
+  characterType: "Tank",
   name: "",
   lv: 0,
-  baseAbi: {
-    baseStr: 0,
-    baseInt: 0,
-    baseVit: 0,
-    baseAgi: 0,
-    baseDex: 0,
-    characterId: "",
-  },
-  specialAbi: {
-    specialAbiType: "NULL",
-    value: 0,
-    characterId: "",
-  },
-  equipmentList: {
-    mainWeapon: defaultMainWeapon,
-    mainWeaponId: "",
-    subWeapon: defaultSubWeapon,
-    subWeaponId: "",
-    bodyArmor: defaultBodyArmor,
-    bodyArmorId: "",
-    additionalEquipment: defaultAdditionalEquipment,
-    additionalEquipmentId: "",
-    specialEquipment: defaultSpecialEquipment,
-    specialEquipmentId: "",
-    characterId: "",
-  },
-  fashion: defaultFasion,
-  cuisine: defaultCuisine,
-  consumableList: {
-    updatedAt: new Date(),
-    characterId: "",
-    consumables: [defaultconsumable],
-  },
-  skillList: {
-    updatedAt: new Date(),
-    characterId: "",
-    skills: [defaultSkill],
-  },
+  baseStr: 0,
+  baseInt: 0,
+  baseVit: 0,
+  baseAgi: 0,
+  baseDex: 0,
+  specialAbiType: "NULL",
+  specialAbiValue: 0,
+  mainWeapon: defaultMainWeapon,
+  mainWeaponId: "",
+  subWeapon: defaultSubWeapon,
+  subWeaponId: "",
+  bodyArmor: defaultBodyArmor,
+  bodyArmorId: "",
+  additionalEquipment: defaultAdditionalEquipment,
+  additionalEquipmentId: "",
+  specialEquipment: defaultSpecialEquipment,
+  specialEquipmentId: "",
+  fashion: defaultModifiersList,
+  fashionModifiersListId: "", 
+  cuisine: defaultModifiersList,
+  CuisineModifiersListId: "",
+  consumableList: [defaultConsumable],
+  skillList: [defaultSkill],
   combos: [],
   pet: defaultPet,
   petId: defaultPet.id,
@@ -318,6 +298,20 @@ interface AppState {
     filterState: boolean;
     setFilterState: (newState: boolean) => void;
   };
+  character: Character;
+  setCharacter: (newCharacter: Character) => void;
+  characterPage: {
+    augmented: boolean;
+    setAugmented: (newState: boolean) => void;
+    characterList: Character[];
+    setCharacterList: (newCharacterList: Character[]) => void;
+    characterDialogState: boolean;
+    setCharacterDialogState: (newState: boolean) => void;
+    characterFormState: "CREATE" | "UPDATE" | "DISPLAY";
+    setCharacterFormState: (newState: "CREATE" | "UPDATE" | "DISPLAY") => void;
+    filterState: boolean;
+    setFilterState: (newState: boolean) => void;
+  };
   analyzePage: {
     analyzeList: Analyzer[];
     setAnalyzeList: (newAnalyzeList: Analyzer[]) => void;
@@ -353,7 +347,7 @@ export const useStore = create<AppState>()(
         set(
           produce((state: AppState) => {
             state.monsterPage.augmented = newState;
-          })
+          }),
         ),
       monsterList: [],
       setMonsterList: (newMonsterList: Monster[]) =>
@@ -421,6 +415,56 @@ export const useStore = create<AppState>()(
           }),
         ),
     },
+    character: defaultCharacter,
+    setCharacter: (newCharacter: Character) =>
+      set(
+        // (state) => ({ // 笨比写法
+        //   characterPage: {
+        //     ...state.characterPage,
+        //     character: newCharacter,
+        //   }
+        // })
+        produce((state: AppState) => {
+          state.character = newCharacter;
+        }),
+      ),
+    characterPage: {
+      augmented: true,
+      setAugmented: (newState: boolean) =>
+        set(
+          produce((state: AppState) => {
+            state.characterPage.augmented = newState;
+          }),
+        ),
+      characterList: [],
+      setCharacterList: (newCharacterList: Character[]) =>
+        set(
+          produce((state: AppState) => {
+            state.characterPage.characterList = newCharacterList;
+          }),
+        ),
+      characterDialogState: false,
+      setCharacterDialogState: (newState: boolean) =>
+        set(
+          produce((state: AppState) => {
+            state.characterPage.characterDialogState = newState;
+          }),
+        ),
+      characterFormState: "DISPLAY",
+      setCharacterFormState: (newState: "CREATE" | "UPDATE" | "DISPLAY") =>
+        set(
+          produce((state: AppState) => {
+            state.characterPage.characterFormState = newState;
+          }),
+        ),
+      filterState: false,
+      setFilterState: (newState: boolean) =>
+        set(
+          produce((state: AppState) => {
+            state.characterPage.filterState = newState;
+          }),
+        ),
+    },
     analyzePage: {
       analyzeList: [],
       setAnalyzeList: (newAnalyzeList: Analyzer[]) =>
@@ -478,340 +522,134 @@ export const test = {
   character: {
     id: "",
     state: "PUBLIC",
+    characterType: "Tank",
     name: "测试机体",
     lv: 265,
-    baseAbi: {
-      baseStr: 0,
-      baseInt: 440,
-      baseVit: 0,
-      baseAgi: 0,
-      baseDex: 247,
-      characterId: "",
-    },
-    specialAbi: {
-      specialAbiType: "NULL",
-      value: 0,
-      characterId: "",
-    },
-    equipmentList: {
-      mainWeapon: {
-        id: "",
-        state: "PRIVATE",
-        name: "暴击残酷之翼",
-        mainWeaType: "MAGIC_DEVICE",
-        baseAtk: 194,
-        refinement: 15,
-        stability: 70,
-        element: "LIGHT",
-        crystal: [
-          {
-            id: "",
-            state: "PRIVATE",
-            name: "寄生甲兽",
-            type: "WEAPONCRYSTAL",
-            front: 0,
-            modifiersList: {
-              id: "",
-              modifiers: [
-                {
-                  ModifierId: "",
-                  ModifierFormula: "mAtk + 5%",
-                },
-                {
-                  ModifierId: "",
-                  ModifierFormula: "mPie + 20",
-                },
-                {
-                  ModifierId: "",
-                  ModifierFormula: "cspd - 15%",
-                },
-              ],
-            },
-            modifiersListId: "",
-            raters: [],
-            ...defaultStatistics,
-          },
-          {
-            id: "",
-            state: "PRIVATE",
-            name: "死灵妖兔II",
-            type: "WEAPONCRYSTAL",
-            front: 1,
-            modifiersList: {
-              id: "",
-              modifiers: [
-                {
-                  ModifierId: "",
-                  ModifierFormula: "mAtk + 7%",
-                },
-                {
-                  ModifierId: "",
-                  ModifierFormula: "cspd + 14%",
-                },
-                {
-                  ModifierId: "",
-                  ModifierFormula: "maxHp - 15%",
-                },
-                {
-                  ModifierId: "",
-                  ModifierFormula: "am + 3",
-                },
-              ],
-            },
-            modifiersListId: "",
-            raters: [],
-            ...defaultStatistics,
-          },
-        ],
-        modifiersList: {
-          id: "",
-          modifiers: [
-            {
-              ModifierId: "",
-              ModifierFormula: "",
-            },
-          ],
-        },
-        modifiersListId: "",
-        ...defaultStatistics,
-      },
-      mainWeaponId: "",
-      subWeapon: {
-        id: "",
-        state: "PRIVATE",
-        name: "",
-        subWeaType: "NO_WEAPOEN",
-        baseAtk: 0,
-        refinement: 0,
-        stability: 0,
-        element: "NO_ELEMENT",
-        modifiersList: {
-          id: "",
-          modifiers: [
-            {
-              ModifierId: "",
-              ModifierFormula: "",
-            },
-          ],
-        },
-        modifiersListId: "",
-        ...defaultStatistics,
-      },
-      subWeaponId: "",
-      bodyArmor: {
-        id: "",
-        state: "PRIVATE",
-        name: "",
-        bodyArmorType: "NORMAL",
-        refinement: 0,
-        baseDef: 0,
-        crystal: [
-          {
-            id: "",
-            state: "PRIVATE",
-            name: "",
-            type: "GENERAL",
-            front: 0,
-            modifiersList: {
-              id: "",
-              modifiers: [
-                {
-                  ModifierId: "",
-                  ModifierFormula: "",
-                },
-              ],
-            },
-            modifiersListId: "",
-            raters: [],
-            ...defaultStatistics,
-          },
-          {
-            id: "",
-            state: "PRIVATE",
-            name: "",
-            type: "GENERAL",
-            front: 0,
-            modifiersList: {
-              id: "",
-              modifiers: [
-                {
-                  ModifierId: "",
-                  ModifierFormula: "",
-                },
-              ],
-            },
-            modifiersListId: "",
-            raters: [],
-            ...defaultStatistics,
-          },
-        ],
-        modifiersList: {
-          id: "",
-          modifiers: [
-            {
-              ModifierId: "",
-              ModifierFormula: "",
-            },
-          ],
-        },
-        modifiersListId: "",
-        ...defaultStatistics,
-      },
-      bodyArmorId: "",
-      additionalEquipment: {
-        id: "",
-        state: "PRIVATE",
-        name: "",
-        refinement: 0,
-        crystal: [
-          {
-            id: "",
-            state: "PRIVATE",
-            name: "",
-            type: "GENERAL",
-            front: 0,
-            modifiersList: {
-              id: "",
-              modifiers: [
-                {
-                  ModifierId: "",
-                  ModifierFormula: "",
-                },
-              ],
-            },
-            modifiersListId: "",
-            raters: [],
-            ...defaultStatistics,
-          },
-          {
-            id: "",
-            state: "PRIVATE",
-            name: "",
-            type: "GENERAL",
-            front: 0,
-            modifiersList: {
-              id: "",
-              modifiers: [
-                {
-                  ModifierId: "",
-                  ModifierFormula: "",
-                },
-              ],
-            },
-            modifiersListId: "",
-            raters: [],
-            ...defaultStatistics,
-          },
-        ],
-        modifiersList: {
-          id: "",
-          modifiers: [
-            {
-              ModifierId: "",
-              ModifierFormula: "",
-            },
-          ],
-        },
-        modifiersListId: "",
-        ...defaultStatistics,
-      },
-      additionalEquipmentId: "",
-      specialEquipment: {
-        id: "",
-        state: "PRIVATE",
-        name: "",
-        crystal: [
-          {
-            id: "",
-            state: "PRIVATE",
-            name: "",
-            type: "GENERAL",
-            front: 0,
-            modifiersList: {
-              id: "",
-              modifiers: [
-                {
-                  ModifierId: "",
-                  ModifierFormula: "",
-                },
-              ],
-            },
-            modifiersListId: "",
-            raters: [],
-            ...defaultStatistics,
-          },
-          {
-            id: "",
-            state: "PRIVATE",
-            name: "",
-            type: "GENERAL",
-            front: 0,
-            modifiersList: {
-              id: "",
-              modifiers: [
-                {
-                  ModifierId: "",
-                  ModifierFormula: "",
-                },
-              ],
-            },
-            modifiersListId: "",
-            raters: [],
-            ...defaultStatistics,
-          },
-        ],
-        modifiersList: {
-          id: "",
-          modifiers: [
-            {
-              ModifierId: "",
-              ModifierFormula: "",
-            },
-          ],
-        },
-        modifiersListId: "",
-        ...defaultStatistics,
-      },
-      specialEquipmentId: "",
-      characterId: "",
-    },
-    fashion: {
-      modifiersList: {
-        id: "",
-        modifiers: [
-          {
-            ModifierId: "",
-            ModifierFormula: "",
-          },
-        ],
-      },
-      modifiersListId: "",
-      updatedAt: new Date(),
-      characterId: "",
-    },
-    cuisine: {
-      modifiersList: {
-        id: "",
-        modifiers: [
-          {
-            ModifierId: "",
-            ModifierFormula: "",
-          },
-        ],
-      },
-      modifiersListId: "",
-      updatedAt: new Date(),
-      characterId: "",
-    },
-    consumableList: {
-      updatedAt: new Date(),
-      characterId: "",
-      consumables: [
+    baseStr: 0,
+    baseInt: 440,
+    baseVit: 0,
+    baseAgi: 0,
+    baseDex: 247,
+    specialAbiType: "NULL",
+    specialAbiValue: 0,
+    mainWeapon: {
+      id: "",
+      state: "PRIVATE",
+      name: "暴击残酷之翼",
+      mainWeaType: "MAGIC_DEVICE",
+      baseAtk: 194,
+      refinement: 15,
+      stability: 70,
+      element: "LIGHT",
+      crystal: [
         {
           id: "",
-          state: "PUBLIC",
-          name: "",
+          state: "PRIVATE",
+          name: "寄生甲兽",
+          type: "WEAPONCRYSTAL",
+          front: 0,
+          modifiersList: {
+            id: "",
+            modifiers: [
+              {
+                ModifierId: "",
+                ModifierFormula: "mAtk + 5%",
+              },
+              {
+                ModifierId: "",
+                ModifierFormula: "mPie + 20",
+              },
+              {
+                ModifierId: "",
+                ModifierFormula: "cspd - 15%",
+              },
+            ],
+          },
+          modifiersListId: "",
           raters: [],
+          ...defaultStatistics,
+        },
+        {
+          id: "",
+          state: "PRIVATE",
+          name: "死灵妖兔II",
+          type: "WEAPONCRYSTAL",
+          front: 1,
+          modifiersList: {
+            id: "",
+            modifiers: [
+              {
+                ModifierId: "",
+                ModifierFormula: "mAtk + 7%",
+              },
+              {
+                ModifierId: "",
+                ModifierFormula: "cspd + 14%",
+              },
+              {
+                ModifierId: "",
+                ModifierFormula: "maxHp - 15%",
+              },
+              {
+                ModifierId: "",
+                ModifierFormula: "am + 3",
+              },
+            ],
+          },
+          modifiersListId: "",
+          raters: [],
+          ...defaultStatistics,
+        },
+      ],
+      modifiersList: {
+        id: "",
+        modifiers: [
+          {
+            ModifierId: "",
+            ModifierFormula: "",
+          },
+        ],
+      },
+      modifiersListId: "",
+      ...defaultStatistics,
+    },
+    mainWeaponId: "",
+    subWeapon: {
+      id: "",
+      state: "PRIVATE",
+      name: "",
+      subWeaType: "NO_WEAPOEN",
+      baseAtk: 0,
+      refinement: 0,
+      stability: 0,
+      element: "NO_ELEMENT",
+      modifiersList: {
+        id: "",
+        modifiers: [
+          {
+            ModifierId: "",
+            ModifierFormula: "",
+          },
+        ],
+      },
+      modifiersListId: "",
+      ...defaultStatistics,
+    },
+    subWeaponId: "",
+    bodyArmor: {
+      id: "",
+      state: "PRIVATE",
+      name: "",
+      bodyArmorType: "NORMAL",
+      refinement: 0,
+      baseDef: 0,
+      crystal: [
+        {
+          id: "",
+          state: "PRIVATE",
+          name: "",
+          type: "GENERAL",
+          front: 0,
           modifiersList: {
             id: "",
             modifiers: [
@@ -822,15 +660,163 @@ export const test = {
             ],
           },
           modifiersListId: "",
+          raters: [],
+          ...defaultStatistics,
+        },
+        {
+          id: "",
+          state: "PRIVATE",
+          name: "",
+          type: "GENERAL",
+          front: 0,
+          modifiersList: {
+            id: "",
+            modifiers: [
+              {
+                ModifierId: "",
+                ModifierFormula: "",
+              },
+            ],
+          },
+          modifiersListId: "",
+          raters: [],
           ...defaultStatistics,
         },
       ],
+      modifiersList: {
+        id: "",
+        modifiers: [
+          {
+            ModifierId: "",
+            ModifierFormula: "",
+          },
+        ],
+      },
+      modifiersListId: "",
+      ...defaultStatistics,
     },
-    skillList: {
-      updatedAt: new Date(),
-      characterId: "",
-      skills: [defaultSkill],
+    bodyArmorId: "",
+    additionalEquipment: {
+      id: "",
+      state: "PRIVATE",
+      name: "",
+      refinement: 0,
+      crystal: [
+        {
+          id: "",
+          state: "PRIVATE",
+          name: "",
+          type: "GENERAL",
+          front: 0,
+          modifiersList: {
+            id: "",
+            modifiers: [
+              {
+                ModifierId: "",
+                ModifierFormula: "",
+              },
+            ],
+          },
+          modifiersListId: "",
+          raters: [],
+          ...defaultStatistics,
+        },
+        {
+          id: "",
+          state: "PRIVATE",
+          name: "",
+          type: "GENERAL",
+          front: 0,
+          modifiersList: {
+            id: "",
+            modifiers: [
+              {
+                ModifierId: "",
+                ModifierFormula: "",
+              },
+            ],
+          },
+          modifiersListId: "",
+          raters: [],
+          ...defaultStatistics,
+        },
+      ],
+      modifiersList: {
+        id: "",
+        modifiers: [
+          {
+            ModifierId: "",
+            ModifierFormula: "",
+          },
+        ],
+      },
+      modifiersListId: "",
+      ...defaultStatistics,
     },
+    additionalEquipmentId: "",
+    specialEquipment: {
+      id: "",
+      state: "PRIVATE",
+      name: "",
+      crystal: [
+        {
+          id: "",
+          state: "PRIVATE",
+          name: "",
+          type: "GENERAL",
+          front: 0,
+          modifiersList: {
+            id: "",
+            modifiers: [
+              {
+                ModifierId: "",
+                ModifierFormula: "",
+              },
+            ],
+          },
+          modifiersListId: "",
+          raters: [],
+          ...defaultStatistics,
+        },
+        {
+          id: "",
+          state: "PRIVATE",
+          name: "",
+          type: "GENERAL",
+          front: 0,
+          modifiersList: {
+            id: "",
+            modifiers: [
+              {
+                ModifierId: "",
+                ModifierFormula: "",
+              },
+            ],
+          },
+          modifiersListId: "",
+          raters: [],
+          ...defaultStatistics,
+        },
+      ],
+      modifiersList: {
+        id: "",
+        modifiers: [
+          {
+            ModifierId: "",
+            ModifierFormula: "",
+          },
+        ],
+      },
+      modifiersListId: "",
+      ...defaultStatistics,
+    },
+    specialEquipmentId: "",
+    fashion: defaultModifiersList,
+    fashionModifiersListId: "",
+    cuisine: defaultModifiersList,
+    CuisineModifiersListId: "",
+    consumableList: [defaultConsumable],
+    skillList: [defaultSkill],
     combos: [],
     pet: defaultPet,
     petId: defaultPet.id,
