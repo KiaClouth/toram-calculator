@@ -72,9 +72,7 @@ interface dictionary {
       modifiers: string;
       staticModifiers: string;
       dynamicModifiers: string
-      characterData: ConvertToAllString<CharacterData>;
-      monsterData: ConvertToAllString<MonsterData>;
-      skillData: ConvertToAllString<SkillData>;
+      dialogData: ConvertToAllString<CharacterData & MonsterData & SkillData>;
     }
   };
   db: {

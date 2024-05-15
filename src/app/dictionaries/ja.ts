@@ -33,7 +33,8 @@ const dictionary: dictionary = {
     },
     monster: {
       pageTitle: "怪物信息表",
-      discription: "表中记录的是1星状态下的定点王数据， 2 / 3 / 4 星的经验和HP为1星的 2 / 5 / 10 倍；物防、魔防、回避值为1星的 2 / 4 / 6 倍。",
+      discription:
+        "表中记录的是1星状态下的定点王数据， 2 / 3 / 4 星的经验和HP为1星的 2 / 5 / 10 倍；物防、魔防、回避值为1星的 2 / 4 / 6 倍。",
       augmented: "是否展示全部星级数据",
       canNotModify: "系统生成，不可修改",
       monsterDegreeOfDifficulty: {
@@ -41,7 +42,7 @@ const dictionary: dictionary = {
         1: "一星",
         2: "二星",
         3: "三星",
-        4: "四星"
+        4: "四星",
       },
       monsterForm: {
         discription: "上传定点boss数据时请使用一星数据，系统将按规则自动计算其余星级数据。",
@@ -55,24 +56,24 @@ const dictionary: dictionary = {
       pageTitle: "流程计算器",
       discription: "正在开发中，请勿使用",
       modifiers: "加成项",
-      characterData: {
-        lv: "角色等级",
+      dialogData: {
+        lv: "等级",
         mainWeapon: {
           type: "主武器类型",
           _baseAtk: "基础攻击力",
           refinement: "精炼值",
-          stability: "稳定率"
+          stability: "稳定率",
         },
         subWeapon: {
           type: "副武器类型",
           _baseAtk: "基础攻击力",
           refinement: "精炼值",
-          stability: "稳定率"
+          stability: "稳定率",
         },
         bodyArmor: {
           type: "防具类型",
           _baseDef: "基础防御力",
-          refinement: "精炼值"
+          refinement: "精炼值",
         },
         _str: "力量",
         _int: "智力",
@@ -112,25 +113,16 @@ const dictionary: dictionary = {
         _cspd: "咏唱速度",
         _ampr: "攻回",
         _hp: "当前生命值",
-        _mp: "当前法力值"
-      },
-      monsterData: {
+        _mp: "当前法力值",
         name: "名称",
-        lv: "等级",
-        _hp: "生命值",
         _pDef: "物理防御",
         _pRes: "物理抗性",
         _mDef: "魔法防御",
         _mRes: "魔法抗性",
-        _cRes: "暴击抗性"
-      },
-      skillData: {
+        _cRes: "暴击抗性",
+
         index: "序号",
         passedFrames: "执行时的位置",
-        name: "，名称",
-        lv: "等级",
-        _am: "行动速度",
-        _cm: "咏唱缩减",
         actionFixedDurationFormula: "动画固定帧表达式",
         actionModifiableDurationFormula: "动画可加速帧表达式",
         chantingFixedDurationFormula: "固定咏唱时长表达式",
@@ -149,8 +141,8 @@ const dictionary: dictionary = {
       actualValue: "实际值",
       baseValue: "基础值",
       staticModifiers: "常态加成",
-      dynamicModifiers: "临时加成"
-    }
+      dynamicModifiers: "临时加成",
+    },
   },
   db: {
     enums: {
@@ -180,7 +172,7 @@ const dictionary: dictionary = {
         LUK: "幸运",
         CRI: "暴击",
         TEC: "技巧",
-        MEN: "异抗"
+        MEN: "异抗",
       },
       MainWeaType: {
         NO_WEAPOEN: "空",
@@ -192,7 +184,7 @@ const dictionary: dictionary = {
         KNUCKLE: "拳套",
         HALBERD: "旋风枪",
         KATANA: "拔刀剑",
-        BOWGUN: "弩"
+        BOWGUN: "弩",
       },
       SubWeaType: {
         NO_WEAPOEN: "空",
@@ -203,23 +195,23 @@ const dictionary: dictionary = {
         ARROW: "箭矢",
         DAGGER: "小刀",
         NINJUTSUSCROLL: "忍术卷轴",
-        SHIELD: "盾牌"
+        SHIELD: "盾牌",
       },
       BodyArmorType: {
         NORMAL: "一般",
         LIGHT: "轻化",
-        HEAVY: "重化"
+        HEAVY: "重化",
       },
       CrystalType: {
         GENERAL: "通用锻晶",
         WEAPONCRYSTAL: "武器锻晶",
         BODYCRYSTAL: "身体锻晶",
         ADDITIONALCRYSTAL: "追加锻晶",
-        SPECIALCRYSTAL: "特殊锻晶"
+        SPECIALCRYSTAL: "特殊锻晶",
       },
       SkillType: {
         ACTIVE_SKILL: "主动技能",
-        PASSIVE_SKILL: "被动技能"
+        PASSIVE_SKILL: "被动技能",
       },
       SkillTreeName: {
         BLADE: "剑系技能树",
@@ -230,19 +222,19 @@ const dictionary: dictionary = {
         HALBERD: "斧枪技能树",
         MONONOFU: "武士技能树",
         CRUSHER: "粉碎者技能树",
-        SPRITE: "灵魂技能树"
+        SPRITE: "灵魂技能树",
       },
       UserRole: {
         USER: "常规用户",
-        ADMIN: "管理员"
+        ADMIN: "管理员",
       },
       YieldType: {
         ImmediateEffect: "即时效果（仅作用一次）",
-        PersistentEffect: "持续型效果（在被删除前，一直有效）"
+        PersistentEffect: "持续型效果（在被删除前，一直有效）",
       },
       WeaponElementDependencyType: {
         TRUE: "继承",
-        FALSE: "不继承"
+        FALSE: "不继承",
       },
       ComboType: {
         NULL: "未设置",
@@ -250,8 +242,8 @@ const dictionary: dictionary = {
       SkillExtraActionType: {
         None: "无",
         Chanting: "咏唱",
-        Charging: "蓄力"
-      }
+        Charging: "蓄力",
+      },
     },
     models: {
       monster: {
@@ -290,7 +282,7 @@ const dictionary: dictionary = {
         usageTimestamps: "被使用记录",
         viewTimestamps: "被查看记录",
         raters: "评分列表",
-        dataSources: "数据来源"
+        dataSources: "数据来源",
       },
       skill: {
         id: "ID",
@@ -310,7 +302,7 @@ const dictionary: dictionary = {
         weaponElementDependencyType: "属性是否继承武器",
         element: "自身元素属性",
         skillEffect: "技能效果",
-        skillDescription: "技能说明"
+        skillDescription: "技能说明",
       },
       user: {
         id: "账号ID",
@@ -318,7 +310,7 @@ const dictionary: dictionary = {
         email: "邮件地址",
         emailVerified: "邮件邀请时间",
         image: "头像",
-        role: "身份类型"
+        role: "身份类型",
       },
       skillEffect: {
         id: "ID",
@@ -341,7 +333,7 @@ const dictionary: dictionary = {
         id: "ID",
         costFormula: "计算公式",
         skillEffectId: "所属技能效果",
-        name: "名称"
+        name: "名称",
       },
       skillYield: {
         id: "ID",
@@ -350,7 +342,7 @@ const dictionary: dictionary = {
         mutationTimingFormula: "效果发生变化的时机计算公式",
         yieldFormula: "效果计算公式",
         skillEffectId: "所属技能效果",
-      }
+      },
     },
   },
 };
