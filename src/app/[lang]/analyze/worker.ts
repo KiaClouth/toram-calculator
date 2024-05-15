@@ -92,7 +92,7 @@ export type pTpye = {
   pCd: number;
   mainWeaponAtk: number;
   subWeaponAtk: number;
-  totalWeaponAtk: number;
+  weaponAtk: number;
   pAtk: number;
   mAtk: number;
   aspd: number;
@@ -707,21 +707,18 @@ export class CharacterData {
   mainWeapon: {
     type: MainWeaType;
     _baseAtk: modifiers;
-    baseAtk: number;
     refinement: number;
     stability: number;
   };
   subWeapon: {
     type: SubWeaType;
     _baseAtk: modifiers;
-    baseAtk: number;
     refinement: number;
     stability: number;
   };
   bodyArmor: {
     type: BodyArmorType;
     _baseDef: modifiers;
-    baseDef: number;
     refinement: number;
   };
   _str: modifiers;
@@ -757,7 +754,7 @@ export class CharacterData {
   _pCd: modifiers;
   _mainWeaponAtk: modifiers;
   _subWeaponAtk: modifiers;
-  _totalWeaponAtk: modifiers;
+  _weaponAtk: modifiers;
   _pAtk: modifiers;
   _mAtk: modifiers;
   _aspd: modifiers;
@@ -766,6 +763,7 @@ export class CharacterData {
   _ampr: modifiers;
   _hp: modifiers;
   _mp: modifiers;
+  [key: string]: object | string | number;
 
   constructor(character: Character) {
     console.log("正在实例化CharacterData");
@@ -790,7 +788,6 @@ export class CharacterData {
           },
         },
       },
-      baseAtk: 0,
       refinement: character.equipmentList?.mainWeapon?.refinement ?? 0,
       stability: character.equipmentList?.mainWeapon?.stability ?? 0,
     };
@@ -809,7 +806,6 @@ export class CharacterData {
           },
         },
       },
-      baseAtk: 0,
       refinement: character.equipmentList?.subWeapon?.refinement ?? 0,
       stability: character.equipmentList?.subWeapon?.stability ?? 0,
     };
@@ -828,7 +824,6 @@ export class CharacterData {
           },
         },
       },
-      baseDef: 0,
       refinement: character.equipmentList?.bodyArmor?.refinement ?? 0,
     };
     this._str = {
@@ -1265,7 +1260,7 @@ export class CharacterData {
         },
       },
     };
-    this._totalWeaponAtk = {
+    this._weaponAtk = {
       baseValue: 0,
       modifiers: {
         static: {
@@ -1394,153 +1389,153 @@ export class CharacterData {
     console.log("实例化完毕，this：", this);
   }
 
-  get str() {
-    return dynamicTotalValue(this._str);
-  }
-  get int() {
-    return dynamicTotalValue(this._int);
-  }
-  get vit() {
-    return dynamicTotalValue(this._vit);
-  }
-  get dex() {
-    return dynamicTotalValue(this._dex);
-  }
-  get agi() {
-    return dynamicTotalValue(this._agi);
-  }
-  get luk() {
-    return dynamicTotalValue(this._luk);
-  }
-  get tec() {
-    return dynamicTotalValue(this._tec);
-  }
-  get cri() {
-    return dynamicTotalValue(this._cri);
-  }
-  get men() {
-    return dynamicTotalValue(this._men);
-  }
-  get mainWeaponType() {
-    return this.mainWeapon.type;
-  }
-  get mainWeaponBaseAtk() {
-    return dynamicTotalValue(this.mainWeapon._baseAtk);
-  }
-  get mainWeaponRefinement() {
-    return this.mainWeapon.refinement;
-  }
-  get mainWeaponStability() {
-    return this.mainWeapon.stability;
-  }
-  get subWeaponType() {
-    return this.subWeapon.type;
-  }
-  get subWeaponBaseAtk() {
-    return dynamicTotalValue(this.subWeapon._baseAtk);
-  }
-  get subWeaponRefinement() {
-    return this.subWeapon.refinement;
-  }
-  get subWeaponStability() {
-    return this.subWeapon.stability;
-  }
-  get bodyArmorType() {
-    return this.bodyArmor.type;
-  }
-  get bodyArmorBaseDef() {
-    return dynamicTotalValue(this.bodyArmor._baseDef);
-  }
-  get bodyArmorRefinement() {
-    return this.bodyArmor.refinement;
-  }
-  get pPie() {
-    return dynamicTotalValue(this._pPie);
-  }
-  get mPie() {
-    return dynamicTotalValue(this._mPie);
-  }
-  get pStab() {
-    return dynamicTotalValue(this._pStab);
-  }
-  get nDis() {
-    return dynamicTotalValue(this._nDis);
-  }
-  get fDis() {
-    return dynamicTotalValue(this._fDis);
-  }
-  get crT() {
-    return dynamicTotalValue(this._crT);
-  }
-  get cdT() {
-    return dynamicTotalValue(this._cdT);
-  }
-  get weaMatkT() {
-    return dynamicTotalValue(this._weaMatkT);
-  }
-  get stro() {
-    return dynamicTotalValue(this._stro);
-  }
-  get unsheatheAtk() {
-    return dynamicTotalValue(this._unsheatheAtk);
-  }
-  get total() {
-    return dynamicTotalValue(this._total);
-  }
-  get final() {
-    return dynamicTotalValue(this._final);
-  }
-  get am() {
-    return dynamicTotalValue(this._am);
-  }
-  get cm() {
-    return dynamicTotalValue(this._cm);
-  }
-  get aggro() {
-    return dynamicTotalValue(this._aggro);
-  }
-  get maxHP() {
-    return dynamicTotalValue(this._maxHP);
-  }
-  get maxMP() {
-    return dynamicTotalValue(this._maxMP);
-  }
-  get pCr() {
-    return dynamicTotalValue(this._pCr);
-  }
-  get pCd() {
-    return dynamicTotalValue(this._pCd);
-  }
-  get mainWeaponAtk() {
-    return dynamicTotalValue(this._mainWeaponAtk);
-  }
-  get subWeaponAtk() {
-    return dynamicTotalValue(this._subWeaponAtk);
-  }
-  get totalWeaponAtk() {
-    return dynamicTotalValue(this._totalWeaponAtk);
-  }
-  get pAtk() {
-    return dynamicTotalValue(this._pAtk);
-  }
-  get mAtk() {
-    return dynamicTotalValue(this._mAtk);
-  }
-  get aspd() {
-    return dynamicTotalValue(this._aspd);
-  }
-  get cspd() {
-    return dynamicTotalValue(this._cspd);
-  }
-  get hp() {
-    return dynamicTotalValue(this._hp);
-  }
-  get mp() {
-    return dynamicTotalValue(this._mp);
-  }
-  get ampr() {
-    return dynamicTotalValue(this._ampr);
-  }
+  // get str() {
+  //   return dynamicTotalValue(this._str);
+  // }
+  // get int() {
+  //   return dynamicTotalValue(this._int);
+  // }
+  // get vit() {
+  //   return dynamicTotalValue(this._vit);
+  // }
+  // get dex() {
+  //   return dynamicTotalValue(this._dex);
+  // }
+  // get agi() {
+  //   return dynamicTotalValue(this._agi);
+  // }
+  // get luk() {
+  //   return dynamicTotalValue(this._luk);
+  // }
+  // get tec() {
+  //   return dynamicTotalValue(this._tec);
+  // }
+  // get cri() {
+  //   return dynamicTotalValue(this._cri);
+  // }
+  // get men() {
+  //   return dynamicTotalValue(this._men);
+  // }
+  // get mainWeaponType() {
+  //   return this.mainWeapon.type;
+  // }
+  // get mainWeaponBaseAtk() {
+  //   return dynamicTotalValue(this.mainWeapon._baseAtk);
+  // }
+  // get mainWeaponRefinement() {
+  //   return this.mainWeapon.refinement;
+  // }
+  // get mainWeaponStability() {
+  //   return this.mainWeapon.stability;
+  // }
+  // get subWeaponType() {
+  //   return this.subWeapon.type;
+  // }
+  // get subWeaponBaseAtk() {
+  //   return dynamicTotalValue(this.subWeapon._baseAtk);
+  // }
+  // get subWeaponRefinement() {
+  //   return this.subWeapon.refinement;
+  // }
+  // get subWeaponStability() {
+  //   return this.subWeapon.stability;
+  // }
+  // get bodyArmorType() {
+  //   return this.bodyArmor.type;
+  // }
+  // get bodyArmorBaseDef() {
+  //   return dynamicTotalValue(this.bodyArmor._baseDef);
+  // }
+  // get bodyArmorRefinement() {
+  //   return this.bodyArmor.refinement;
+  // }
+  // get pPie() {
+  //   return dynamicTotalValue(this._pPie);
+  // }
+  // get mPie() {
+  //   return dynamicTotalValue(this._mPie);
+  // }
+  // get pStab() {
+  //   return dynamicTotalValue(this._pStab);
+  // }
+  // get nDis() {
+  //   return dynamicTotalValue(this._nDis);
+  // }
+  // get fDis() {
+  //   return dynamicTotalValue(this._fDis);
+  // }
+  // get crT() {
+  //   return dynamicTotalValue(this._crT);
+  // }
+  // get cdT() {
+  //   return dynamicTotalValue(this._cdT);
+  // }
+  // get weaMatkT() {
+  //   return dynamicTotalValue(this._weaMatkT);
+  // }
+  // get stro() {
+  //   return dynamicTotalValue(this._stro);
+  // }
+  // get unsheatheAtk() {
+  //   return dynamicTotalValue(this._unsheatheAtk);
+  // }
+  // get total() {
+  //   return dynamicTotalValue(this._total);
+  // }
+  // get final() {
+  //   return dynamicTotalValue(this._final);
+  // }
+  // get am() {
+  //   return dynamicTotalValue(this._am);
+  // }
+  // get cm() {
+  //   return dynamicTotalValue(this._cm);
+  // }
+  // get aggro() {
+  //   return dynamicTotalValue(this._aggro);
+  // }
+  // get maxHP() {
+  //   return dynamicTotalValue(this._maxHP);
+  // }
+  // get maxMP() {
+  //   return dynamicTotalValue(this._maxMP);
+  // }
+  // get pCr() {
+  //   return dynamicTotalValue(this._pCr);
+  // }
+  // get pCd() {
+  //   return dynamicTotalValue(this._pCd);
+  // }
+  // get mainWeaponAtk() {
+  //   return dynamicTotalValue(this._mainWeaponAtk);
+  // }
+  // get subWeaponAtk() {
+  //   return dynamicTotalValue(this._subWeaponAtk);
+  // }
+  // get weaponAtk() {
+  //   return dynamicTotalValue(this._weaponAtk);
+  // }
+  // get pAtk() {
+  //   return dynamicTotalValue(this._pAtk);
+  // }
+  // get mAtk() {
+  //   return dynamicTotalValue(this._mAtk);
+  // }
+  // get aspd() {
+  //   return dynamicTotalValue(this._aspd);
+  // }
+  // get cspd() {
+  //   return dynamicTotalValue(this._cspd);
+  // }
+  // get hp() {
+  //   return dynamicTotalValue(this._hp);
+  // }
+  // get mp() {
+  //   return dynamicTotalValue(this._mp);
+  // }
+  // get ampr() {
+  //   return dynamicTotalValue(this._ampr);
+  // }
 }
 
 export class MonsterData {
@@ -1552,6 +1547,7 @@ export class MonsterData {
   _mDef: modifiers;
   _mRes: modifiers;
   _cRes: modifiers;
+  [key: string]: object | string | number;
   constructor(monster: Monster) {
     this.name = monster.name;
     this.lv = monster.baseLv ?? 0;
@@ -1662,6 +1658,7 @@ export class SkillData {
   skillWindUp: number;
   stateFramesData: stateFrameData[];
   finalEventSequence: eventSequenceType[];
+  [key: string]: object | string | number;
   constructor(
     Index: number,
     skill: tSkill,
@@ -1704,7 +1701,7 @@ export class SkillData {
         } else {
           // 否则，尝试将计算结果添加进常数值数组中
           if (perMatch[1]) {
-            const result = math.evaluate(perMatch[1], this.s) as number;
+            const result = math.evaluate(perMatch[1], computeArg) as number;
             if (result) {
               // console.log("前摇常数表达式计算结果", result);
               return math.floor(result);
@@ -1721,7 +1718,6 @@ export class SkillData {
       }
       return skillDuration;
     };
-
     // 计算技能动作期间角色和怪物的状态数据
     const stateFrameComputer = (
       character: CharacterData,
@@ -1742,14 +1738,23 @@ export class SkillData {
       this.finalEventSequence = eventSequence;
       return stateFrames;
     };
+    Index++;
     this.index = Index;
+    computeArg.s.index = this.index;
     this.name = skill.name;
+    computeArg.s.name = this.name;
     this.lv = skill.level ?? 0;
+    computeArg.s.lv = this.lv;
     this._am = {
-      baseValue: math.min(50, math.max(0, dynamicTotalValue(character._am))),
+      baseValue: dynamicTotalValue(character._am),
       modifiers: {
         static: {
-          fixed: [],
+          fixed: [
+            {
+              value: math.max(0, math.floor((dynamicTotalValue(character._cspd) - 1000) / 180)),
+              origin: "角色攻速转化",
+            },
+          ],
           percentage: [],
         },
         dynamic: {
@@ -1758,11 +1763,20 @@ export class SkillData {
         },
       },
     };
+    computeArg.s.am = dynamicTotalValue(this._am);
     this._cm = {
-      baseValue: math.min(50, math.max(0, dynamicTotalValue(character._cm))),
+      baseValue: dynamicTotalValue(character._cm),
       modifiers: {
         static: {
-          fixed: [],
+          fixed: [
+            {
+              value: math.min(
+                50 + math.floor((dynamicTotalValue(character._cspd) - 1000) / 180),
+                math.floor(dynamicTotalValue(character._cspd) / 20),
+              ),
+              origin: "角色咏速转化",
+            },
+          ],
           percentage: [],
         },
         dynamic: {
@@ -1771,12 +1785,13 @@ export class SkillData {
         },
       },
     };
+    computeArg.s.cm = dynamicTotalValue(this._cm);
     this.actionFixedDurationFormula = skill.skillEffect.actionBaseDurationFormula;
     this.actionModifiableDurationFormula = skill.skillEffect.actionModifiableDurationFormula;
     this.chantingFixedDurationFormula = skill.skillEffect.chantingBaseDurationFormula;
     this.chantingModifiableDurationFormula = skill.skillEffect.chantingModifiableDurationFormula;
     this._actionFixedDuration = {
-      baseValue: math.evaluate(skill.skillEffect.actionBaseDurationFormula, this.s) as number,
+      baseValue: math.evaluate(skill.skillEffect.actionBaseDurationFormula, computeArg) as number,
       modifiers: {
         static: {
           fixed: [],
@@ -1789,7 +1804,7 @@ export class SkillData {
       },
     };
     this._actionModifiableDuration = {
-      baseValue: math.evaluate(skill.skillEffect.actionModifiableDurationFormula, this.s) as number,
+      baseValue: math.evaluate(skill.skillEffect.actionModifiableDurationFormula, computeArg) as number,
       modifiers: {
         static: {
           fixed: [],
@@ -1802,7 +1817,7 @@ export class SkillData {
       },
     };
     this._chantingFixedDuration = {
-      baseValue: math.evaluate(skill.skillEffect.chantingBaseDurationFormula, this.s) as number,
+      baseValue: math.evaluate(skill.skillEffect.chantingBaseDurationFormula, computeArg) as number,
       modifiers: {
         static: {
           fixed: [],
@@ -1815,7 +1830,7 @@ export class SkillData {
       },
     };
     this._chantingModifiableDuration = {
-      baseValue: math.evaluate(skill.skillEffect.chantingModifiableDurationFormula, this.s) as number,
+      baseValue: math.evaluate(skill.skillEffect.chantingModifiableDurationFormula, computeArg) as number,
       modifiers: {
         static: {
           fixed: [],
@@ -1828,10 +1843,12 @@ export class SkillData {
       },
     };
     this.skillActionFrames = math.floor(
-      this.actionBaseDuration + (this.actionModifiableDuration * (100 - this.am)) / 100,
+      dynamicTotalValue(this._actionFixedDuration) +
+        (dynamicTotalValue(this._actionModifiableDuration) * (100 - math.min(dynamicTotalValue(this._am), 50))) / 100,
     );
     this.skillChantingFrames = math.floor(
-      this.chantingBaseDuration + (this.chantingModifiableDuration * (100 - this.cm)) / 100,
+      dynamicTotalValue(this._chantingFixedDuration) +
+        (dynamicTotalValue(this._chantingModifiableDuration) * (100 - math.min(dynamicTotalValue(this._cm), 50))) / 100,
     );
     this.skillDuration = this.skillActionFrames + this.skillChantingFrames * fps;
     this.skillWindUp = skillWindUpComputer(skill.skillEffect.skillWindUpFormula, this.skillDuration, computeArg);
@@ -1867,41 +1884,28 @@ export class SkillData {
     this.stateFramesData = stateFrameComputer(character, monster, computeArg, eventSequence);
   }
 
-  get am() {
-    return dynamicTotalValue(this._am);
-  }
-  get cm() {
-    return dynamicTotalValue(this._cm);
-  }
+  // get am() {
+  //   return dynamicTotalValue(this._am);
+  // }
+  // get cm() {
+  //   return dynamicTotalValue(this._cm);
+  // }
 
-  get actionBaseDuration() {
-    return math.evaluate(this.actionFixedDurationFormula, this.s) as number;
-  }
+  // get actionBaseDuration() {
+  //   return math.evaluate(this.actionFixedDurationFormula, this.s) as number;
+  // }
 
-  get actionModifiableDuration() {
-    return math.evaluate(this.actionModifiableDurationFormula, this.s) as number;
-  }
+  // get actionModifiableDuration() {
+  //   return math.evaluate(this.actionModifiableDurationFormula, this.s) as number;
+  // }
 
-  get chantingBaseDuration() {
-    return math.evaluate(this.chantingFixedDurationFormula, this.s) as number;
-  }
+  // get chantingBaseDuration() {
+  //   return math.evaluate(this.chantingFixedDurationFormula, this.s) as number;
+  // }
 
-  get chantingModifiableDuration() {
-    return math.evaluate(this.chantingModifiableDurationFormula, this.s) as number;
-  }
-
-  get s() {
-    // 技能级的计算环境
-    return {
-      s: {
-        index: this.index,
-        name: this.name,
-        lv: this.lv,
-        am: this.am,
-        cm: this.cm,
-      },
-    };
-  }
+  // get chantingModifiableDuration() {
+  //   return math.evaluate(this.chantingModifiableDurationFormula, this.s) as number;
+  // }
 }
 
 const frameData = (
@@ -2272,8 +2276,8 @@ export const computeFrameData = (skillSequence: tSkill[], character: Character, 
       get subWeaponAtk() {
         return dynamicTotalValue(characterData._subWeaponAtk);
       },
-      get totalWeaponAtk() {
-        return dynamicTotalValue(characterData._totalWeaponAtk);
+      get weaponAtk() {
+        return dynamicTotalValue(characterData._weaponAtk);
       },
       get pAtk() {
         return dynamicTotalValue(characterData._pAtk);

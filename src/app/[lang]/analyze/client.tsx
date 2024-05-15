@@ -225,6 +225,65 @@ export default function AnalyzePageClient(props: Props) {
       id: "",
       state: "PUBLIC",
       skillTreeName: "MAGIC",
+      name: "勇气源泉",
+      skillDescription: "",
+      level: 10,
+      weaponElementDependencyType: "TRUE",
+      element: "NO_ELEMENT",
+      skillType: "ACTIVE_SKILL",
+      skillEffect: {
+        id: "",
+        description: null,
+        actionBaseDurationFormula: "23",
+        actionModifiableDurationFormula: "148",
+        skillExtraActionType: "Chanting",
+        chargingBaseDurationFormula: "0",
+        chargingModifiableDurationFormula: "0",
+        chantingBaseDurationFormula: "0",
+        chantingModifiableDurationFormula: "1",
+        skillWindUpFormula: "",
+        skillRecoveryFormula: "0",
+        belongToskillId: "",
+        skillCost: [
+          {
+            id: "",
+            name: "MP Cost",
+            costFormula: "400",
+            skillEffectId: null,
+          },
+        ],
+        skillYield: [
+          {
+            id: "",
+            name: "角色最终伤害+20%",
+            yieldType: "ImmediateEffect",
+            yieldFormula: "p.final + 20",
+            mutationTimingFormula: null,
+            skillEffectId: null,
+          },
+          {
+            id: "",
+            name: "角色武器攻击+30%",
+            yieldType: "ImmediateEffect",
+            mutationTimingFormula: null,
+            yieldFormula: "p.weaponAtk + 30%",
+            skillEffectId: null,
+          },
+          {
+            id: "",
+            name: "角色命中-50%",
+            yieldType: "ImmediateEffect",
+            mutationTimingFormula: null,
+            yieldFormula: "p.hit - 50%",
+            skillEffectId: null,
+          },
+        ],
+      },
+    },
+    {
+      id: "",
+      state: "PUBLIC",
+      skillTreeName: "MAGIC",
       name: "冲击波",
       skillDescription: "",
       level: 7,
@@ -489,7 +548,7 @@ export default function AnalyzePageClient(props: Props) {
       <div className="Module2 flex flex-1 px-3 backdrop-blur-xl">
         <div className="LeftArea sticky top-0 z-10 flex-1"></div>
         <div
-          className={`ModuleContent h-[calc(100dvh-67px)] w-full flex-col overflow-y-clip lg:h-dvh lg:max-w-[1536px]`}
+          className={`ModuleContent h-[calc(100dvh-67px)] w-full flex-col overflow-y-auto lg:h-dvh lg:max-w-[1536px]`}
         >
           <div className="Title sticky left-0 mt-3 flex flex-col gap-9 py-5 lg:pt-20">
             <div className="Row flex flex-col items-center justify-between gap-10 lg:flex-row lg:justify-start lg:gap-4">
@@ -534,52 +593,53 @@ export default function AnalyzePageClient(props: Props) {
 
       <Dialog state={analyzeDialogState} setState={setAnalyzeDialogState}>
         {analyzeDialogState && (
-          <div className="Content flex w-full flex-col overflow-y-auto p-2 2xl:w-[1536px]">
-            <div className="Title flex items-center gap-6 pt-4">
+          <div className="Content flex w-dvw flex-col overflow-y-auto p-2 lg:p-4 2xl:w-[1536px]">
+            <div className="Title flex items-center gap-6">
               {/* <div className="h-[2px] flex-1 bg-accent-color"></div> */}
               <span className="text-lg font-bold lg:text-2xl">当前帧属性</span>
               <div className="h-[2px] flex-1 bg-accent-color"></div>
             </div>
-            <div className="Content flex flex-col gap-4 gap-y-8 overflow-y-auto">
-              <div className="FrameAttr flex flex-col lg:flex-row gap-1 bg-transition-color-8 p-2">
+            <div className="Content flex flex-col gap-4 overflow-y-auto">
+              <div className="FrameAttr flex flex-col gap-1 bg-transition-color-8 p-2 mt-4 lg:flex-row">
                 <span className="Content">
-                  帧信息： 第 {math.floor(((dialogSkillData?.passedFrames ?? 0) + dialogSkillFrame) / 60)} 秒的第{" "}
-                  {(dialogSkillData?.passedFrames ?? 0) + (dialogSkillFrame % 60)} 帧
+                  帧信息： {math.floor(((dialogSkillData?.passedFrames ?? 0) + dialogSkillFrame) / 60)} 秒的第{" "}
+                  {((dialogSkillData?.passedFrames ?? 0) + dialogSkillFrame) % 60} 帧
                 </span>
                 <span className="hidden lg:block">|</span>
-                <span className="Content">位于 {dialogSkillData?.name} 的第：{dialogSkillFrame}帧
+                <span className="Content">
+                  位于 {dialogSkillData?.name} 的第：{dialogSkillFrame}帧
                 </span>
               </div>
               <div className="SkillData flex flex-col gap-1">
                 <div className="Title sticky top-0 z-10 flex items-center gap-6 bg-primary-color pt-4">
                   <span className="Title text-base font-bold lg:text-xl">Skill</span>
-                  <div className="h-[1px] bg-transition-color-20 flex-1"></div>
+                  <div className="h-[1px] flex-1 bg-brand-color-1st"></div>
                 </div>
                 <div className="Content flex flex-wrap outline-[1px] lg:gap-1">
-                  <ObjectRenderer data={dialogSkillData!} />
+                  <ObjectRenderer dictionary={dictionary} data={dialogSkillData!} />
                 </div>
               </div>
-
               <div className="CharacterData flex flex-col gap-1">
                 <div className="Title sticky top-0 z-10 flex items-center gap-6 bg-primary-color pt-4">
                   <span className="Title text-base font-bold lg:text-xl">Character</span>
-                  <div className="h-[1px] bg-transition-color-20 flex-1"></div>
+                  <div className="h-[1px] flex-1 bg-brand-color-1st"></div>
                 </div>
                 <div className="Content flex flex-wrap outline-[1px] lg:gap-1">
-                  <ObjectRenderer data={dialogSkillData?.stateFramesData[dialogSkillFrame]?.character} />
+                  <ObjectRenderer dictionary={dictionary} data={dialogSkillData?.stateFramesData[dialogSkillFrame]?.character} />
                 </div>
               </div>
               <div className="MonsterData flex flex-col gap-1">
                 <div className="Title sticky top-0 z-10 flex items-center gap-6 bg-primary-color pt-4">
                   <span className="Title text-base font-bold lg:text-xl">Monster</span>
-                  <div className="h-[1px] bg-transition-color-20 flex-1"></div>
+                  <div className="h-[1px] flex-1 bg-brand-color-1st"></div>
                 </div>
                 <div className="Content flex flex-wrap outline-[1px] lg:gap-1">
-                  <ObjectRenderer data={dialogSkillData?.stateFramesData[dialogSkillFrame]?.monster} />
+                  <ObjectRenderer dictionary={dictionary} data={dialogSkillData?.stateFramesData[dialogSkillFrame]?.monster} />
                 </div>
               </div>
             </div>
-            <div className="functionArea flex justify-end border-t-1.5 border-brand-color-1st bg-primary-color p-3">
+            <div className="FunctionArea flex flex-col justify-end bg-primary-color gap-4">
+              <div className="h-[1px] flex-none bg-brand-color-1st"></div>
               <div className="btnGroup flex gap-2">
                 <Button
                   onClick={() => {

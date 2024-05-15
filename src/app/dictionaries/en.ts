@@ -1,4 +1,5 @@
 import { type dictionary } from "./type";
+
 const dictionary: dictionary = {
   ui: {
     add: "Add",
@@ -54,6 +55,98 @@ const dictionary: dictionary = {
     analyze: {
       pageTitle: "Analyzer",
       discription: "Emmm..............",
+      modifiers: "Modifiers",
+      characterData: {
+        lv: "Lv",
+        mainWeapon: {
+          type: "Type",
+          _baseAtk: "BaseAtk",
+          refinement: "Refinement",
+          stability: "Stability"
+        },
+        subWeapon: {
+          type: "Type",
+          _baseAtk: "BaseAtk",
+          refinement: "Refinement",
+          stability: "Stability"
+        },
+        bodyArmor: {
+          type: "Type",
+          _baseDef: "BaseDef",
+          refinement: "Refinement"
+        },
+        _str: "Str",
+        _int: "Int",
+        _vit: "Vit",
+        _agi: "Agi",
+        _dex: "Dex",
+        _luk: "Luk",
+        _cri: "Cri",
+        _tec: "Tec",
+        _men: "Men",
+        _pPie: "p-Pie",
+        _mPie: "m-Pie",
+        _pStab: "p-Stab",
+        _nDis: "n-Dis",
+        _fDis: "f-Dis",
+        _crT: "Cr-T",
+        _cdT: "Cd-T",
+        _weaPatkT: "Wea-pAtk-T",
+        _weaMatkT: "Wea-mAtk-T",
+        _unsheatheAtk: "Unsheathe-Atk",
+        _stro: "Stro",
+        _total: "Total",
+        _final: "Final",
+        _am: "Am",
+        _cm: "Cm",
+        _aggro: "Aggro",
+        _maxHP: "MaxHP",
+        _maxMP: "MaxMp",
+        _pCr: "p-Cr",
+        _pCd: "p-Cd",
+        _mainWeaponAtk: "MainWeaponAtk",
+        _subWeaponAtk: "SubWeaponAtk",
+        _weaponAtk: "WeaponAtk",
+        _pAtk: "p-Atk",
+        _mAtk: "m-Atk",
+        _aspd: "Aspd",
+        _cspd: "Cspd",
+        _ampr: "Ampr",
+        _hp: "Hp",
+        _mp: "Mp"
+      },
+      monsterData: {
+        name: "Name",
+        lv: "Lv",
+        _hp: "Hp",
+        _pDef: "p-Def",
+        _pRes: "p-Res",
+        _mDef: "m-Def",
+        _mRes: "m-Res",
+        _cRes: "c-Res"
+      },
+      skillData: {
+        index: "Index",
+        passedFrames: "PassedFrames",
+        name: "Name",
+        lv: "Lv",
+        _am: "Am",
+        _cm: "Cm",
+        actionFixedDurationFormula: "ActionFixedDurationFormula",
+        actionModifiableDurationFormula: "ActionModifiableDurationFormula",
+        chantingFixedDurationFormula: "ChantingFixedDurationFormula",
+        chantingModifiableDurationFormula: "ChantingModifiableDurationFormula",
+        _actionFixedDuration: "ActionFixedDuration",
+        _actionModifiableDuration: "ActionModifiableDuration",
+        _chantingFixedDuration: "ChantingFixedDuration",
+        _chantingModifiableDuration: "ChantingModifiableDuration",
+        skillActionFrames: "ActionFrames",
+        skillChantingFrames: "ChantingFrames",
+        skillDuration: "Duration",
+        skillWindUp: "WindUp",
+        stateFramesData: "StateFramesData",
+        finalEventSequence: "",
+      }
     }
   },
   db: {

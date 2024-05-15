@@ -1,13 +1,14 @@
 import type { $Enums, User } from "@prisma/client";
 import type { Monster } from "~/server/api/routers/monster";
 import type { Skill } from "~/server/api/routers/skill";
+import { type MonsterData, type SkillData, type CharacterData, type modifiers } from "../[lang]/analyze/worker";
 
 // 为了方便编辑器自动补全，这个方法可以将数据库模型的值类型转换为字符串
-type ConvertToAllString<T> = T extends object
+type ConvertToAllString<T> = T extends Date | Date[] | modifiers | Array<object>
+  ? string
+  : T extends object
   ? {
-      [K in keyof T]: T[K] extends Date | Date[] | Array<object>
-        ? string
-        : ConvertToAllString<T[K]>;
+      [K in keyof T]: ConvertToAllString<T[K]>;
     }
   : string;
 
@@ -66,6 +67,10 @@ interface dictionary {
     analyze: {
       pageTitle: string;
       discription: string;
+      modifiers: ConvertToAllString<modifiers>;
+      characterData: ConvertToAllString<CharacterData>;
+      monsterData: ConvertToAllString<MonsterData>;
+      skillData: ConvertToAllString<SkillData>;
     }
   };
   db: {

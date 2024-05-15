@@ -1,5 +1,6 @@
 import React from "react";
 import { type modifiers, type CharacterData, type MonsterData, type SkillData, dynamicTotalValue } from "./worker";
+import { getDictionary } from "~/app/get-dictionary";
 
 // 类型谓词函数，用于检查对象是否符合目标类型
 function isTargetType(obj: unknown): obj is modifiers {
@@ -15,15 +16,21 @@ const hiddenKey: (keyof SkillData | keyof CharacterData | keyof MonsterData)[] =
 ];
 
 // 用于递归遍历对象并生成DOM结构的组件
-export const ObjectRenderer = (props: { data?: SkillData | CharacterData | MonsterData }) => {
+export const ObjectRenderer = (props: {
+  dictionary: ReturnType<typeof getDictionary>;
+  data?: SkillData | CharacterData | MonsterData
+}) => {
   if (!props.data) {
     return null;
   }
-  const { data } = props;
+  const { dictionary,data } = props;
   // 递归遍历对象的辅助函数
   const renderObject = (obj: unknown, path: string[] = []) => {
     return Object.entries(obj ?? {}).map(([key, value]) => {
       const currentPath = [...path, key].join(".");
+      const cKey = dictionary.ui.analyze.characterData[key]?.toString();
+      const mKey = dictionary.ui.analyze.monsterData[key]?.toString();
+      const sKey = dictionary.ui.analyze.skillData[key]?.toString();
       if (hiddenKey.some((item) => key === item)) return <></>;
       if (typeof value === "object" && value !== null) {
         if (!isTargetType(value)) {
@@ -42,7 +49,7 @@ export const ObjectRenderer = (props: { data?: SkillData | CharacterData | Monst
             key={currentPath}
             className={`Modifiers flex w-full flex-none flex-col gap-1 rounded-sm bg-transition-color-8 p-1 ${!(value.modifiers.static.fixed.length > 0 || value.modifiers.static.percentage.length > 0) && !currentPath.includes(".") && "lg:w-[calc((100%-12px)/4)]"}`}
           >
-            <div className="Key text-sm text-accent-color-70">{key}：</div>
+            <div className="Key text-sm text-accent-color-70">{cKey ?? mKey ?? sKey ?? key}：</div>
 
             {value.modifiers.static.fixed.length > 0 || value.modifiers.static.percentage.length > 0 ? (
               <div className="Values flex flex-1 flex-wrap gap-1 border-t-[1px] border-transition-color-20 lg:gap-4">
@@ -73,7 +80,6 @@ export const ObjectRenderer = (props: { data?: SkillData | CharacterData | Monst
                                     key={"ModifierStaticFixed" + index}
                                     className="ModifierStaticFixed group relative flex items-center gap-1 rounded-sm bg-transition-color-20 px-1 py-0.5"
                                   >
-                                    <span className="BaseValueName text-sm text-accent-color-70">Fixed</span>
                                     <span className="Value font-bold">{mod.value}</span>
                                     <span className="Origin buttom-full absolute left-0 z-10 hidden rounded-sm bg-primary-color p-2 text-sm text-accent-color-70 shadow-xl shadow-transition-color-8 group-hover:flex">
                                       来源：{mod.origin}
@@ -91,8 +97,7 @@ export const ObjectRenderer = (props: { data?: SkillData | CharacterData | Monst
                                     key={"ModifierStaticPercentage" + index}
                                     className="ModifierStaticPercentage group relative flex items-center gap-1 rounded-sm bg-transition-color-20 px-1 py-0.5"
                                   >
-                                    <span className="BaseValueName text-sm text-accent-color-70">Percentage</span>
-                                    <span className="Value font-bold">{mod.value}</span>
+                                    <span className="Value font-bold">{mod.value}%</span>
                                     <span className="Origin buttom-full absolute left-0 z-10 hidden rounded-sm bg-primary-color p-2 text-sm text-accent-color-70 shadow-xl shadow-transition-color-8 group-hover:flex">
                                       来源：{mod.origin}
                                     </span>
@@ -116,7 +121,6 @@ export const ObjectRenderer = (props: { data?: SkillData | CharacterData | Monst
                                     key={"ModifierDynamicFixed" + index}
                                     className="ModifierDynamicFixed group relative flex items-center gap-1 rounded-sm bg-transition-color-20 px-1 py-0.5"
                                   >
-                                    <span className="BaseValueName text-sm text-accent-color-70">Fixed</span>
                                     <span className="Value font-bold">{mod.value}</span>
                                     <span className="Origin buttom-full absolute left-0 z-10 hidden rounded-sm bg-primary-color p-2 text-sm text-accent-color-70 shadow-xl shadow-transition-color-8 group-hover:flex">
                                       来源：{mod.origin}
@@ -134,8 +138,7 @@ export const ObjectRenderer = (props: { data?: SkillData | CharacterData | Monst
                                     key={"ModifierDynamicPercentage" + index}
                                     className="ModifierDynamicPercentage group relative flex items-center gap-1 rounded-sm bg-transition-color-20 px-1 py-0.5"
                                   >
-                                    <span className="BaseValueName text-sm text-accent-color-70">Percentage</span>
-                                    <span className="Value font-bold">{mod.value}</span>
+                                    <span className="Value font-bold">{mod.value}%</span>
                                     <span className="Origin buttom-full absolute left-0 z-10 hidden rounded-sm bg-primary-color p-2 text-sm text-accent-color-70 shadow-xl shadow-transition-color-8 group-hover:flex">
                                       来源：{mod.origin}
                                     </span>
@@ -162,7 +165,7 @@ export const ObjectRenderer = (props: { data?: SkillData | CharacterData | Monst
             className={`String flex w-full flex-none flex-col gap-1 rounded-sm bg-transition-color-8 p-1 lg:gap-4 ${!currentPath.includes(".") && "lg:w-[calc((100%-12px)/4)]"}`}
           >
             <span className={`TotalValue flex w-full flex-col rounded-sm p-1`}>
-              <div className="Key text-sm text-accent-color-70">{key}：</div>
+              <div className="Key text-sm text-accent-color-70">{cKey ?? mKey ?? sKey ?? key}：</div>
               <div className="Value basis-1/5 text-nowrap rounded-sm px-1 font-bold">{JSON.stringify(value)}</div>
             </span>
           </div>
