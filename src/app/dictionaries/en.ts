@@ -146,7 +146,11 @@ const dictionary: dictionary = {
         skillWindUp: "WindUp",
         stateFramesData: "StateFramesData",
         finalEventSequence: "",
-      }
+      },
+      actualValue: "Actual",
+      baseValue: "Base",
+      staticModifiers: "StaticModifiers",
+      dynamicModifiers: "DynamicModifiers"
     }
   },
   db: {

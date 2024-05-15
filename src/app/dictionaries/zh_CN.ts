@@ -145,7 +145,11 @@ const dictionary: dictionary = {
         skillWindUp: "技能前摇",
         stateFramesData: "技能内各帧数据",
         finalEventSequence: "最终事件队列（托管）",
-      }
+      },
+      actualValue: "实际值",
+      baseValue: "基础值",
+      staticModifiers: "常态加成",
+      dynamicModifiers: "临时加成"
     }
   },
   db: {

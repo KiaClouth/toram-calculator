@@ -1,6 +1,6 @@
 import React from "react";
 import { type modifiers, type CharacterData, type MonsterData, type SkillData, dynamicTotalValue } from "./worker";
-import { getDictionary } from "~/app/get-dictionary";
+import { type getDictionary } from "~/app/get-dictionary";
 
 // 类型谓词函数，用于检查对象是否符合目标类型
 function isTargetType(obj: unknown): obj is modifiers {
@@ -56,21 +56,21 @@ export const ObjectRenderer = (props: {
                 <div
                   className={`TotalValue flex flex-col rounded-sm p-1 ${!(value.modifiers.static.fixed.length > 0 || value.modifiers.static.percentage.length > 0) && "w-full"}`}
                 >
-                  <div className="Key text-sm text-accent-color-70">ActualValue</div>
+                  <div className="Key text-sm text-accent-color-70">{dictionary.ui.analyze.actualValue}</div>
                   <div className="Value basis-1/5 text-nowrap rounded-sm px-1 font-bold">
                     {dynamicTotalValue(value)}
                   </div>
                 </div>
                 <div className="BaseVlaue flex w-[25%] flex-col rounded-sm p-1 lg:w-[10%]">
-                  <span className="BaseValueName text-sm text-accent-color-70">BaseValue</span>
+                  <span className="BaseValueName text-sm text-accent-color-70">{dictionary.ui.analyze.baseValue}</span>
                   <span className="Value basis-1/5 text-nowrap rounded-sm px-1 font-bold">{value.baseValue}</span>
                 </div>
                 <div className="ModifierVlaue flex w-full flex-1 flex-col rounded-sm p-1">
-                  <span className="ModifierValueName px-1 text-sm text-accent-color-70">Modifiers</span>
+                  <span className="ModifierValueName px-1 text-sm text-accent-color-70">{dictionary.ui.analyze.modifiers}</span>
                   <div className="ModifierValueContent flex gap-1">
                     {(value.modifiers.static.fixed.length > 0 || value.modifiers.static.percentage.length > 0) && (
                       <div className="ModifierStaticBox flex flex-1 flex-col  px-1">
-                        <span className="ModifierStaticName text-sm text-accent-color-70">Static</span>
+                        <span className="ModifierStaticName text-sm text-accent-color-70">{dictionary.ui.analyze.staticModifiers}</span>
                         <div className="ModifierStaticContent flex flex-wrap gap-1 text-nowrap rounded-sm p-2">
                           {value.modifiers.static.fixed.length > 0 && (
                             <div className="ModifierStaticFixedBox flex gap-2">
@@ -111,7 +111,7 @@ export const ObjectRenderer = (props: {
                     )}
                     {(value.modifiers.dynamic.fixed.length > 0 || value.modifiers.dynamic.percentage.length > 0) && (
                       <div className="ModifierDynamicBox flex flex-1 flex-col">
-                        <span className="ModifierDynamicName text-sm text-accent-color-70">Dynamic</span>
+                        <span className="ModifierDynamicName text-sm text-accent-color-70">{dictionary.ui.analyze.dynamicModifiers}</span>
                         <div className="ModifierDynamicContent flex flex-wrap gap-1 text-nowrap rounded-sm p-2">
                           {value.modifiers.dynamic.fixed.length > 0 && (
                             <div className="ModifierDynamicFixedBox flex flex-1 flex-wrap gap-1">

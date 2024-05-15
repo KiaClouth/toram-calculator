@@ -67,7 +67,11 @@ interface dictionary {
     analyze: {
       pageTitle: string;
       discription: string;
-      modifiers: ConvertToAllString<modifiers>;
+      actualValue: string;
+      baseValue: string;
+      modifiers: string;
+      staticModifiers: string;
+      dynamicModifiers: string
       characterData: ConvertToAllString<CharacterData>;
       monsterData: ConvertToAllString<MonsterData>;
       skillData: ConvertToAllString<SkillData>;
