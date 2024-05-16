@@ -19,6 +19,7 @@ const actualValueClass = "Value text-nowrap rounded-sm px-1 ";
 const baseValueClass = " Value text-nowrap rounded-sm px-1 text-accent-color-70 ";
 const modifierStaticClass = " Value text-nowrap rounded-sm px-1 text-accent-color-70 ";
 const modifierDynamicClass = " Value text-nowrap rounded-sm px-1 text-accent-color-70 ";
+const originClass = "Origin buttom-full absolute left-0 z-10 hidden rounded-sm bg-primary-color p-2 text-sm text-accent-color-70 shadow-xl shadow-transition-color-8 group-hover:flex pointer-events-none"
 // 由于tailwind编译时生成对应class，此处class将不会生效
 const columns = 8;
 const columnsWidth = " lg:w-[calc((100%-" + (columns - 1) * 4 + "px)/" + columns + ")] ";
@@ -43,13 +44,13 @@ export const ObjectRenderer = (props: {
   ) => {
     return Object.entries(obj ?? {}).map(([key, value]) => {
       const currentPath = [...path, key].join(".");
-      if (hiddenKey.some((item) => key === item)) return <></>;
+      if (hiddenKey.some((item) => key === item)) return null;
       if (typeof value === "object" && value !== null) {
         if (!isTargetType(value)) {
           return (
             <div
               key={currentPath}
-              className={`Object flex flex-col gap-1 rounded-sm border-[1px] border-transition-color-20 p-1 ${!currentPath.includes(".") && columnsWidth}`}
+              className={`key=${currentPath} Object flex flex-col gap-1 rounded-sm border-[1px] border-transition-color-20 p-1 ${!currentPath.includes(".") && columnsWidth}`}
             >
               <span className="text-brand-color-2nd">{currentPath}</span>
               {renderObject(value, [...path, key], d[key] as Record<string, string | number | object> | undefined)}
@@ -59,7 +60,7 @@ export const ObjectRenderer = (props: {
           return (
             <div
               key={currentPath}
-              className={`Modifiers flex w-full flex-none flex-col gap-1 rounded-sm bg-transition-color-8 p-1 ${!(value.modifiers.static.fixed.length > 0 || value.modifiers.static.percentage.length > 0) && !currentPath.includes(".") && columnsWidth}`}
+              className={`key=${currentPath} Modifiers flex w-full flex-none flex-col gap-1 rounded-sm bg-transition-color-8 p-1 ${!(value.modifiers.static.fixed.length > 0 || value.modifiers.static.percentage.length > 0) && !currentPath.includes(".") && columnsWidth}`}
             >
               <div className="Key text-sm font-bold">{d[key] as string | number ?? key}：</div>
 
@@ -94,10 +95,10 @@ export const ObjectRenderer = (props: {
                                   return (
                                     <div
                                       key={"ModifierStaticFixed" + index}
-                                      className="ModifierStaticFixed group relative flex items-center gap-1 rounded-sm bg-transition-color-20 px-1 py-0.5"
+                                      className={`key=${"ModifierStaticFixed" + index} ModifierStaticFixed group relative flex items-center gap-1 rounded-sm bg-transition-color-20 px-1 py-0.5`}
                                     >
                                       <span className={`` + modifierStaticClass}>{mod.value}</span>
-                                      <span className="Origin buttom-full absolute left-0 z-10 hidden rounded-sm bg-primary-color p-2 text-sm text-accent-color-70 shadow-xl shadow-transition-color-8 group-hover:flex">
+                                      <span className={`` + originClass}>
                                         来源：{mod.origin}
                                       </span>
                                     </div>
@@ -111,10 +112,10 @@ export const ObjectRenderer = (props: {
                                   return (
                                     <div
                                       key={"ModifierStaticPercentage" + index}
-                                      className="ModifierStaticPercentage group relative flex items-center gap-1 rounded-sm bg-transition-color-20 px-1 py-0.5"
+                                      className={`key=${"ModifierStaticPercentage" + index} ModifierStaticPercentage group relative flex items-center gap-1 rounded-sm bg-transition-color-20 px-1 py-0.5`}
                                     >
                                       <span className={`` + modifierStaticClass}>{mod.value}%</span>
-                                      <span className="Origin buttom-full absolute left-0 z-10 hidden rounded-sm bg-primary-color p-2 text-sm text-accent-color-70 shadow-xl shadow-transition-color-8 group-hover:flex">
+                                      <span className={`` + originClass}>
                                         来源：{mod.origin}
                                       </span>
                                     </div>
@@ -137,10 +138,10 @@ export const ObjectRenderer = (props: {
                                   return (
                                     <div
                                       key={"ModifierDynamicFixed" + index}
-                                      className="ModifierDynamicFixed group relative flex items-center gap-1 rounded-sm bg-transition-color-20 px-1 py-0.5"
+                                      className={`key=${"ModifierDynamicFixed" + index} ModifierDynamicFixed group relative flex items-center gap-1 rounded-sm bg-transition-color-20 px-1 py-0.5`}
                                     >
                                       <span className={`` + modifierDynamicClass}>{mod.value}</span>
-                                      <span className="Origin buttom-full absolute left-0 z-10 hidden rounded-sm bg-primary-color p-2 text-sm text-accent-color-70 shadow-xl shadow-transition-color-8 group-hover:flex">
+                                      <span className={`` + originClass}>
                                         来源：{mod.origin}
                                       </span>
                                     </div>
@@ -154,10 +155,10 @@ export const ObjectRenderer = (props: {
                                   return (
                                     <div
                                       key={"ModifierDynamicPercentage" + index}
-                                      className="ModifierDynamicPercentage group relative flex items-center gap-1 rounded-sm bg-transition-color-20 px-1 py-0.5"
+                                      className={`key=${"ModifierDynamicPercentage" + index} ModifierDynamicPercentage group relative flex items-center gap-1 rounded-sm bg-transition-color-20 px-1 py-0.5`}
                                     >
                                       <span className={`` + modifierDynamicClass}>{mod.value}%</span>
-                                      <span className="Origin buttom-full absolute left-0 z-10 hidden rounded-sm bg-primary-color p-2 text-sm text-accent-color-70 shadow-xl shadow-transition-color-8 group-hover:flex">
+                                      <span className={`` + originClass}>
                                         来源：{mod.origin}
                                       </span>
                                     </div>

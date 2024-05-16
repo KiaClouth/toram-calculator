@@ -345,6 +345,7 @@ model Modifier {
 // 加成项集（附魔等）模型
 model ModifiersList {
     id                        String                @id @default(cuid())
+    name                      String?               @default("SYSTEM")
     modifiers                 Modifier[]
     usedByMainWeapon          MainWeapon[]
     usedBySubWeapon           SubWeapon[]
@@ -367,18 +368,19 @@ enum CharacterType {
 
 // 机体模型
 model Character {
-    id                     String               @id @default(cuid())
-    state                  State                @default(PRIVATE)
-    name                   String               @default("SYSTEM")
-    characterType          CharacterType
-    lv                     Int                  @default(1)
-    baseStr                Int                  @default(1)
-    baseInt                Int                  @default(1)
-    baseVit                Int                  @default(1)
-    baseAgi                Int                  @default(1)
-    baseDex                Int                  @default(1)
-    specialAbiType         SpecialAbiType       @default(NULL)
-    specialAbiValue        Int                  @default(0)
+    id            String        @id @default(cuid())
+    state         State         @default(PRIVATE)
+    name          String        @default("SYSTEM")
+    characterType CharacterType
+
+    lv                     Int                 @default(1)
+    baseStr                Int                 @default(1)
+    baseInt                Int                 @default(1)
+    baseVit                Int                 @default(1)
+    baseAgi                Int                 @default(1)
+    baseDex                Int                 @default(1)
+    specialAbiType         SpecialAbiType      @default(NULL)
+    specialAbiValue        Int                 @default(0)
     mainWeapon             MainWeapon          @relation(fields: [mainWeaponId], references: [id])
     mainWeaponId           String
     subWeapon              SubWeapon           @relation(fields: [subWeaponId], references: [id])
@@ -395,18 +397,18 @@ model Character {
     CuisineModifiersListId String              @unique
     pet                    Pet                 @relation(fields: [petId], references: [id])
     petId                  String
-    modifiersList          ModifiersList        @relation("ModifiersListRelation", fields: [modifiersListId], references: [id])
-    modifiersListId        String               @unique
+    modifiersList          ModifiersList       @relation("ModifiersListRelation", fields: [modifiersListId], references: [id])
+    modifiersListId        String              @unique
     skillList              Skill[]
     consumableList         Consumable[]
     combos                 Combo[]
     belongToAnalyzers      Analyzer[]
-    createdBy              UserCreate?          @relation(fields: [createdByUserId], references: [userId], onDelete: Cascade)
+    createdBy              UserCreate?         @relation(fields: [createdByUserId], references: [userId], onDelete: Cascade)
     createdByUserId        String?
-    viewCount              Int                  @default(0)
-    usageCount             Int                  @default(0)
-    createdAt              DateTime             @default(now())
-    updatedAt              DateTime             @updatedAt
+    viewCount              Int                 @default(0)
+    usageCount             Int                 @default(0)
+    createdAt              DateTime            @default(now())
+    updatedAt              DateTime            @updatedAt
     usageTimestamps        DateTime[]
     viewTimestamps         DateTime[]
 }
@@ -436,8 +438,8 @@ model Crystal {
     name                      String                @default("SYSTEM")
     type                      CrystalType           @default(GENERAL)
     front                     Int                   @default(0)
-    modifiersList             ModifiersList?        @relation(fields: [modifiersListId], references: [id])
-    modifiersListId           String?
+    modifiersList             ModifiersList        @relation(fields: [modifiersListId], references: [id])
+    modifiersListId           String
     updatedBy                 UserUpdate?           @relation(fields: [updatedByUserId], references: [userId])
     updatedByUserId           String?
     createdBy                 UserCreate?           @relation(fields: [createdByUserId], references: [userId])
@@ -457,7 +459,7 @@ model Crystal {
 
 // 主武器类型枚举
 enum MainWeaType {
-    NO_WEAPOEN
+    NO_WEAPON
     ONE_HAND_SWORD
     TWO_HANDS_SWORD
     BOW
@@ -471,7 +473,7 @@ enum MainWeaType {
 
 // 副武器类型枚举
 enum SubWeaType {
-    NO_WEAPOEN
+    NO_WEAPON
     ONE_HAND_SWORD
     MAGIC_DEVICE
     KNUCKLE
@@ -484,26 +486,26 @@ enum SubWeaType {
 
 // 主武器模型
 model MainWeapon {
-    id              String         @id @default(cuid())
-    state           State          @default(PRIVATE)
-    name            String         @default("SYSTEM")
-    mainWeaType     MainWeaType    @default(ONE_HAND_SWORD)
-    baseAtk         Int            @default(0)
-    refinement      Int            @default(0)
-    stability       Int            @default(60)
-    element         Element        @default(NO_ELEMENT)
+    id              String        @id @default(cuid())
+    state           State         @default(PRIVATE)
+    name            String        @default("SYSTEM")
+    mainWeaType     MainWeaType   @default(ONE_HAND_SWORD)
+    baseAtk         Int           @default(0)
+    refinement      Int           @default(0)
+    stability       Int           @default(60)
+    element         Element       @default(NO_ELEMENT)
     usedBy          Character[]
-    modifiersList   ModifiersList? @relation(fields: [modifiersListId], references: [id])
-    modifiersListId String?
+    modifiersList   ModifiersList @relation(fields: [modifiersListId], references: [id])
+    modifiersListId String
     crystal         Crystal[]
-    createdBy       UserCreate?    @relation(fields: [createdByUserId], references: [userId])
+    createdBy       UserCreate?   @relation(fields: [createdByUserId], references: [userId])
     createdByUserId String?
-    updatedBy       UserUpdate?    @relation(fields: [updatedByUserId], references: [userId])
+    updatedBy       UserUpdate?   @relation(fields: [updatedByUserId], references: [userId])
     updatedByUserId String?
-    viewCount       Int            @default(0)
-    usageCount      Int            @default(0)
-    createdAt       DateTime       @default(now())
-    updatedAt       DateTime       @updatedAt
+    viewCount       Int           @default(0)
+    usageCount      Int           @default(0)
+    createdAt       DateTime      @default(now())
+    updatedAt       DateTime      @updatedAt
     usageTimestamps DateTime[]
     viewTimestamps  DateTime[]
     raters          Rate[]
@@ -511,25 +513,25 @@ model MainWeapon {
 
 // 副武器模型
 model SubWeapon {
-    id              String         @id @default(cuid())
-    state           State          @default(PRIVATE)
-    name            String         @default("SYSTEM")
-    subWeaType      SubWeaType     @default(NO_WEAPOEN)
-    baseAtk         Int            @default(0)
-    refinement      Int            @default(0)
-    stability       Int            @default(60)
-    element         Element        @default(NO_ELEMENT)
+    id              String        @id @default(cuid())
+    state           State         @default(PRIVATE)
+    name            String        @default("SYSTEM")
+    subWeaType      SubWeaType    @default(NO_WEAPON)
+    baseAtk         Int           @default(0)
+    refinement      Int           @default(0)
+    stability       Int           @default(60)
+    element         Element       @default(NO_ELEMENT)
     usedBy          Character[]
-    modifiersList   ModifiersList? @relation(fields: [modifiersListId], references: [id])
-    modifiersListId String?
-    createdBy       UserCreate?    @relation(fields: [createdByUserId], references: [userId])
+    modifiersList   ModifiersList @relation(fields: [modifiersListId], references: [id])
+    modifiersListId String
+    createdBy       UserCreate?   @relation(fields: [createdByUserId], references: [userId])
     createdByUserId String?
-    updatedBy       UserUpdate?    @relation(fields: [updatedByUserId], references: [userId])
+    updatedBy       UserUpdate?   @relation(fields: [updatedByUserId], references: [userId])
     updatedByUserId String?
-    viewCount       Int            @default(0)
-    usageCount      Int            @default(0)
-    createdAt       DateTime       @default(now())
-    updatedAt       DateTime       @updatedAt
+    viewCount       Int           @default(0)
+    usageCount      Int           @default(0)
+    createdAt       DateTime      @default(now())
+    updatedAt       DateTime      @updatedAt
     usageTimestamps DateTime[]
     viewTimestamps  DateTime[]
     raters          Rate[]
@@ -544,24 +546,24 @@ enum BodyArmorType {
 
 // 身体装备模型
 model BodyArmor {
-    id              String         @id @default(cuid())
-    state           State          @default(PRIVATE)
-    name            String         @default("SYSTEM")
-    bodyArmorType   BodyArmorType  @default(NORMAL)
-    refinement      Int            @default(0)
-    baseDef         Int            @default(0)
+    id              String        @id @default(cuid())
+    state           State         @default(PRIVATE)
+    name            String        @default("SYSTEM")
+    bodyArmorType   BodyArmorType @default(NORMAL)
+    refinement      Int           @default(0)
+    baseDef         Int           @default(0)
     usedBy          Character[]
-    modifiersList   ModifiersList? @relation(fields: [modifiersListId], references: [id])
-    modifiersListId String?
+    modifiersList   ModifiersList @relation(fields: [modifiersListId], references: [id])
+    modifiersListId String
     crystal         Crystal[]
-    createdBy       UserCreate?    @relation(fields: [createdByUserId], references: [userId])
+    createdBy       UserCreate?   @relation(fields: [createdByUserId], references: [userId])
     createdByUserId String?
-    updatedBy       UserUpdate?    @relation(fields: [updatedByUserId], references: [userId])
+    updatedBy       UserUpdate?   @relation(fields: [updatedByUserId], references: [userId])
     updatedByUserId String?
-    viewCount       Int            @default(0)
-    usageCount      Int            @default(0)
-    createdAt       DateTime       @default(now())
-    updatedAt       DateTime       @updatedAt
+    viewCount       Int           @default(0)
+    usageCount      Int           @default(0)
+    createdAt       DateTime      @default(now())
+    updatedAt       DateTime      @updatedAt
     usageTimestamps DateTime[]
     viewTimestamps  DateTime[]
     raters          Rate[]
@@ -569,22 +571,22 @@ model BodyArmor {
 
 // 追加装备模型
 model AdditionalEquipment {
-    id              String         @id @default(cuid())
-    state           State          @default(PRIVATE)
-    name            String         @default("SYSTEM")
-    refinement      Int            @default(0)
+    id              String        @id @default(cuid())
+    state           State         @default(PRIVATE)
+    name            String        @default("SYSTEM")
+    refinement      Int           @default(0)
     usedBy          Character[]
-    modifiersList   ModifiersList? @relation(fields: [modifiersListId], references: [id])
-    modifiersListId String?
+    modifiersList   ModifiersList @relation(fields: [modifiersListId], references: [id])
+    modifiersListId String
     crystal         Crystal[]
-    createdBy       UserCreate?    @relation(fields: [createdByUserId], references: [userId])
+    createdBy       UserCreate?   @relation(fields: [createdByUserId], references: [userId])
     createdByUserId String?
-    updatedBy       UserUpdate?    @relation(fields: [updatedByUserId], references: [userId])
+    updatedBy       UserUpdate?   @relation(fields: [updatedByUserId], references: [userId])
     updatedByUserId String?
-    viewCount       Int            @default(0)
-    usageCount      Int            @default(0)
-    createdAt       DateTime       @default(now())
-    updatedAt       DateTime       @updatedAt
+    viewCount       Int           @default(0)
+    usageCount      Int           @default(0)
+    createdAt       DateTime      @default(now())
+    updatedAt       DateTime      @updatedAt
     usageTimestamps DateTime[]
     viewTimestamps  DateTime[]
     raters          Rate[]
@@ -592,21 +594,21 @@ model AdditionalEquipment {
 
 // 特殊装备模型
 model SpecialEquipment {
-    id              String         @id @default(cuid())
-    state           State          @default(PRIVATE)
-    name            String         @default("SYSTEM")
+    id              String        @id @default(cuid())
+    state           State         @default(PRIVATE)
+    name            String        @default("SYSTEM")
     usedBy          Character[]
-    modifiersList   ModifiersList? @relation(fields: [modifiersListId], references: [id])
-    modifiersListId String?
+    modifiersList   ModifiersList @relation(fields: [modifiersListId], references: [id])
+    modifiersListId String
     crystal         Crystal[]
-    createdBy       UserCreate?    @relation(fields: [createdByUserId], references: [userId])
+    createdBy       UserCreate?   @relation(fields: [createdByUserId], references: [userId])
     createdByUserId String?
-    updatedBy       UserUpdate?    @relation(fields: [updatedByUserId], references: [userId])
+    updatedBy       UserUpdate?   @relation(fields: [updatedByUserId], references: [userId])
     updatedByUserId String?
-    viewCount       Int            @default(0)
-    usageCount      Int            @default(0)
-    createdAt       DateTime       @default(now())
-    updatedAt       DateTime       @updatedAt
+    viewCount       Int           @default(0)
+    usageCount      Int           @default(0)
+    createdAt       DateTime      @default(now())
+    updatedAt       DateTime      @updatedAt
     usageTimestamps DateTime[]
     viewTimestamps  DateTime[]
     raters          Rate[]
@@ -758,8 +760,8 @@ model Consumable {
     id              String         @id @default(cuid())
     state           State          @default(PRIVATE)
     name            String         @default("SYSTEM")
-    modifiersList   ModifiersList? @relation(fields: [modifiersListId], references: [id])
-    modifiersListId String?
+    modifiersList   ModifiersList @relation(fields: [modifiersListId], references: [id])
+    modifiersListId String
     usedBy          Character[]
     createdBy       UserCreate?    @relation(fields: [createdByUserId], references: [userId])
     createdByUserId String?

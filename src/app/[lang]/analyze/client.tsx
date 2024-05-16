@@ -514,6 +514,7 @@ export default function AnalyzePageClient(props: Props) {
     const workerMessage: analyzeWorkerInput = {
       type: "start",
       arg: {
+        dictionary: dictionary,
         skillSequence: skillSequence,
         character: test.character,
         monster: test.monster,

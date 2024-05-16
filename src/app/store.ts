@@ -119,6 +119,7 @@ export const defauleModifier: Modifier = {
 
 export const defaultModifiersList: ModifiersList = {
   id: "",
+  name: "SYSTEM",
   modifiers: [defauleModifier],
 };
 
@@ -153,7 +154,7 @@ export const defaultSubWeapon: SubWeapon = {
   id: "",
   state: "PRIVATE",
   name: "",
-  subWeaType: "NO_WEAPOEN",
+  subWeaType: "NO_WEAPON",
   baseAtk: 0,
   refinement: 0,
   stability: 0,
@@ -550,6 +551,7 @@ export const test = {
           front: 0,
           modifiersList: {
             id: "",
+            name: "寄生甲兽属性",
             modifiers: [
               {
                 ModifierId: "",
@@ -577,10 +579,11 @@ export const test = {
           front: 1,
           modifiersList: {
             id: "",
+            name: "死灵妖兔II属性",
             modifiers: [
               {
                 ModifierId: "",
-                ModifierFormula: "mAtk + 7%",
+                ModifierFormula: "mAtk + isMAGIC_DEVICE(mainWeapon) ?  7 : 0 %",
               },
               {
                 ModifierId: "",
@@ -603,6 +606,7 @@ export const test = {
       ],
       modifiersList: {
         id: "",
+        name: "暴击残酷之翼属性",
         modifiers: [
           {
             ModifierId: "",
@@ -617,14 +621,15 @@ export const test = {
     subWeapon: {
       id: "",
       state: "PRIVATE",
-      name: "",
-      subWeaType: "NO_WEAPOEN",
+      name: "忍术卷轴·风遁术",
+      subWeaType: "NO_WEAPON",
       baseAtk: 0,
       refinement: 0,
       stability: 0,
       element: "NO_ELEMENT",
       modifiersList: {
         id: "",
+        name: "忍术卷轴·风遁术属性",
         modifiers: [
           {
             ModifierId: "",
@@ -639,7 +644,7 @@ export const test = {
     bodyArmor: {
       id: "",
       state: "PRIVATE",
-      name: "",
+      name: "冒险者服装",
       bodyArmorType: "NORMAL",
       refinement: 0,
       baseDef: 0,
@@ -647,11 +652,12 @@ export const test = {
         {
           id: "",
           state: "PRIVATE",
-          name: "",
+          name: "铁之女帝",
           type: "GENERAL",
           front: 0,
           modifiersList: {
             id: "",
+            name: "铁之女帝属性",
             modifiers: [
               {
                 ModifierId: "",
@@ -666,11 +672,12 @@ export const test = {
         {
           id: "",
           state: "PRIVATE",
-          name: "",
+          name: "约尔拉兹",
           type: "GENERAL",
           front: 0,
           modifiersList: {
             id: "",
+            name: "约尔拉兹属性",
             modifiers: [
               {
                 ModifierId: "",
@@ -685,6 +692,7 @@ export const test = {
       ],
       modifiersList: {
         id: "",
+        name: "冒险者服装属性",
         modifiers: [
           {
             ModifierId: "",
@@ -699,17 +707,18 @@ export const test = {
     additionalEquipment: {
       id: "",
       state: "PRIVATE",
-      name: "",
+      name: "饼干腰翼",
       refinement: 0,
       crystal: [
         {
           id: "",
           state: "PRIVATE",
-          name: "",
+          name: "深谋的青影",
           type: "GENERAL",
           front: 0,
           modifiersList: {
             id: "",
+            name: "深谋的青影属性",
             modifiers: [
               {
                 ModifierId: "",
@@ -724,11 +733,12 @@ export const test = {
         {
           id: "",
           state: "PRIVATE",
-          name: "",
+          name: "蜜爱丽",
           type: "GENERAL",
           front: 0,
           modifiersList: {
             id: "",
+            name: "蜜爱丽属性",
             modifiers: [
               {
                 ModifierId: "",
@@ -743,6 +753,7 @@ export const test = {
       ],
       modifiersList: {
         id: "",
+        name: "饼干腰翼属性",
         modifiers: [
           {
             ModifierId: "",
@@ -757,16 +768,17 @@ export const test = {
     specialEquipment: {
       id: "",
       state: "PRIVATE",
-      name: "",
+      name: "读星提灯",
       crystal: [
         {
           id: "",
           state: "PRIVATE",
-          name: "",
+          name: "星之魔导士",
           type: "GENERAL",
           front: 0,
           modifiersList: {
             id: "",
+            name: "星之魔导士属性",
             modifiers: [
               {
                 ModifierId: "",
@@ -781,11 +793,12 @@ export const test = {
         {
           id: "",
           state: "PRIVATE",
-          name: "",
+          name: "塔图罗基特",
           type: "GENERAL",
           front: 0,
           modifiersList: {
             id: "",
+            name: "塔图罗基特属性",
             modifiers: [
               {
                 ModifierId: "",
@@ -800,6 +813,7 @@ export const test = {
       ],
       modifiersList: {
         id: "",
+        name: "读星提灯属性",
         modifiers: [
           {
             ModifierId: "",

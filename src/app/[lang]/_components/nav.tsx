@@ -47,7 +47,7 @@ export default function Nav(props: {
       [
         dictionary.ui.root.character,
         <IconGamepad key={"IconGamepad"} />,
-        "/building",
+        "/character",
       ],
       [
         dictionary.ui.root.comboAnalyze,

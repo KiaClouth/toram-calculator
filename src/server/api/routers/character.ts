@@ -115,7 +115,15 @@ export type Character = Prisma.CharacterGetPayload<{
         modifiers: true;
       };
     };
-    consumableList: true;
+    consumableList: {
+      include: {
+        modifiersList: {
+          include: {
+            modifiers: true;
+          };
+        };
+      }
+    };
     skillList: {
       include: {
         skillEffect: {
@@ -140,6 +148,133 @@ export type Character = Prisma.CharacterGetPayload<{
   };
 }>;
 
+const dataType = {
+  mainWeapon: {
+    include: {
+      modifiersList: {
+        include: {
+          modifiers: true,
+        },
+      },
+      crystal: {
+        include: {
+          modifiersList: {
+            include: {
+              modifiers: true,
+            },
+          },
+          raters: true,
+        },
+      },
+    },
+  },
+  subWeapon: {
+    include: {
+      modifiersList: {
+        include: {
+          modifiers: true,
+        },
+      },
+    },
+  },
+  bodyArmor: {
+    include: {
+      modifiersList: {
+        include: {
+          modifiers: true,
+        },
+      },
+      crystal: {
+        include: {
+          modifiersList: {
+            include: {
+              modifiers: true,
+            },
+          },
+          raters: true,
+        },
+      },
+    },
+  },
+  additionalEquipment: {
+    include: {
+      modifiersList: {
+        include: {
+          modifiers: true,
+        },
+      },
+      crystal: {
+        include: {
+          modifiersList: {
+            include: {
+              modifiers: true,
+            },
+          },
+          raters: true,
+        },
+      },
+    },
+  },
+  specialEquipment: {
+    include: {
+      modifiersList: {
+        include: {
+          modifiers: true,
+        },
+      },
+      crystal: {
+        include: {
+          modifiersList: {
+            include: {
+              modifiers: true,
+            },
+          },
+          raters: true,
+        },
+      },
+    },
+  },
+  fashion: {
+    include: {
+      modifiers: true,
+    },
+  },
+  cuisine: {
+    include: {
+      modifiers: true,
+    },
+  },
+  consumableList: {
+    include: {
+      modifiersList: {
+        include: {
+          modifiers: true,
+        },
+      },
+    }
+  },
+  skillList: {
+    include: {
+      skillEffect: {
+        include: {
+          skillCost: true,
+          skillYield: true,
+        },
+      },
+    },
+  },
+  pet: true,
+  combos: {
+    include: {
+      comboStep: true,
+    },
+  },
+  modifiersList: {
+    include: {
+      modifiers: true,
+    },
+  }}
+
 export const characterRouter = createTRPCRouter({
   getAll: publicProcedure.query(({ ctx }) => {
     console.log(
@@ -152,11 +287,7 @@ export const characterRouter = createTRPCRouter({
     );
     return ctx.db.character.findMany({
       relationLoadStrategy: "join", // or 'query'
-      include: {
-        skillList: true,
-        consumableList: true,
-        combos: true,
-      },
+      include: dataType
     });
   }),
 
@@ -172,11 +303,7 @@ export const characterRouter = createTRPCRouter({
     return ctx.db.character.findMany({
       where: { state: "PUBLIC" },
       relationLoadStrategy: "join", // or 'query'
-      include: {
-        skillList: true,
-        consumableList: true,
-        combos: true,
-      },
+      include: dataType
     });
   }),
 
@@ -195,11 +322,7 @@ export const characterRouter = createTRPCRouter({
         state: "PRIVATE",
       },
       relationLoadStrategy: "join", // or 'query'
-      include: {
-        skillList: true,
-        consumableList: true,
-        combos: true,
-      },
+      include: dataType
     });
   }),
 
@@ -218,241 +341,14 @@ export const characterRouter = createTRPCRouter({
           OR: [{ state: "PUBLIC" }, { createdByUserId: ctx.session?.user.id }],
         },
         relationLoadStrategy: "join", // or 'query'
-
-        include: {
-          mainWeapon: {
-            include: {
-              modifiersList: {
-                include: {
-                  modifiers: true,
-                },
-              },
-              crystal: {
-                include: {
-                  modifiersList: {
-                    include: {
-                      modifiers: true,
-                    },
-                  },
-                  raters: true,
-                },
-              },
-            },
-          },
-          subWeapon: {
-            include: {
-              modifiersList: {
-                include: {
-                  modifiers: true,
-                },
-              },
-            },
-          },
-          bodyArmor: {
-            include: {
-              modifiersList: {
-                include: {
-                  modifiers: true,
-                },
-              },
-              crystal: {
-                include: {
-                  modifiersList: {
-                    include: {
-                      modifiers: true,
-                    },
-                  },
-                  raters: true,
-                },
-              },
-            },
-          },
-          additionalEquipment: {
-            include: {
-              modifiersList: {
-                include: {
-                  modifiers: true,
-                },
-              },
-              crystal: {
-                include: {
-                  modifiersList: {
-                    include: {
-                      modifiers: true,
-                    },
-                  },
-                  raters: true,
-                },
-              },
-            },
-          },
-          specialEquipment: {
-            include: {
-              modifiersList: {
-                include: {
-                  modifiers: true,
-                },
-              },
-              crystal: {
-                include: {
-                  modifiersList: {
-                    include: {
-                      modifiers: true,
-                    },
-                  },
-                  raters: true,
-                },
-              },
-            },
-          },
-          fashion: {
-            include: {
-              modifiers: true,
-            },
-          },
-          cuisine: {
-            include: {
-              modifiers: true,
-            },
-          },
-          consumableList: true,
-          skillList: {
-            include: {
-              skillEffect: {
-                include: {
-                  skillCost: true,
-                  skillYield: true,
-                },
-              },
-            },
-          },
-          combos: {
-            include: {
-              comboStep: true,
-            },
-          },
-          pet: true,
-          modifiersList: {
-            include: {
-              modifiers: true,
-            },
-          },
-        },
+        include: dataType
       });
     }
     return ctx.db.character.findMany({
       where: { state: "PUBLIC" },
       relationLoadStrategy: "join", // or 'query'
-      include: {
-        mainWeapon: {
-          include: {
-            modifiersList: {
-              include: {
-                modifiers: true,
-              },
-            },
-            crystal: {
-              include: {
-                modifiersList: {
-                  include: {
-                    modifiers: true,
-                  },
-                },
-                raters: true,
-              },
-            },
-          },
-        },
-        subWeapon: {
-          include: {
-            modifiersList: {
-              include: {
-                modifiers: true,
-              },
-            },
-          },
-        },
-        bodyArmor: {
-          include: {
-            modifiersList: {
-              include: {
-                modifiers: true,
-              },
-            },
-            crystal: {
-              include: {
-                modifiersList: {
-                  include: {
-                    modifiers: true,
-                  },
-                },
-                raters: true,
-              },
-            },
-          },
-        },
-        additionalEquipment: {
-          include: {
-            modifiersList: {
-              include: {
-                modifiers: true,
-              },
-            },
-            crystal: {
-              include: {
-                modifiersList: {
-                  include: {
-                    modifiers: true,
-                  },
-                },
-                raters: true,
-              },
-            },
-          },
-        },
-        specialEquipment: {
-          include: {
-            modifiersList: {
-              include: {
-                modifiers: true,
-              },
-            },
-            crystal: {
-              include: {
-                modifiersList: {
-                  include: {
-                    modifiers: true,
-                  },
-                },
-                raters: true,
-              },
-            },
-          },
-        },
-        fashion: {
-          include: {
-            modifiers: true,
-          },
-        },
-        cuisine: {
-          include: {
-            modifiers: true,
-          },
-        },
-        consumableList: true,
-        skillList: {
-          include: {
-            skillEffect: {
-              include: {
-                skillCost: true,
-                skillYield: true,
-              }
-            }
-            },
-          },
-        },
-      },
-    );
+      include: dataType
+    });
   }),
 
   create: protectedProcedure
@@ -505,15 +401,21 @@ export const characterRouter = createTRPCRouter({
           data: {
             ...characterInput,
             id: characterId,
+            mainWeapon: undefined,
+            subWeapon: undefined,
+            bodyArmor: undefined,
+            additionalEquipment: undefined,
+            specialEquipment: undefined,
+            fashion: undefined,
+            cuisine: undefined,
+            consumableList: undefined,
             skillList: undefined,
             pet: undefined,
             modifiersList: undefined,
             combos: undefined,
             createdByUserId: userCreate.userId,
           },
-          include: {
-            combos: true,
-          },
+          include: dataType
         });
 
         const combos = combosInputArray.map(async (combosInput) => {
@@ -590,16 +492,20 @@ export const characterRouter = createTRPCRouter({
         where: { id: input.id },
         data: {
           ...characterInput,
-          modifiersList: undefined,
+          mainWeapon: undefined,
+          subWeapon: undefined,
+          bodyArmor: undefined,
+          additionalEquipment: undefined,
+          specialEquipment: undefined,
+          fashion: undefined,
+          cuisine: undefined,
+          consumableList: undefined,
+          skillList: undefined,
           pet: undefined,
+          modifiersList: undefined,
+          combos: undefined,
         },
-        include: {
-          combos: {
-            include: {
-              comboStep: true,
-            },
-          },
-        },
+        include: dataType
       });
 
       const combo = combosInputArray.map(async (effect) => {

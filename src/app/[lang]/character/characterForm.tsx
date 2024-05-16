@@ -1,26 +1,6 @@
 "use client";
 import React, { useEffect } from "react";
 import "@mdxeditor/editor/style.css";
-import {
-  BlockTypeSelect,
-  BoldItalicUnderlineToggles,
-  CodeToggle,
-  DiffSourceToggleWrapper,
-  InsertTable,
-  InsertThematicBreak,
-  ListsToggle,
-  MDXEditor,
-  type MDXEditorMethods,
-  Separator,
-  UndoRedo,
-  diffSourcePlugin,
-  headingsPlugin,
-  listsPlugin,
-  quotePlugin,
-  tablePlugin,
-  toolbarPlugin,
-  thematicBreakPlugin,
-} from "@mdxeditor/editor";
 import { tApi } from "~/trpc/react";
 import type { getDictionary } from "~/app/get-dictionary";
 import Button from "../_components/button";
@@ -30,16 +10,6 @@ import { ZodFirstPartyTypeKind, type z } from "zod";
 import { type $Enums } from "@prisma/client";
 import { defaultCharacter, useStore } from "~/app/store";
 import { type Session } from "next-auth";
-import {
-  IconElementWater,
-  IconElementFire,
-  IconElementEarth,
-  IconElementWind,
-  IconElementLight,
-  IconElementDark,
-  IconElementNoElement,
-} from "../_components/iconsList";
-import { useTheme } from "next-themes";
 import { type Character } from "~/server/api/routers/character";
 import { CharacterInputSchema } from "~/schema/characterSchema";
 
@@ -51,10 +21,14 @@ export default function CharacterForm(props: {
 }) {
   const { dictionary, session, defaultCharacterList, setDefaultCharacterList } = props;
   // 状态管理参数
-  const { augmented, characterDialogState, setCharacterList, setCharacterDialogState, characterFormState, setCharacterFormState } = useStore(
-    (state) => state.characterPage,
-  );
-  const { character, setCharacter } = useStore((state) => state);
+  const {
+    characterDialogState,
+    setCharacterList,
+    setCharacterDialogState,
+    characterFormState,
+    setCharacterFormState,
+  } = useStore((state) => state.characterPage);
+  const { character } = useStore((state) => state);
   let newCharacter: Character;
   const formTitle = {
     CREATE: dictionary.ui.upload,
@@ -62,8 +36,6 @@ export default function CharacterForm(props: {
     DISPLAY: character.name,
   }[characterFormState];
   const [dataUploadingState, setDataUploadingState] = React.useState(false);
-  const theme = useTheme();
-  const mdxEditorRef = React.useRef<MDXEditorMethods>(null);
 
   function FieldInfo({
     field,
@@ -104,6 +76,7 @@ export default function CharacterForm(props: {
     onSubmit: async ({ value }) => {
       setDataUploadingState(true);
       newCharacter = {
+        ...defaultCharacter,
         ...value,
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -176,7 +149,6 @@ export default function CharacterForm(props: {
 
   useEffect(() => {
     console.log("---CharacterForm render");
-    mdxEditorRef.current?.setMarkdown(character.specialBehavior ?? "");
     // escape键监听
     const handleEscapeKeyPress = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
@@ -210,7 +182,7 @@ export default function CharacterForm(props: {
       <div className="inputArea flex-1 overflow-y-auto">
         {characterFormState !== "DISPLAY" && (
           <div className="mb-4 rounded-sm bg-transition-color-8 p-4">
-            {dictionary.ui.character.characterForm.discription}
+            {typeof dictionary.ui.character.discription}
           </div>
         )}
         <fieldset className="dataKinds flex flex-row flex-wrap gap-y-[4px]">
@@ -248,46 +220,14 @@ export default function CharacterForm(props: {
                         case "state": {
                           fieldsetClass = characterFormState === "DISPLAY" ? "hidden" : defaultFieldsetClass;
                         }
-                        // case "name":
                         case "characterType":
-                        // case "baseLv":
-                        // case "experience":
-                        // case "address":
-                        case "element":
-                        // case "radius":
-                        // case "maxhp":
-                        // case "physicalDefense":
-                        // case "physicalResistance":
-                        // case "magicalDefense":
-                        // case "magicalResistance":
-                        // case "criticalResistance":
-                        // case "avoidance":
-                        // case "dodge":
-                        // case "block":
-                        // case "normalAttackResistanceModifier":
-                        // case "physicalAttackResistanceModifier":
-                        // case "magicalAttackResistanceModifier":
-                        // case "difficultyOfTank":
-                        // case "difficultyOfMelee":
-                        // case "difficultyOfRanged":
-                        // case "possibilityOfRunningAround":
-                        // case "specialBehavior":
-                        // case "dataSources":
-                        // case "updatedByUserId":
-                        // case "createdByUserId":
-                        // case "viewCount":
-                        // case "usageCount":
-                        // case "createdAt":
-                        // case "updatedAt":
-                        // case "usageTimestamps":
-                        // case "viewTimestamps":
                         default:
                           break;
                       }
                       return (
                         <fieldset key={key} className={fieldsetClass}>
                           <span>
-                            {dictionary.db.models.character[key as keyof Character]}
+                            {JSON.stringify(dictionary.db.models.character[key as keyof Character])}
                             <FieldInfo field={field} />
                           </span>
                           <div
@@ -301,63 +241,10 @@ export default function CharacterForm(props: {
                                 let labelSizeClass = defaultLabelSizeClass;
                                 let icon: React.ReactNode = null;
                                 switch (option) {
-                                  // case "PRIVATE":
-                                  // case "PUBLIC":
-                                  // case "COMMON_MOBS":
-                                  // case "COMMON_MINI_BOSS":
-                                  // case "EVENT_MOBS":
-                                  // case "EVENT_MINI_BOSS":
-                                  // case "EVENT_BOSS":
-                                  case "NO_ELEMENT":
-                                    {
-                                      icon = <IconElementNoElement className="h-6 w-6" />;
-                                      inputClass = "mt-0.5 hidden rounded px-4 py-2";
-                                      labelSizeClass = "no-element basis-1/3";
-                                    }
-                                    break;
-                                  case "LIGHT":
-                                    {
-                                      icon = <IconElementLight className="h-6 w-6" />;
-                                      inputClass = "mt-0.5 hidden rounded px-4 py-2";
-                                      labelSizeClass = "light basis-1/3";
-                                    }
-                                    break;
-                                  case "DARK":
-                                    {
-                                      (icon = <IconElementDark className="h-6 w-6" />),
-                                        (inputClass = "mt-0.5 hidden rounded px-4 py-2");
-                                      labelSizeClass = "dark basis-1/3";
-                                    }
-                                    break;
-                                  case "WATER":
-                                    {
-                                      icon = <IconElementWater className="h-6 w-6" />;
-                                      inputClass = "mt-0.5 hidden rounded px-4 py-2";
-                                      labelSizeClass = "water basis-1/3";
-                                    }
-                                    break;
-                                  case "FIRE":
-                                    {
-                                      icon = <IconElementFire className="h-6 w-6" />;
-                                      inputClass = "mt-0.5 hidden rounded px-4 py-2";
-                                      labelSizeClass = "fire basis-1/3";
-                                    }
-                                    break;
-                                  case "EARTH":
-                                    {
-                                      icon = <IconElementEarth className="h-6 w-6" />;
-                                      inputClass = "mt-0.5 hidden rounded px-4 py-2";
-                                      labelSizeClass = "earth basis-1/3";
-                                    }
-                                    break;
-                                  case "WIND":
-                                    {
-                                      icon = <IconElementWind className="h-6 w-6" />;
-                                      inputClass = "mt-0.5 hidden rounded px-4 py-2";
-                                      labelSizeClass = "wind basis-1/3";
-                                    }
-                                    break;
                                   default:
+                                    inputClass = defaultInputClass;
+                                    labelSizeClass = defaultLabelSizeClass;
+                                    icon = null;
                                     break;
                                 }
                                 return (
@@ -430,104 +317,16 @@ export default function CharacterForm(props: {
                             fieldsetClass = "flex basis-full flex-col gap-1 p-2 lg:basis-1/4";
                           }
                           break;
-                        // case "characterType":
-                        // case "baseLv":
-                        // case "experience":
-                        case "address":
-                          {
-                            fieldsetClass = "flex basis-full flex-col gap-1 p-2 lg:basis-1/4";
-                          }
-                          break;
-                        // case "element":
-                        // case "radius":
-                        // case "maxhp":
-                        // case "physicalDefense":
-                        // case "physicalResistance":
-                        // case "magicalDefense":
-                        // case "magicalResistance":
-                        // case "criticalResistance":
-                        // case "avoidance":
-                        // case "dodge":
-                        // case "block":
-                        // case "normalAttackResistanceModifier":
-                        // case "physicalAttackResistanceModifier":
-                        // case "magicalAttackResistanceModifier":
-                        // case "difficultyOfTank":
-                        // case "difficultyOfMelee":
-                        // case "difficultyOfRanged":
-                        // case "possibilityOfRunningAround":
-                        // case "updatedByUserId":
-                        // case "createdByUserId":
-                        // case "viewCount":
-                        // case "usageCount":
-                        // case "createdAt":
-                        // case "updatedAt":
-                        // case "usageTimestamps":
-                        // case "viewTimestamps":
-                        case "specialBehavior":
-                          {
-                            inputBox = (
-                              <>
-                                <input id={field.name} name={field.name} className="hidden" />
-                                <MDXEditor
-                                  ref={mdxEditorRef}
-                                  contentEditableClassName="prose"
-                                  markdown={character.specialBehavior ?? ""}
-                                  onBlur={field.handleBlur}
-                                  onChange={(markdown) => field.handleChange(markdown)}
-                                  plugins={[
-                                    diffSourcePlugin(),
-                                    headingsPlugin(),
-                                    listsPlugin(),
-                                    quotePlugin(),
-                                    // linkDialogPlugin(),
-                                    // imagePlugin(),
-                                    tablePlugin(),
-                                    thematicBreakPlugin(),
-                                  ].concat(
-                                    window.innerWidth < 1024
-                                      ? []
-                                      : [
-                                          toolbarPlugin({
-                                            toolbarContents: () => (
-                                              <>
-                                                <DiffSourceToggleWrapper>
-                                                  {" "}
-                                                  <UndoRedo />
-                                                  <Separator />
-                                                  <BoldItalicUnderlineToggles />
-                                                  <BlockTypeSelect />
-                                                  <CodeToggle />
-                                                  <Separator />
-                                                  <ListsToggle />
-                                                  {/* <Separator />
-                                                <CreateLink />
-                                                <InsertImage /> */}
-                                                  <Separator />
-                                                  <InsertTable />
-                                                  <InsertThematicBreak />
-                                                </DiffSourceToggleWrapper>
-                                              </>
-                                            ),
-                                          }),
-                                        ],
-                                  )}
-                                  className={`mt-1 w-full flex-1 rounded outline-transition-color-20 ${characterFormState === "DISPLAY" ? "display pointer-events-none" : " pointer-events-auto"} ${theme.theme === "dark" && "dark-theme dark-editor"}`}
-                                />
-                              </>
-                            );
-                            fieldsetClass = "flex basis-full flex-col gap-1 p-2";
-                          }
-                          break;
-
                         default:
+                          fieldsetClass = defaultFieldsetClass;
+                          inputBox = defaultInputBox;
                           break;
                       }
                       return (
                         <fieldset key={key} className={fieldsetClass}>
                           <label htmlFor={field.name} className="flex w-full flex-col gap-1">
                             <span>
-                              {dictionary.db.models.character[key as keyof Character]}
+                              {typeof dictionary.db.models.character[key as keyof Character]}
                               <FieldInfo field={field} />
                             </span>
                             {inputBox}
@@ -552,29 +351,15 @@ export default function CharacterForm(props: {
           >
             {dictionary.ui.close} [Esc]
           </Button>
-          {characterFormState == "DISPLAY" &&
-            session?.user.id === character.createdByUserId &&
-            (character.id.endsWith("*") ? (
-              <Button disabled>{dictionary.ui.character.canNotModify}</Button>
-            ) : (
-              <Button
-                onClick={() => {
-                  // 如果处于所有星级都展示的状态，则一星怪物名称后面会附加额外字段，进入编辑状态前去除
-                  if (character.characterType === "COMMON_BOSS" && augmented) {
-                    const name = character.name;
-                    const lastIndex = name.lastIndexOf(" ");
-                    const result = lastIndex !== -1 ? name.substring(0, lastIndex) : name;
-                    setCharacter({
-                      ...character,
-                      name: result,
-                    });
-                  }
-                  setCharacterFormState("UPDATE");
-                }}
-              >
-                {dictionary.ui.modify} [Enter]
-              </Button>
-            ))}
+          {characterFormState == "DISPLAY" && session?.user.id === character.createdByUserId && (
+            <Button
+              onClick={() => {
+                setCharacterFormState("UPDATE");
+              }}
+            >
+              {dictionary.ui.modify} [Enter]
+            </Button>
+          )}
           {characterFormState !== "DISPLAY" && (
             <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
               {([canSubmit]) => (

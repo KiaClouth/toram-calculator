@@ -15,10 +15,7 @@ import { type Session } from "next-auth";
 import React, { useState, type CSSProperties, useEffect } from "react";
 import CharacterForm from "./characterForm";
 import Button from "../_components/button";
-import {
-  IconCloudUpload,
-  IconFilter,
-} from "../_components/iconsList";
+import { IconCloudUpload, IconFilter } from "../_components/iconsList";
 import Dialog from "../_components/dialog";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { useStore } from "~/app/store";
@@ -36,8 +33,6 @@ export default function MonserPageClient(props: Props) {
 
   // 状态管理参数
   const {
-    augmented,
-    setAugmented,
     characterList,
     setCharacterList,
     characterDialogState,
@@ -258,14 +253,7 @@ export default function MonserPageClient(props: Props) {
       console.log("--Character Client Unmount");
       document.removeEventListener("keydown", handleUKeyPress);
     };
-  }, [
-    augmented,
-    defaultCharacterList,
-    setCharacter,
-    setCharacterDialogState,
-    setCharacterFormState,
-    setCharacterList,
-  ]);
+  }, [defaultCharacterList, setCharacter, setCharacterDialogState, setCharacterFormState, setCharacterList]);
 
   return (
     <main className="flex flex-col lg:w-[calc(100dvw-96px)] lg:flex-row">
@@ -309,8 +297,7 @@ export default function MonserPageClient(props: Props) {
               })}
             </div>
           </div>
-          <div className="module flex flex-col gap-3">
-          </div>
+          <div className="module flex flex-col gap-3"></div>
         </div>
       </div>
       <div className="Module2 flex w-full flex-1 overflow-hidden px-3 backdrop-blur-xl">
@@ -503,7 +490,7 @@ export default function MonserPageClient(props: Props) {
                               </span>
                             </td>
                           );
-                        
+
                         default:
                           return (
                             <td

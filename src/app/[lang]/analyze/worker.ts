@@ -1,17 +1,83 @@
 "use client";
 import _ from "lodash-es";
 import { type MainWeaType, type SubWeaType, type BodyArmorType, type $Enums } from "@prisma/client";
-import * as math from "mathjs";
 import { type Character } from "~/server/api/routers/character";
 import { type Monster } from "~/server/api/routers/monster";
 import { type SkillEffect } from "~/server/api/routers/skill";
-import { type Modifier } from "~/server/api/routers/crystal";
+import { type ModifiersList } from "~/server/api/routers/crystal";
+import { type getDictionary } from "~/app/get-dictionary";
+import { all, create, floor, max, min, parse } from "mathjs";
 
 const fps = 60;
+
+// 随机种子设置
+const randomSeed: null | string = null
+// 向math中添加自定义方法
+// 验证 `all` 是否为有效的 FactoryFunctionMap 对象
+if (!all) {
+  throw new Error('all is undefined. Make sure you are importing it correctly.');
+}
+
+const math = create(all, {
+  epsilon: 1e-12,
+  matrix: "Matrix",
+  number: "number",
+  precision: 64,
+  predictable: false,
+  randomSeed: randomSeed,
+});
+
+// 导入自定义方法
+// 此处需要考虑参数的上下文环境，静态加成的上下文环境为CharacterData，动态加成的上下文环境为computeArgType
+math.import({
+  // 应用于CharacterData环境的函数--------------------------------
+  // 判断主武器类型是否为无
+  isNO_WEAPON: function (mainWeapon: CharacterData["mainWeapon"]) {
+    return mainWeapon.type === "NO_WEAPON";
+  },
+  // 判断主武器类型是否为单手剑
+  isONE_HAND_SWORD: function (mainWeapon: CharacterData["mainWeapon"]) {
+    return mainWeapon.type === "ONE_HAND_SWORD";
+  },
+  // 判断主武器类型是否为双手剑
+  isTWO_HANDS_SWORD: function (mainWeapon: CharacterData["mainWeapon"]) {
+    return mainWeapon.type === "TWO_HANDS_SWORD";
+  },
+  // 判断主武器类型是否为弓
+  isBOW: function (mainWeapon: CharacterData["mainWeapon"]) {
+    return mainWeapon.type === "BOW";
+  },
+  // 判断主武器类型是否为弩
+  isBOWGUN: function (mainWeapon: CharacterData["mainWeapon"]) {
+    return mainWeapon.type === "BOWGUN";
+  },
+  // 判断主武器类型是否为法杖
+  isSTAFF: function (mainWeapon: CharacterData["mainWeapon"]) {
+    return mainWeapon.type === "STAFF";
+  },
+  // 判断主武器类型是否为魔导具
+  isMAGIC_DEVICE: function (mainWeapon: CharacterData["mainWeapon"]) {
+    return mainWeapon.type === "MAGIC_DEVICE";
+  },
+  // 判断主武器类型是否为拳套
+  isKNUCKLE: function (mainWeapon: CharacterData["mainWeapon"]) {
+    return mainWeapon.type === "KNUCKLE";
+  },
+  // 判断主武器类型是否为旋风枪
+  isHALBERD: function (mainWeapon: CharacterData["mainWeapon"]) {
+    return mainWeapon.type === "HALBERD";
+  },
+  // 判断主武器类型是否为拔刀剑
+  isKATANA: function (mainWeapon: CharacterData["mainWeapon"]) {
+    return mainWeapon.type === "KATANA";
+  }
+  // 应用于SkillData环境的函数--------------------------------
+});
 
 export type analyzeWorkerInput = {
   type: "start" | "stop";
   arg?: {
+    dictionary: ReturnType<typeof getDictionary>;
     skillSequence: tSkill[];
     character: Character;
     monster: Monster;
@@ -86,8 +152,8 @@ export type pTpye = {
   am: number;
   cm: number;
   aggro: number;
-  maxHP: number;
-  maxMP: number;
+  maxHp: number;
+  maxMp: number;
   pCr: number;
   pCd: number;
   mainWeaponAtk: number;
@@ -196,37 +262,39 @@ export const dynamicTotalValue = (m: modifiers): number => {
   const base = baseValue(m);
   const fixed = dynamicFixedValue(m);
   const percentage = dynamicPercentageValue(m);
-  return math.floor(base * (1 + percentage / 100) + fixed);
+  return floor(base * (1 + percentage / 100) + fixed);
 };
 
-export const characterModifierCollector = (
-  character: Character,
-): {
-  origin: string;
-  modifier: Modifier;
-}[] => {
+// 角色加成项收集
+export const characterModifierCollector = (character: Character): ModifiersList[] => {
   // 类型谓词函数，用于检查对象是否符合目标类型
-  function isTargetType(obj: unknown, currentPath: string[]): obj is Modifier {
+  function isTargetType(obj: unknown, currentPath: string[]): obj is ModifiersList {
     // 检查对象是否为目标类型
-    const isModifier =
+    const isModifiersList =
       typeof obj === "object" &&
       obj !== null &&
-      "ModifierId" in obj &&
-      "ModifierFormula" in obj &&
-      typeof obj.ModifierId === "string" &&
-      typeof obj.ModifierFormula === "string";
-    console.log("当前路径：", currentPath.join("."), "正在检查属性：", obj, "是否符合Modifier类型，结论：", isModifier);
-    return isModifier;
+      "name" in obj &&
+      "modifiers" in obj &&
+      typeof obj.name === "string" &&
+      typeof obj.modifiers === "object";
+    console.log(
+      "当前路径：",
+      currentPath.join("."),
+      "正在检查属性：",
+      obj,
+      "是否符合ModifiersList类型，结论：",
+      isModifiersList,
+    );
+    return isModifiersList;
   }
 
   // 递归收集对象中所有符合目标类型的属性
-  const result: { origin: string; modifier: Modifier }[] = [];
+  const result: ModifiersList[] = [];
 
   function recurse(value: unknown, currentPath: string[]): void {
     if (isTargetType(value, currentPath)) {
       console.log("收集到一个符合条件的对象：", value, "当前路径：", currentPath.join("."));
-      const name = currentPath.join(".");
-      result.push({ origin: name, modifier: value });
+      result.push(value);
     }
 
     if (_.isObject(value) && !_.isArray(value)) {
@@ -249,69 +317,96 @@ export const characterModifierCollector = (
 // 角色属性应用
 export const characterModifiersApplicator = (character: Character, characterData: CharacterData): void => {
   console.log("角色属性应用");
-  const modifiersData = characterModifierCollector(character);
-  console.log("已收集的角色属性：", modifiersData);
-  modifiersData.forEach((modifierData) => {
-    // 属性添加
-    const node = math.parse(modifierData.modifier.ModifierFormula);
-    const nodeString = node.toString();
-    switch (node.type) {
-      case "AssignmentNode":
-        {
-          console.log("发现赋值节点：" + nodeString + ", 角色属性不允许使用赋值，放弃此属性");
-        }
+  const modifiersListArray = characterModifierCollector(character);
+  console.log("已收集的角色属性：", modifiersListArray);
+  modifiersListArray.forEach((modifiersListData) => {
+    const origin = modifiersListData.name ?? "未知角色属性";
+    modifiersListData.modifiers.forEach((modifier) => {
+      // 属性添加
+      const node = parse(modifier.ModifierFormula);
+      const nodeString = node.toString();
+      switch (node.type) {
+        case "AssignmentNode":
+          {
+            console.log("发现赋值节点：" + nodeString + ", 角色属性不允许使用赋值，放弃此属性");
+          }
 
-        break;
+          break;
 
-      default:
-        {
-          console.log("非赋值表达式：" + nodeString + " 判定为：" + node.type);
-          // 非赋值表达式说明该行为是对当前角色已有属性进行增减,从第一个加减号开始分解表达式
-          const match = modifierData.modifier.ModifierFormula.match(/(.+?)([+\-])(.+)/);
-          if (match) {
-            const targetStr = _.trim(match[1]);
-            const operatorStr = match[2];
-            const formulaStr = _.trim(match[3]);
-            // 如果能够发现加减运算符，则对符号左右侧字符串进行验证
-            console.log("表达式拆解为：1:[" + targetStr + "]   2:[" + operatorStr + "]   3:[" + formulaStr + "]");
-            // 查找对应对象的内部属性值
-            const targetStrSplit = targetStr.split(".");
-            if (targetStrSplit.length > 0) {
-              {
-                let finalPath = "";
-                targetStrSplit.forEach((item, index) => {
-                  const tempPath = index === targetStrSplit.length - 1 ? "_" + item : item + ".";
-                  finalPath = finalPath + tempPath;
-                });
-                let target: modifiers | number | undefined;
-                console.log("最终路径：", finalPath);
-                if (_.get(characterData, finalPath)) {
-                  // 如果在characterAttr找到了对应的属性
-                  target = _.get(characterData, finalPath) as modifiers;
-                  console.log("依据最终路径，在characterAttr中找到了：", target);
-                  // 先判断值类型，依据字符串结尾是否具有百分比符号分为百分比加成和常数加成
-                  const perMatch = formulaStr.match(/^([\s\S]+?)\s*(%?)$/);
-                  if (perMatch) {
-                    // 表达式非空时
-                    if (perMatch[2] === "%") {
-                      // 当末尾存在百分比符号时，尝试将计算结果添加进百分比数组中
-                      console.log("表达式值为百分比类型，非百分号部分：", perMatch[1]);
-                      if (perMatch[1]) {
-                        // 尝试计算表达式结果
-                        const result = math.evaluate(perMatch[1], { ...characterData }) as number;
+        default:
+          {
+            console.log("非赋值表达式：" + nodeString + " 判定为：" + node.type);
+            // 非赋值表达式说明该行为是对当前角色已有属性进行增减,从第一个加减号开始分解表达式
+            const match = modifier.ModifierFormula.match(/(.+?)([+\-])(.+)/);
+            if (match) {
+              const targetStr = _.trim(match[1]);
+              const operatorStr = match[2];
+              const formulaStr = _.trim(match[3]);
+              // 如果能够发现加减运算符，则对符号左右侧字符串进行验证
+              console.log("表达式拆解为：1:[" + targetStr + "]   2:[" + operatorStr + "]   3:[" + formulaStr + "]");
+              // 查找对应对象的内部属性值
+              const targetStrSplit = targetStr.split(".");
+              if (targetStrSplit.length > 0) {
+                {
+                  let finalPath = "";
+                  targetStrSplit.forEach((item, index) => {
+                    const tempPath = index === targetStrSplit.length - 1 ? "_" + item : item + ".";
+                    finalPath = finalPath + tempPath;
+                  });
+                  let target: modifiers | number | undefined;
+                  console.log("最终路径：", finalPath);
+                  if (_.get(characterData, finalPath)) {
+                    // 如果在characterAttr找到了对应的属性
+                    target = _.get(characterData, finalPath) as modifiers;
+                    console.log("依据最终路径，在characterAttr中找到了：", target);
+                    // 先判断值类型，依据字符串结尾是否具有百分比符号分为百分比加成和常数加成
+                    const perMatch = formulaStr.match(/^([\s\S]+?)\s*(%?)$/);
+                    if (perMatch) {
+                      // 表达式非空时
+                      if (perMatch[2] === "%") {
+                        // 当末尾存在百分比符号时，尝试将计算结果添加进百分比数组中
+                        console.log("表达式值为百分比类型，非百分号部分：", perMatch[1]);
+                        if (perMatch[1]) {
+                          // 尝试计算表达式结果
+                          const result = math.evaluate(perMatch[1], { ...characterData }) as number;
+                          if (result) {
+                            // 表达能够正确计算的话
+                            console.log("表达式计算结果", result);
+                            // 根据运算符类型，将计算结果添加进百分比数组中
+                            if (operatorStr === "+") {
+                              target.modifiers.static.percentage.push({
+                                value: result,
+                                origin: origin,
+                              });
+                            } else if (operatorStr === "-") {
+                              target.modifiers.static.percentage.push({
+                                value: -result,
+                                origin: origin,
+                              });
+                            } else {
+                              console.log("未知运算符");
+                            }
+                          } else {
+                            // 表达式计算结果为空时
+                            console.log("表达式没有返回值");
+                          }
+                        }
+                      } else {
+                        // 否则，尝试将计算结果添加进常数值数组中
+                        const result = math.evaluate(formulaStr, { ...characterData }) as number;
                         if (result) {
                           // 表达能够正确计算的话
                           console.log("表达式计算结果", result);
                           // 根据运算符类型，将计算结果添加进百分比数组中
                           if (operatorStr === "+") {
-                            target.modifiers.static.percentage.push({
+                            target.modifiers.static.fixed.push({
                               value: result,
-                              origin: modifierData.origin,
+                              origin: origin,
                             });
                           } else if (operatorStr === "-") {
-                            target.modifiers.static.percentage.push({
+                            target.modifiers.static.fixed.push({
                               value: -result,
-                              origin: modifierData.origin,
+                              origin: origin,
                             });
                           } else {
                             console.log("未知运算符");
@@ -322,46 +417,22 @@ export const characterModifiersApplicator = (character: Character, characterData
                         }
                       }
                     } else {
-                      // 否则，尝试将计算结果添加进常数值数组中
-                      const result = math.evaluate(formulaStr, { ...characterData }) as number;
-                      if (result) {
-                        // 表达能够正确计算的话
-                        console.log("表达式计算结果", result);
-                        // 根据运算符类型，将计算结果添加进百分比数组中
-                        if (operatorStr === "+") {
-                          target.modifiers.static.fixed.push({
-                            value: result,
-                            origin: modifierData.origin,
-                          });
-                        } else if (operatorStr === "-") {
-                          target.modifiers.static.fixed.push({
-                            value: -result,
-                            origin: modifierData.origin,
-                          });
-                        } else {
-                          console.log("未知运算符");
-                        }
-                      } else {
-                        // 表达式计算结果为空时
-                        console.log("表达式没有返回值");
-                      }
+                      console.log("表达式为空");
                     }
+                    console.log("修改后的属性值为：", target);
                   } else {
-                    console.log("表达式为空");
+                    console.log("在计算上下文中没有找到对应的自定义属性:" + targetStr);
                   }
-                  console.log("修改后的属性值为：", target);
-                } else {
-                  console.log("在计算上下文中没有找到对应的自定义属性:" + targetStr);
                 }
               }
+            } else {
+              // 如果未匹配到，则返回空字符串或其他你希望的默认值
+              console.log("在：" + modifier.ModifierFormula + "中没有匹配到内容");
             }
-          } else {
-            // 如果未匹配到，则返回空字符串或其他你希望的默认值
-            console.log("在：" + modifierData.modifier.ModifierFormula + "中没有匹配到内容");
           }
-        }
-        break;
-    }
+          break;
+      }
+    });
   });
 };
 
@@ -668,7 +739,7 @@ export class CharacterData {
       weaAtk_Matk_Convert: 0,
       weaAtk_Patk_Convert: 1,
     },
-    NO_WEAPOEN: {
+    NO_WEAPON: {
       baseHit: 50,
       baseAspd: 1000,
       abi_Attr_Convert: {
@@ -747,9 +818,10 @@ export class CharacterData {
   _am: modifiers;
   _cm: modifiers;
   _aggro: modifiers;
+  _anticipate: modifiers; // 看穿
   // 衍生属性：基础值由自由数值决定，玩家只能定义加成项的
-  _maxHP: modifiers;
-  _maxMP: modifiers;
+  _maxHp: modifiers;
+  _maxMp: modifiers;
   _pCr: modifiers;
   _pCd: modifiers;
   _mainWeaponAtk: modifiers;
@@ -765,10 +837,10 @@ export class CharacterData {
   _mp: modifiers;
   [key: string]: object | string | number;
 
-  constructor(character: Character) {
+  constructor(dictionary: ReturnType<typeof getDictionary>, character: Character) {
     console.log("正在实例化CharacterData");
-    const mainWeaponType = character.mainWeapon?.mainWeaType ?? "NO_WEAPOEN";
-    const subWeaponType = character.subWeapon?.subWeaType ?? "NO_WEAPOEN";
+    const mainWeaponType = character.mainWeapon?.mainWeaType ?? "NO_WEAPON";
+    const subWeaponType = character.subWeapon?.subWeaType ?? "NO_WEAPON";
     const bodyArmorType = character.bodyArmor?.bodyArmorType ?? "NORMAL";
     // 计算基础值
 
@@ -977,17 +1049,22 @@ export class CharacterData {
           fixed: [
             {
               value: character.mainWeapon?.stability ?? 0,
-              origin: "mainWeapon.stability",
+              origin: dictionary.ui.analyze.dialogData.mainWeapon.stability,
             },
             {
               value:
-                math.floor(
+                floor(
                   CharacterData.weaponAbiT[mainWeaponType].abi_Attr_Convert.str.stabT * dynamicTotalValue(this._str) +
                     CharacterData.weaponAbiT[mainWeaponType].abi_Attr_Convert.int.stabT * dynamicTotalValue(this._int) +
                     CharacterData.weaponAbiT[mainWeaponType].abi_Attr_Convert.agi.stabT * dynamicTotalValue(this._agi) +
                     CharacterData.weaponAbiT[mainWeaponType].abi_Attr_Convert.dex.stabT * dynamicTotalValue(this._dex),
                 ) ?? 0,
-              origin: "character.abi",
+              origin: [
+                dictionary.ui.analyze.dialogData._str,
+                dictionary.ui.analyze.dialogData._int,
+                dictionary.ui.analyze.dialogData._agi,
+                dictionary.ui.analyze.dialogData._dex,
+              ].join(" + "),
             },
           ],
           percentage: [],
@@ -1167,8 +1244,21 @@ export class CharacterData {
         },
       },
     };
+    this._anticipate = {
+      baseValue: 0,
+      modifiers: {
+        static: {
+          fixed: [],
+          percentage: [],
+        },
+        dynamic: {
+          fixed: [],
+          percentage: [],
+        },
+      },
+    };
 
-    this._maxHP = {
+    this._maxHp = {
       baseValue: Math.floor(93 + this.lv * (127 / 17 + dynamicTotalValue(this._vit) / 3)),
       modifiers: {
         static: {
@@ -1181,7 +1271,7 @@ export class CharacterData {
         },
       },
     };
-    this._maxMP = {
+    this._maxMp = {
       baseValue: Math.floor(99 + this.lv + dynamicTotalValue(this._int) / 10 + dynamicTotalValue(this._tec)),
       modifiers: {
         static: {
@@ -1231,13 +1321,13 @@ export class CharacterData {
           fixed: [
             {
               value: this.mainWeapon.refinement,
-              origin: "mainWeapon.refinement",
+              origin: dictionary.ui.analyze.dialogData.mainWeapon.refinement,
             },
           ],
           percentage: [
             {
               value: Math.pow(this.mainWeapon.refinement, 2),
-              origin: "mainWeapon.refinement",
+              origin: dictionary.ui.analyze.dialogData.mainWeapon.refinement,
             },
           ],
         },
@@ -1346,7 +1436,7 @@ export class CharacterData {
     };
 
     this._hp = {
-      baseValue: dynamicTotalValue(this._maxHP),
+      baseValue: dynamicTotalValue(this._maxHp),
       modifiers: {
         static: {
           fixed: [],
@@ -1359,7 +1449,7 @@ export class CharacterData {
       },
     };
     this._mp = {
-      baseValue: dynamicTotalValue(this._maxMP),
+      baseValue: dynamicTotalValue(this._maxMp),
       modifiers: {
         static: {
           fixed: [],
@@ -1372,7 +1462,7 @@ export class CharacterData {
       },
     };
     this._ampr = {
-      baseValue: 10 + dynamicTotalValue(this._maxMP) / 10,
+      baseValue: 10 + dynamicTotalValue(this._maxMp) / 10,
       modifiers: {
         static: {
           fixed: [],
@@ -1494,11 +1584,11 @@ export class CharacterData {
   // get aggro() {
   //   return dynamicTotalValue(this._aggro);
   // }
-  // get maxHP() {
-  //   return dynamicTotalValue(this._maxHP);
+  // get maxHp() {
+  //   return dynamicTotalValue(this._maxHp);
   // }
-  // get maxMP() {
-  //   return dynamicTotalValue(this._maxMP);
+  // get maxMp() {
+  //   return dynamicTotalValue(this._maxMp);
   // }
   // get pCr() {
   //   return dynamicTotalValue(this._pCr);
@@ -1660,6 +1750,7 @@ export class SkillData {
   finalEventSequence: eventSequenceType[];
   [key: string]: object | string | number;
   constructor(
+    dictionary: ReturnType<typeof getDictionary>,
     Index: number,
     skill: tSkill,
     character: CharacterData,
@@ -1692,7 +1783,7 @@ export class SkillData {
             const result = math.evaluate(perMatch[1], computeArg) as number;
             if (result) {
               // console.log("前摇百分比表达式计算结果", result);
-              return math.floor((skillDuration * result) / 100);
+              return floor((skillDuration * result) / 100);
             } else {
               // console.log("前摇百分比表达式计算结果为空，默认为技能总时长：" + skillTotalFrame + "帧");
               return skillDuration;
@@ -1704,7 +1795,7 @@ export class SkillData {
             const result = math.evaluate(perMatch[1], computeArg) as number;
             if (result) {
               // console.log("前摇常数表达式计算结果", result);
-              return math.floor(result);
+              return floor(result);
             } else {
               // console.log("前摇常数表达式计算结果为空，默认为技能总时长：" + skillTotalFrame + "帧");
               return skillDuration;
@@ -1751,8 +1842,8 @@ export class SkillData {
         static: {
           fixed: [
             {
-              value: math.max(0, math.floor((dynamicTotalValue(character._cspd) - 1000) / 180)),
-              origin: "角色攻速转化",
+              value: max(0, floor((dynamicTotalValue(character._cspd) - 1000) / 180)),
+              origin: dictionary.ui.analyze.dialogData._aspd,
             },
           ],
           percentage: [],
@@ -1770,11 +1861,11 @@ export class SkillData {
         static: {
           fixed: [
             {
-              value: math.min(
-                50 + math.floor((dynamicTotalValue(character._cspd) - 1000) / 180),
-                math.floor(dynamicTotalValue(character._cspd) / 20),
+              value: min(
+                50 + floor((dynamicTotalValue(character._cspd) - 1000) / 180),
+                floor(dynamicTotalValue(character._cspd) / 20),
               ),
-              origin: "角色咏速转化",
+              origin: dictionary.ui.analyze.dialogData._cspd,
             },
           ],
           percentage: [],
@@ -1842,13 +1933,13 @@ export class SkillData {
         },
       },
     };
-    this.skillActionFrames = math.floor(
+    this.skillActionFrames = floor(
       dynamicTotalValue(this._actionFixedDuration) +
-        (dynamicTotalValue(this._actionModifiableDuration) * (100 - math.min(dynamicTotalValue(this._am), 50))) / 100,
+        (dynamicTotalValue(this._actionModifiableDuration) * (100 - min(dynamicTotalValue(this._am), 50))) / 100,
     );
-    this.skillChantingFrames = math.floor(
+    this.skillChantingFrames = floor(
       dynamicTotalValue(this._chantingFixedDuration) +
-        (dynamicTotalValue(this._chantingModifiableDuration) * (100 - math.min(dynamicTotalValue(this._cm), 50))) / 100,
+        (dynamicTotalValue(this._chantingModifiableDuration) * (100 - min(dynamicTotalValue(this._cm), 50))) / 100,
     );
     this.skillDuration = this.skillActionFrames + this.skillChantingFrames * fps;
     this.skillWindUp = skillWindUpComputer(skill.skillEffect.skillWindUpFormula, this.skillDuration, computeArg);
@@ -1923,7 +2014,7 @@ const frameData = (
   // 每帧需要做的事
   computeArg.frame = frame;
   // 封装当前状态的公式计算方法
-  const evaluate = (formula: string) => {
+  const cEvaluate = (formula: string) => {
     return math.evaluate(formula, { ...computeArg }) as number | void;
   };
 
@@ -1941,10 +2032,10 @@ const frameData = (
   console.log("执行事件过滤前，事件队列为：", eventSequence);
   eventSequence = eventSequence.filter((event, index) => {
     console.log("第 " + frame + " 帧的第 " + index + " 个事件：", event);
-    if (evaluate(event.condition)) {
+    if (cEvaluate(event.condition)) {
       // 执行当前帧需要做的事
       console.log("条件成立，执行：" + event.behavior);
-      const node = math.parse(event.behavior);
+      const node = parse(event.behavior);
       const nodeString = node.toString();
       switch (node.type) {
         case "AssignmentNode":
@@ -1953,8 +2044,8 @@ const frameData = (
             const formula = nodeString.substring(nodeString.indexOf("=") + 1, nodeString.length).trim();
             console.log("发现赋值节点：" + nodeString);
             console.log("赋值对象：", attr);
-            console.log("值表达式结果：", evaluate(formula));
-            _.set(computeArg, attr, evaluate(formula));
+            console.log("值表达式结果：", cEvaluate(formula));
+            _.set(computeArg, attr, cEvaluate(formula));
           }
 
           break;
@@ -1998,7 +2089,7 @@ const frameData = (
                             console.log("表达式值为百分比类型，非百分号部分：", perMatch[1]);
                             if (perMatch[1]) {
                               // 尝试计算表达式结果
-                              const result = evaluate(perMatch[1]);
+                              const result = cEvaluate(perMatch[1]);
                               if (result) {
                                 // 表达能够正确计算的话
                                 console.log("第3部分计算结果", result);
@@ -2023,7 +2114,7 @@ const frameData = (
                             }
                           } else {
                             // 否则，尝试将计算结果添加进常数值数组中
-                            const result = evaluate(formulaStr);
+                            const result = cEvaluate(formulaStr);
                             if (result) {
                               // 表达能够正确计算的话
                               console.log("第3部分计算结果", result);
@@ -2063,7 +2154,7 @@ const frameData = (
                             console.log("表达式值为百分比类型，非百分号部分：", perMatch[1]);
                             if (perMatch[1]) {
                               // 尝试计算表达式结果
-                              const result = evaluate(perMatch[1]);
+                              const result = cEvaluate(perMatch[1]);
                               if (result) {
                                 // 表达能够正确计算的话
                                 console.log("表达式值计算结果", result);
@@ -2083,7 +2174,7 @@ const frameData = (
                           } else {
                             console.log("表达式值为常数类型，常数部分：", perMatch[1]);
                             // 否则，尝试更新属性
-                            const result = evaluate(formulaStr);
+                            const result = cEvaluate(formulaStr);
                             if (result) {
                               // 表达能够正确计算的话
                               console.log("表达式值计算结果", result);
@@ -2144,8 +2235,14 @@ const frameData = (
   return _.cloneDeep(eventSequence);
 };
 
-export const computeFrameData = (skillSequence: tSkill[], character: Character, monster: Monster) => {
-  const characterData = new CharacterData(character);
+export const computeFrameData = (
+  dictionary: ReturnType<typeof getDictionary>,
+  skillSequence: tSkill[],
+  character: Character,
+  monster: Monster,
+) => {
+
+  const characterData = new CharacterData(dictionary, character);
   const monsterData = new MonsterData(monster);
   const computeArg: computeArgType = {
     frame: 0,
@@ -2258,11 +2355,11 @@ export const computeFrameData = (skillSequence: tSkill[], character: Character, 
       get aggro() {
         return dynamicTotalValue(characterData._aggro);
       },
-      get maxHP() {
-        return dynamicTotalValue(characterData._maxHP);
+      get maxHp() {
+        return dynamicTotalValue(characterData._maxHp);
       },
-      get maxMP() {
-        return dynamicTotalValue(characterData._maxMP);
+      get maxMp() {
+        return dynamicTotalValue(characterData._maxMp);
       },
       get pCr() {
         return dynamicTotalValue(characterData._pCr);
@@ -2352,6 +2449,7 @@ export const computeFrameData = (skillSequence: tSkill[], character: Character, 
       );
     },
   };
+
   let eventSequence: eventSequenceType[] = [];
   const result: SkillData[] = [];
   skillSequence.forEach((skill, index) => {
@@ -2361,7 +2459,7 @@ export const computeFrameData = (skillSequence: tSkill[], character: Character, 
     });
     // console.log("当前已储存的结果：", _.cloneDeep(result));
     const newSkill = _.cloneDeep(
-      new SkillData(index, skill, characterData, monsterData, computeArg, eventSequence, passedFrames),
+      new SkillData(dictionary, index, skill, characterData, monsterData, computeArg, eventSequence, passedFrames),
     );
     eventSequence = newSkill.finalEventSequence;
     result.push(newSkill);
@@ -2376,9 +2474,9 @@ self.onmessage = (e: MessageEvent<analyzeWorkerInput>) => {
       {
         // 接收消息
         if (e.data.arg) {
-          const { skillSequence, character, monster } = e.data.arg;
+          const { dictionary, skillSequence, character, monster } = e.data.arg;
           // 执行计算
-          const result = computeFrameData(skillSequence, character, monster);
+          const result = computeFrameData(dictionary, skillSequence, character, monster);
           console.log("计算结果：", result);
           // 发送结果
           self.postMessage({
