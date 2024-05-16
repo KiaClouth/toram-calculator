@@ -153,6 +153,7 @@ const dictionary: dictionary = {
         skillWindUp: "WindUp",
         stateFramesData: "StateFramesData",
         finalEventSequence: "",
+        _anticipate: ""
       },
       actualValue: "Actual",
       baseValue: "Base",
@@ -195,7 +196,7 @@ const dictionary: dictionary = {
         MEN: "Men",
       },
       MainWeaType: {
-        NO_WEAPOEN: "no-weapon",
+        NO_WEAPON: "no-weapon",
         ONE_HAND_SWORD: "one-hand-sword",
         TWO_HANDS_SWORD: "two-hands-sword",
         BOW: "bow",
@@ -207,7 +208,7 @@ const dictionary: dictionary = {
         BOWGUN: "bowgun",
       },
       SubWeaType: {
-        NO_WEAPOEN: "no-weapon",
+        NO_WEAPON: "no-weapon",
         ONE_HAND_SWORD: "one-hand-sword",
         MAGIC_DEVICE: "magic-device",
         KNUCKLE: "knuckle",

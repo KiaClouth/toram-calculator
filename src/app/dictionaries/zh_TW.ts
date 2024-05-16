@@ -138,6 +138,7 @@ const dictionary: dictionary = {
         _mDef: "魔法防御",
         _mRes: "魔法抗性",
         _cRes: "暴击抗性",
+        _anticipate: "看穿",
 
         index: "序号",
         passedFrames: "执行时的位置",
@@ -197,7 +198,7 @@ const dictionary: dictionary = {
         MEN: "异抗",
       },
       MainWeaType: {
-        NO_WEAPOEN: "空",
+        NO_WEAPON: "空",
         ONE_HAND_SWORD: "单手剑",
         TWO_HANDS_SWORD: "双手剑",
         BOW: "弓",
@@ -209,7 +210,7 @@ const dictionary: dictionary = {
         BOWGUN: "弩",
       },
       SubWeaType: {
-        NO_WEAPOEN: "空",
+        NO_WEAPON: "空",
         ONE_HAND_SWORD: "单手剑",
         MAGIC_DEVICE: "魔导具",
         KNUCKLE: "拳套",
