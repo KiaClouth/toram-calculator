@@ -89,7 +89,7 @@ export type analyzeWorkerOutput = {
   computeResult: SkillData[] | string;
 };
 
-export type modifiers = {
+export class modifiers {
   baseValue: number;
   modifiers: {
     static: {
@@ -113,7 +113,26 @@ export type modifiers = {
       }[];
     };
   };
-};
+  update: () => string;
+  constructor() {
+    this.baseValue = 0;
+    this.modifiers = {
+      static: {
+        fixed: [],
+        percentage: [],
+      },
+      dynamic: {
+        fixed: [],
+        percentage: [],
+      },
+    };
+    this.update = () => {
+      const relation: modifiers[] = [];
+      relation.map((r) => r.update());
+      return "";
+    };
+  }
+}
 
 export type pTpye = {
   lv: number;
@@ -271,12 +290,7 @@ export const characterModifierCollector = (character: Character): ModifiersList[
   function isTargetType(obj: unknown, currentPath: string[]): obj is ModifiersList {
     // 检查对象是否为目标类型
     const isModifiersList =
-      typeof obj === "object" &&
-      obj !== null &&
-      "name" in obj &&
-      "modifiers" in obj &&
-      typeof obj.name === "string" &&
-      typeof obj.modifiers === "object";
+      typeof obj === "object" && obj !== null && "modifiers" in obj && typeof obj.modifiers === "object";
     console.log(
       "当前路径：",
       currentPath.join("."),
@@ -420,6 +434,8 @@ export const characterModifiersApplicator = (character: Character, characterData
                       console.log("表达式为空");
                     }
                     console.log("修改后的属性值为：", target);
+                    // 更新相关值
+                    console.log("将更新：" + target.update());
                   } else {
                     console.log("在计算上下文中没有找到对应的自定义属性:" + targetStr);
                   }
@@ -843,814 +859,480 @@ export class CharacterData {
     const subWeaponType = character.subWeapon?.subWeaType ?? "NO_WEAPON";
     const bodyArmorType = character.bodyArmor?.bodyArmorType ?? "NORMAL";
 
-    this._weaPatkT = {
-      baseValue: CharacterData.weaponAbiT[mainWeaponType].weaAtk_Patk_Convert,
-      modifiers: {
-        static: {
-          fixed: [],
-          percentage: [],
-        },
-        dynamic: {
-          fixed: [],
-          percentage: [],
-        },
-      },
+    this._weaPatkT = new modifiers();
+    this._weaPatkT.update = () => {
+      this._weaPatkT.baseValue = CharacterData.weaponAbiT[mainWeaponType].weaAtk_Patk_Convert;
+      const relation: modifiers[] = [this._pAtk];
+      relation.map((r) => r.update());
+      return ["_pAtk"].join(",");
     };
-    this._weaMatkT = {
-      baseValue: CharacterData.weaponAbiT[mainWeaponType].weaAtk_Matk_Convert,
-      modifiers: {
-        static: {
-          fixed: [],
-          percentage: [],
-        },
-        dynamic: {
-          fixed: [],
-          percentage: [],
-        },
-      },
+
+    this._weaMatkT = new modifiers();
+    this._weaMatkT.update = () => {
+      this._weaMatkT.baseValue = CharacterData.weaponAbiT[mainWeaponType].weaAtk_Matk_Convert;
+      const relation: modifiers[] = [this._mAtk];
+      relation.map((r) => r.update());
+      return [""].join(",");
     };
 
     // 计算基础值
     this.lv = character.lv;
+
     this.mainWeapon = {
       type: mainWeaponType,
-      _baseAtk: {
-        baseValue: character.mainWeapon?.baseAtk ?? 0,
-        modifiers: {
-          static: {
-            fixed: [],
-            percentage: [],
-          },
-          dynamic: {
-            fixed: [],
-            percentage: [],
-          },
-        },
-      },
+      _baseAtk: new modifiers(),
       refinement: character.mainWeapon?.refinement ?? 0,
       stability: character.mainWeapon?.stability ?? 0,
     };
+    this.mainWeapon._baseAtk.update = () => {
+      this.mainWeapon._baseAtk.baseValue = character.mainWeapon?.baseAtk ?? 0;
+      const relation: modifiers[] = [this._mainWeaponAtk];
+      relation.map((r) => r.update());
+      return [""].join(",");
+    };
+
     this.subWeapon = {
       type: subWeaponType,
-      _baseAtk: {
-        baseValue: character.subWeapon?.baseAtk ?? 0,
-        modifiers: {
-          static: {
-            fixed: [],
-            percentage: [],
-          },
-          dynamic: {
-            fixed: [],
-            percentage: [],
-          },
-        },
-      },
+      _baseAtk: new modifiers(),
       refinement: character.subWeapon?.refinement ?? 0,
       stability: character.subWeapon?.stability ?? 0,
     };
-    this.bodyArmor = {
-      type: bodyArmorType,
-      _baseDef: {
-        baseValue: character.bodyArmor?.baseDef ?? 0,
-        modifiers: {
-          static: {
-            fixed: [],
-            percentage: [],
-          },
-          dynamic: {
-            fixed: [],
-            percentage: [],
-          },
-        },
-      },
-      refinement: character.bodyArmor?.refinement ?? 0,
-    };
-    this._str = {
-      baseValue: character.baseStr ?? 0,
-      modifiers: {
-        static: {
-          fixed: [],
-          percentage: [],
-        },
-        dynamic: {
-          fixed: [],
-          percentage: [],
-        },
-      },
-    };
-    this._int = {
-      baseValue: character.baseInt ?? 0,
-      modifiers: {
-        static: {
-          fixed: [],
-          percentage: [],
-        },
-        dynamic: {
-          fixed: [],
-          percentage: [],
-        },
-      },
-    };
-    this._vit = {
-      baseValue: character.baseVit ?? 0,
-      modifiers: {
-        static: {
-          fixed: [],
-          percentage: [],
-        },
-        dynamic: {
-          fixed: [],
-          percentage: [],
-        },
-      },
-    };
-    this._agi = {
-      baseValue: character.baseAgi ?? 0,
-      modifiers: {
-        static: {
-          fixed: [],
-          percentage: [],
-        },
-        dynamic: {
-          fixed: [],
-          percentage: [],
-        },
-      },
-    };
-    this._dex = {
-      baseValue: character.baseDex ?? 0,
-      modifiers: {
-        static: {
-          fixed: [],
-          percentage: [],
-        },
-        dynamic: {
-          fixed: [],
-          percentage: [],
-        },
-      },
-    };
-    this._luk = {
-      baseValue: character.specialAbiType === "LUK" ? character.specialAbiValue ?? 0 : 0,
-      modifiers: {
-        static: {
-          fixed: [],
-          percentage: [],
-        },
-        dynamic: {
-          fixed: [],
-          percentage: [],
-        },
-      },
-    };
-    this._tec = {
-      baseValue: character.specialAbiType === "TEC" ? character.specialAbiValue ?? 0 : 0,
-      modifiers: {
-        static: {
-          fixed: [],
-          percentage: [],
-        },
-        dynamic: {
-          fixed: [],
-          percentage: [],
-        },
-      },
-    };
-    this._men = {
-      baseValue: character.specialAbiType === "MEN" ? character.specialAbiValue ?? 0 : 0,
-      modifiers: {
-        static: {
-          fixed: [],
-          percentage: [],
-        },
-        dynamic: {
-          fixed: [],
-          percentage: [],
-        },
-      },
-    };
-    this._cri = {
-      baseValue: character.specialAbiType === "CRI" ? character.specialAbiValue ?? 0 : 0,
-      modifiers: {
-        static: {
-          fixed: [],
-          percentage: [],
-        },
-        dynamic: {
-          fixed: [],
-          percentage: [],
-        },
-      },
+    this.subWeapon._baseAtk.update = () => {
+      this.subWeapon._baseAtk.baseValue = character.subWeapon?.baseAtk ?? 0;
+      const relation: modifiers[] = [this._subWeaponAtk];
+      relation.map((r) => r.update());
+      return [""].join(",");
     };
 
-    this._maxHp = {
-      baseValue: Math.floor(93 + this.lv * (127 / 17 + dynamicTotalValue(this._vit) / 3)),
-      modifiers: {
-        static: {
-          fixed: [],
-          percentage: [],
-        },
-        dynamic: {
-          fixed: [],
-          percentage: [],
-        },
-      },
+    this.bodyArmor = {
+      type: bodyArmorType,
+      _baseDef: new modifiers(),
+      refinement: character.bodyArmor?.refinement ?? 0,
     };
-    this._maxMp = {
-      baseValue: Math.floor(99 + this.lv + dynamicTotalValue(this._int) / 10 + dynamicTotalValue(this._tec)),
-      modifiers: {
-        static: {
-          fixed: [],
-          percentage: [],
-        },
-        dynamic: {
-          fixed: [],
-          percentage: [],
-        },
-      },
+    this.bodyArmor._baseDef.update = () => {
+      this.bodyArmor._baseDef.baseValue = character.bodyArmor?.baseDef ?? 0;
+      const relation: modifiers[] = [];
+      relation.map((r) => r.update());
+      return [""].join(",");
     };
-    this._pCr = {
-      baseValue: 25 + dynamicTotalValue(this._cri) / 5,
-      modifiers: {
-        static: {
-          fixed: [],
-          percentage: [],
-        },
-        dynamic: {
-          fixed: [],
-          percentage: [],
-        },
-      },
+
+    this._str = new modifiers();
+    this._str.update = () => {
+      this._str.baseValue = character.baseStr ?? 0;
+      const relation: modifiers[] = [this._pCd, this._pAtk, this._mAtk, this._pStab, this._aspd];
+      relation.map((r) => r.update());
+      return [""].join(",");
     };
-    this._pCd = {
-      baseValue:
+
+    this._int = new modifiers();
+    this._int.update = () => {
+      this._int.baseValue = character.baseInt ?? 0;
+      const relation: modifiers[] = [this._maxMp, this._pAtk, this._mAtk, this._aspd, this._pStab];
+      relation.map((r) => r.update());
+      return [""].join(",");
+    };
+
+    this._vit = new modifiers();
+    this._vit.update = () => {
+      this._vit.baseValue = character.baseVit ?? 0;
+      const relation: modifiers[] = [this._maxHp];
+      relation.map((r) => r.update());
+      return [""].join(",");
+    };
+
+    this._agi = new modifiers();
+    this._agi.update = () => {
+      this._agi.baseValue = character.baseAgi ?? 0;
+      const relation: modifiers[] = [this._pAtk, this._mAtk, this._pStab, this._pCd, this._aspd, this._cspd];
+      relation.map((r) => r.update());
+      return [""].join(",");
+    };
+
+    this._dex = new modifiers();
+    this._dex.update = () => {
+      this._dex.baseValue = character.baseDex ?? 0;
+      const relation: modifiers[] = [this._pAtk, this._mAtk, this._pStab, this._aspd, this._cspd];
+      relation.map((r) => r.update());
+      return [""].join(",");
+    };
+
+    this._luk = new modifiers();
+    this._luk.update = () => {
+      this._luk.baseValue = character.specialAbiType === "LUK" ? character.specialAbiValue ?? 0 : 0;
+      const relation: modifiers[] = [];
+      relation.map((r) => r.update());
+      return [""].join(",");
+    };
+
+    this._tec = new modifiers();
+    this._tec.update = () => {
+      this._tec.baseValue = character.specialAbiType === "TEC" ? character.specialAbiValue ?? 0 : 0;
+      const relation: modifiers[] = [this._maxMp];
+      relation.map((r) => r.update());
+      return [""].join(",");
+    };
+
+    this._men = new modifiers();
+    this._men.update = () => {
+      this._men.baseValue = character.specialAbiType === "MEN" ? character.specialAbiValue ?? 0 : 0;
+      const relation: modifiers[] = [];
+      relation.map((r) => r.update());
+      return [""].join(",");
+    };
+
+    this._cri = new modifiers();
+    this._cri.update = () => {
+      this._cri.baseValue = character.specialAbiType === "CRI" ? character.specialAbiValue ?? 0 : 0;
+      const relation: modifiers[] = [];
+      relation.map((r) => r.update());
+      return [""].join(",");
+    };
+
+    // 二级属性
+    this._maxHp = new modifiers();
+    this._maxHp.update = () => {
+      this._maxHp.baseValue = Math.floor(93 + this.lv * (127 / 17 + dynamicTotalValue(this._vit) / 3));
+      const relation: modifiers[] = [];
+      relation.map((r) => r.update());
+      return [""].join(",");
+    };
+
+    this._maxMp = new modifiers();
+    this._maxMp.update = () => {
+      this._maxMp.baseValue = Math.floor(
+        99 + this.lv + dynamicTotalValue(this._int) / 10 + dynamicTotalValue(this._tec),
+      );
+      const relation: modifiers[] = [];
+      relation.map((r) => r.update());
+      return [""].join(",");
+    };
+
+    this._pCr = new modifiers();
+    this._pCr.update = () => {
+      this._pCr.baseValue = 25 + dynamicTotalValue(this._cri) / 5;
+      const relation: modifiers[] = [];
+      relation.map((r) => r.update());
+      return [""].join(",");
+    };
+
+    this._pCd = new modifiers();
+    this._pCd.update = () => {
+      this._pCd.baseValue =
         150 +
         Math.floor(
           Math.max(dynamicTotalValue(this._str) / 5, dynamicTotalValue(this._str) + dynamicTotalValue(this._agi)) / 10,
-        ),
-      modifiers: {
-        static: {
-          fixed: [],
-          percentage: [],
-        },
-        dynamic: {
-          fixed: [],
-          percentage: [],
-        },
-      },
+        );
+      const relation: modifiers[] = [];
+      relation.map((r) => r.update());
+      return [""].join(",");
     };
-    this._mainWeaponAtk = {
-      baseValue: Math.floor(dynamicTotalValue(this.mainWeapon._baseAtk)),
-      modifiers: {
-        static: {
-          fixed: [
-            {
-              value: this.mainWeapon.refinement,
-              origin: dictionary.ui.analyze.dialogData.mainWeapon.refinement,
-            },
-          ],
-          percentage: [
-            {
-              value: Math.pow(this.mainWeapon.refinement, 2),
-              origin: dictionary.ui.analyze.dialogData.mainWeapon.refinement,
-            },
-          ],
-        },
-        dynamic: {
-          fixed: [],
-          percentage: [],
-        },
-      },
+
+    this._mainWeaponAtk = new modifiers();
+    this._mainWeaponAtk.update = () => {
+      this._mainWeaponAtk.baseValue = dynamicTotalValue(this.mainWeapon._baseAtk);
+      this._mainWeaponAtk.modifiers.static.fixed[0] = {
+        value: this.mainWeapon.refinement,
+        origin: dictionary.ui.analyze.dialogData.mainWeapon.refinement,
+      };
+      this._mainWeaponAtk.modifiers.static.percentage[0] = {
+        value: Math.pow(this.mainWeapon.refinement, 2),
+        origin: dictionary.ui.analyze.dialogData.mainWeapon.refinement,
+      };
+      const relation: modifiers[] = [];
+      relation.map((r) => r.update());
+      return [""].join(",");
     };
-    this._subWeaponAtk = {
-      baseValue: dynamicTotalValue(this.subWeapon._baseAtk),
-      modifiers: {
-        static: {
-          fixed: [],
-          percentage: [],
-        },
-        dynamic: {
-          fixed: [],
-          percentage: [],
-        },
-      },
+
+    this._subWeaponAtk = new modifiers();
+    this._subWeaponAtk.update = () => {
+      this._subWeaponAtk.baseValue = dynamicTotalValue(this.subWeapon._baseAtk);
+      const relation: modifiers[] = [];
+      relation.map((r) => r.update());
+      return [""].join(",");
     };
-    this._weaponAtk = {
-      baseValue: 0,
-      modifiers: {
-        static: {
-          fixed: [],
-          percentage: [],
-        },
-        dynamic: {
-          fixed: [],
-          percentage: [],
-        },
-      },
+
+    this._weaponAtk = new modifiers();
+    this._weaponAtk.update = () => {
+      this._weaponAtk.baseValue = dynamicTotalValue(this._mainWeaponAtk) + dynamicTotalValue(this._subWeaponAtk);
+      const relation: modifiers[] = [this._pAtk, this._mAtk];
+      relation.map((r) => r.update());
+      return [""].join(",");
     };
-    this._pAtk = {
-      baseValue:
+    this._pAtk = new modifiers();
+    this._pAtk.update = () => {
+      this._pAtk.baseValue =
         this.lv +
-        dynamicTotalValue(this._mainWeaponAtk) +
+        dynamicTotalValue(this._weaponAtk) * dynamicTotalValue(this._weaPatkT) +
         CharacterData.weaponAbiT[mainWeaponType].abi_Attr_Convert.str.pAtkT * dynamicTotalValue(this._str) +
         CharacterData.weaponAbiT[mainWeaponType].abi_Attr_Convert.int.pAtkT * dynamicTotalValue(this._int) +
         CharacterData.weaponAbiT[mainWeaponType].abi_Attr_Convert.agi.pAtkT * dynamicTotalValue(this._agi) +
-        CharacterData.weaponAbiT[mainWeaponType].abi_Attr_Convert.dex.pAtkT * dynamicTotalValue(this._dex),
-      modifiers: {
-        static: {
-          fixed: [],
-          percentage: [],
-        },
-        dynamic: {
-          fixed: [],
-          percentage: [],
-        },
-      },
+        CharacterData.weaponAbiT[mainWeaponType].abi_Attr_Convert.dex.pAtkT * dynamicTotalValue(this._dex);
+      const relation: modifiers[] = [];
+      relation.map((r) => r.update());
+      return [""].join(",");
     };
-    this._mAtk = {
-      baseValue:
+
+    this._mAtk = new modifiers();
+    this._mAtk.update = () => {
+      this._mAtk.baseValue =
         this.lv +
-        dynamicTotalValue(this._weaMatkT) * dynamicTotalValue(this._mainWeaponAtk) +
+        dynamicTotalValue(this._weaponAtk) * dynamicTotalValue(this._weaMatkT) +
         CharacterData.weaponAbiT[mainWeaponType].abi_Attr_Convert.str.mAtkT * dynamicTotalValue(this._str) +
         CharacterData.weaponAbiT[mainWeaponType].abi_Attr_Convert.int.mAtkT * dynamicTotalValue(this._int) +
         CharacterData.weaponAbiT[mainWeaponType].abi_Attr_Convert.agi.mAtkT * dynamicTotalValue(this._agi) +
-        CharacterData.weaponAbiT[mainWeaponType].abi_Attr_Convert.dex.mAtkT * dynamicTotalValue(this._dex),
-      // 武器攻击力在后续附加
-      modifiers: {
-        static: {
-          fixed: [],
-          percentage: [],
-        },
-        dynamic: {
-          fixed: [],
-          percentage: [],
-        },
-      },
+        CharacterData.weaponAbiT[mainWeaponType].abi_Attr_Convert.dex.mAtkT * dynamicTotalValue(this._dex);
+      const relation: modifiers[] = [];
+      relation.map((r) => r.update());
+      return [""].join(",");
     };
-    this._aspd = {
-      baseValue:
+
+    this._aspd = new modifiers();
+    this._aspd.update = () => {
+      this._aspd.baseValue =
         CharacterData.weaponAbiT[mainWeaponType].baseAspd +
         this.lv +
         CharacterData.weaponAbiT[mainWeaponType].abi_Attr_Convert.str.aspdT * dynamicTotalValue(this._str) +
         CharacterData.weaponAbiT[mainWeaponType].abi_Attr_Convert.int.aspdT * dynamicTotalValue(this._int) +
         CharacterData.weaponAbiT[mainWeaponType].abi_Attr_Convert.agi.aspdT * dynamicTotalValue(this._agi) +
-        CharacterData.weaponAbiT[mainWeaponType].abi_Attr_Convert.dex.aspdT * dynamicTotalValue(this._dex),
-      modifiers: {
-        static: {
-          fixed: [],
-          percentage: [],
-        },
-        dynamic: {
-          fixed: [],
-          percentage: [],
-        },
-      },
-    };
-    this._cspd = {
-      baseValue: dynamicTotalValue(this._dex) * 2.94 + dynamicTotalValue(this._agi) * 1.16,
-      modifiers: {
-        static: {
-          fixed: [],
-          percentage: [],
-        },
-        dynamic: {
-          fixed: [],
-          percentage: [],
-        },
-      },
+        CharacterData.weaponAbiT[mainWeaponType].abi_Attr_Convert.dex.aspdT * dynamicTotalValue(this._dex);
+      const relation: modifiers[] = [this._am];
+      relation.map((r) => r.update());
+      return [""].join(",");
     };
 
-    this._pPie = {
-      baseValue: 0,
-      modifiers: {
-        static: {
-          fixed: [],
-          percentage: [],
-        },
-        dynamic: {
-          fixed: [],
-          percentage: [],
-        },
-      },
-    };
-    this._mPie = {
-      baseValue: 0,
-      modifiers: {
-        static: {
-          fixed: [],
-          percentage: [],
-        },
-        dynamic: {
-          fixed: [],
-          percentage: [],
-        },
-      },
-    };
-    this._pStab = {
-      baseValue: 0,
-      modifiers: {
-        static: {
-          fixed: [
-            {
-              value: character.mainWeapon?.stability ?? 0,
-              origin: dictionary.ui.analyze.dialogData.mainWeapon.stability,
-            },
-            {
-              value:
-                floor(
-                  CharacterData.weaponAbiT[mainWeaponType].abi_Attr_Convert.str.stabT * dynamicTotalValue(this._str) +
-                    CharacterData.weaponAbiT[mainWeaponType].abi_Attr_Convert.int.stabT * dynamicTotalValue(this._int) +
-                    CharacterData.weaponAbiT[mainWeaponType].abi_Attr_Convert.agi.stabT * dynamicTotalValue(this._agi) +
-                    CharacterData.weaponAbiT[mainWeaponType].abi_Attr_Convert.dex.stabT * dynamicTotalValue(this._dex),
-                ) ?? 0,
-              origin: [
-                dictionary.ui.analyze.dialogData._str,
-                dictionary.ui.analyze.dialogData._int,
-                dictionary.ui.analyze.dialogData._agi,
-                dictionary.ui.analyze.dialogData._dex,
-              ].join(" + "),
-            },
-          ],
-          percentage: [],
-        },
-        dynamic: {
-          fixed: [],
-          percentage: [],
-        },
-      },
-    };
-    this._nDis = {
-      baseValue: 100,
-      modifiers: {
-        static: {
-          fixed: [],
-          percentage: [],
-        },
-        dynamic: {
-          fixed: [],
-          percentage: [],
-        },
-      },
-    };
-    this._fDis = {
-      baseValue: 100,
-      modifiers: {
-        static: {
-          fixed: [],
-          percentage: [],
-        },
-        dynamic: {
-          fixed: [],
-          percentage: [],
-        },
-      },
-    };
-    this._crT = {
-      baseValue: 0,
-      modifiers: {
-        static: {
-          fixed: [],
-          percentage: [],
-        },
-        dynamic: {
-          fixed: [],
-          percentage: [],
-        },
-      },
-    };
-    this._cdT = {
-      baseValue: 50,
-      modifiers: {
-        static: {
-          fixed: [],
-          percentage: [],
-        },
-        dynamic: {
-          fixed: [],
-          percentage: [],
-        },
-      },
-    };
-    this._stro = {
-      baseValue: 100,
-      modifiers: {
-        static: {
-          fixed: [],
-          percentage: [],
-        },
-        dynamic: {
-          fixed: [],
-          percentage: [],
-        },
-      },
-    };
-    this._unsheatheAtk = {
-      baseValue: 100,
-      modifiers: {
-        static: {
-          fixed: [],
-          percentage: [],
-        },
-        dynamic: {
-          fixed: [],
-          percentage: [],
-        },
-      },
-    };
-    this._total = {
-      baseValue: 100,
-      modifiers: {
-        static: {
-          fixed: [],
-          percentage: [],
-        },
-        dynamic: {
-          fixed: [],
-          percentage: [],
-        },
-      },
-    };
-    this._final = {
-      baseValue: 100,
-      modifiers: {
-        static: {
-          fixed: [],
-          percentage: [],
-        },
-        dynamic: {
-          fixed: [],
-          percentage: [],
-        },
-      },
-    };
-    this._am = {
-      baseValue: 0,
-      modifiers: {
-        static: {
-          fixed: [
-            {
-              value: max(0, floor((dynamicTotalValue(this._aspd) - 1000) / 180)),
-              origin: dictionary.ui.analyze.dialogData._aspd,
-            },
-          ],
-          percentage: [],
-        },
-        dynamic: {
-          fixed: [],
-          percentage: [],
-        },
-      },
-    };
-    this._cm = {
-      baseValue: 0,
-      modifiers: {
-        static: {
-          fixed: [
-            {
-              value: min(
-                50 + floor((dynamicTotalValue(this._cspd) - 1000) / 180),
-                floor(dynamicTotalValue(this._cspd) / 20),
-              ),
-              origin: dictionary.ui.analyze.dialogData._cspd,
-            },
-          ],
-          percentage: [],
-        },
-        dynamic: {
-          fixed: [],
-          percentage: [],
-        },
-      },
-    };
-    this._aggro = {
-      baseValue: 100,
-      modifiers: {
-        static: {
-          fixed: [],
-          percentage: [],
-        },
-        dynamic: {
-          fixed: [],
-          percentage: [],
-        },
-      },
-    };
-    this._anticipate = {
-      baseValue: 0,
-      modifiers: {
-        static: {
-          fixed: [],
-          percentage: [],
-        },
-        dynamic: {
-          fixed: [],
-          percentage: [],
-        },
-      },
+    this._cspd = new modifiers();
+    this._cspd.update = () => {
+      this._cspd.baseValue = dynamicTotalValue(this._dex) * 2.94 + dynamicTotalValue(this._agi) * 1.16;
+      const relation: modifiers[] = [this._cm];
+      relation.map((r) => r.update());
+      return [""].join(",");
     };
 
-    this._hp = {
-      baseValue: dynamicTotalValue(this._maxHp),
-      modifiers: {
-        static: {
-          fixed: [],
-          percentage: [],
-        },
-        dynamic: {
-          fixed: [],
-          percentage: [],
-        },
-      },
+    // 系统属性
+    this._pPie = new modifiers();
+    this._pPie.update = () => {
+      this._pPie.baseValue = 0;
+      const relation: modifiers[] = [];
+      relation.map((r) => r.update());
+      return [""].join(",");
     };
-    this._mp = {
-      baseValue: dynamicTotalValue(this._maxMp),
-      modifiers: {
-        static: {
-          fixed: [],
-          percentage: [],
-        },
-        dynamic: {
-          fixed: [],
-          percentage: [],
-        },
-      },
+    this._pPie.update();
+
+    this._mPie = new modifiers();
+    this._mPie.update = () => {
+      this._mPie.baseValue = 0;
+      const relation: modifiers[] = [];
+      relation.map((r) => r.update());
+      return [""].join(",");
     };
-    this._ampr = {
-      baseValue: 10 + dynamicTotalValue(this._maxMp) / 10,
-      modifiers: {
-        static: {
-          fixed: [],
-          percentage: [],
-        },
-        dynamic: {
-          fixed: [],
-          percentage: [],
-        },
-      },
+    this._mPie.update();
+
+    this._pStab = new modifiers();
+    this._pStab.update = () => {
+      this._pStab.baseValue = 0;
+      this._pStab.modifiers.static.fixed[0] = {
+        value: character.mainWeapon?.stability ?? 0,
+        origin: dictionary.ui.analyze.dialogData.mainWeapon.stability,
+      };
+      this._pStab.modifiers.static.fixed[1] = {
+        value:
+          floor(
+            CharacterData.weaponAbiT[mainWeaponType].abi_Attr_Convert.str.stabT * dynamicTotalValue(this._str) +
+              CharacterData.weaponAbiT[mainWeaponType].abi_Attr_Convert.int.stabT * dynamicTotalValue(this._int) +
+              CharacterData.weaponAbiT[mainWeaponType].abi_Attr_Convert.agi.stabT * dynamicTotalValue(this._agi) +
+              CharacterData.weaponAbiT[mainWeaponType].abi_Attr_Convert.dex.stabT * dynamicTotalValue(this._dex),
+          ) ?? 0,
+        origin: [
+          dictionary.ui.analyze.dialogData._str,
+          dictionary.ui.analyze.dialogData._int,
+          dictionary.ui.analyze.dialogData._agi,
+          dictionary.ui.analyze.dialogData._dex,
+        ].join(" + "),
+      };
+      const relation: modifiers[] = [];
+      relation.map((r) => r.update());
+      return [""].join(",");
     };
+    this._pStab.update();
+
+    this._nDis = new modifiers();
+    this._nDis.update = () => {
+      this._nDis.baseValue = 100;
+      const relation: modifiers[] = [];
+      relation.map((r) => r.update());
+      return [""].join(",");
+    };
+    this._nDis.update();
+
+    this._fDis = new modifiers();
+    this._fDis.update = () => {
+      this._fDis.baseValue = 100;
+      const relation: modifiers[] = [];
+      relation.map((r) => r.update());
+      return [""].join(",");
+    };
+    this._fDis.update();
+
+    this._crT = new modifiers();
+    this._crT.update = () => {
+      this._crT.baseValue = 0;
+      const relation: modifiers[] = [];
+      relation.map((r) => r.update());
+      return [""].join(",");
+    };
+    this._crT.update();
+
+    this._cdT = new modifiers();
+    this._cdT.update = () => {
+      this._cdT.baseValue = 50;
+      const relation: modifiers[] = [];
+      relation.map((r) => r.update());
+      return [""].join(",");
+    };
+    this._cdT.update();
+
+    this._stro = new modifiers();
+    this._stro.update = () => {
+      this._stro.baseValue = 100;
+      const relation: modifiers[] = [];
+      relation.map((r) => r.update());
+      return [""].join(",");
+    };
+    this._stro.update();
+
+    this._unsheatheAtk = new modifiers();
+    this._unsheatheAtk.update = () => {
+      this._unsheatheAtk.baseValue = 100;
+      const relation: modifiers[] = [];
+      relation.map((r) => r.update());
+      return [""].join(",");
+    };
+    this._unsheatheAtk.update();
+
+    this._total = new modifiers();
+    this._total.update = () => {
+      this._total.baseValue = 100;
+      const relation: modifiers[] = [];
+      relation.map((r) => r.update());
+      return [""].join(",");
+    };
+    this._total.update();
+
+    this._final = new modifiers();
+    this._final.update = () => {
+      this._final.baseValue = 100;
+      const relation: modifiers[] = [];
+      relation.map((r) => r.update());
+      return [""].join(",");
+    };
+    this._final.update();
+
+    this._anticipate = new modifiers();
+    this._anticipate.update = () => {
+      this._anticipate.baseValue = 0;
+      const relation: modifiers[] = [];
+      relation.map((r) => r.update());
+      return [""].join(",");
+    };
+
+    // 三级属性
+    this._am = new modifiers();
+    this._am.update = () => {
+      this._am.baseValue = 0;
+      this._am.modifiers.static.fixed[0] = {
+        value: max(0, floor((dynamicTotalValue(this._aspd) - 1000) / 180)),
+        origin: dictionary.ui.analyze.dialogData._aspd,
+      };
+      const relation: modifiers[] = [];
+      relation.map((r) => r.update());
+      return [""].join(",");
+    };
+
+    this._cm = new modifiers();
+    this._cm.update = () => {
+      this._cm.baseValue = 0;
+      this._cm.modifiers.static.fixed[0] = {
+        value: min(50 + floor((dynamicTotalValue(this._cspd) - 1000) / 180), floor(dynamicTotalValue(this._cspd) / 20)),
+        origin: dictionary.ui.analyze.dialogData._cspd,
+      };
+      const relation: modifiers[] = [];
+      relation.map((r) => r.update());
+      return [""].join(",");
+    };
+
+    this._aggro = new modifiers();
+    this._aggro.update = () => {
+      this._aggro.baseValue = 100;
+      const relation: modifiers[] = [];
+      relation.map((r) => r.update());
+      return [""].join(",");
+    };
+
+    this._ampr = new modifiers();
+    this._ampr.update = () => {
+      this._ampr.baseValue = 10 + dynamicTotalValue(this._maxMp) / 10;
+      const relation: modifiers[] = [];
+      relation.map((r) => r.update());
+      return [""].join(",");
+    };
+
+    // 状态记录
+    this._hp = new modifiers();
+    this._hp.update = () => {
+      this._hp.baseValue = dynamicTotalValue(this._maxHp);
+      const relation: modifiers[] = [];
+      relation.map((r) => r.update());
+      return [""].join(",");
+    };
+
+    this._mp = new modifiers();
+    this._mp.update = () => {
+      this._mp.baseValue = dynamicTotalValue(this._maxMp);
+      const relation: modifiers[] = [];
+      relation.map((r) => r.update());
+      return [""].join(",");
+    };
+
     // 添加加成项
     characterModifiersApplicator(character, this);
-    console.log("实例化完毕，this：", this);
-  }
+    // 初始化
+    this._weaPatkT.update();
+    this._weaMatkT.update();
+    this.mainWeapon._baseAtk.update();
+    this.subWeapon._baseAtk.update();
+    this.bodyArmor._baseDef.update();
+    this._str.update();
+    this._int.update();
+    this._vit.update();
+    this._agi.update();
+    this._dex.update();
+    this._luk.update();
+    this._tec.update();
+    this._men.update();
+    this._cri.update();
 
-  set __int(m: modifiers) {
-    this._int = m;
-    this._mAtk.baseValue =
-      this.lv +
-      dynamicTotalValue(this._weaMatkT) * dynamicTotalValue(this._mainWeaponAtk) +
-      CharacterData.weaponAbiT[this.mainWeapon.type].abi_Attr_Convert.str.mAtkT * dynamicTotalValue(this._str) +
-      CharacterData.weaponAbiT[this.mainWeapon.type].abi_Attr_Convert.int.mAtkT * dynamicTotalValue(this._int) +
-      CharacterData.weaponAbiT[this.mainWeapon.type].abi_Attr_Convert.agi.mAtkT * dynamicTotalValue(this._agi) +
-      CharacterData.weaponAbiT[this.mainWeapon.type].abi_Attr_Convert.dex.mAtkT * dynamicTotalValue(this._dex);
-  }
+    this._maxHp.update();
+    this._maxMp.update();
+    this._pCr.update();
+    this._pCd.update();
+    this._mainWeaponAtk.update();
+    this._subWeaponAtk.update();
+    this._weaponAtk.update();
+    this._pAtk.update();
+    this._mAtk.update();
+    this._aspd.update();
+    this._cspd.update();
 
-  // get str() {
-  //   return dynamicTotalValue(this._str);
-  // }
-  // get int() {
-  //   return dynamicTotalValue(this._int);
-  // }
-  // get vit() {
-  //   return dynamicTotalValue(this._vit);
-  // }
-  // get dex() {
-  //   return dynamicTotalValue(this._dex);
-  // }
-  // get agi() {
-  //   return dynamicTotalValue(this._agi);
-  // }
-  // get luk() {
-  //   return dynamicTotalValue(this._luk);
-  // }
-  // get tec() {
-  //   return dynamicTotalValue(this._tec);
-  // }
-  // get cri() {
-  //   return dynamicTotalValue(this._cri);
-  // }
-  // get men() {
-  //   return dynamicTotalValue(this._men);
-  // }
-  // get mainWeaponType() {
-  //   return this.mainWeapon.type;
-  // }
-  // get mainWeaponBaseAtk() {
-  //   return dynamicTotalValue(this.mainWeapon._baseAtk);
-  // }
-  // get mainWeaponRefinement() {
-  //   return this.mainWeapon.refinement;
-  // }
-  // get mainWeaponStability() {
-  //   return this.mainWeapon.stability;
-  // }
-  // get subWeaponType() {
-  //   return this.subWeapon.type;
-  // }
-  // get subWeaponBaseAtk() {
-  //   return dynamicTotalValue(this.subWeapon._baseAtk);
-  // }
-  // get subWeaponRefinement() {
-  //   return this.subWeapon.refinement;
-  // }
-  // get subWeaponStability() {
-  //   return this.subWeapon.stability;
-  // }
-  // get bodyArmorType() {
-  //   return this.bodyArmor.type;
-  // }
-  // get bodyArmorBaseDef() {
-  //   return dynamicTotalValue(this.bodyArmor._baseDef);
-  // }
-  // get bodyArmorRefinement() {
-  //   return this.bodyArmor.refinement;
-  // }
-  // get pPie() {
-  //   return dynamicTotalValue(this._pPie);
-  // }
-  // get mPie() {
-  //   return dynamicTotalValue(this._mPie);
-  // }
-  // get pStab() {
-  //   return dynamicTotalValue(this._pStab);
-  // }
-  // get nDis() {
-  //   return dynamicTotalValue(this._nDis);
-  // }
-  // get fDis() {
-  //   return dynamicTotalValue(this._fDis);
-  // }
-  // get crT() {
-  //   return dynamicTotalValue(this._crT);
-  // }
-  // get cdT() {
-  //   return dynamicTotalValue(this._cdT);
-  // }
-  // get weaMatkT() {
-  //   return dynamicTotalValue(this._weaMatkT);
-  // }
-  // get stro() {
-  //   return dynamicTotalValue(this._stro);
-  // }
-  // get unsheatheAtk() {
-  //   return dynamicTotalValue(this._unsheatheAtk);
-  // }
-  // get total() {
-  //   return dynamicTotalValue(this._total);
-  // }
-  // get final() {
-  //   return dynamicTotalValue(this._final);
-  // }
-  // get am() {
-  //   return dynamicTotalValue(this._am);
-  // }
-  // get cm() {
-  //   return dynamicTotalValue(this._cm);
-  // }
-  // get aggro() {
-  //   return dynamicTotalValue(this._aggro);
-  // }
-  // get maxHp() {
-  //   return dynamicTotalValue(this._maxHp);
-  // }
-  // get maxMp() {
-  //   return dynamicTotalValue(this._maxMp);
-  // }
-  // get pCr() {
-  //   return dynamicTotalValue(this._pCr);
-  // }
-  // get pCd() {
-  //   return dynamicTotalValue(this._pCd);
-  // }
-  // get mainWeaponAtk() {
-  //   return dynamicTotalValue(this._mainWeaponAtk);
-  // }
-  // get subWeaponAtk() {
-  //   return dynamicTotalValue(this._subWeaponAtk);
-  // }
-  // get weaponAtk() {
-  //   return dynamicTotalValue(this._weaponAtk);
-  // }
-  // get pAtk() {
-  //   return dynamicTotalValue(this._pAtk);
-  // }
-  // get mAtk() {
-  //   return dynamicTotalValue(this._mAtk);
-  // }
-  // get aspd() {
-  //   return dynamicTotalValue(this._aspd);
-  // }
-  // get cspd() {
-  //   return dynamicTotalValue(this._cspd);
-  // }
-  // get hp() {
-  //   return dynamicTotalValue(this._hp);
-  // }
-  // get mp() {
-  //   return dynamicTotalValue(this._mp);
-  // }
-  // get ampr() {
-  //   return dynamicTotalValue(this._ampr);
-  // }
+    this._am.update();
+    this._cm.update();
+    this._aggro.update();
+    this._ampr.update();
+
+    this._hp.update();
+    this._mp.update();
+
+    console.log("实例化完毕，this：", _.cloneDeep(this));
+  }
 }
 
 export class MonsterData {
@@ -1678,6 +1360,7 @@ export class MonsterData {
           percentage: [],
         },
       },
+      update: () => "",
     };
     this._pDef = {
       baseValue: monster.physicalDefense ?? 0,
@@ -1691,6 +1374,7 @@ export class MonsterData {
           percentage: [],
         },
       },
+      update: () => "",
     };
     this._pRes = {
       baseValue: monster.physicalResistance ?? 0,
@@ -1704,6 +1388,7 @@ export class MonsterData {
           percentage: [],
         },
       },
+      update: () => "",
     };
     this._mDef = {
       baseValue: monster.magicalDefense ?? 0,
@@ -1717,6 +1402,7 @@ export class MonsterData {
           percentage: [],
         },
       },
+      update: () => "",
     };
     this._mRes = {
       baseValue: monster.magicalResistance ?? 0,
@@ -1730,6 +1416,7 @@ export class MonsterData {
           percentage: [],
         },
       },
+      update: () => "",
     };
     this._cRes = {
       baseValue: monster.criticalResistance ?? 0,
@@ -1743,6 +1430,7 @@ export class MonsterData {
           percentage: [],
         },
       },
+      update: () => "",
     };
   }
 }
@@ -1844,8 +1532,8 @@ export class SkillData {
       const stateFrames: stateFrameData[] = [{ character, monster }];
       for (let frame = 0; frame < this.skillDuration; frame++) {
         computeArg.s.frame = frame;
-
         eventSequence = frameData(passedFrames + frame, character, monster, computeArg, eventSequence);
+        // console.log("-----------------当前技能帧", frame,"当前角色属性：", _.cloneDeep(character));
         stateFrames.push({
           character: _.cloneDeep(character),
           monster: _.cloneDeep(monster),
@@ -1873,6 +1561,7 @@ export class SkillData {
           percentage: [],
         },
       },
+      update: () => "",
     };
     computeArg.s.am = dynamicTotalValue(this._am);
     this._cm = {
@@ -1887,6 +1576,7 @@ export class SkillData {
           percentage: [],
         },
       },
+      update: () => "",
     };
     computeArg.s.cm = dynamicTotalValue(this._cm);
     // this.actionFixedDurationFormula = skill.skillEffect.actionBaseDurationFormula;
@@ -1905,6 +1595,7 @@ export class SkillData {
           percentage: [],
         },
       },
+      update: () => "",
     };
     this._actionModifiableDuration = {
       baseValue: math.evaluate(skill.skillEffect.actionModifiableDurationFormula, computeArg) as number,
@@ -1918,6 +1609,7 @@ export class SkillData {
           percentage: [],
         },
       },
+      update: () => "",
     };
     this._chantingFixedDuration = {
       baseValue: math.evaluate(skill.skillEffect.chantingBaseDurationFormula, computeArg) as number,
@@ -1931,6 +1623,7 @@ export class SkillData {
           percentage: [],
         },
       },
+      update: () => "",
     };
     this._chantingModifiableDuration = {
       baseValue: math.evaluate(skill.skillEffect.chantingModifiableDurationFormula, computeArg) as number,
@@ -1944,6 +1637,7 @@ export class SkillData {
           percentage: [],
         },
       },
+      update: () => "",
     };
     this.skillActionFrames = floor(
       dynamicTotalValue(this._actionFixedDuration) +
@@ -1986,29 +1680,6 @@ export class SkillData {
     // 计算与帧相关的技能效果参数
     this.stateFramesData = stateFrameComputer(character, monster, computeArg, eventSequence);
   }
-
-  // get am() {
-  //   return dynamicTotalValue(this._am);
-  // }
-  // get cm() {
-  //   return dynamicTotalValue(this._cm);
-  // }
-
-  // get actionBaseDuration() {
-  //   return math.evaluate(this.actionFixedDurationFormula, this.s) as number;
-  // }
-
-  // get actionModifiableDuration() {
-  //   return math.evaluate(this.actionModifiableDurationFormula, this.s) as number;
-  // }
-
-  // get chantingBaseDuration() {
-  //   return math.evaluate(this.chantingFixedDurationFormula, this.s) as number;
-  // }
-
-  // get chantingModifiableDuration() {
-  //   return math.evaluate(this.chantingModifiableDurationFormula, this.s) as number;
-  // }
 }
 
 const frameData = (
@@ -2041,7 +1712,7 @@ const frameData = (
   }
 
   // 执行并更新事件队列
-  console.log("执行事件过滤前，事件队列为：", eventSequence);
+  // console.log("执行事件过滤前，事件队列为：", eventSequence);
   eventSequence = eventSequence.filter((event, index) => {
     console.log("第 " + frame + " 帧的第 " + index + " 个事件：", event);
     if (cEvaluate(event.condition)) {
@@ -2153,6 +1824,8 @@ const frameData = (
                           console.log("第3部分为空");
                         }
                         console.log("修改后的属性值为：", target);
+                        // 更新相关值
+                        console.log("将更新：" + target.update());
                       } else if (_.get(computeArg, targetStr) !== undefined) {
                         console.log("最终路径：", "computeArg." + targetStr);
                         // 如果在计算上下文中寻找了对应的自定属性
@@ -2243,7 +1916,7 @@ const frameData = (
       return true;
     }
   });
-  console.log("执行事件过滤后，事件队列为：", eventSequence);
+  // console.log("执行事件过滤后，事件队列为：", eventSequence);
   return _.cloneDeep(eventSequence);
 };
 
@@ -2258,6 +1931,12 @@ export const computeFrameData = (
   const computeArg: computeArgType = {
     frame: 0,
     p: {
+      get cspd() {
+        return dynamicTotalValue(characterData._cspd);
+      },
+      get cm() {
+        return dynamicTotalValue(characterData._cm);
+      },
       get lv() {
         return characterData.lv;
       },
@@ -2360,9 +2039,6 @@ export const computeFrameData = (
       get am() {
         return dynamicTotalValue(characterData._am);
       },
-      get cm() {
-        return dynamicTotalValue(characterData._cm);
-      },
       get aggro() {
         return dynamicTotalValue(characterData._aggro);
       },
@@ -2395,9 +2071,6 @@ export const computeFrameData = (
       },
       get aspd() {
         return dynamicTotalValue(characterData._aspd);
-      },
-      get cspd() {
-        return dynamicTotalValue(characterData._cspd);
       },
       get hp() {
         return dynamicTotalValue(characterData._hp);
@@ -2492,7 +2165,9 @@ self.onmessage = (e: MessageEvent<analyzeWorkerInput>) => {
           // 发送结果
           self.postMessage({
             type: "success",
-            computeResult: result,
+            // 需要过滤掉其中的函数属性
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+            computeResult: JSON.parse(JSON.stringify(result)),
           } satisfies analyzeWorkerOutput);
         }
       }
