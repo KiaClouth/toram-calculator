@@ -1700,7 +1700,8 @@ const frameData = (
   computeArg.frame = frame;
   // 封装当前状态的公式计算方法
   const cEvaluate = (formula: string) => {
-    console.log("表达式为：", formula, "计算环境为：", JSON.parse(JSON.stringify(computeArg)))
+    // console.log("表达式为：", formula, "计算环境为：", JSON.parse(JSON.stringify(computeArg)))
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     return math.evaluate(formula, { ...JSON.parse(JSON.stringify(computeArg)) }) as number | void;
   };
 
