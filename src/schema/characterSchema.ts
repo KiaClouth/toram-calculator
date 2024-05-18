@@ -58,19 +58,6 @@ export const ComboInputSchema = ComboSchema.extend({
   comboStep: z.array(ComboStepsInputSchema),
 });
 
-//     mainWeapon             MainWeapon          @relation(fields: [mainWeaponId], references: [id])
-//     subWeapon              SubWeapon           @relation(fields: [subWeaponId], references: [id])
-//     bodyArmor              BodyArmor           @relation(fields: [bodyArmorId], references: [id])
-//     additionalEquipment    AdditionalEquipment @relation(fields: [additionalEquipmentId], references: [id])
-//     specialEquipment       SpecialEquipment    @relation(fields: [specialEquipmentId], references: [id])
-//     fashion                ModifiersList       @relation("FashionRelation", fields: [fashionModifiersListId], references: [id])
-//     cuisine                ModifiersList       @relation("CuisineRelation", fields: [CuisineModifiersListId], references: [id])
-//     pet                    Pet                 @relation(fields: [petId], references: [id])
-//     modifiersList          ModifiersList       @relation("ModifiersListRelation", fields: [modifiersListId], references: [id])
-//     skillList              Skill[]
-//     consumableList         Consumable[]
-//     combos                 Combo[]
-
 export const CharacterInputSchema = CharacterSchema.extend({
   mainWeapon: MainWeaponInputSchema,
   subWeapon: SubWeaponInputSchema,

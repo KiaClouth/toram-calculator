@@ -17,7 +17,7 @@ export type MainWeapon = Prisma.MainWeaponGetPayload<{
             modifiers: true;
           };
         };
-        raters: true;
+        rates: true;
       };
     };
   };
@@ -47,7 +47,7 @@ export type BodyArmor = Prisma.BodyArmorGetPayload<{
             modifiers: true;
           };
         };
-        raters: true;
+        rates: true;
       };
     };
   };
@@ -67,7 +67,7 @@ export type AdditionalEquipment = Prisma.AdditionalEquipmentGetPayload<{
             modifiers: true;
           };
         };
-        raters: true;
+        rates: true;
       };
     };
   };
@@ -87,7 +87,7 @@ export type SpecialEquipment = Prisma.SpecialEquipmentGetPayload<{
             modifiers: true;
           };
         };
-        raters: true;
+        rates: true;
       };
     };
   };
@@ -105,7 +105,7 @@ export const equipmentRouter = createTRPCRouter({
     );
     return ctx.db.monster.findMany({
       include: {
-        raters: true,
+        rates: true,
       },
     });
   }),
@@ -122,7 +122,7 @@ export const equipmentRouter = createTRPCRouter({
     return ctx.db.monster.findMany({
       where: { state: "PUBLIC" },
       include: {
-        raters: true,
+        rates: true,
       },
     });
   }),
@@ -142,7 +142,7 @@ export const equipmentRouter = createTRPCRouter({
         state: "PRIVATE",
       },
       include: {
-        raters: true,
+        rates: true,
       },
     });
   }),
@@ -162,14 +162,14 @@ export const equipmentRouter = createTRPCRouter({
           OR: [{ state: "PUBLIC" }, { createdByUserId: ctx.session?.user.id }],
         },
         include: {
-          raters: true,
+          rates: true,
         },
       });
     }
     return ctx.db.monster.findMany({
       where: { state: "PUBLIC" },
       include: {
-        raters: true,
+        rates: true,
       },
     });
   }),
@@ -247,7 +247,7 @@ export const equipmentRouter = createTRPCRouter({
         updatedByUserId: userCreate.userId,
       },
       include: {
-        raters: true,
+        rates: true,
       },
     });
   }),
@@ -298,7 +298,7 @@ export const equipmentRouter = createTRPCRouter({
       where: { id: input.id },
       data: { ...input },
       include: {
-        raters: true,
+        rates: true,
       },
     });
   }),

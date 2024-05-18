@@ -58,7 +58,7 @@ export const defaultMonster: Monster = {
   difficultyOfRanged: 5,
   possibilityOfRunningAround: 0,
   specialBehavior: "",
-  raters: [],
+  rates: [],
   dataSources: "",
   ...defaultStatistics,
 };
@@ -92,7 +92,6 @@ export const defaultSkillEffect: SkillEffect = {
   chantingBaseDurationFormula: "0",
   chantingModifiableDurationFormula: "0",
   skillWindUpFormula: "0",
-  skillRecoveryFormula: "0",
   skillCost: [defaultSkillEffectCost],
   skillYield: [defaultSkillEffectYield],
   belongToskillId: "",
@@ -113,8 +112,8 @@ export const defaultSkill: Skill = {
 };
 
 export const defauleModifier: Modifier = {
-  ModifierId: "",
-  ModifierFormula: "",
+  id: "",
+  formula: "",
 };
 
 export const defaultModifiersList: ModifiersList = {
@@ -127,11 +126,11 @@ export const defaultCrystal: Crystal = {
   id: "",
   state: "PRIVATE",
   name: "",
-  type: "GENERAL",
+  crystalType: "GENERAL",
   front: 0,
   modifiersList: defaultModifiersList,
   modifiersListId: defaultModifiersList.id,
-  raters: [],
+  rates: [],
   ...defaultStatistics,
 };
 
@@ -139,7 +138,7 @@ export const defaultMainWeapon: MainWeapon = {
   id: "",
   state: "PRIVATE",
   name: "",
-  mainWeaType: "MAGIC_DEVICE",
+  mainWeaponType: "MAGIC_DEVICE",
   baseAtk: 0,
   refinement: 0,
   stability: 0,
@@ -154,7 +153,7 @@ export const defaultSubWeapon: SubWeapon = {
   id: "",
   state: "PRIVATE",
   name: "",
-  subWeaType: "NO_WEAPON",
+  subWeaponType: "NO_WEAPON",
   baseAtk: 0,
   refinement: 0,
   stability: 0,
@@ -202,7 +201,7 @@ export const defaultConsumable: Consumable = {
   id: "",
   state: "PUBLIC",
   name: "",
-  raters: [],
+  rates: [],
   modifiersList: defaultModifiersList,
   modifiersListId: defaultModifiersList.id,
   ...defaultStatistics,
@@ -212,7 +211,7 @@ export const defaultPet: Pet = {
   id: "",
   state: "PRIVATE",
   name: null,
-  raters: [],
+  rates: [],
   ...defaultStatistics,
 };
 
@@ -284,6 +283,20 @@ interface AppState {
     setMonsterDialogState: (newState: boolean) => void;
     monsterFormState: "CREATE" | "UPDATE" | "DISPLAY";
     setMonsterFormState: (newState: "CREATE" | "UPDATE" | "DISPLAY") => void;
+    filterState: boolean;
+    setFilterState: (newState: boolean) => void;
+  };
+  crystal: Crystal;
+  setCrystal: (newCrystal: Crystal) => void;
+  crystalPage: {
+    augmented: boolean;
+    setAugmented: (newState: boolean) => void;
+    crystalList: Crystal[];
+    setCrystalList: (newCrystalList: Crystal[]) => void;
+    crystalDialogState: boolean;
+    setCrystalDialogState: (newState: boolean) => void;
+    crystalFormState: "CREATE" | "UPDATE" | "DISPLAY";
+    setCrystalFormState: (newState: "CREATE" | "UPDATE" | "DISPLAY") => void;
     filterState: boolean;
     setFilterState: (newState: boolean) => void;
   };
@@ -379,6 +392,50 @@ export const useStore = create<AppState>()(
           }),
         ),
     },
+    crystal: defaultCrystal,
+    setCrystal: (newCrystal: Crystal) =>
+      set(
+        produce((state: AppState) => {
+          state.crystal = newCrystal;
+        }),
+      ),
+    crystalPage: {
+      augmented: true,
+      setAugmented: (newState: boolean) =>
+        set(
+          produce((state: AppState) => {
+            state.crystalPage.augmented = newState;
+          }),
+        ),
+      crystalList: [],
+      setCrystalList: (newCrystalList: Crystal[]) =>
+        set(
+          produce((state: AppState) => {
+            state.crystalPage.crystalList = newCrystalList;
+          }),
+        ),
+      crystalDialogState: false,
+      setCrystalDialogState: (newState: boolean) =>
+        set(
+          produce((state: AppState) => {
+            state.crystalPage.crystalDialogState = newState;
+          }),
+        ),
+      crystalFormState: "DISPLAY",
+      setCrystalFormState: (newState: "CREATE" | "UPDATE" | "DISPLAY") =>
+        set(
+          produce((state: AppState) => {
+            state.crystalPage.crystalFormState = newState;
+          }),
+        ),
+      filterState: false,
+      setFilterState: (newState: boolean) =>
+        set(
+          produce((state: AppState) => {
+            state.crystalPage.filterState = newState;
+          }),
+        ),
+    },
     skillPage: {
       skillList: [],
       setSkillList: (newSkillList: Skill[]) =>
@@ -419,12 +476,6 @@ export const useStore = create<AppState>()(
     character: defaultCharacter,
     setCharacter: (newCharacter: Character) =>
       set(
-        // (state) => ({ // 笨比写法
-        //   characterPage: {
-        //     ...state.characterPage,
-        //     character: newCharacter,
-        //   }
-        // })
         produce((state: AppState) => {
           state.character = newCharacter;
         }),
@@ -537,7 +588,7 @@ export const test = {
       id: "",
       state: "PRIVATE",
       name: "暴击残酷之翼",
-      mainWeaType: "MAGIC_DEVICE",
+      mainWeaponType: "MAGIC_DEVICE",
       baseAtk: 194,
       refinement: 15,
       stability: 70,
@@ -547,60 +598,60 @@ export const test = {
           id: "",
           state: "PRIVATE",
           name: "寄生甲兽",
-          type: "WEAPONCRYSTAL",
+          crystalType: "WEAPONCRYSTAL",
           front: 0,
           modifiersList: {
             id: "",
-            name: "寄生甲兽属性",
+            name: "寄生甲兽",
             modifiers: [
               {
-                ModifierId: "",
-                ModifierFormula: "mAtk + 5%",
+                id: "",
+                formula: "mAtk + 5%",
               },
               {
-                ModifierId: "",
-                ModifierFormula: "mPie + 20",
+                id: "",
+                formula: "mPie + 20",
               },
               {
-                ModifierId: "",
-                ModifierFormula: "cspd - 15%",
+                id: "",
+                formula: "cspd - 15%",
               },
             ],
           },
           modifiersListId: "",
-          raters: [],
+          rates: [],
           ...defaultStatistics,
         },
         {
           id: "",
           state: "PRIVATE",
           name: "死灵妖兔II",
-          type: "WEAPONCRYSTAL",
+          crystalType: "WEAPONCRYSTAL",
           front: 1,
           modifiersList: {
             id: "",
-            name: "死灵妖兔II属性",
+            name: "死灵妖兔II",
             modifiers: [
               {
-                ModifierId: "",
-                ModifierFormula: "mAtk + isMAGIC_DEVICE(mainWeapon) ?  7 : 0 %",
+                id: "",
+                formula: "mAtk + isMAGIC_DEVICE(mainWeapon) ?  7 : 0 %",
               },
               {
-                ModifierId: "",
-                ModifierFormula: "cspd + 14%",
+                id: "",
+                formula: "cspd + 14%",
               },
               {
-                ModifierId: "",
-                ModifierFormula: "maxHp - 15%",
+                id: "",
+                formula: "maxHp - 15%",
               },
               {
-                ModifierId: "",
-                ModifierFormula: "am + 3",
+                id: "",
+                formula: "am + 3",
               },
             ],
           },
           modifiersListId: "",
-          raters: [],
+          rates: [],
           ...defaultStatistics,
         },
       ],
@@ -609,8 +660,8 @@ export const test = {
         name: "暴击残酷之翼属性",
         modifiers: [
           {
-            ModifierId: "",
-            ModifierFormula: "",
+            id: "",
+            formula: "",
           },
         ],
       },
@@ -622,7 +673,7 @@ export const test = {
       id: "",
       state: "PRIVATE",
       name: "忍术卷轴·风遁术",
-      subWeaType: "NO_WEAPON",
+      subWeaponType: "NO_WEAPON",
       baseAtk: 0,
       refinement: 0,
       stability: 0,
@@ -632,8 +683,8 @@ export const test = {
         name: "忍术卷轴·风遁术属性",
         modifiers: [
           {
-            ModifierId: "",
-            ModifierFormula: "",
+            id: "",
+            formula: "",
           },
         ],
       },
@@ -653,40 +704,40 @@ export const test = {
           id: "",
           state: "PRIVATE",
           name: "铁之女帝",
-          type: "GENERAL",
+          crystalType: "GENERAL",
           front: 0,
           modifiersList: {
             id: "",
             name: "铁之女帝属性",
             modifiers: [
               {
-                ModifierId: "",
-                ModifierFormula: "",
+                id: "",
+                formula: "",
               },
             ],
           },
           modifiersListId: "",
-          raters: [],
+          rates: [],
           ...defaultStatistics,
         },
         {
           id: "",
           state: "PRIVATE",
           name: "约尔拉兹",
-          type: "GENERAL",
+          crystalType: "GENERAL",
           front: 0,
           modifiersList: {
             id: "",
             name: "约尔拉兹属性",
             modifiers: [
               {
-                ModifierId: "",
-                ModifierFormula: "",
+                id: "",
+                formula: "",
               },
             ],
           },
           modifiersListId: "",
-          raters: [],
+          rates: [],
           ...defaultStatistics,
         },
       ],
@@ -695,8 +746,8 @@ export const test = {
         name: "冒险者服装属性",
         modifiers: [
           {
-            ModifierId: "",
-            ModifierFormula: "",
+            id: "",
+            formula: "",
           },
         ],
       },
@@ -714,40 +765,40 @@ export const test = {
           id: "",
           state: "PRIVATE",
           name: "深谋的青影",
-          type: "GENERAL",
+          crystalType: "GENERAL",
           front: 0,
           modifiersList: {
             id: "",
             name: "深谋的青影属性",
             modifiers: [
               {
-                ModifierId: "",
-                ModifierFormula: "",
+                id: "",
+                formula: "",
               },
             ],
           },
           modifiersListId: "",
-          raters: [],
+          rates: [],
           ...defaultStatistics,
         },
         {
           id: "",
           state: "PRIVATE",
           name: "蜜爱丽",
-          type: "GENERAL",
+          crystalType: "GENERAL",
           front: 0,
           modifiersList: {
             id: "",
             name: "蜜爱丽属性",
             modifiers: [
               {
-                ModifierId: "",
-                ModifierFormula: "",
+                id: "",
+                formula: "",
               },
             ],
           },
           modifiersListId: "",
-          raters: [],
+          rates: [],
           ...defaultStatistics,
         },
       ],
@@ -756,8 +807,8 @@ export const test = {
         name: "饼干腰翼属性",
         modifiers: [
           {
-            ModifierId: "",
-            ModifierFormula: "",
+            id: "",
+            formula: "",
           },
         ],
       },
@@ -774,40 +825,40 @@ export const test = {
           id: "",
           state: "PRIVATE",
           name: "星之魔导士",
-          type: "GENERAL",
+          crystalType: "GENERAL",
           front: 0,
           modifiersList: {
             id: "",
             name: "星之魔导士属性",
             modifiers: [
               {
-                ModifierId: "",
-                ModifierFormula: "",
+                id: "",
+                formula: "",
               },
             ],
           },
           modifiersListId: "",
-          raters: [],
+          rates: [],
           ...defaultStatistics,
         },
         {
           id: "",
           state: "PRIVATE",
           name: "塔图罗基特",
-          type: "GENERAL",
+          crystalType: "GENERAL",
           front: 0,
           modifiersList: {
             id: "",
             name: "塔图罗基特属性",
             modifiers: [
               {
-                ModifierId: "",
-                ModifierFormula: "",
+                id: "",
+                formula: "",
               },
             ],
           },
           modifiersListId: "",
-          raters: [],
+          rates: [],
           ...defaultStatistics,
         },
       ],
@@ -816,8 +867,8 @@ export const test = {
         name: "读星提灯属性",
         modifiers: [
           {
-            ModifierId: "",
-            ModifierFormula: "",
+            id: "",
+            formula: "",
           },
         ],
       },
@@ -865,7 +916,7 @@ export const test = {
     difficultyOfRanged: 5,
     possibilityOfRunningAround: 0,
     specialBehavior: "",
-    raters: [],
+    rates: [],
     dataSources: "",
     ...defaultStatistics,
   } satisfies Monster,

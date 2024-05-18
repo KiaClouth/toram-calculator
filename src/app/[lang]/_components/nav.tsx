@@ -40,7 +40,7 @@ export default function Nav(props: {
         <IconCategory2 key={"IconCategory2"} />,
         "/equipment",
       ],
-      [dictionary.ui.root.crystas, <IconBox2 key={"IconBox2"} />, "/building"],
+      [dictionary.ui.root.crystals, <IconBox2 key={"IconBox2"} />, "/crystal"],
       [dictionary.ui.root.pets, <IconMoney key={"IconMoney"} />, "/building"],
       [dictionary.ui.root.items, <IconCoins key={"IconCoins"} />, "/building"],
       ["LineB", , ,],

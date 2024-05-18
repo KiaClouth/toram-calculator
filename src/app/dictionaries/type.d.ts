@@ -3,6 +3,7 @@ import type { Monster } from "~/server/api/routers/monster";
 import type { Skill } from "~/server/api/routers/skill";
 import { type MonsterData, type SkillData, type CharacterData, type modifiers } from "../[lang]/analyze/worker";
 import { type Character } from "~/server/api/routers/character";
+import { Crystal } from "~/server/api/routers/crystal";
 
 // 为了方便编辑器自动补全，这个方法可以将数据库模型的值类型转换为字符串
 type ConvertToAllString<T> = T extends Date | Date[] | modifiers | Array<object>
@@ -34,7 +35,7 @@ interface dictionary {
       monsters: string;
       skills: string;
       equipments: string;
-      crystas: string;
+      crystals: string;
       pets: string;
       items: string;
       character: string;
@@ -61,6 +62,14 @@ interface dictionary {
         discription: string;
       }
     };
+    crystal: {
+      pageTitle: string;
+      discription: string;
+      canNotModify: string;
+      crystalForm: {
+        discription: string;
+      }
+    };
     skill: {
       pageTitle: string;
       discription: string;
@@ -84,6 +93,7 @@ interface dictionary {
     enums: ConvertToAllString<typeof $Enums>;
     models: {
       monster: ConvertToAllString<Monster>;
+      crystal: ConvertToAllString<Crystal>;
       skill: ConvertToAllString<Skill>;
       skillEffect: ConvertToAllString<Skill["skillEffect"][0]>
       skillCost: ConvertToAllString<Skill["skillEffect"][0]["skillCost"][0]>

@@ -38,7 +38,6 @@ export default function AnalyzePageClient(props: Props) {
         chantingBaseDurationFormula: "0",
         chantingModifiableDurationFormula: "0",
         skillWindUpFormula: "13",
-        skillRecoveryFormula: "0",
         belongToskillId: "",
         skillCost: [
           {
@@ -89,7 +88,6 @@ export default function AnalyzePageClient(props: Props) {
         chantingBaseDurationFormula: "0",
         chantingModifiableDurationFormula: "0",
         skillWindUpFormula: "13",
-        skillRecoveryFormula: "0",
         belongToskillId: "",
         skillCost: [
           {
@@ -140,7 +138,6 @@ export default function AnalyzePageClient(props: Props) {
         chantingBaseDurationFormula: "0",
         chantingModifiableDurationFormula: "0",
         skillWindUpFormula: "13",
-        skillRecoveryFormula: "0",
         belongToskillId: "",
         skillCost: [
           {
@@ -191,7 +188,6 @@ export default function AnalyzePageClient(props: Props) {
         chantingBaseDurationFormula: "0",
         chantingModifiableDurationFormula: "0",
         skillWindUpFormula: "0",
-        skillRecoveryFormula: "0",
         belongToskillId: "",
         skillCost: [
           {
@@ -242,7 +238,6 @@ export default function AnalyzePageClient(props: Props) {
         chantingBaseDurationFormula: "0",
         chantingModifiableDurationFormula: "1",
         skillWindUpFormula: "",
-        skillRecoveryFormula: "0",
         belongToskillId: "",
         skillCost: [
           {
@@ -301,7 +296,6 @@ export default function AnalyzePageClient(props: Props) {
         chantingBaseDurationFormula: "0",
         chantingModifiableDurationFormula: "max(0,min((2 - (s.lv - 1) * 0.25),(1 - (s.lv - 5) * 0.5)))",
         skillWindUpFormula: "0",
-        skillRecoveryFormula: "0",
         belongToskillId: "",
         skillCost: [
           {
@@ -351,7 +345,6 @@ export default function AnalyzePageClient(props: Props) {
         chantingBaseDurationFormula: "0",
         chantingModifiableDurationFormula: "8",
         skillWindUpFormula: "0",
-        skillRecoveryFormula: "0",
         belongToskillId: "",
         description: null,
         skillCost: [

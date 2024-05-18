@@ -5,7 +5,7 @@ import { createTRPCRouter, protectedProcedure, publicProcedure } from "~/server/
 
 export type Monster = Prisma.MonsterGetPayload<{
   include: {
-    raters: true;
+    rates: true;
   };
 }>;
 
@@ -21,7 +21,7 @@ export const monsterRouter = createTRPCRouter({
     );
     return ctx.db.monster.findMany({
       include: {
-        raters: true,
+        rates: true,
       },
     });
   }),
@@ -38,7 +38,7 @@ export const monsterRouter = createTRPCRouter({
     return ctx.db.monster.findMany({
       where: { state: "PUBLIC" },
       include: {
-        raters: true,
+        rates: true,
       },
     });
   }),
@@ -58,7 +58,7 @@ export const monsterRouter = createTRPCRouter({
         state: "PRIVATE",
       },
       include: {
-        raters: true,
+        rates: true,
       },
     });
   }),
@@ -78,14 +78,14 @@ export const monsterRouter = createTRPCRouter({
           OR: [{ state: "PUBLIC" }, { createdByUserId: ctx.session?.user.id }],
         },
         include: {
-          raters: true,
+          rates: true,
         },
       });
     }
     return ctx.db.monster.findMany({
       where: { state: "PUBLIC" },
       include: {
-        raters: true,
+        rates: true,
       },
     });
   }),
@@ -163,7 +163,7 @@ export const monsterRouter = createTRPCRouter({
         updatedByUserId: userCreate.userId,
       },
       include: {
-        raters: true,
+        rates: true,
       },
     });
   }),
@@ -214,7 +214,7 @@ export const monsterRouter = createTRPCRouter({
       where: { id: input.id },
       data: { ...input },
       include: {
-        raters: true,
+        rates: true,
       },
     });
   }),

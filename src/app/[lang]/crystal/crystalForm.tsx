@@ -6,42 +6,39 @@ import type { getDictionary } from "~/app/get-dictionary";
 import Button from "../_components/button";
 import { type FieldApi, useForm } from "@tanstack/react-form";
 import { zodValidator } from "@tanstack/zod-form-adapter";
-import { ZodFirstPartyTypeKind, type z } from "zod";
+import { ZodFirstPartyTypeKind, ZodTypeAny, type z } from "zod";
 import { type $Enums } from "@prisma/client";
-import { defaultCharacter, useStore } from "~/app/store";
+import { defaultCrystal, useStore } from "~/app/store";
 import { type Session } from "next-auth";
-import { type Character } from "~/server/api/routers/character";
-import { CharacterInputSchema } from "~/schema/characterSchema";
+import { type Crystal } from "~/server/api/routers/crystal";
+import { CrystalInputSchema } from "~/schema/crystalSchema";
+import LineWrappingInput from "../_components/autoLineWrappingInput";
 
-export default function CharacterForm(props: {
+export default function CrystalForm(props: {
   dictionary: ReturnType<typeof getDictionary>;
   session: Session | null;
-  defaultCharacterList: Character[];
-  setDefaultCharacterList: (list: Character[]) => void;
+  defaultCrystalList: Crystal[];
+  setDefaultCrystalList: (list: Crystal[]) => void;
 }) {
-  const { dictionary, session, defaultCharacterList, setDefaultCharacterList } = props;
+  const { dictionary, session, defaultCrystalList, setDefaultCrystalList } = props;
   // 状态管理参数
-  const {
-    characterDialogState,
-    setCharacterList,
-    setCharacterDialogState,
-    characterFormState,
-    setCharacterFormState,
-  } = useStore((state) => state.characterPage);
-  const { character } = useStore((state) => state);
-  let newCharacter: Character;
+  const { crystalDialogState, setCrystalList, setCrystalDialogState, crystalFormState, setCrystalFormState } = useStore(
+    (state) => state.crystalPage,
+  );
+  const { crystal } = useStore((state) => state);
+  let newCrystal: Crystal;
   const formTitle = {
     CREATE: dictionary.ui.upload,
     UPDATE: dictionary.ui.modify,
-    DISPLAY: character.name,
-  }[characterFormState];
+    DISPLAY: crystal.name,
+  }[crystalFormState];
   const [dataUploadingState, setDataUploadingState] = React.useState(false);
 
   function FieldInfo({
     field,
   }: {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    field: FieldApi<Character, keyof Character, any, any>;
+    field: FieldApi<Crystal, keyof Crystal, any, any>;
   }) {
     return (
       <React.Fragment>
@@ -56,7 +53,7 @@ export default function CharacterForm(props: {
   }
 
   // 定义不需要手动输入的值
-  const characterHiddenData: Array<keyof Character> = [
+  const crystalHiddenData: Array<keyof Crystal> = [
     "id",
     "createdAt",
     "updatedAt",
@@ -69,14 +66,14 @@ export default function CharacterForm(props: {
   // 定义表单
   const form = useForm({
     defaultValues: {
-      CREATE: defaultCharacter,
-      UPDATE: character,
-      DISPLAY: character,
-    }[characterFormState],
+      CREATE: defaultCrystal,
+      UPDATE: crystal,
+      DISPLAY: crystal,
+    }[crystalFormState],
     onSubmit: async ({ value }) => {
       setDataUploadingState(true);
-      newCharacter = {
-        ...defaultCharacter,
+      newCrystal = {
+        ...defaultCrystal,
         ...value,
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -84,20 +81,20 @@ export default function CharacterForm(props: {
         viewCount: 0,
         usageTimestamps: [],
         viewTimestamps: [],
-      } satisfies Character;
-      switch (characterFormState) {
+      } satisfies Crystal;
+      switch (crystalFormState) {
         case "CREATE":
-          createCharacter.mutate(newCharacter);
+          createCrystal.mutate(newCrystal);
           break;
 
         case "UPDATE":
-          updateCharacter.mutate(newCharacter);
+          updateCrystal.mutate(newCrystal);
           break;
 
         default:
           break;
       }
-      setCharacterDialogState(false);
+      setCrystalDialogState(false);
     },
     validatorAdapter: zodValidator,
   });
@@ -118,42 +115,42 @@ export default function CharacterForm(props: {
     return ZodFirstPartyTypeKind.ZodUndefined;
   };
   // modifiersList, fashion, cuisine, baseAbi
-  const createCharacter = tApi.character.create.useMutation({
+  const createCrystal = tApi.crystal.create.useMutation({
     onSuccess(data) {
-      const newList = [...defaultCharacterList, data];
+      const newList = [...defaultCrystalList, data];
       // 创建成功后更新数据
-      setDefaultCharacterList(newList);
-      setCharacterList(newList);
+      setDefaultCrystalList(newList);
+      setCrystalList(newList);
       // 上传成功后表单转换为展示状态
       setDataUploadingState(false);
-      setCharacterFormState("DISPLAY");
+      setCrystalFormState("DISPLAY");
     },
   });
 
-  const updateCharacter = tApi.character.update.useMutation({
+  const updateCrystal = tApi.crystal.update.useMutation({
     onSuccess(data) {
-      const newList = defaultCharacterList.map((character) => {
-        if (character.id === data.id) {
+      const newList = defaultCrystalList.map((crystal) => {
+        if (crystal.id === data.id) {
           return data;
         }
-        return character;
+        return crystal;
       });
       // 更新成功后更新数据
-      setDefaultCharacterList(newList);
-      setCharacterList(newList);
+      setDefaultCrystalList(newList);
+      setCrystalList(newList);
       // 上传成功后表单转换为展示状态
       setDataUploadingState(false);
-      setCharacterFormState("DISPLAY");
+      setCrystalFormState("DISPLAY");
     },
   });
 
   useEffect(() => {
-    console.log("---CharacterForm render");
-    console.log(character);
+    console.log("---CrystalForm render");
+    console.log(crystal);
     // escape键监听
     const handleEscapeKeyPress = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
-        setCharacterDialogState(!characterDialogState);
+        setCrystalDialogState(!crystalDialogState);
       }
     };
 
@@ -161,10 +158,10 @@ export default function CharacterForm(props: {
     document.addEventListener("keydown", handleEscapeKeyPress);
 
     return () => {
-      console.log("---CharacterForm unmount");
+      console.log("---CrystalForm unmount");
       document.removeEventListener("keydown", handleEscapeKeyPress);
     };
-  }, [form, character, characterDialogState, characterFormState, setCharacterDialogState]);
+  }, [form, crystal, crystalDialogState, crystalFormState, setCrystalDialogState]);
 
   return (
     <form
@@ -173,7 +170,7 @@ export default function CharacterForm(props: {
         e.stopPropagation();
         void form.handleSubmit();
       }}
-      className={`CreateCharacterFrom flex w-full flex-col gap-4 overflow-y-auto rounded px-3`}
+      className={`CreateCrystalFrom flex w-full flex-col gap-4 overflow-y-auto rounded px-3`}
     >
       <div className="title flex items-center gap-6 pt-4">
         <div className="h-[2px] flex-1 bg-accent-color"></div>
@@ -181,18 +178,16 @@ export default function CharacterForm(props: {
         <div className="h-[2px] flex-1 bg-accent-color"></div>
       </div>
       <div className="inputArea flex-1 overflow-y-auto">
-        {characterFormState !== "DISPLAY" && (
-          <div className="mb-4 rounded-sm bg-transition-color-8 p-4">
-            {typeof dictionary.ui.character.discription}
-          </div>
+        {crystalFormState !== "DISPLAY" && (
+          <div className="mb-4 rounded-sm bg-transition-color-8 p-4">{typeof dictionary.ui.crystal.discription}</div>
         )}
         <fieldset className="dataKinds flex flex-row flex-wrap gap-y-[4px]">
-          {Object.entries(character).map(([key, _]) => {
+          {Object.entries(crystal).map(([key, value]) => {
             // 遍历角色模型
             // 过滤掉隐藏的数据
-            if (characterHiddenData.includes(key as keyof Character)) return undefined;
+            if (crystalHiddenData.includes(key as keyof Crystal)) return undefined;
             // 输入框的类型计算
-            const zodValue = CharacterInputSchema.shape[key as keyof Character];
+            const zodValue = CrystalInputSchema.shape[key as keyof Crystal];
             const valueType = getZodType(zodValue);
             const { ZodNumber, ZodString, ...Others } = ZodFirstPartyTypeKind;
             const inputType = {
@@ -206,33 +201,33 @@ export default function CharacterForm(props: {
                 return (
                   <form.Field
                     key={key}
-                    name={key as keyof Character}
+                    name={key as keyof Crystal}
                     validators={{
                       onChangeAsyncDebounceMs: 500,
-                      onChangeAsync: CharacterInputSchema.shape[key as keyof Character],
+                      onChangeAsync: CrystalInputSchema.shape[key as keyof Crystal],
                     }}
                   >
                     {(field) => {
                       const defaultFieldsetClass = "flex basis-full flex-col gap-1 p-2";
                       let fieldsetClass: string = defaultFieldsetClass;
-                      switch (key as keyof Character) {
+                      switch (key as keyof Crystal) {
                         // case "rates":
                         // case "id":
                         case "state": {
-                          fieldsetClass = characterFormState === "DISPLAY" ? "hidden" : defaultFieldsetClass;
+                          fieldsetClass = crystalFormState === "DISPLAY" ? "hidden" : defaultFieldsetClass;
                         }
-                        case "characterType":
+                        case "crystalType":
                         default:
                           break;
                       }
                       return (
                         <fieldset key={key} className={fieldsetClass}>
                           <span>
-                            {JSON.stringify(dictionary.db.models.character[key as keyof Character])}
+                            {dictionary.db.models.crystal[key as keyof Crystal] as string}
                             <FieldInfo field={field} />
                           </span>
                           <div
-                            className={`inputContianer mt-1 flex flex-wrap self-start rounded lg:gap-2 ${characterFormState === "DISPLAY" ? " outline-transition-color-20" : ""}`}
+                            className={`inputContianer mt-1 flex flex-wrap self-start rounded lg:gap-2 ${crystalFormState === "DISPLAY" ? " outline-transition-color-20" : ""}`}
                           >
                             {"options" in zodValue &&
                               zodValue.options.map((option) => {
@@ -251,7 +246,7 @@ export default function CharacterForm(props: {
                                 return (
                                   <label
                                     key={key + option}
-                                    className={`flex ${labelSizeClass} cursor-pointer items-center justify-between gap-1 rounded-full p-2 px-4 hover:border-transition-color-20 lg:basis-auto lg:flex-row-reverse lg:justify-end lg:gap-2 lg:rounded-sm lg:hover:opacity-100 ${field.getValue() === option ? "opacity-100" : "opacity-20"} ${characterFormState === "DISPLAY" ? " pointer-events-none border-transparent bg-transparent" : " pointer-events-auto border-transition-color-8 bg-transition-color-8"}`}
+                                    className={`flex ${labelSizeClass} cursor-pointer items-center justify-between gap-1 rounded-full p-2 px-4 hover:border-transition-color-20 lg:basis-auto lg:flex-row-reverse lg:justify-end lg:gap-2 lg:rounded-sm lg:hover:opacity-100 ${field.getValue() === option ? "opacity-100" : "opacity-20"} ${crystalFormState === "DISPLAY" ? " pointer-events-none border-transparent bg-transparent" : " pointer-events-auto border-transition-color-8 bg-transition-color-8"}`}
                                   >
                                     {
                                       dictionary.db.enums[
@@ -259,7 +254,7 @@ export default function CharacterForm(props: {
                                       ][option as keyof (typeof $Enums)[keyof typeof $Enums]]
                                     }
                                     <input
-                                      disabled={characterFormState === "DISPLAY"}
+                                      disabled={crystalFormState === "DISPLAY"}
                                       id={field.name + option}
                                       name={field.name}
                                       value={option}
@@ -280,19 +275,23 @@ export default function CharacterForm(props: {
                   </form.Field>
                 );
               }
-                
-                case ZodFirstPartyTypeKind.ZodObject: {
-                return <div key={key}>{JSON.stringify(character[key as keyof Character])}</div>;
-                }
+
+              case ZodFirstPartyTypeKind.ZodObject: {
+                return <fieldset>{
+                  Object.entries(value as object).map(([subkey, subvalue]) => {
+                    return null
+                  })
+                }</fieldset>;
+              }
 
               default: {
                 return (
                   <form.Field
                     key={key}
-                    name={key as keyof Character}
+                    name={key as keyof Crystal}
                     validators={{
                       onChangeAsyncDebounceMs: 500,
-                      onChangeAsync: CharacterInputSchema.shape[key as keyof Character],
+                      onChangeAsync: CrystalInputSchema.shape[key as keyof Crystal],
                     }}
                   >
                     {(field) => {
@@ -300,7 +299,7 @@ export default function CharacterForm(props: {
                       const defaultInputBox = (
                         <input
                           autoComplete="off"
-                          disabled={characterFormState === "DISPLAY"}
+                          disabled={crystalFormState === "DISPLAY"}
                           id={field.name}
                           name={field.name}
                           value={typeof field.state.value !== "object" ? field.state.value : undefined}
@@ -309,12 +308,12 @@ export default function CharacterForm(props: {
                           onChange={(e) =>
                             field.handleChange(inputType === "number" ? parseFloat(e.target.value) : e.target.value)
                           }
-                          className={`mt-1 w-full flex-1 rounded px-4 py-2 ${characterFormState === "DISPLAY" ? " pointer-events-none bg-transparent outline-transition-color-20" : " pointer-events-auto bg-transition-color-8"}`}
+                          className={`mt-1 w-full flex-1 rounded px-4 py-2 ${crystalFormState === "DISPLAY" ? " pointer-events-none bg-transparent outline-transition-color-20" : " pointer-events-auto bg-transition-color-8"}`}
                         />
                       );
                       let fieldsetClass: string = defaultFieldsetClass;
                       let inputBox: React.ReactNode = defaultInputBox;
-                      switch (key as keyof Character) {
+                      switch (key as keyof Crystal) {
                         // case "id":
                         // case "state":
                         case "name":
@@ -331,10 +330,19 @@ export default function CharacterForm(props: {
                         <fieldset key={key} className={fieldsetClass}>
                           <label htmlFor={field.name} className="flex w-full flex-col gap-1">
                             <span>
-                              {typeof dictionary.db.models.character[key as keyof Character]}
+                              {dictionary.db.models.crystal[key as keyof Crystal] as string}
                               <FieldInfo field={field} />
                             </span>
                             {inputBox}
+                            {/* <LineWrappingInput
+                              value={field.state.value as string}
+                              id={field.name}
+                              name={field.name}
+                              type={inputType}
+                              onBlur={field.handleBlur}
+                              onChange={(e) =>
+                                field.handleChange(inputType === "number" ? parseFloat(e.target.value) : e.target.value)
+                              }/> */}
                           </label>
                         </fieldset>
                       );
@@ -350,22 +358,22 @@ export default function CharacterForm(props: {
         <div className="btnGroup flex gap-2">
           <Button
             onClick={() => {
-              setCharacterFormState("DISPLAY");
-              setCharacterDialogState(!characterDialogState);
+              setCrystalFormState("DISPLAY");
+              setCrystalDialogState(!crystalDialogState);
             }}
           >
             {dictionary.ui.close} [Esc]
           </Button>
-          {characterFormState == "DISPLAY" && session?.user.id === character.createdByUserId && (
+          {crystalFormState == "DISPLAY" && session?.user.id === crystal.createdByUserId && (
             <Button
               onClick={() => {
-                setCharacterFormState("UPDATE");
+                setCrystalFormState("UPDATE");
               }}
             >
               {dictionary.ui.modify} [Enter]
             </Button>
           )}
-          {characterFormState !== "DISPLAY" && (
+          {crystalFormState !== "DISPLAY" && (
             <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
               {([canSubmit]) => (
                 <Button type="submit" level="primary" disabled={!(canSubmit && !dataUploadingState)}>

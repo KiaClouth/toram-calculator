@@ -1,4 +1,5 @@
 import { postRouter } from "~/server/api/routers/post";
+import { crystalRouter } from "./routers/crystal";
 import { monsterRouter } from "~/server/api/routers/monster"
 import { skillRouter } from "./routers/skill";
 import { characterRouter } from "~/server/api/routers/character"
@@ -15,6 +16,7 @@ import { createTRPCRouter } from "~/server/api/trpc";
 export const appRouter = createTRPCRouter({
   post: postRouter,
   monster: monsterRouter,
+  crystal: crystalRouter,
   skill: skillRouter,
   character: characterRouter,
   user: userRouter,

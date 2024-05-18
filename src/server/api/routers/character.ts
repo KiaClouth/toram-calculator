@@ -34,7 +34,7 @@ export type Character = Prisma.CharacterGetPayload<{
                 modifiers: true;
               };
             };
-            raters: true;
+            rates: true;
           };
         };
       };
@@ -62,7 +62,7 @@ export type Character = Prisma.CharacterGetPayload<{
                 modifiers: true;
               };
             };
-            raters: true;
+            rates: true;
           };
         };
       };
@@ -81,7 +81,7 @@ export type Character = Prisma.CharacterGetPayload<{
                 modifiers: true;
               };
             };
-            raters: true;
+            rates: true;
           };
         };
       };
@@ -100,7 +100,7 @@ export type Character = Prisma.CharacterGetPayload<{
                 modifiers: true;
               };
             };
-            raters: true;
+            rates: true;
           };
         };
       };
@@ -163,7 +163,7 @@ const dataType = {
               modifiers: true,
             },
           },
-          raters: true,
+          rates: true,
         },
       },
     },
@@ -191,7 +191,7 @@ const dataType = {
               modifiers: true,
             },
           },
-          raters: true,
+          rates: true,
         },
       },
     },
@@ -210,7 +210,7 @@ const dataType = {
               modifiers: true,
             },
           },
-          raters: true,
+          rates: true,
         },
       },
     },
@@ -229,7 +229,7 @@ const dataType = {
               modifiers: true,
             },
           },
-          raters: true,
+          rates: true,
         },
       },
     },

@@ -7,6 +7,6 @@ export type Consumable = Prisma.ConsumableGetPayload<{
           modifiers: true;
         };
       }
-        raters: true;
+        rates: true;
   };
 }>;

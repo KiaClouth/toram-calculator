@@ -250,7 +250,7 @@ export default function MonserPageClient(props: Props) {
 
   return (
     <main className="flex flex-col lg:w-[calc(100dvw-96px)] lg:flex-row">
-      <div
+      {/* <div
         className={`Module1 fixed left-0 top-0 z-50 lg:z-0 ${filterState ? " translate-x-0 " : " -translate-x-full "} flex-none border-transition-color-8 bg-primary-color backdrop-blur-xl lg:sticky lg:translate-x-0 lg:border-x-1.5 lg:bg-transition-color-8 ${filterState ? " pointer-events-auto visible basis-[260px] opacity-100 " : " pointer-events-none invisible basis-[0px] opacity-0 "}`}
       >
         <div
@@ -295,7 +295,7 @@ export default function MonserPageClient(props: Props) {
             <div className="content flex flex-wrap gap-2 "></div>
           </div>
         </div>
-      </div>
+      </div> */}
       <div className="Module2 flex w-full flex-1 overflow-hidden px-3 backdrop-blur-xl">
         <div className="LeftArea sticky top-0 z-10 flex-1"></div>
         <div
@@ -358,8 +358,44 @@ export default function MonserPageClient(props: Props) {
                 )}
               </div>
             </div>
-            <div className="Discription my-3 hidden rounded-sm bg-transition-color-8 p-3 lg:block">
-              {dictionary.ui.skill.discription}
+            <div className="Content flex flex-col gap-2">
+              <div
+                className={`FilterBox flex bg-transition-color-8 rounded overflow-y-auto ${filterState ? " max-h-[50dvh] " : " max-h-0 "}`}
+              >
+                <div className={`Content h-fit flex flex-col gap-2 p-4 ${filterState ? " pointer-events-auto opacity-100 " : " pointer-events-none opacity-0 "} `}>
+                  <div className="module flex flex-col gap-3">
+                    <div className="title">{dictionary.ui.columnsHidden}</div>
+                    <div className="content flex flex-wrap gap-2 ">
+                      <Button
+                        size="sm"
+                        level={table.getIsAllColumnsVisible() ? "tertiary" : "primary"}
+                        onClick={table.getToggleAllColumnsVisibilityHandler()}
+                      >
+                        ALL
+                      </Button>
+                      {table.getAllLeafColumns().map((column) => {
+                        if (skillHiddenData.includes(column.id as keyof Skill)) {
+                          // 默认隐藏的数据
+                          return;
+                        }
+                        return (
+                          <Button
+                            key={column.id}
+                            size="sm"
+                            level={column.getIsVisible() ? "tertiary" : "primary"}
+                            onClick={column.getToggleVisibilityHandler()}
+                          >
+                            {dictionary.db.models.skill[column.id as keyof Skill]}
+                          </Button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="Discription my-3 hidden rounded-sm bg-transition-color-8 p-3 lg:block">
+                {dictionary.ui.skill.discription}
+              </div>
             </div>
           </div>
           <table className="Table bg-transition-color-8 px-2 lg:bg-transparent">

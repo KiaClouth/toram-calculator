@@ -6,73 +6,9 @@ import { type Monster } from "~/server/api/routers/monster";
 import { type SkillEffect } from "~/server/api/routers/skill";
 import { type ModifiersList } from "~/server/api/routers/crystal";
 import { type getDictionary } from "~/app/get-dictionary";
-import { all, create, floor, max, min, parse } from "mathjs";
+import { MathNode, all, create, floor, max, min, parse } from "mathjs";
 
 const fps = 60;
-
-// 随机种子设置
-const randomSeed: null | string = null;
-// 向math中添加自定义方法
-// 验证 `all` 是否为有效的 FactoryFunctionMap 对象
-if (!all) {
-  throw new Error("all is undefined. Make sure you are importing it correctly.");
-}
-
-const math = create(all, {
-  epsilon: 1e-12,
-  matrix: "Matrix",
-  number: "number",
-  precision: 64,
-  predictable: false,
-  randomSeed: randomSeed,
-});
-
-// 导入自定义方法
-// 此处需要考虑参数的上下文环境，静态加成的上下文环境为CharacterData，动态加成的上下文环境为computeArgType
-math.import({
-  // 应用于CharacterData环境的函数--------------------------------
-  // 判断主武器类型是否为无
-  isNO_WEAPON: function (mainWeapon: CharacterData["mainWeapon"]) {
-    return mainWeapon.type === "NO_WEAPON";
-  },
-  // 判断主武器类型是否为单手剑
-  isONE_HAND_SWORD: function (mainWeapon: CharacterData["mainWeapon"]) {
-    return mainWeapon.type === "ONE_HAND_SWORD";
-  },
-  // 判断主武器类型是否为双手剑
-  isTWO_HANDS_SWORD: function (mainWeapon: CharacterData["mainWeapon"]) {
-    return mainWeapon.type === "TWO_HANDS_SWORD";
-  },
-  // 判断主武器类型是否为弓
-  isBOW: function (mainWeapon: CharacterData["mainWeapon"]) {
-    return mainWeapon.type === "BOW";
-  },
-  // 判断主武器类型是否为弩
-  isBOWGUN: function (mainWeapon: CharacterData["mainWeapon"]) {
-    return mainWeapon.type === "BOWGUN";
-  },
-  // 判断主武器类型是否为法杖
-  isSTAFF: function (mainWeapon: CharacterData["mainWeapon"]) {
-    return mainWeapon.type === "STAFF";
-  },
-  // 判断主武器类型是否为魔导具
-  isMAGIC_DEVICE: function (mainWeapon: CharacterData["mainWeapon"]) {
-    return mainWeapon.type === "MAGIC_DEVICE";
-  },
-  // 判断主武器类型是否为拳套
-  isKNUCKLE: function (mainWeapon: CharacterData["mainWeapon"]) {
-    return mainWeapon.type === "KNUCKLE";
-  },
-  // 判断主武器类型是否为旋风枪
-  isHALBERD: function (mainWeapon: CharacterData["mainWeapon"]) {
-    return mainWeapon.type === "HALBERD";
-  },
-  // 判断主武器类型是否为拔刀剑
-  isKATANA: function (mainWeapon: CharacterData["mainWeapon"]) {
-    return mainWeapon.type === "KATANA";
-  },
-  // 应用于SkillData环境的函数--------------------------------
-});
 
 export type analyzeWorkerInput = {
   type: "start" | "stop";
@@ -284,6 +220,71 @@ export const dynamicTotalValue = (m: modifiers): number => {
   return floor(base * (1 + percentage / 100) + fixed);
 };
 
+// 随机种子设置
+const randomSeed: null | string = null;
+// 向math中添加自定义方法
+// 验证 `all` 是否为有效的 FactoryFunctionMap 对象
+if (!all) {
+  throw new Error("all is undefined. Make sure you are importing it correctly.");
+}
+
+const math = create(all, {
+  epsilon: 1e-12,
+  matrix: "Matrix",
+  number: "number",
+  precision: 64,
+  predictable: false,
+  randomSeed: randomSeed,
+});
+
+// 导入自定义方法
+// 此处需要考虑参数的上下文环境，静态加成的上下文环境为CharacterData，动态加成的上下文环境为computeArgType
+math.import({
+  dynamicTotalValue: dynamicTotalValue,
+  // 应用于CharacterData环境的函数--------------------------------
+  // 判断主武器类型是否为无
+  isNO_WEAPON: function (mainWeapon: CharacterData["mainWeapon"]) {
+    return mainWeapon.type === "NO_WEAPON";
+  },
+  // 判断主武器类型是否为单手剑
+  isONE_HAND_SWORD: function (mainWeapon: CharacterData["mainWeapon"]) {
+    return mainWeapon.type === "ONE_HAND_SWORD";
+  },
+  // 判断主武器类型是否为双手剑
+  isTWO_HANDS_SWORD: function (mainWeapon: CharacterData["mainWeapon"]) {
+    return mainWeapon.type === "TWO_HANDS_SWORD";
+  },
+  // 判断主武器类型是否为弓
+  isBOW: function (mainWeapon: CharacterData["mainWeapon"]) {
+    return mainWeapon.type === "BOW";
+  },
+  // 判断主武器类型是否为弩
+  isBOWGUN: function (mainWeapon: CharacterData["mainWeapon"]) {
+    return mainWeapon.type === "BOWGUN";
+  },
+  // 判断主武器类型是否为法杖
+  isSTAFF: function (mainWeapon: CharacterData["mainWeapon"]) {
+    return mainWeapon.type === "STAFF";
+  },
+  // 判断主武器类型是否为魔导具
+  isMAGIC_DEVICE: function (mainWeapon: CharacterData["mainWeapon"]) {
+    return mainWeapon.type === "MAGIC_DEVICE";
+  },
+  // 判断主武器类型是否为拳套
+  isKNUCKLE: function (mainWeapon: CharacterData["mainWeapon"]) {
+    return mainWeapon.type === "KNUCKLE";
+  },
+  // 判断主武器类型是否为旋风枪
+  isHALBERD: function (mainWeapon: CharacterData["mainWeapon"]) {
+    return mainWeapon.type === "HALBERD";
+  },
+  // 判断主武器类型是否为拔刀剑
+  isKATANA: function (mainWeapon: CharacterData["mainWeapon"]) {
+    return mainWeapon.type === "KATANA";
+  },
+  // 应用于SkillData环境的函数--------------------------------
+});
+
 // 角色加成项收集
 export const characterModifierCollector = (character: Character): ModifiersList[] => {
   // 类型谓词函数，用于检查对象是否符合目标类型
@@ -337,7 +338,7 @@ export const characterModifiersApplicator = (character: Character, characterData
     const origin = modifiersListData.name ?? "未知角色属性";
     modifiersListData.modifiers.forEach((modifier) => {
       // 属性添加
-      const node = parse(modifier.ModifierFormula);
+      const node = parse(modifier.formula);
       const nodeString = node.toString();
       switch (node.type) {
         case "AssignmentNode":
@@ -351,7 +352,7 @@ export const characterModifiersApplicator = (character: Character, characterData
           {
             console.log("非赋值表达式：" + nodeString + " 判定为：" + node.type);
             // 非赋值表达式说明该行为是对当前角色已有属性进行增减,从第一个加减号开始分解表达式
-            const match = modifier.ModifierFormula.match(/(.+?)([+\-])(.+)/);
+            const match = modifier.formula.match(/(.+?)([+\-])(.+)/);
             if (match) {
               const targetStr = _.trim(match[1]);
               const operatorStr = match[2];
@@ -447,7 +448,7 @@ export const characterModifiersApplicator = (character: Character, characterData
               }
             } else {
               // 如果未匹配到，则返回空字符串或其他你希望的默认值
-              console.log("在：" + modifier.ModifierFormula + "中没有匹配到内容");
+              console.log("在：" + modifier.formula + "中没有匹配到内容");
             }
           }
           break;
@@ -471,327 +472,327 @@ export class CharacterData {
       >;
     }
   > = {
-      ONE_HAND_SWORD: {
-        baseHit: 0.25,
-        baseAspd: 100,
-        abi_Attr_Convert: {
-          str: {
-            pAtkT: 2,
-            stabT: 0.025,
-            aspdT: 0.2,
-            mAtkT: 0,
-          },
-          int: {
-            mAtkT: 3,
-            pAtkT: 0,
-            aspdT: 0,
-            stabT: 0,
-          },
-          agi: {
-            aspdT: 4.2,
-            pAtkT: 0,
-            mAtkT: 0,
-            stabT: 0,
-          },
-          dex: {
-            pAtkT: 2,
-            stabT: 0.075,
-            mAtkT: 0,
-            aspdT: 0,
-          },
+    ONE_HAND_SWORD: {
+      baseHit: 0.25,
+      baseAspd: 100,
+      abi_Attr_Convert: {
+        str: {
+          pAtkT: 2,
+          stabT: 0.025,
+          aspdT: 0.2,
+          mAtkT: 0,
         },
-        weaAtk_Matk_Convert: 0,
-        weaAtk_Patk_Convert: 1,
-      },
-      KATANA: {
-        baseHit: 0.3,
-        baseAspd: 200,
-        abi_Attr_Convert: {
-          str: {
-            pAtkT: 1.5,
-            stabT: 0.075,
-            aspdT: 0.3,
-            mAtkT: 0,
-          },
-          int: {
-            mAtkT: 1.5,
-            pAtkT: 0,
-            aspdT: 0,
-            stabT: 0,
-          },
-          agi: {
-            aspdT: 3.9,
-            pAtkT: 0,
-            mAtkT: 0,
-            stabT: 0,
-          },
-          dex: {
-            pAtkT: 2.5,
-            stabT: 0.025,
-            mAtkT: 0,
-            aspdT: 0,
-          },
+        int: {
+          mAtkT: 3,
+          pAtkT: 0,
+          aspdT: 0,
+          stabT: 0,
         },
-        weaAtk_Matk_Convert: 0,
-        weaAtk_Patk_Convert: 1,
-      },
-      TWO_HANDS_SWORD: {
-        baseHit: 0.15,
-        baseAspd: 50,
-        abi_Attr_Convert: {
-          str: {
-            pAtkT: 3,
-            aspdT: 0.2,
-            mAtkT: 0,
-            stabT: 0,
-          },
-          int: {
-            mAtkT: 3,
-            pAtkT: 0,
-            aspdT: 0,
-            stabT: 0,
-          },
-          agi: {
-            aspdT: 2.2,
-            pAtkT: 0,
-            mAtkT: 0,
-            stabT: 0,
-          },
-          dex: {
-            pAtkT: 1,
-            stabT: 0.1,
-            mAtkT: 0,
-            aspdT: 0,
-          },
+        agi: {
+          aspdT: 4.2,
+          pAtkT: 0,
+          mAtkT: 0,
+          stabT: 0,
         },
-        weaAtk_Matk_Convert: 0,
-        weaAtk_Patk_Convert: 1,
-      },
-      BOW: {
-        baseHit: 0.1,
-        baseAspd: 75,
-        abi_Attr_Convert: {
-          str: {
-            pAtkT: 1,
-            stabT: 0.05,
-            mAtkT: 0,
-            aspdT: 0,
-          },
-          int: {
-            mAtkT: 3,
-            pAtkT: 0,
-            aspdT: 0,
-            stabT: 0,
-          },
-          agi: {
-            aspdT: 3.1,
-            pAtkT: 0,
-            mAtkT: 0,
-            stabT: 0,
-          },
-          dex: {
-            pAtkT: 3,
-            stabT: 0.05,
-            aspdT: 0.2,
-            mAtkT: 0,
-          },
+        dex: {
+          pAtkT: 2,
+          stabT: 0.075,
+          mAtkT: 0,
+          aspdT: 0,
         },
-        weaAtk_Matk_Convert: 0,
-        weaAtk_Patk_Convert: 1,
       },
-      BOWGUN: {
-        baseHit: 0.05,
-        baseAspd: 100,
-        abi_Attr_Convert: {
-          str: {
-            stabT: 0.05,
-            pAtkT: 0,
-            mAtkT: 0,
-            aspdT: 0,
-          },
-          int: {
-            mAtkT: 3,
-            pAtkT: 0,
-            aspdT: 0,
-            stabT: 0,
-          },
-          agi: {
-            aspdT: 2.2,
-            pAtkT: 0,
-            mAtkT: 0,
-            stabT: 0,
-          },
-          dex: {
-            pAtkT: 4,
-            aspdT: 0.2,
-            mAtkT: 0,
-            stabT: 0,
-          },
+      weaAtk_Matk_Convert: 0,
+      weaAtk_Patk_Convert: 1,
+    },
+    KATANA: {
+      baseHit: 0.3,
+      baseAspd: 200,
+      abi_Attr_Convert: {
+        str: {
+          pAtkT: 1.5,
+          stabT: 0.075,
+          aspdT: 0.3,
+          mAtkT: 0,
         },
-        weaAtk_Matk_Convert: 0,
-        weaAtk_Patk_Convert: 1,
-      },
-      STAFF: {
-        baseHit: 0.3,
-        baseAspd: 60,
-        abi_Attr_Convert: {
-          str: {
-            pAtkT: 3,
-            stabT: 0.05,
-            mAtkT: 0,
-            aspdT: 0,
-          },
-          int: {
-            mAtkT: 4,
-            pAtkT: 1,
-            aspdT: 0.2,
-            stabT: 0,
-          },
-          agi: {
-            aspdT: 1.8,
-            pAtkT: 0,
-            mAtkT: 0,
-            stabT: 0,
-          },
-          dex: {
-            aspdT: 0.2,
-            pAtkT: 0,
-            mAtkT: 0,
-            stabT: 0,
-          },
+        int: {
+          mAtkT: 1.5,
+          pAtkT: 0,
+          aspdT: 0,
+          stabT: 0,
         },
-        weaAtk_Matk_Convert: 1,
-        weaAtk_Patk_Convert: 1,
-      },
-      MAGIC_DEVICE: {
-        baseHit: 0.1,
-        baseAspd: 90,
-        abi_Attr_Convert: {
-          str: {
-            pAtkT: 0,
-            mAtkT: 0,
-            aspdT: 0,
-            stabT: 0,
-          },
-          int: {
-            mAtkT: 4,
-            pAtkT: 2,
-            aspdT: 0.2,
-            stabT: 0,
-          },
-          agi: {
-            pAtkT: 2,
-            aspdT: 4,
-            mAtkT: 0,
-            stabT: 0,
-          },
-          dex: {
-            stabT: 0.1,
-            pAtkT: 0,
-            mAtkT: 0,
-            aspdT: 0,
-          },
+        agi: {
+          aspdT: 3.9,
+          pAtkT: 0,
+          mAtkT: 0,
+          stabT: 0,
         },
-        weaAtk_Matk_Convert: 1,
-        weaAtk_Patk_Convert: 1,
-      },
-      KNUCKLE: {
-        baseHit: 0.1,
-        baseAspd: 120,
-        abi_Attr_Convert: {
-          str: {
-            aspdT: 0.1,
-            pAtkT: 0,
-            mAtkT: 0,
-            stabT: 0,
-          },
-          int: {
-            mAtkT: 4,
-            pAtkT: 0,
-            aspdT: 0,
-            stabT: 0,
-          },
-          agi: {
-            pAtkT: 2,
-            aspdT: 4.6,
-            mAtkT: 0,
-            stabT: 0,
-          },
-          dex: {
-            pAtkT: 0.5,
-            stabT: 0.025,
-            mAtkT: 0,
-            aspdT: 0.1,
-          },
+        dex: {
+          pAtkT: 2.5,
+          stabT: 0.025,
+          mAtkT: 0,
+          aspdT: 0,
         },
-        weaAtk_Matk_Convert: 0.5,
-        weaAtk_Patk_Convert: 1,
       },
-      HALBERD: {
-        baseHit: 0.25,
-        baseAspd: 20,
-        abi_Attr_Convert: {
-          str: {
-            pAtkT: 2.5,
-            stabT: 0.05,
-            aspdT: 0.2,
-            mAtkT: 0,
-          },
-          int: {
-            mAtkT: 2,
-            pAtkT: 0,
-            aspdT: 0,
-            stabT: 0,
-          },
-          agi: {
-            aspdT: 3.5,
-            pAtkT: 1.5,
-            mAtkT: 1,
-            stabT: 0,
-          },
-          dex: {
-            stabT: 0.05,
-            pAtkT: 0,
-            mAtkT: 0,
-            aspdT: 0,
-          },
+      weaAtk_Matk_Convert: 0,
+      weaAtk_Patk_Convert: 1,
+    },
+    TWO_HANDS_SWORD: {
+      baseHit: 0.15,
+      baseAspd: 50,
+      abi_Attr_Convert: {
+        str: {
+          pAtkT: 3,
+          aspdT: 0.2,
+          mAtkT: 0,
+          stabT: 0,
         },
-        weaAtk_Matk_Convert: 0,
-        weaAtk_Patk_Convert: 1,
-      },
-      NO_WEAPON: {
-        baseHit: 50,
-        baseAspd: 1000,
-        abi_Attr_Convert: {
-          str: {
-            pAtkT: 1,
-            mAtkT: 0,
-            aspdT: 0,
-            stabT: 0,
-          },
-          int: {
-            mAtkT: 3,
-            pAtkT: 0,
-            aspdT: 0,
-            stabT: 0,
-          },
-          agi: {
-            aspdT: 9.6,
-            pAtkT: 0,
-            mAtkT: 0,
-            stabT: 0,
-          },
-          dex: {
-            pAtkT: 0,
-            mAtkT: 0,
-            aspdT: 0,
-            stabT: 0,
-          },
+        int: {
+          mAtkT: 3,
+          pAtkT: 0,
+          aspdT: 0,
+          stabT: 0,
         },
-        weaAtk_Matk_Convert: 0,
-        weaAtk_Patk_Convert: 1,
+        agi: {
+          aspdT: 2.2,
+          pAtkT: 0,
+          mAtkT: 0,
+          stabT: 0,
+        },
+        dex: {
+          pAtkT: 1,
+          stabT: 0.1,
+          mAtkT: 0,
+          aspdT: 0,
+        },
       },
-    };
+      weaAtk_Matk_Convert: 0,
+      weaAtk_Patk_Convert: 1,
+    },
+    BOW: {
+      baseHit: 0.1,
+      baseAspd: 75,
+      abi_Attr_Convert: {
+        str: {
+          pAtkT: 1,
+          stabT: 0.05,
+          mAtkT: 0,
+          aspdT: 0,
+        },
+        int: {
+          mAtkT: 3,
+          pAtkT: 0,
+          aspdT: 0,
+          stabT: 0,
+        },
+        agi: {
+          aspdT: 3.1,
+          pAtkT: 0,
+          mAtkT: 0,
+          stabT: 0,
+        },
+        dex: {
+          pAtkT: 3,
+          stabT: 0.05,
+          aspdT: 0.2,
+          mAtkT: 0,
+        },
+      },
+      weaAtk_Matk_Convert: 0,
+      weaAtk_Patk_Convert: 1,
+    },
+    BOWGUN: {
+      baseHit: 0.05,
+      baseAspd: 100,
+      abi_Attr_Convert: {
+        str: {
+          stabT: 0.05,
+          pAtkT: 0,
+          mAtkT: 0,
+          aspdT: 0,
+        },
+        int: {
+          mAtkT: 3,
+          pAtkT: 0,
+          aspdT: 0,
+          stabT: 0,
+        },
+        agi: {
+          aspdT: 2.2,
+          pAtkT: 0,
+          mAtkT: 0,
+          stabT: 0,
+        },
+        dex: {
+          pAtkT: 4,
+          aspdT: 0.2,
+          mAtkT: 0,
+          stabT: 0,
+        },
+      },
+      weaAtk_Matk_Convert: 0,
+      weaAtk_Patk_Convert: 1,
+    },
+    STAFF: {
+      baseHit: 0.3,
+      baseAspd: 60,
+      abi_Attr_Convert: {
+        str: {
+          pAtkT: 3,
+          stabT: 0.05,
+          mAtkT: 0,
+          aspdT: 0,
+        },
+        int: {
+          mAtkT: 4,
+          pAtkT: 1,
+          aspdT: 0.2,
+          stabT: 0,
+        },
+        agi: {
+          aspdT: 1.8,
+          pAtkT: 0,
+          mAtkT: 0,
+          stabT: 0,
+        },
+        dex: {
+          aspdT: 0.2,
+          pAtkT: 0,
+          mAtkT: 0,
+          stabT: 0,
+        },
+      },
+      weaAtk_Matk_Convert: 1,
+      weaAtk_Patk_Convert: 1,
+    },
+    MAGIC_DEVICE: {
+      baseHit: 0.1,
+      baseAspd: 90,
+      abi_Attr_Convert: {
+        str: {
+          pAtkT: 0,
+          mAtkT: 0,
+          aspdT: 0,
+          stabT: 0,
+        },
+        int: {
+          mAtkT: 4,
+          pAtkT: 2,
+          aspdT: 0.2,
+          stabT: 0,
+        },
+        agi: {
+          pAtkT: 2,
+          aspdT: 4,
+          mAtkT: 0,
+          stabT: 0,
+        },
+        dex: {
+          stabT: 0.1,
+          pAtkT: 0,
+          mAtkT: 0,
+          aspdT: 0,
+        },
+      },
+      weaAtk_Matk_Convert: 1,
+      weaAtk_Patk_Convert: 1,
+    },
+    KNUCKLE: {
+      baseHit: 0.1,
+      baseAspd: 120,
+      abi_Attr_Convert: {
+        str: {
+          aspdT: 0.1,
+          pAtkT: 0,
+          mAtkT: 0,
+          stabT: 0,
+        },
+        int: {
+          mAtkT: 4,
+          pAtkT: 0,
+          aspdT: 0,
+          stabT: 0,
+        },
+        agi: {
+          pAtkT: 2,
+          aspdT: 4.6,
+          mAtkT: 0,
+          stabT: 0,
+        },
+        dex: {
+          pAtkT: 0.5,
+          stabT: 0.025,
+          mAtkT: 0,
+          aspdT: 0.1,
+        },
+      },
+      weaAtk_Matk_Convert: 0.5,
+      weaAtk_Patk_Convert: 1,
+    },
+    HALBERD: {
+      baseHit: 0.25,
+      baseAspd: 20,
+      abi_Attr_Convert: {
+        str: {
+          pAtkT: 2.5,
+          stabT: 0.05,
+          aspdT: 0.2,
+          mAtkT: 0,
+        },
+        int: {
+          mAtkT: 2,
+          pAtkT: 0,
+          aspdT: 0,
+          stabT: 0,
+        },
+        agi: {
+          aspdT: 3.5,
+          pAtkT: 1.5,
+          mAtkT: 1,
+          stabT: 0,
+        },
+        dex: {
+          stabT: 0.05,
+          pAtkT: 0,
+          mAtkT: 0,
+          aspdT: 0,
+        },
+      },
+      weaAtk_Matk_Convert: 0,
+      weaAtk_Patk_Convert: 1,
+    },
+    NO_WEAPON: {
+      baseHit: 50,
+      baseAspd: 1000,
+      abi_Attr_Convert: {
+        str: {
+          pAtkT: 1,
+          mAtkT: 0,
+          aspdT: 0,
+          stabT: 0,
+        },
+        int: {
+          mAtkT: 3,
+          pAtkT: 0,
+          aspdT: 0,
+          stabT: 0,
+        },
+        agi: {
+          aspdT: 9.6,
+          pAtkT: 0,
+          mAtkT: 0,
+          stabT: 0,
+        },
+        dex: {
+          pAtkT: 0,
+          mAtkT: 0,
+          aspdT: 0,
+          stabT: 0,
+        },
+      },
+      weaAtk_Matk_Convert: 0,
+      weaAtk_Patk_Convert: 1,
+    },
+  };
 
   // 自由数值：玩家可定义基础值和加成项的，不由其他数值转化而来，但是会参与衍生属性计算的数值
   lv: number;
@@ -1118,7 +1119,6 @@ export class CharacterData {
       relation.map((r) => r.update());
       return [""].join(",");
     };
-    this.pPie.update();
 
     this.mPie = new modifiers();
     this.mPie.update = () => {
@@ -1127,7 +1127,6 @@ export class CharacterData {
       relation.map((r) => r.update());
       return [""].join(",");
     };
-    this.mPie.update();
 
     this.pStab = new modifiers();
     this.pStab.update = () => {
@@ -1140,9 +1139,9 @@ export class CharacterData {
         value:
           floor(
             CharacterData.weaponAbiT[mainWeaponType].abi_Attr_Convert.str.stabT * dynamicTotalValue(this.str) +
-            CharacterData.weaponAbiT[mainWeaponType].abi_Attr_Convert.int.stabT * dynamicTotalValue(this.int) +
-            CharacterData.weaponAbiT[mainWeaponType].abi_Attr_Convert.agi.stabT * dynamicTotalValue(this.agi) +
-            CharacterData.weaponAbiT[mainWeaponType].abi_Attr_Convert.dex.stabT * dynamicTotalValue(this.dex),
+              CharacterData.weaponAbiT[mainWeaponType].abi_Attr_Convert.int.stabT * dynamicTotalValue(this.int) +
+              CharacterData.weaponAbiT[mainWeaponType].abi_Attr_Convert.agi.stabT * dynamicTotalValue(this.agi) +
+              CharacterData.weaponAbiT[mainWeaponType].abi_Attr_Convert.dex.stabT * dynamicTotalValue(this.dex),
           ) ?? 0,
         origin: [
           dictionary.ui.analyze.dialogData.str,
@@ -1155,7 +1154,6 @@ export class CharacterData {
       relation.map((r) => r.update());
       return [""].join(",");
     };
-    this.pStab.update();
 
     this.nDis = new modifiers();
     this.nDis.update = () => {
@@ -1164,7 +1162,6 @@ export class CharacterData {
       relation.map((r) => r.update());
       return [""].join(",");
     };
-    this.nDis.update();
 
     this.fDis = new modifiers();
     this.fDis.update = () => {
@@ -1173,7 +1170,6 @@ export class CharacterData {
       relation.map((r) => r.update());
       return [""].join(",");
     };
-    this.fDis.update();
 
     this.crT = new modifiers();
     this.crT.update = () => {
@@ -1182,7 +1178,6 @@ export class CharacterData {
       relation.map((r) => r.update());
       return [""].join(",");
     };
-    this.crT.update();
 
     this.cdT = new modifiers();
     this.cdT.update = () => {
@@ -1191,7 +1186,6 @@ export class CharacterData {
       relation.map((r) => r.update());
       return [""].join(",");
     };
-    this.cdT.update();
 
     this.stro = new modifiers();
     this.stro.update = () => {
@@ -1200,7 +1194,6 @@ export class CharacterData {
       relation.map((r) => r.update());
       return [""].join(",");
     };
-    this.stro.update();
 
     this.unsheatheAtk = new modifiers();
     this.unsheatheAtk.update = () => {
@@ -1209,7 +1202,6 @@ export class CharacterData {
       relation.map((r) => r.update());
       return [""].join(",");
     };
-    this.unsheatheAtk.update();
 
     this.total = new modifiers();
     this.total.update = () => {
@@ -1218,7 +1210,6 @@ export class CharacterData {
       relation.map((r) => r.update());
       return [""].join(",");
     };
-    this.total.update();
 
     this.final = new modifiers();
     this.final.update = () => {
@@ -1227,7 +1218,6 @@ export class CharacterData {
       relation.map((r) => r.update());
       return [""].join(",");
     };
-    this.final.update();
 
     this.anticipate = new modifiers();
     this.anticipate.update = () => {
@@ -1324,6 +1314,18 @@ export class CharacterData {
     this.mAtk.update();
     this.aspd.update();
     this.cspd.update();
+
+    this.pPie.update();
+    this.mPie.update();
+    this.pStab.update();
+    this.nDis.update();
+    this.fDis.update();
+    this.crT.update();
+    this.cdT.update();
+    this.stro.update();
+    this.unsheatheAtk.update();
+    this.total.update();
+    this.final.update();
 
     this.am.update();
     this.cm.update();
@@ -1643,11 +1645,11 @@ export class SkillData {
     };
     this.skillActionFrames = floor(
       dynamicTotalValue(this.actionFixedDuration) +
-      (dynamicTotalValue(this.actionModifiableDuration) * (100 - min(dynamicTotalValue(this.am), 50))) / 100,
+        (dynamicTotalValue(this.actionModifiableDuration) * (100 - min(dynamicTotalValue(this.am), 50))) / 100,
     );
     this.skillChantingFrames = floor(
       dynamicTotalValue(this.chantingFixedDuration) +
-      (dynamicTotalValue(this.chantingModifiableDuration) * (100 - min(dynamicTotalValue(this.cm), 50))) / 100,
+        (dynamicTotalValue(this.chantingModifiableDuration) * (100 - min(dynamicTotalValue(this.cm), 50))) / 100,
     );
     this.skillDuration = this.skillActionFrames + this.skillChantingFrames * fps;
     this.skillWindUp = skillWindUpComputer(skill.skillEffect.skillWindUpFormula, this.skillDuration, computeArg);
@@ -1715,6 +1717,16 @@ const frameData = (
     console.log("怪物死亡");
   }
 
+  // 定义一个自定义节点转换函数
+  function replaceNode(node: MathNode) {
+    // 如果节点是AccessorNode，替换成FunctionNode dynamicTotalValue(SymbolNode)
+    if ("isAccessorNode" in node && node.isAccessorNode) {
+      return new math.FunctionNode(new math.SymbolNode("dynamicTotalValue"), [node]);
+    }
+    // 遍历节点的子节点并递归替换
+    return node.map(replaceNode);
+  }
+
   // 执行并更新事件队列
   // console.log("执行事件过滤前，事件队列为：", eventSequence);
   eventSequence = eventSequence.filter((event, index) => {
@@ -1749,158 +1761,84 @@ const frameData = (
               const targetStr = _.trim(match[1]);
               const operatorStr = match[2];
               const formulaStr = _.trim(match[3]);
+              // 将属性节点转换成总值计算
+              const subNode = parse(formulaStr);
+              const transformSubNode = replaceNode(subNode);
+              const transformSubNodeStr = transformSubNode.toString();
+              console.log("转换后的表达式：", transformSubNodeStr);
               // 如果能够发现加减乘除运算符，则对符号左右侧字符串进行验证
-              console.log("表达式拆解为：1:[" + targetStr + "]   2:[" + operatorStr + "]   3:[" + formulaStr + "]");
+              console.log("表达式拆解为：1:[" + targetStr + "]   2:[" + operatorStr + "]   3:[" + transformSubNodeStr + "]");
               // 查找对应对象的内部属性值
-              const targetStrSplit = targetStr.split(".");
-              if (targetStrSplit.length > 1) {
-                switch (targetStrSplit[0]) {
-                  case "p":
-                    {
-                      let finalPath = "";
-                      targetStrSplit.forEach((item, index) => {
-                        if (index !== 0) {
-                          const tempPath = index === targetStrSplit.length - 1 ? item : item + ".";
-                          finalPath = finalPath + tempPath;
-                        }
-                      });
-                      let target: modifiers | number | undefined;
-                      if (_.get(character, finalPath)) {
-                        console.log("最终路径：", "characterAttr." + finalPath);
-                        // 如果在characterAttr找到了对应的属性
-                        target = _.get(character, finalPath) as modifiers;
-                        console.log("依据最终路径，在characterAttr中找到了：", target);
-                        // 先判断值类型，依据字符串结尾是否具有百分比符号分为百分比加成和常数加成
-                        const perMatch = formulaStr.match(/^([\s\S]+?)\s*(%?)$/);
-                        if (perMatch) {
-                          // 表达式非空时
-                          if (perMatch[2] === "%") {
-                            // 当末尾存在百分比符号时，尝试将计算结果添加进百分比数组中
-                            console.log("表达式值为百分比类型，非百分号部分：", perMatch[1]);
-                            if (perMatch[1]) {
-                              // 尝试计算表达式结果
-                              const result = cEvaluate(perMatch[1]);
-                              if (result) {
-                                // 表达能够正确计算的话
-                                console.log("第3部分计算结果", result);
-                                // 根据运算符类型，将计算结果添加进百分比数组中
-                                if (operatorStr === "+") {
-                                  target.modifiers.dynamic.percentage.push({
-                                    value: result,
-                                    origin: event.origin,
-                                  });
-                                } else if (operatorStr === "-") {
-                                  target.modifiers.dynamic.percentage.push({
-                                    value: -result,
-                                    origin: event.origin,
-                                  });
-                                } else {
-                                  console.log("未知运算符");
-                                }
-                              } else {
-                                // 表达式计算结果为空时
-                                console.log("第3部分没有返回值");
-                              }
-                            }
-                          } else {
-                            // 否则，尝试将计算结果添加进常数值数组中
-                            const result = cEvaluate(formulaStr);
-                            if (result) {
-                              // 表达能够正确计算的话
-                              console.log("第3部分计算结果", result);
-                              // 根据运算符类型，将计算结果添加进百分比数组中
-                              if (operatorStr === "+") {
-                                target.modifiers.dynamic.fixed.push({
-                                  value: result,
-                                  origin: event.origin,
-                                });
-                              } else if (operatorStr === "-") {
-                                target.modifiers.dynamic.fixed.push({
-                                  value: -result,
-                                  origin: event.origin,
-                                });
-                              } else {
-                                console.log("未知运算符");
-                              }
-                            } else {
-                              // 表达式计算结果为空时
-                              console.log("第3部分没有返回值");
-                            }
-                          }
+              
+              let target: modifiers | number | undefined;
+              if (_.get(computeArg, targetStr)) {
+                target = _.get(computeArg, targetStr) as modifiers;
+                console.log("找到了：", target);
+                // 先判断值类型，依据字符串结尾是否具有百分比符号分为百分比加成和常数加成
+                const perMatch = transformSubNodeStr.match(/^([\s\S]+?)\s*(%?)$/);
+                if (perMatch) {
+                  // 表达式非空时
+                  if (perMatch[2] === "%") {
+                    // 当末尾存在百分比符号时，尝试将计算结果添加进百分比数组中
+                    console.log("表达式值为百分比类型，非百分号部分：", perMatch[1]);
+                    if (perMatch[1]) {
+                      // 尝试计算表达式结果
+                      const result = cEvaluate(perMatch[1]);
+                      if (result) {
+                        // 表达能够正确计算的话
+                        console.log("第3部分计算结果", result);
+                        // 根据运算符类型，将计算结果添加进百分比数组中
+                        if (operatorStr === "+") {
+                          target.modifiers.dynamic.percentage.push({
+                            value: result,
+                            origin: event.origin,
+                          });
+                        } else if (operatorStr === "-") {
+                          target.modifiers.dynamic.percentage.push({
+                            value: -result,
+                            origin: event.origin,
+                          });
                         } else {
-                          console.log("第3部分为空");
+                          console.log("未知运算符");
                         }
-                        console.log("修改后的属性值为：", target);
-                        // 更新相关值
-                        console.log("将更新受影响的属性：" + target.update());
-                      } else if (_.get(computeArg, targetStr) !== undefined) {
-                        console.log("最终路径：", "computeArg." + targetStr);
-                        // 如果在计算上下文中寻找了对应的自定属性
-                        target = _.get(computeArg, targetStr) as number;
-                        console.log("依据最终路径，在computeArg中找到了：", target);
-                        // 先判断值类型，依据字符串结尾是否具有百分比符号分为百分比加成和常数加成
-                        const perMatch = formulaStr.match(/^([\s\S]+?)\s*(%?)$/);
-                        if (perMatch) {
-                          if (perMatch[2] === "%") {
-                            // 当末尾存在百分比符号时，尝试更新属性
-                            console.log("表达式值为百分比类型，非百分号部分：", perMatch[1]);
-                            if (perMatch[1]) {
-                              // 尝试计算表达式结果
-                              const result = cEvaluate(perMatch[1]);
-                              if (result) {
-                                // 表达能够正确计算的话
-                                console.log("表达式值计算结果", result);
-                                // 根据运算符类型，更新属性
-                                if (operatorStr === "+") {
-                                  target += (target * result) / 100;
-                                } else if (operatorStr === "-") {
-                                  target -= (target * result) / 100;
-                                } else {
-                                  console.log("未知运算符");
-                                }
-                              } else {
-                                // 表达式计算结果为空时
-                                console.log("表达式值没有返回值");
-                              }
-                            }
-                          } else {
-                            console.log("表达式值为常数类型，常数部分：", perMatch[1]);
-                            console.log("计算环境为：", computeArg);
-                            // 否则，尝试更新属性
-                            const result = cEvaluate(formulaStr);
-                            if (result) {
-                              // 表达能够正确计算的话
-                              console.log("表达式值计算结果", result);
-                              // 根据运算符类型，更新对应属性
-                              if (operatorStr === "+") {
-                                target += result;
-                              } else if (operatorStr === "-") {
-                                target -= result;
-                              } else {
-                                console.log("未知运算符");
-                              }
-                            } else {
-                              // 表达式计算结果为空时
-                              console.log("表达式值没有返回值");
-                            }
-                          }
-                        }
-                        _.set(computeArg, targetStr, target);
-                        console.log("修改后的属性值为：", target);
                       } else {
-                        console.log("在计算上下文中没有找到对应的自定义属性:" + targetStr);
+                        // 表达式计算结果为空时
+                        console.log("第3部分没有返回值");
                       }
                     }
-                    break;
-
-                  case "m":
-                    break;
-
-                  case "s":
-
-                  default:
-                    break;
+                  } else {
+                    // 否则，尝试将计算结果添加进常数值数组中
+                    const result = cEvaluate(transformSubNodeStr);
+                    if (result) {
+                      // 表达能够正确计算的话
+                      console.log("第3部分计算结果", result);
+                      // 根据运算符类型，将计算结果添加进百分比数组中
+                      if (operatorStr === "+") {
+                        target.modifiers.dynamic.fixed.push({
+                          value: result,
+                          origin: event.origin,
+                        });
+                      } else if (operatorStr === "-") {
+                        target.modifiers.dynamic.fixed.push({
+                          value: -result,
+                          origin: event.origin,
+                        });
+                      } else {
+                        console.log("未知运算符");
+                      }
+                    } else {
+                      // 表达式计算结果为空时
+                      console.log("第3部分没有返回值");
+                    }
+                  }
+                } else {
+                  console.log("第3部分为空");
                 }
+                console.log("修改后的属性值为：", target);
+                // 更新相关值
+                console.log("将更新受影响的属性：" + target.update());
+              } else {
+                console.log("在计算上下文中没有找到对应的自定义属性:" + targetStr);
               }
             } else {
               // 如果未匹配到，则返回空字符串或其他你希望的默认值
@@ -1940,184 +1878,6 @@ export const computeFrameData = (
     frame: 0,
     p: characterData,
     m: monsterData,
-    // p: {
-    //   get cspd() {
-    //     return dynamicTotalValue(characterData.cspd);
-    //   },
-    //   get cm() {
-    //     return dynamicTotalValue(characterData.cm);
-    //   },
-    //   get lv() {
-    //     return characterData.lv;
-    //   },
-    //   get str() {
-    //     return dynamicTotalValue(characterData.str);
-    //   },
-    //   get int() {
-    //     return dynamicTotalValue(characterData.int);
-    //   },
-    //   get vit() {
-    //     return dynamicTotalValue(characterData.vit);
-    //   },
-    //   get dex() {
-    //     return dynamicTotalValue(characterData.dex);
-    //   },
-    //   get agi() {
-    //     return dynamicTotalValue(characterData.agi);
-    //   },
-    //   get luk() {
-    //     return dynamicTotalValue(characterData.luk);
-    //   },
-    //   get tec() {
-    //     return dynamicTotalValue(characterData.tec);
-    //   },
-    //   get cri() {
-    //     return dynamicTotalValue(characterData.cri);
-    //   },
-    //   get men() {
-    //     return dynamicTotalValue(characterData.men);
-    //   },
-    //   get mainWeaponType() {
-    //     return characterData.mainWeapon.type;
-    //   },
-    //   get mainWeaponBaseAtk() {
-    //     return dynamicTotalValue(characterData.mainWeapon.baseAtk);
-    //   },
-    //   get mainWeaponRefinement() {
-    //     return characterData.mainWeapon.refinement;
-    //   },
-    //   get mainWeaponStability() {
-    //     return characterData.mainWeapon.stability;
-    //   },
-    //   get subWeaponType() {
-    //     return characterData.subWeapon.type;
-    //   },
-    //   get subWeaponBaseAtk() {
-    //     return dynamicTotalValue(characterData.subWeapon.baseAtk);
-    //   },
-    //   get subWeaponRefinement() {
-    //     return characterData.subWeapon.refinement;
-    //   },
-    //   get subWeaponStability() {
-    //     return characterData.subWeapon.stability;
-    //   },
-    //   get bodyArmorType() {
-    //     return characterData.bodyArmor.type;
-    //   },
-    //   get bodyArmorBaseDef() {
-    //     return dynamicTotalValue(characterData.bodyArmor.baseDef);
-    //   },
-    //   get bodyArmorRefinement() {
-    //     return characterData.bodyArmor.refinement;
-    //   },
-    //   get pPie() {
-    //     return dynamicTotalValue(characterData.pPie);
-    //   },
-    //   get mPie() {
-    //     return dynamicTotalValue(characterData.mPie);
-    //   },
-    //   get pStab() {
-    //     return dynamicTotalValue(characterData.pStab);
-    //   },
-    //   get nDis() {
-    //     return dynamicTotalValue(characterData.nDis);
-    //   },
-    //   get fDis() {
-    //     return dynamicTotalValue(characterData.fDis);
-    //   },
-    //   get crT() {
-    //     return dynamicTotalValue(characterData.crT);
-    //   },
-    //   get cdT() {
-    //     return dynamicTotalValue(characterData.cdT);
-    //   },
-    //   get weaMatkT() {
-    //     return dynamicTotalValue(characterData.weaMatkT);
-    //   },
-    //   get stro() {
-    //     return dynamicTotalValue(characterData.stro);
-    //   },
-    //   get unsheatheAtk() {
-    //     return dynamicTotalValue(characterData.unsheatheAtk);
-    //   },
-    //   get total() {
-    //     return dynamicTotalValue(characterData.total);
-    //   },
-    //   get final() {
-    //     return dynamicTotalValue(characterData.final);
-    //   },
-    //   get am() {
-    //     return dynamicTotalValue(characterData.am);
-    //   },
-    //   get aggro() {
-    //     return dynamicTotalValue(characterData.aggro);
-    //   },
-    //   get maxHp() {
-    //     return dynamicTotalValue(characterData.maxHp);
-    //   },
-    //   get maxMp() {
-    //     return dynamicTotalValue(characterData.maxMp);
-    //   },
-    //   get pCr() {
-    //     return dynamicTotalValue(characterData.pCr);
-    //   },
-    //   get pCd() {
-    //     return dynamicTotalValue(characterData.pCd);
-    //   },
-    //   get mainWeaponAtk() {
-    //     return dynamicTotalValue(characterData.mainWeaponAtk);
-    //   },
-    //   get subWeaponAtk() {
-    //     return dynamicTotalValue(characterData.subWeaponAtk);
-    //   },
-    //   get weaponAtk() {
-    //     return dynamicTotalValue(characterData.weaponAtk);
-    //   },
-    //   get pAtk() {
-    //     return dynamicTotalValue(characterData.pAtk);
-    //   },
-    //   get mAtk() {
-    //     return dynamicTotalValue(characterData.mAtk);
-    //   },
-    //   get aspd() {
-    //     return dynamicTotalValue(characterData.aspd);
-    //   },
-    //   get hp() {
-    //     return dynamicTotalValue(characterData.hp);
-    //   },
-    //   get mp() {
-    //     return dynamicTotalValue(characterData.mp);
-    //   },
-    //   get ampr() {
-    //     return dynamicTotalValue(characterData.ampr);
-    //   },
-    // },
-    // m: {
-    //   get name() {
-    //     return monster.name;
-    //   },
-    //   get lv() {
-    //     return monsterData.lv;
-    //   },
-    //   get hp() {
-    //     return dynamicTotalValue(monsterData.hp);
-    //   },
-    //   get pDef() {
-    //     return dynamicTotalValue(monsterData.pDef);
-    //   },
-    //   get mDef() {
-    //     return dynamicTotalValue(monsterData.mDef);
-    //   },
-    //   get pRes() {
-    //     return dynamicTotalValue(monsterData.pRes);
-    //   },
-    //   get mRes() {
-    //     return dynamicTotalValue(monsterData.mRes);
-    //   },
-    //   get cRes() {
-    //     return dynamicTotalValue(monsterData.cRes);
-    //   },
-    // },
     s: {
       index: 0,
       frame: 0,
@@ -2130,7 +1890,7 @@ export const computeFrameData = (
       return (
         ((dynamicTotalValue(characterData.mAtk) + characterData.lv - monsterData.lv) *
           (100 - dynamicTotalValue(monsterData.mRes))) /
-        100 -
+          100 -
         ((100 - dynamicTotalValue(characterData.pPie)) / 100) * dynamicTotalValue(monsterData.pDef)
       );
     },
@@ -2138,7 +1898,7 @@ export const computeFrameData = (
       return (
         ((dynamicTotalValue(characterData.pAtk) + characterData.lv - monsterData.lv) *
           (100 - dynamicTotalValue(monsterData.pRes))) /
-        100 -
+          100 -
         ((100 - dynamicTotalValue(characterData.mPie)) / 100) * dynamicTotalValue(monsterData.mDef)
       );
     },

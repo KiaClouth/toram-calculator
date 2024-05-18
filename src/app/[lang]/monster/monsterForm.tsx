@@ -94,7 +94,7 @@ export default function MonsterForm(props: {
     "updatedByUserId",
     "viewTimestamps",
     "usageTimestamps",
-    "raters",
+    "rates",
   ];
 
   // 定义表单
@@ -246,7 +246,7 @@ export default function MonsterForm(props: {
                       const defaultFieldsetClass = "flex basis-full flex-col gap-1 p-2";
                       let fieldsetClass: string = defaultFieldsetClass;
                       switch (key as keyof Monster) {
-                        // case "raters":
+                        // case "rates":
                         // case "id":
                         case "state": {
                           fieldsetClass = monsterFormState === "DISPLAY" ? "hidden" : defaultFieldsetClass;
