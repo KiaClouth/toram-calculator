@@ -1,12 +1,12 @@
 "use client";
 import _, { isNumber } from "lodash-es";
-import { type MainWeaType, type SubWeaType, type BodyArmorType, type $Enums } from "@prisma/client";
+import { type MainWeaponType, type SubWeaponType, type BodyArmorType, type $Enums } from "@prisma/client";
 import { type Character } from "~/server/api/routers/character";
 import { type Monster } from "~/server/api/routers/monster";
 import { type SkillEffect } from "~/server/api/routers/skill";
 import { type ModifiersList } from "~/server/api/routers/crystal";
 import { type getDictionary } from "~/app/get-dictionary";
-import { MathNode, all, create, floor, max, min, parse } from "mathjs";
+import { type MathNode, all, create, floor, max, min, parse } from "mathjs";
 
 const fps = 60;
 
@@ -81,11 +81,11 @@ export type pTpye = {
   tec: number;
   cri: number;
   men: number;
-  mainWeaponType: MainWeaType;
+  mainWeaponType: MainWeaponType;
   mainWeaponBaseAtk: number;
   mainWeaponRefinement: number;
   mainWeaponStability: number;
-  subWeaponType: SubWeaType;
+  subWeaponType: SubWeaponType;
   subWeaponBaseAtk: number;
   subWeaponRefinement: number;
   subWeaponStability: number;
@@ -460,7 +460,7 @@ export const characterModifiersApplicator = (character: Character, characterData
 export class CharacterData {
   // 武器的能力值-属性转化率
   static weaponAbiT: Record<
-    MainWeaType,
+    MainWeaponType,
     {
       baseHit: number;
       baseAspd: number;
@@ -797,13 +797,13 @@ export class CharacterData {
   // 自由数值：玩家可定义基础值和加成项的，不由其他数值转化而来，但是会参与衍生属性计算的数值
   lv: number;
   mainWeapon: {
-    type: MainWeaType;
+    type: MainWeaponType;
     baseAtk: modifiers;
     refinement: number;
     stability: number;
   };
   subWeapon: {
-    type: SubWeaType;
+    type: SubWeaponType;
     baseAtk: modifiers;
     refinement: number;
     stability: number;
@@ -860,8 +860,8 @@ export class CharacterData {
 
   constructor(dictionary: ReturnType<typeof getDictionary>, character: Character) {
     console.log("正在实例化CharacterData");
-    const mainWeaponType = character.mainWeapon?.mainWeaType ?? "NO_WEAPON";
-    const subWeaponType = character.subWeapon?.subWeaType ?? "NO_WEAPON";
+    const mainWeaponType = character.mainWeapon?.mainWeaponType ?? "NO_WEAPON";
+    const subWeaponType = character.subWeapon?.subWeaponType ?? "NO_WEAPON";
     const bodyArmorType = character.bodyArmor?.bodyArmorType ?? "NORMAL";
 
     this.weaPatkT = new modifiers();

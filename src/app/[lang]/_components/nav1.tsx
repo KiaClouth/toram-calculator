@@ -83,7 +83,7 @@ export default function Nav(props: {
           url: "",
         },
         {
-          name: dictionary.ui.root.crystas,
+          name: dictionary.ui.root.crystals,
           icon: <IconBox2 key={"IconBox2"} />,
           url: "",
         },
