@@ -117,8 +117,8 @@ const dictionary: dictionary = {
         fDis: "远距离威力",
         crT: "法术暴击转化率",
         cdT: "法术爆伤转化率",
-        weaPatkT: "武器物理攻击",
-        weaMatkT: "武器魔法攻击",
+        weaPatkT: "武器攻击转化率（物理）",
+        weaMatkT: "武器攻击转化率（魔法）",
         unsheatheAtk: "拔刀攻击",
         stro: "对属增强",
         total: "总伤害提升",
@@ -164,6 +164,8 @@ const dictionary: dictionary = {
         skillWindUp: "技能前摇",
         stateFramesData: "技能内各帧数据",
         finalEventSequence: "最终事件队列（托管）",
+        vMatk: "有效攻击力（魔法）",
+        vPatk: "有效物攻（物理）"
       },
       actualValue: "实际值",
       baseValue: "基础值",
@@ -329,7 +331,7 @@ const dictionary: dictionary = {
         name: "锻晶名称",
         crystalType: "锻晶类型",
         front: "前置锻晶数",
-        modifiersListId: "",
+        modifiersListId: "加成项列表ID",
         ...statistics,
       },
       skill: {

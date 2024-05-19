@@ -12,7 +12,7 @@ import {
 } from "@tanstack/react-table";
 import { type getDictionary } from "~/app/get-dictionary";
 import { type Session } from "next-auth";
-import React, { useState, type CSSProperties, useEffect, useCallback } from "react";
+import React, { useState, type CSSProperties, useEffect } from "react";
 import MonsterForm from "./monsterForm";
 import Button from "../_components/button";
 import {
@@ -37,63 +37,60 @@ interface Props {
   monsterList: Monster[];
 }
 
+// 计算各星级属性的方法
+export const computeMonsterAugmentedList = (monsterList: Monster[], dictionary: ReturnType<typeof getDictionary>) => {
+  const monsterAugmentedList: Monster[] = [];
+  monsterList.forEach((monster) => {
+    // 表中记录的是1星状态下的定点王数据， 2 / 3 / 4 星的经验和HP为1星的 2 / 5 / 10 倍；物防、魔防、回避值为1星的 2 / 4 / 6 倍。
+    if (monster.monsterType !== "COMMON_BOSS") {
+      monsterAugmentedList.push(monster);
+    } else {
+      monsterAugmentedList.push(
+        {
+          ...monster,
+          name: monster.name + " " + dictionary.ui.monster.monsterDegreeOfDifficulty[1],
+        },
+        {
+          ...monster,
+          id: monster.id + "**",
+          name: monster.name + " " + dictionary.ui.monster.monsterDegreeOfDifficulty[2],
+          baseLv: monster.baseLv !== null ? monster.baseLv + 10 : 0,
+          experience: monster.experience !== null ? monster.experience * 2 : 0,
+          maxhp: monster.maxhp !== null ? monster.maxhp * 2 : 0,
+          physicalDefense: monster.physicalDefense !== null ? monster.physicalDefense * 2 : 0,
+          magicalDefense: monster.magicalDefense !== null ? monster.magicalDefense * 2 : 0,
+        },
+        {
+          ...monster,
+          id: monster.id + "***",
+          name: monster.name + " " + dictionary.ui.monster.monsterDegreeOfDifficulty[3],
+          baseLv: monster.baseLv !== null ? monster.baseLv + 20 : 0,
+          experience: monster.experience !== null ? monster.experience * 5 : 0,
+          maxhp: monster.maxhp !== null ? monster.maxhp * 5 : 0,
+          physicalDefense: monster.physicalDefense !== null ? monster.physicalDefense * 4 : 0,
+          magicalDefense: monster.magicalDefense !== null ? monster.magicalDefense * 4 : 0,
+          avoidance: monster.avoidance !== null ? monster.avoidance * 4 : 0,
+        },
+        {
+          ...monster,
+          id: monster.id + "****",
+          name: monster.name + " " + dictionary.ui.monster.monsterDegreeOfDifficulty[4],
+          baseLv: monster.baseLv !== null ? monster.baseLv + 40 : 0,
+          experience: monster.experience !== null ? monster.experience * 10 : 0,
+          maxhp: monster.maxhp !== null ? monster.maxhp * 10 : 0,
+          physicalDefense: monster.physicalDefense !== null ? monster.physicalDefense * 6 : 0,
+          magicalDefense: monster.magicalDefense !== null ? monster.magicalDefense * 6 : 0,
+          avoidance: monster.avoidance !== null ? monster.avoidance * 6 : 0,
+        },
+      );
+    }
+  });
+  return monsterAugmentedList;
+};
+
 export default function MonserPageClient(props: Props) {
   const { dictionary, session } = props;
   const [defaultMonsterList, setDefaultMonsterList] = useState(props.monsterList);
-
-  // 计算各星级属性的方法
-  const computeMonsterAugmentedList = useCallback(
-    (monsterList: Monster[]) => {
-      const monsterAugmentedList: Monster[] = [];
-      monsterList.forEach((monster) => {
-        // 表中记录的是1星状态下的定点王数据， 2 / 3 / 4 星的经验和HP为1星的 2 / 5 / 10 倍；物防、魔防、回避值为1星的 2 / 4 / 6 倍。
-        if (monster.monsterType !== "COMMON_BOSS") {
-          monsterAugmentedList.push(monster);
-        } else {
-          monsterAugmentedList.push(
-            {
-              ...monster,
-              name: monster.name + " " + dictionary.ui.monster.monsterDegreeOfDifficulty[1],
-            },
-            {
-              ...monster,
-              id: monster.id + "**",
-              name: monster.name + " " + dictionary.ui.monster.monsterDegreeOfDifficulty[2],
-              baseLv: monster.baseLv !== null ? monster.baseLv + 10 : 0,
-              experience: monster.experience !== null ? monster.experience * 2 : 0,
-              maxhp: monster.maxhp !== null ? monster.maxhp * 2 : 0,
-              physicalDefense: monster.physicalDefense !== null ? monster.physicalDefense * 2 : 0,
-              magicalDefense: monster.magicalDefense !== null ? monster.magicalDefense * 2 : 0,
-            },
-            {
-              ...monster,
-              id: monster.id + "***",
-              name: monster.name + " " + dictionary.ui.monster.monsterDegreeOfDifficulty[3],
-              baseLv: monster.baseLv !== null ? monster.baseLv + 20 : 0,
-              experience: monster.experience !== null ? monster.experience * 5 : 0,
-              maxhp: monster.maxhp !== null ? monster.maxhp * 5 : 0,
-              physicalDefense: monster.physicalDefense !== null ? monster.physicalDefense * 4 : 0,
-              magicalDefense: monster.magicalDefense !== null ? monster.magicalDefense * 4 : 0,
-              avoidance: monster.avoidance !== null ? monster.avoidance * 4 : 0,
-            },
-            {
-              ...monster,
-              id: monster.id + "****",
-              name: monster.name + " " + dictionary.ui.monster.monsterDegreeOfDifficulty[4],
-              baseLv: monster.baseLv !== null ? monster.baseLv + 40 : 0,
-              experience: monster.experience !== null ? monster.experience * 10 : 0,
-              maxhp: monster.maxhp !== null ? monster.maxhp * 10 : 0,
-              physicalDefense: monster.physicalDefense !== null ? monster.physicalDefense * 6 : 0,
-              magicalDefense: monster.magicalDefense !== null ? monster.magicalDefense * 6 : 0,
-              avoidance: monster.avoidance !== null ? monster.avoidance * 6 : 0,
-            },
-          );
-        }
-      });
-      return monsterAugmentedList;
-    },
-    [dictionary.ui.monster.monsterDegreeOfDifficulty],
-  );
 
   // 状态管理参数
   const {
@@ -111,7 +108,7 @@ export default function MonserPageClient(props: Props) {
 
   // 搜索框行为函数
   const handleSearchFilterChange = (value: string) => {
-    const currentList = augmented ? computeMonsterAugmentedList(defaultMonsterList) : defaultMonsterList;
+    const currentList = augmented ? computeMonsterAugmentedList(defaultMonsterList, dictionary) : defaultMonsterList;
     if (value === "" || value === null) {
       setMonsterList(currentList);
     }
@@ -391,7 +388,7 @@ export default function MonserPageClient(props: Props) {
 
   useEffect(() => {
     console.log("--Monster Client Render");
-    setMonsterList(augmented ? computeMonsterAugmentedList(defaultMonsterList) : defaultMonsterList);
+    setMonsterList(augmented ? computeMonsterAugmentedList(defaultMonsterList, dictionary) : defaultMonsterList);
     // u键监听
     const handleUKeyPress = (e: KeyboardEvent) => {
       if (e.key === "u") {
@@ -408,8 +405,8 @@ export default function MonserPageClient(props: Props) {
     };
   }, [
     augmented,
-    computeMonsterAugmentedList,
     defaultMonsterList,
+    dictionary,
     setMonster,
     setMonsterDialogState,
     setMonsterFormState,
@@ -498,9 +495,11 @@ export default function MonserPageClient(props: Props) {
             </div>
             <div className="Content flex flex-col gap-2">
               <div
-                className={`FilterBox flex bg-transition-color-8 rounded overflow-y-auto ${filterState ? " max-h-[50dvh] " : " max-h-0 "}`}
+                className={`FilterBox flex overflow-y-auto rounded bg-transition-color-8 ${filterState ? " max-h-[50dvh] " : " max-h-0 "}`}
               >
-                <div className={`Content h-fit flex flex-col gap-2 p-4 ${filterState ? " pointer-events-auto opacity-100 " : " pointer-events-none opacity-0 "} `}>
+                <div
+                  className={`Content flex h-fit flex-col gap-2 p-4 ${filterState ? " pointer-events-auto opacity-100 " : " pointer-events-none opacity-0 "} `}
+                >
                   <div className="module flex flex-col gap-3">
                     <div className="title">{dictionary.ui.columnsHidden}</div>
                     <div className="content flex flex-wrap gap-2 ">

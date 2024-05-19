@@ -1,21 +1,4 @@
-// interface MyButtonProps extends React.InputHTMLAttributes<HTMLInputElement> {
-//   inputBox: number;
-// }
-
-// export function Button(props: MyButtonProps) {
-//   const { ...rest } = props;
-//   const defaultButtonClassNames = ` cursor-pointer flex flex-none items-center justify-center underline-offset-4 hover:underline `;
-
-//   return (
-//     <React.Fragment>
-//       <input
-//         {...rest}
-//         className={` ` + rest.className ? defaultButtonClassNames + rest.className : defaultButtonClassNames}
-//       />
-//     </React.Fragment>
-//   );
-// }
-
+"use client";
 import {
   type ChangeEventHandler,
   type CSSProperties,
@@ -31,6 +14,7 @@ type Props = Omit<HTMLProps<HTMLTextAreaElement>, "aria-multiline" | "rows"> & {
   containerStyle?: Omit<CSSProperties, "display">;
   blurOnLineBreak?: boolean;
   onReturn?: ChangeEventHandler<HTMLTextAreaElement>;
+  onChange: ChangeEventHandler<HTMLTextAreaElement>;
   suffix?: string;
   suffixClassName?: string;
   suffixStyle?: CSSProperties;
@@ -42,19 +26,24 @@ const LineWrappingInput = forwardRef<HTMLTextAreaElement, Props>(function LineWr
   {
     containerClassName,
     containerStyle = {},
-    suffix = " ",
+    suffix = "",
     suffixClassName,
     suffixStyle,
     blurOnLineBreak,
     onReturn,
+    onChange,
     readOnly,
     overlapTechnique = "grid",
     ...props
   },
   ref,
 ) {
-  const [value, setValue] = useState(props.value);
-  useEffect(() => setValue(props.value), [props.value]);
+  const [value, setValue] = useState(props.value ?? "");
+  const [isFocused, setIsFocused] = useState(false);
+  const [isFocusedOrHovered, setIsFocusedOrHovered] = useState(false);
+  useEffect(() => {
+    setValue(props.value ?? "");
+  }, [props.value]);
 
   const handleChange: ChangeEventHandler<HTMLTextAreaElement> = useCallback(
     (event) => {
@@ -73,21 +62,22 @@ const LineWrappingInput = forwardRef<HTMLTextAreaElement, Props>(function LineWr
         });
       } else {
         // Strip line breaks (from pasted text or any other reason)
-        props.onChange?.({
+        onChange({
           ...event,
           target: {
             ...event.target,
-            // value: newValue,
+            value: newValue,
           },
         });
         setValue(newValue);
       }
     },
-    [blurOnLineBreak, onReturn, props],
+    [blurOnLineBreak, onChange, onReturn],
   );
+
   return (
     <div
-      className={`line-wrapping-input-container ${containerClassName ?? ""} mt-1 p-0.5`}
+      className={`line-wrapping-input-container ${containerClassName ?? ""} mt-1 overflow-visible rounded ${readOnly ? " outline outline-transition-color-20" : ""}  ${isFocusedOrHovered ? "outline-brand-color-1st" : ""}`}
       style={{
         ...containerStyle,
         overflow: "auto",
@@ -97,7 +87,7 @@ const LineWrappingInput = forwardRef<HTMLTextAreaElement, Props>(function LineWr
       {!readOnly && (
         <textarea
           {...props}
-          className={`line-wrapping-input ${props.className ?? ""} px-4 py-2 w-full flex-1 rounded bg-transition-color-8 hover:bg-transparent outline-0 hover:outline-2 outline-brand-color-1st focus:outline-2 focus-within:bg-transparent`}
+          className={`line-wrapping-input ${props.className ?? ""} w-full flex-1 rounded bg-transition-color-8 px-4 py-2 outline-1 outline-transparent focus-within:bg-transparent focus-within:outline-brand-color-1st hover:bg-transparent hover:outline-brand-color-1st`}
           value={value}
           aria-multiline="false"
           style={{
@@ -114,12 +104,26 @@ const LineWrappingInput = forwardRef<HTMLTextAreaElement, Props>(function LineWr
             whiteSpace: "pre-wrap",
           }}
           onChange={handleChange}
+          onFocus={() => {
+            setIsFocused(true);
+            setIsFocusedOrHovered(true);
+          }}
+          onBlur={() => {
+            setIsFocused(false);
+            setIsFocusedOrHovered(false);
+          }}
+          onMouseEnter={() => {
+            setIsFocusedOrHovered(true);
+          }}
+          onMouseLeave={() => {
+            setIsFocusedOrHovered(isFocused ? true : false);
+          }}
           rows={1}
           ref={ref}
         />
       )}
       <div
-        className={`line-wrapping-input ${props.className ?? ""} px-4 py-2 w-full flex-1 rounded`}
+        className={`line-wrapping-input ${props.className ?? ""} w-full flex-1 rounded px-4 py-2 `}
         style={{
           ...(props.style ?? {}),
           ...(overlapTechnique === "grid"

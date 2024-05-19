@@ -41,7 +41,7 @@
     "**/*.tsx",
     "**/*.cjs",
     "**/*.js",
-    ".next/types/**/*.ts",
+    ".next/types/**/*.ts", "src/app/[lang]/crystal/test.tsxs",
   ],
   "exclude": ["node_modules", "./public/sw.js"],
 }

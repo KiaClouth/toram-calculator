@@ -161,7 +161,9 @@ const dictionary: dictionary = {
         skillWindUp: "WindUp",
         stateFramesData: "StateFramesData",
         finalEventSequence: "",
-        anticipate: ""
+        anticipate: "",
+        vMatk: "v-mAtk",
+        vPatk: "v-pAtk",
       },
       actualValue: "Actual",
       baseValue: "Base",

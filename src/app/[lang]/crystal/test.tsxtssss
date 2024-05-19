@@ -1,0 +1,272 @@
+import { type $Enums } from "@prisma/client";
+import { FieldComponent, type FieldApi, type FormApi } from "@tanstack/react-form";
+import React from "react";
+import { ZodFirstPartyTypeKind, type ZodObject, type ZodType, z } from "zod";
+import { type getDictionary } from "~/app/get-dictionary";
+import { type modifiers } from "../analyze/worker";
+
+type ConvertToAllString<T> = T extends Date | Date[] | modifiers | Array<object>
+  ? string
+  : T extends object
+    ? {
+        [K in keyof T]: ConvertToAllString<T[K]>;
+      }
+    : string;
+
+// 泛型类型守卫函数
+function getZodTypeKind<T>(schema: z.ZodType<T>): ZodFirstPartyTypeKind {
+  switch (true) {
+    case schema instanceof z.ZodString:
+      return ZodFirstPartyTypeKind.ZodString;
+    case schema instanceof z.ZodNumber:
+      return ZodFirstPartyTypeKind.ZodNumber;
+    case schema instanceof z.ZodBigInt:
+      return ZodFirstPartyTypeKind.ZodBigInt;
+    case schema instanceof z.ZodBoolean:
+      return ZodFirstPartyTypeKind.ZodBoolean;
+    case schema instanceof z.ZodUndefined:
+      return ZodFirstPartyTypeKind.ZodUndefined;
+    case schema instanceof z.ZodObject:
+      return ZodFirstPartyTypeKind.ZodObject;
+    case schema instanceof z.ZodFunction:
+      return ZodFirstPartyTypeKind.ZodFunction;
+    case schema instanceof z.ZodArray:
+      return ZodFirstPartyTypeKind.ZodArray;
+    default:
+      return ZodFirstPartyTypeKind.ZodUndefined;
+  }
+}
+
+function FieldInfo<T extends object>({ field }: { field: FieldApi<T, keyof T> }) {
+  return (
+    <React.Fragment>
+      {field.state.meta.touchedErrors ? (
+        <span className=" text-brand-color-2nd">
+          {` `} : {field.state.meta.touchedErrors}
+        </span>
+      ) : null}
+    </React.Fragment>
+  );
+}
+
+export const formFragment = <T extends object>(
+  form: FormApi<T, any, any, any>,
+  data: T,
+  dictionary: ReturnType<typeof getDictionary>,
+  dictionaryFragment: ConvertToAllString<T>,
+  hiddenDataList: (keyof T)[],
+  formFragmentState: boolean,
+  schema: ZodObject<{ [K in keyof T]: ZodType<T[K]> }>,
+) => {
+  let inputType: React.HTMLInputTypeAttribute = "text";
+  return (
+    <fieldset className="dataKinds flex flex-row flex-wrap gap-y-[4px]">
+      菜
+      {Object.entries(data).map(([key, value]) => {
+        // 遍历对象
+        // 过滤掉隐藏的数据
+        if (hiddenDataList.includes(key as keyof T)) return undefined;
+        // 输入框的类型计算
+        const zodValue = schema.shape[key as keyof T] as z.ZodType;
+        const valueType = getZodTypeKind(zodValue);
+        const { ZodNumber, ZodString, ...Others } = ZodFirstPartyTypeKind;
+        inputType = {
+          [ZodNumber]: "number",
+          [ZodString]: "text",
+          ...Others,
+        }[valueType];
+        // 由于数组类型的值与常规变量值存在结构差异，因此在此进行区分
+
+        <form.field
+          key={key}
+          name={key}
+          validators={{
+            onChangeAsyncDebounceMs: 500,
+            onChangeAsync: schema.shape[key],
+          }}
+        >
+          {(field) => {
+            const defaultFieldsetClass = `${hiddenDataList.some((item) => field.name === item) ? "hidden" : "flex"} basis-1/2 flex-col gap-1 p-2 lg:basis-1/4`;
+            const defaultInputBox = (
+              <input
+                autoComplete="off"
+                disabled={formFragmentState}
+                id={field.name}
+                name={field.name}
+                value={field.state.value as string}
+                type={inputType}
+                onBlur={field.handleBlur}
+                onChange={(e) =>
+                  field.handleChange(inputType === "number" ? parseFloat(e.target.value) : e.target.value)
+                }
+                className={`mt-1 w-full flex-1 rounded px-4 py-2 ${formFragmentState ? " pointer-events-none bg-transparent outline-transition-color-20" : " pointer-events-auto bg-transition-color-8"}`}
+              />
+            );
+            const fieldsetClass: string = defaultFieldsetClass;
+            const inputBox: React.ReactNode = defaultInputBox;
+            switch (valueType) {
+              case ZodFirstPartyTypeKind.ZodEnum: {
+                inputType = "radio";
+                return (
+                  <form.Field
+                    key={key}
+                    name={key}
+                    validators={{
+                      onChangeAsyncDebounceMs: 500,
+                      onChangeAsync: schema.shape[key],
+                    }}
+                  >
+                    {(field) => {
+                      const defaultFieldsetClass = "flex basis-full flex-col gap-1 p-2";
+                      const fieldsetClass: string = defaultFieldsetClass;
+                      switch (key) {
+                        default:
+                          break;
+                      }
+                      return (
+                        <fieldset key={key} className={fieldsetClass}>
+                          <span>
+                            {dictionaryFragment[key]}
+                            <FieldInfo field={field} />
+                          </span>
+                          <div
+                            className={`inputContianer mt-1 flex flex-wrap self-start rounded lg:gap-2 ${crystalFormState === "DISPLAY" ? " outline-transition-color-20" : ""}`}
+                          >
+                            {"options" in zodValue &&
+                              (zodValue.options as string[]).map((option) => {
+                                const defaultInputClass = "mt-0.5 rounded px-4 py-2";
+                                const defaultLabelSizeClass = "";
+                                let inputClass = defaultInputClass;
+                                let labelSizeClass = defaultLabelSizeClass;
+                                let icon: React.ReactNode = null;
+                                switch (option) {
+                                  default:
+                                    inputClass = defaultInputClass;
+                                    labelSizeClass = defaultLabelSizeClass;
+                                    icon = null;
+                                    break;
+                                }
+                                return (
+                                  <label
+                                    key={key + option}
+                                    className={`flex ${labelSizeClass} cursor-pointer items-center justify-between gap-1 rounded-full p-2 px-4 hover:border-transition-color-20 lg:basis-auto lg:flex-row-reverse lg:justify-end lg:gap-2 lg:rounded-sm lg:hover:opacity-100 ${field.getValue() === option ? "opacity-100" : "opacity-20"} ${formFragmentState ? " pointer-events-none border-transparent bg-transparent" : " pointer-events-auto border-transition-color-8 bg-transition-color-8"}`}
+                                  >
+                                    {
+                                      dictionary.db.enums[
+                                        (key.charAt(0).toLocaleUpperCase() + key.slice(1)) as keyof typeof $Enums
+                                      ][option as keyof (typeof $Enums)[keyof typeof $Enums]]
+                                    }
+                                    <input
+                                      disabled={formFragmentState}
+                                      id={field.name + option}
+                                      name={field.name}
+                                      value={option}
+                                      checked={field.getValue() === option}
+                                      type="radio"
+                                      onBlur={field.handleBlur}
+                                      onChange={(e) => field.handleChange(e.target.value)}
+                                      className={inputClass}
+                                    />
+                                    {icon}
+                                  </label>
+                                );
+                              })}
+                          </div>
+                        </fieldset>
+                      );
+                    }}
+                  </form.Field>
+                );
+              }
+
+              case ZodFirstPartyTypeKind.ZodArray: {
+                return (
+                  <fieldset>
+                    {value &&
+                      Array.isArray(value) &&
+                      value.map((subObj, index) => {
+                        return formFragment<T>(
+                          form,
+                          field,
+                          subObj as T,
+                          dictionary,
+                          dictionaryFragment,
+                          hiddenDataList,
+                          formFragmentState,
+                          schema.shape[key as keyof T] as ZodObject<T[keyof T]>,
+                        );
+                      })}
+                  </fieldset>
+                );
+              }
+
+              case ZodFirstPartyTypeKind.ZodObject: {
+                return formFragment<T>(
+                  form,
+                  field,
+                  value as T,
+                  dictionary,
+                  dictionaryFragment,
+                  hiddenDataList,
+                  formFragmentState,
+                  schema.shape[key as keyof T] as ZodObject<T[keyof T]>,
+                );
+              }
+
+              default: {
+                return (
+                  <form.Field
+                    key={key}
+                    name={key}
+                    validators={{
+                      onChangeAsyncDebounceMs: 500,
+                      onChangeAsync: schema.shape[key],
+                    }}
+                  >
+                    {(field) => {
+                      const defaultFieldsetClass = "flex basis-1/2 flex-col gap-1 p-2 lg:basis-1/4";
+                      const defaultInputBox = (
+                        <input
+                          autoComplete="off"
+                          disabled={formFragmentState}
+                          id={field.name}
+                          name={field.name}
+                          value={field.state.value}
+                          type={inputType}
+                          onBlur={field.handleBlur}
+                          onChange={(e) =>
+                            field.handleChange(inputType === "number" ? parseFloat(e.target.value) : e.target.value)
+                          }
+                          className={`mt-1 w-full flex-1 rounded px-4 py-2 ${crystalFormState === "DISPLAY" ? " pointer-events-none bg-transparent outline-transition-color-20" : " pointer-events-auto bg-transition-color-8"}`}
+                        />
+                      );
+                      let fieldsetClass: string = defaultFieldsetClass;
+                      let inputBox: React.ReactNode = defaultInputBox;
+                      switch (key) {
+                        default:
+                          fieldsetClass = defaultFieldsetClass;
+                          inputBox = defaultInputBox;
+                          break;
+                      }
+                      return (
+                        <fieldset key={key} className={fieldsetClass}>
+                          <label htmlFor={field.name} className="flex w-full flex-col gap-1">
+                            <span>
+                              {dictionaryFragment[key]}
+                              <FieldInfo field={field} />
+                            </span>
+                            {inputBox}
+                          </label>
+                        </fieldset>
+                      );
+                    }}
+                  </form.Field>
+                );
+              }
+            }
+          }}
+        </form.field>;
+      })}
+    </fieldset>
+  );
+};

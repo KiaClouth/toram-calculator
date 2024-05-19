@@ -1,5 +1,5 @@
 "use client";
-import _, { isNumber } from "lodash-es";
+import _, { clone, isNumber } from "lodash-es";
 import { type MainWeaponType, type SubWeaponType, type BodyArmorType, type $Enums } from "@prisma/client";
 import { type Character } from "~/server/api/routers/character";
 import { type Monster } from "~/server/api/routers/monster";
@@ -7,6 +7,7 @@ import { type SkillEffect } from "~/server/api/routers/skill";
 import { type ModifiersList } from "~/server/api/routers/crystal";
 import { type getDictionary } from "~/app/get-dictionary";
 import { type MathNode, all, create, floor, max, min, parse } from "mathjs";
+import { defaultSkill } from "~/app/store";
 
 const fps = 60;
 
@@ -141,15 +142,15 @@ export type sType = {
   lv: number;
   am: number;
   cm: number;
+  vMatk: number;
+  vPatk: number;
 };
 
 export type computeArgType = {
   frame: number;
   p: CharacterData;
   m: MonsterData;
-  s: sType;
-  vMatk: number;
-  vPatk: number;
+  s?: SkillData;
 };
 
 export type tSkill = {
@@ -288,13 +289,13 @@ math.import({
 // 角色加成项收集
 export const characterModifierCollector = (character: Character): ModifiersList[] => {
   // 类型谓词函数，用于检查对象是否符合目标类型
-  function isTargetType(obj: unknown, currentPath: string[]): obj is ModifiersList {
+  function isTargetType(obj: unknown, _currentPath: string[]): obj is ModifiersList {
     // 检查对象是否为目标类型
     const isModifiersList =
       typeof obj === "object" && obj !== null && "modifiers" in obj && typeof obj.modifiers === "object";
     // console.log(
     //   "当前路径：",
-    //   currentPath.join("."),
+    //   _currentPath.join("."),
     //   "正在检查属性：",
     //   obj,
     //   "是否符合ModifiersList类型，结论：",
@@ -864,22 +865,6 @@ export class CharacterData {
     const subWeaponType = character.subWeapon?.subWeaponType ?? "NO_WEAPON";
     const bodyArmorType = character.bodyArmor?.bodyArmorType ?? "NORMAL";
 
-    this.weaPatkT = new modifiers();
-    this.weaPatkT.update = () => {
-      this.weaPatkT.baseValue = CharacterData.weaponAbiT[mainWeaponType].weaAtk_Patk_Convert;
-      const relation: modifiers[] = [this.pAtk];
-      relation.map((r) => r.update());
-      return ["_pAtk"].join(",");
-    };
-
-    this.weaMatkT = new modifiers();
-    this.weaMatkT.update = () => {
-      this.weaMatkT.baseValue = CharacterData.weaponAbiT[mainWeaponType].weaAtk_Matk_Convert;
-      const relation: modifiers[] = [this.mAtk];
-      relation.map((r) => r.update());
-      return [""].join(",");
-    };
-
     // 计算基础值
     this.lv = character.lv;
 
@@ -994,66 +979,6 @@ export class CharacterData {
     };
 
     // 二级属性
-    this.maxHp = new modifiers();
-    this.maxHp.update = () => {
-      this.maxHp.baseValue = Math.floor(93 + this.lv * (127 / 17 + dynamicTotalValue(this.vit) / 3));
-      const relation: modifiers[] = [];
-      relation.map((r) => r.update());
-      return [""].join(",");
-    };
-
-    this.maxMp = new modifiers();
-    this.maxMp.update = () => {
-      this.maxMp.baseValue = Math.floor(99 + this.lv + dynamicTotalValue(this.int) / 10 + dynamicTotalValue(this.tec));
-      const relation: modifiers[] = [];
-      relation.map((r) => r.update());
-      return [""].join(",");
-    };
-
-    this.pCr = new modifiers();
-    this.pCr.update = () => {
-      this.pCr.baseValue = 25 + dynamicTotalValue(this.cri) / 5;
-      const relation: modifiers[] = [];
-      relation.map((r) => r.update());
-      return [""].join(",");
-    };
-
-    this.pCd = new modifiers();
-    this.pCd.update = () => {
-      this.pCd.baseValue =
-        150 +
-        Math.floor(
-          Math.max(dynamicTotalValue(this.str) / 5, dynamicTotalValue(this.str) + dynamicTotalValue(this.agi)) / 10,
-        );
-      const relation: modifiers[] = [];
-      relation.map((r) => r.update());
-      return [""].join(",");
-    };
-
-    this.mainWeaponAtk = new modifiers();
-    this.mainWeaponAtk.update = () => {
-      this.mainWeaponAtk.baseValue = dynamicTotalValue(this.mainWeapon.baseAtk);
-      this.mainWeaponAtk.modifiers.static.fixed[0] = {
-        value: this.mainWeapon.refinement,
-        origin: dictionary.ui.analyze.dialogData.mainWeapon.refinement,
-      };
-      this.mainWeaponAtk.modifiers.static.percentage[0] = {
-        value: Math.pow(this.mainWeapon.refinement, 2),
-        origin: dictionary.ui.analyze.dialogData.mainWeapon.refinement,
-      };
-      const relation: modifiers[] = [];
-      relation.map((r) => r.update());
-      return [""].join(",");
-    };
-
-    this.subWeaponAtk = new modifiers();
-    this.subWeaponAtk.update = () => {
-      this.subWeaponAtk.baseValue = dynamicTotalValue(this.subWeapon.baseAtk);
-      const relation: modifiers[] = [];
-      relation.map((r) => r.update());
-      return [""].join(",");
-    };
-
     this.weaponAtk = new modifiers();
     this.weaponAtk.update = () => {
       this.weaponAtk.baseValue = dynamicTotalValue(this.mainWeaponAtk) + dynamicTotalValue(this.subWeaponAtk);
@@ -1107,6 +1032,65 @@ export class CharacterData {
     this.cspd.update = () => {
       this.cspd.baseValue = dynamicTotalValue(this.dex) * 2.94 + dynamicTotalValue(this.agi) * 1.16;
       const relation: modifiers[] = [this.cm];
+      relation.map((r) => r.update());
+      return [""].join(",");
+    };
+
+    this.pCr = new modifiers();
+    this.pCr.update = () => {
+      this.pCr.baseValue = 25 + dynamicTotalValue(this.cri) / 5;
+      const relation: modifiers[] = [];
+      relation.map((r) => r.update());
+      return [""].join(",");
+    };
+
+    this.pCd = new modifiers();
+    this.pCd.update = () => {
+      this.pCd.baseValue =
+        150 +
+        Math.floor(
+          Math.max(dynamicTotalValue(this.str) / 5, dynamicTotalValue(this.str) + dynamicTotalValue(this.agi)) / 10,
+        );
+      const relation: modifiers[] = [];
+      relation.map((r) => r.update());
+      return [""].join(",");
+    };
+
+    this.maxHp = new modifiers();
+    this.maxHp.update = () => {
+      this.maxHp.baseValue = Math.floor(93 + this.lv * (127 / 17 + dynamicTotalValue(this.vit) / 3));
+      const relation: modifiers[] = [];
+      relation.map((r) => r.update());
+      return [""].join(",");
+    };
+
+    this.maxMp = new modifiers();
+    this.maxMp.update = () => {
+      this.maxMp.baseValue = Math.floor(99 + this.lv + dynamicTotalValue(this.int) / 10 + dynamicTotalValue(this.tec));
+      const relation: modifiers[] = [];
+      relation.map((r) => r.update());
+      return [""].join(",");
+    };
+    this.mainWeaponAtk = new modifiers();
+    this.mainWeaponAtk.update = () => {
+      this.mainWeaponAtk.baseValue = dynamicTotalValue(this.mainWeapon.baseAtk);
+      this.mainWeaponAtk.modifiers.static.fixed[0] = {
+        value: this.mainWeapon.refinement,
+        origin: dictionary.ui.analyze.dialogData.mainWeapon.refinement,
+      };
+      this.mainWeaponAtk.modifiers.static.percentage[0] = {
+        value: Math.pow(this.mainWeapon.refinement, 2),
+        origin: dictionary.ui.analyze.dialogData.mainWeapon.refinement,
+      };
+      const relation: modifiers[] = [];
+      relation.map((r) => r.update());
+      return [""].join(",");
+    };
+
+    this.subWeaponAtk = new modifiers();
+    this.subWeaponAtk.update = () => {
+      this.subWeaponAtk.baseValue = dynamicTotalValue(this.subWeapon.baseAtk);
+      const relation: modifiers[] = [];
       relation.map((r) => r.update());
       return [""].join(",");
     };
@@ -1225,6 +1209,22 @@ export class CharacterData {
       const relation: modifiers[] = [];
       relation.map((r) => r.update());
       return [""].join(",");
+    };
+
+    this.weaMatkT = new modifiers();
+    this.weaMatkT.update = () => {
+      this.weaMatkT.baseValue = CharacterData.weaponAbiT[mainWeaponType].weaAtk_Matk_Convert;
+      const relation: modifiers[] = [this.mAtk];
+      relation.map((r) => r.update());
+      return [""].join(",");
+    };
+
+    this.weaPatkT = new modifiers();
+    this.weaPatkT.update = () => {
+      this.weaPatkT.baseValue = CharacterData.weaponAbiT[mainWeaponType].weaAtk_Patk_Convert;
+      const relation: modifiers[] = [this.pAtk];
+      relation.map((r) => r.update());
+      return ["_pAtk"].join(",");
     };
 
     // 三级属性
@@ -1352,20 +1352,6 @@ export class MonsterData {
   constructor(monster: Monster) {
     this.name = monster.name;
     this.lv = monster.baseLv ?? 0;
-    this.hp = {
-      baseValue: monster.maxhp ?? 0,
-      modifiers: {
-        static: {
-          fixed: [],
-          percentage: [],
-        },
-        dynamic: {
-          fixed: [],
-          percentage: [],
-        },
-      },
-      update: () => "",
-    };
     this.pDef = {
       baseValue: monster.physicalDefense ?? 0,
       modifiers: {
@@ -1436,10 +1422,25 @@ export class MonsterData {
       },
       update: () => "",
     };
+    this.hp = {
+      baseValue: monster.maxhp ?? 0,
+      modifiers: {
+        static: {
+          fixed: [],
+          percentage: [],
+        },
+        dynamic: {
+          fixed: [],
+          percentage: [],
+        },
+      },
+      update: () => "",
+    };
   }
 }
 
 type stateFrameData = {
+  frame: number;
   character: CharacterData;
   monster: MonsterData;
 };
@@ -1451,6 +1452,8 @@ export class SkillData {
   lv: number;
   am: modifiers;
   cm: modifiers;
+  vMatk: modifiers;
+  vPatk: modifiers;
   // actionFixedDurationFormula: string;
   // actionModifiableDurationFormula: string;
   // chantingFixedDurationFormula: string;
@@ -1470,12 +1473,18 @@ export class SkillData {
     dictionary: ReturnType<typeof getDictionary>,
     Index: number,
     skill: tSkill,
-    character: CharacterData,
-    monster: MonsterData,
+    characterData: CharacterData,
+    monsterData: MonsterData,
     computeArg: computeArgType,
     eventSequence: eventSequenceType[],
     passedFrames: number,
   ) {
+    // 封装当前状态的公式计算方法
+    const cEvaluate = (formula: string) => {
+      // console.log("表达式为：", formula, "计算环境为：", JSON.parse(JSON.stringify(computeArg)))
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+      return math.evaluate(formula, { ...JSON.parse(JSON.stringify(computeArg)) }) as number | void;
+    };
     this.passedFrames = passedFrames;
     this.finalEventSequence = _.cloneDeep(eventSequence);
     // 计算技能前摇
@@ -1533,12 +1542,18 @@ export class SkillData {
       computeArg: computeArgType,
       eventSequence: eventSequenceType[],
     ): stateFrameData[] => {
-      const stateFrames: stateFrameData[] = [{ character, monster }];
+      const stateFrames: stateFrameData[] = [
+        {
+          frame: 0,
+          character,
+          monster,
+        },
+      ];
       for (let frame = 0; frame < this.skillDuration; frame++) {
-        computeArg.s.frame = frame;
-        eventSequence = frameData(passedFrames + frame, character, monster, computeArg, eventSequence);
+        eventSequence = frameData(passedFrames + frame, character, monster, computeArg, eventSequence, cEvaluate);
         // console.log("-----------------当前技能帧", frame,"当前角色属性：", _.cloneDeep(character));
         stateFrames.push({
+          frame: frame,
           character: _.cloneDeep(character),
           monster: _.cloneDeep(monster),
         });
@@ -1548,13 +1563,46 @@ export class SkillData {
     };
     Index++;
     this.index = Index;
-    computeArg.s.index = this.index;
     this.name = skill.name;
-    computeArg.s.name = this.name;
     this.lv = skill.level ?? 0;
-    computeArg.s.lv = this.lv;
+    this.vMatk = {
+      baseValue:
+        ((dynamicTotalValue(characterData.mAtk) + characterData.lv - monsterData.lv) *
+          (100 - dynamicTotalValue(monsterData.mRes))) /
+          100 -
+        ((100 - dynamicTotalValue(characterData.pPie)) / 100) * dynamicTotalValue(monsterData.pDef),
+      modifiers: {
+        static: {
+          fixed: [],
+          percentage: [],
+        },
+        dynamic: {
+          fixed: [],
+          percentage: [],
+        },
+      },
+      update: () => "",
+    };
+    this.vPatk = {
+      baseValue:
+        ((dynamicTotalValue(characterData.pAtk) + characterData.lv - monsterData.lv) *
+          (100 - dynamicTotalValue(monsterData.pRes))) /
+          100 -
+        ((100 - dynamicTotalValue(characterData.mPie)) / 100) * dynamicTotalValue(monsterData.mDef),
+      modifiers: {
+        static: {
+          fixed: [],
+          percentage: [],
+        },
+        dynamic: {
+          fixed: [],
+          percentage: [],
+        },
+      },
+      update: () => "",
+    };
     this.am = {
-      baseValue: dynamicTotalValue(character.am),
+      baseValue: dynamicTotalValue(characterData.am),
       modifiers: {
         static: {
           fixed: [],
@@ -1567,9 +1615,8 @@ export class SkillData {
       },
       update: () => "",
     };
-    computeArg.s.am = dynamicTotalValue(this.am);
     this.cm = {
-      baseValue: dynamicTotalValue(character.cm),
+      baseValue: dynamicTotalValue(characterData.cm),
       modifiers: {
         static: {
           fixed: [],
@@ -1582,13 +1629,12 @@ export class SkillData {
       },
       update: () => "",
     };
-    computeArg.s.cm = dynamicTotalValue(this.cm);
     // this.actionFixedDurationFormula = skill.skillEffect.actionBaseDurationFormula;
     // this.actionModifiableDurationFormula = skill.skillEffect.actionModifiableDurationFormula;
     // this.chantingFixedDurationFormula = skill.skillEffect.chantingBaseDurationFormula;
     // this.chantingModifiableDurationFormula = skill.skillEffect.chantingModifiableDurationFormula;
     this.actionFixedDuration = {
-      baseValue: math.evaluate(skill.skillEffect.actionBaseDurationFormula, computeArg) as number,
+      baseValue: cEvaluate(skill.skillEffect.actionBaseDurationFormula) as number,
       modifiers: {
         static: {
           fixed: [],
@@ -1602,7 +1648,7 @@ export class SkillData {
       update: () => "",
     };
     this.actionModifiableDuration = {
-      baseValue: math.evaluate(skill.skillEffect.actionModifiableDurationFormula, computeArg) as number,
+      baseValue: cEvaluate(skill.skillEffect.actionModifiableDurationFormula) as number,
       modifiers: {
         static: {
           fixed: [],
@@ -1616,7 +1662,7 @@ export class SkillData {
       update: () => "",
     };
     this.chantingFixedDuration = {
-      baseValue: math.evaluate(skill.skillEffect.chantingBaseDurationFormula, computeArg) as number,
+      baseValue: cEvaluate(skill.skillEffect.chantingBaseDurationFormula) as number,
       modifiers: {
         static: {
           fixed: [],
@@ -1629,8 +1675,13 @@ export class SkillData {
       },
       update: () => "",
     };
+    console.log(
+      "技能可加速咏唱计算公式：" + skill.skillEffect.chantingModifiableDurationFormula,
+      "计算环境：",
+      _.cloneDeep(computeArg),
+    );
     this.chantingModifiableDuration = {
-      baseValue: math.evaluate(skill.skillEffect.chantingModifiableDurationFormula, computeArg) as number,
+      baseValue: cEvaluate(skill.skillEffect.chantingModifiableDurationFormula) as number,
       modifiers: {
         static: {
           fixed: [],
@@ -1653,6 +1704,7 @@ export class SkillData {
     );
     this.skillDuration = this.skillActionFrames + this.skillChantingFrames * fps;
     this.skillWindUp = skillWindUpComputer(skill.skillEffect.skillWindUpFormula, this.skillDuration, computeArg);
+    computeArg.s = _.cloneDeep(this);
     console.log(
       "实例化SkillData，技能序号：" + this.index,
       "名称：" + this.name,
@@ -1682,7 +1734,7 @@ export class SkillData {
     });
 
     // 计算与帧相关的技能效果参数
-    this.stateFramesData = stateFrameComputer(character, monster, computeArg, eventSequence);
+    this.stateFramesData = stateFrameComputer(characterData, monsterData, computeArg, eventSequence);
   }
 }
 
@@ -1692,6 +1744,7 @@ const frameData = (
   monster: MonsterData,
   computeArg: computeArgType,
   eventSequence: eventSequenceType[],
+  cEvaluate: (formula: string) => number | void,
 ) => {
   // 发送结果
   self.postMessage({
@@ -1700,12 +1753,6 @@ const frameData = (
   } satisfies analyzeWorkerOutput);
   // 每帧需要做的事
   computeArg.frame = frame;
-  // 封装当前状态的公式计算方法
-  const cEvaluate = (formula: string) => {
-    // console.log("表达式为：", formula, "计算环境为：", JSON.parse(JSON.stringify(computeArg)))
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-    return math.evaluate(formula, { ...JSON.parse(JSON.stringify(computeArg)) }) as number | void;
-  };
 
   monster.hp.modifiers.dynamic.fixed.push({
     value: -5000,
@@ -1767,9 +1814,11 @@ const frameData = (
               const transformSubNodeStr = transformSubNode.toString();
               console.log("转换后的表达式：", transformSubNodeStr);
               // 如果能够发现加减乘除运算符，则对符号左右侧字符串进行验证
-              console.log("表达式拆解为：1:[" + targetStr + "]   2:[" + operatorStr + "]   3:[" + transformSubNodeStr + "]");
+              console.log(
+                "表达式拆解为：1:[" + targetStr + "]   2:[" + operatorStr + "]   3:[" + transformSubNodeStr + "]",
+              );
               // 查找对应对象的内部属性值
-              
+
               let target: modifiers | number | undefined;
               if (_.get(computeArg, targetStr)) {
                 target = _.get(computeArg, targetStr) as modifiers;
@@ -1874,34 +1923,25 @@ export const computeFrameData = (
 ) => {
   const characterData = new CharacterData(dictionary, character);
   const monsterData = new MonsterData(monster);
+  const skillData = new SkillData(
+    dictionary,
+    0,
+    skillSequence[0]!,
+    characterData,
+    monsterData,
+    {
+      frame: 0,
+      p: characterData,
+      m: monsterData,
+    },
+    [],
+    0,
+  );
   const computeArg: computeArgType = {
     frame: 0,
     p: characterData,
     m: monsterData,
-    s: {
-      index: 0,
-      frame: 0,
-      name: skillSequence[0]?.name ?? "",
-      lv: skillSequence[0]?.level ?? 0,
-      am: 0,
-      cm: 0,
-    },
-    get vMatk() {
-      return (
-        ((dynamicTotalValue(characterData.mAtk) + characterData.lv - monsterData.lv) *
-          (100 - dynamicTotalValue(monsterData.mRes))) /
-          100 -
-        ((100 - dynamicTotalValue(characterData.pPie)) / 100) * dynamicTotalValue(monsterData.pDef)
-      );
-    },
-    get vPatk() {
-      return (
-        ((dynamicTotalValue(characterData.pAtk) + characterData.lv - monsterData.lv) *
-          (100 - dynamicTotalValue(monsterData.pRes))) /
-          100 -
-        ((100 - dynamicTotalValue(characterData.mPie)) / 100) * dynamicTotalValue(monsterData.mDef)
-      );
-    },
+    s: skillData,
   };
 
   let eventSequence: eventSequenceType[] = [];
@@ -1921,6 +1961,8 @@ export const computeFrameData = (
 
   return result;
 };
+
+const self = globalThis;
 
 self.onmessage = (e: MessageEvent<analyzeWorkerInput>) => {
   switch (e.data.type) {
@@ -1952,7 +1994,7 @@ self.onmessage = (e: MessageEvent<analyzeWorkerInput>) => {
     default:
       {
         // Handle any cases that are not explicitly mentioned
-        console.error("Unhandled message type:", e);
+        // console.error("Unhandled message type:", e);
       }
       break;
   }

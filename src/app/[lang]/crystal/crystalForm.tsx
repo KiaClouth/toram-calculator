@@ -6,7 +6,7 @@ import type { getDictionary } from "~/app/get-dictionary";
 import Button from "../_components/button";
 import { type FieldApi, useForm } from "@tanstack/react-form";
 import { zodValidator } from "@tanstack/zod-form-adapter";
-import { ZodFirstPartyTypeKind, ZodTypeAny, type z } from "zod";
+import { ZodFirstPartyTypeKind, type z } from "zod";
 import { type $Enums } from "@prisma/client";
 import { defaultCrystal, useStore } from "~/app/store";
 import { type Session } from "next-auth";
@@ -182,7 +182,10 @@ export default function CrystalForm(props: {
           <div className="mb-4 rounded-sm bg-transition-color-8 p-4">{typeof dictionary.ui.crystal.discription}</div>
         )}
         <fieldset className="dataKinds flex flex-row flex-wrap gap-y-[4px]">
-          {Object.entries(crystal).map(([key, value]) => {
+          {/* {
+            formFragment(form, defaultCrystal,dictionary,dictionary.db.models.crystal,crystalHiddenData,crystalFormState === "DISPLAY",CrystalInputSchema)
+          } */}
+          {Object.entries(crystal).map(([key, _value]) => {
             // 遍历角色模型
             // 过滤掉隐藏的数据
             if (crystalHiddenData.includes(key as keyof Crystal)) return undefined;
@@ -276,12 +279,21 @@ export default function CrystalForm(props: {
                 );
               }
 
+              case ZodFirstPartyTypeKind.ZodArray: {
+                return null;
+                // <fieldset>
+                //   {_value && Array.isArray(_value) && _value.map((subObj, index) => {
+                //     return JSON.stringify(subObj, null, 2) + index;
+                //   })}
+                // </fieldset>
+              }
               case ZodFirstPartyTypeKind.ZodObject: {
-                return <fieldset>{
-                  Object.entries(value as object).map(([subkey, subvalue]) => {
-                    return null
-                  })
-                }</fieldset>;
+                return null;
+                // <fieldset>
+                //   {Object.entries(_value as object).map(([subkey, subvalue]) => {
+                //     return null;
+                //   })}
+                // </fieldset>
               }
 
               default: {
@@ -327,22 +339,29 @@ export default function CrystalForm(props: {
                           break;
                       }
                       return (
-                        <fieldset key={key} className={fieldsetClass}>
+                        <fieldset className={fieldsetClass}>
                           <label htmlFor={field.name} className="flex w-full flex-col gap-1">
                             <span>
                               {dictionary.db.models.crystal[key as keyof Crystal] as string}
                               <FieldInfo field={field} />
                             </span>
-                            {inputBox}
-                            {/* <LineWrappingInput
-                              value={field.state.value as string}
-                              id={field.name}
-                              name={field.name}
-                              type={inputType}
-                              onBlur={field.handleBlur}
-                              onChange={(e) =>
-                                field.handleChange(inputType === "number" ? parseFloat(e.target.value) : e.target.value)
-                              }/> */}
+                            {inputType === "number" ? (
+                              inputBox
+                            ) : (
+                              <LineWrappingInput
+                                value={field.state.value as string}
+                                id={field.name}
+                                name={field.name}
+                                type={inputType}
+                                onBlur={field.handleBlur}
+                                readOnly={crystalFormState === "DISPLAY"}
+                                onChange={(e) => {
+                                  const target = e.target as HTMLTextAreaElement;
+                                  field.handleChange(inputType === "number" ? parseFloat(target.value) : target.value);
+                                }}
+                                className=""
+                              />
+                            )}
                           </label>
                         </fieldset>
                       );
@@ -384,6 +403,7 @@ export default function CrystalForm(props: {
           )}
         </div>
       </div>
+      {JSON.stringify(form.state.values, null, 2)}
     </form>
   );
 }

@@ -7,15 +7,28 @@ import { type Session } from "next-auth";
 import { test, useStore } from "~/app/store";
 import Button from "../_components/button";
 import Dialog from "../_components/dialog";
-import { type analyzeWorkerInput, type SkillData, type analyzeWorkerOutput, type tSkill } from "./worker";
+import {
+  type analyzeWorkerInput,
+  type SkillData,
+  type analyzeWorkerOutput,
+  type tSkill,
+  dynamicTotalValue,
+} from "./worker";
 import { ObjectRenderer } from "./objectRender";
+import LongSearchBox from "./monsterSearchBox";
+import { type Monster } from "~/server/api/routers/monster";
+import { type Character } from "~/server/api/routers/character";
+import { computeMonsterAugmentedList } from "../monster/client";
 
 export interface Props {
   dictionary: ReturnType<typeof getDictionary>;
   session: Session | null;
+  monsterList: Monster[];
+  characterList: Character[];
 }
 export default function AnalyzePageClient(props: Props) {
   const { dictionary } = props;
+  const [skillSequenceList, setSkillSequenceList] = useState([]);
   const skillSequence: tSkill[] = [
     {
       id: "",
@@ -294,7 +307,7 @@ export default function AnalyzePageClient(props: Props) {
         chargingBaseDurationFormula: "",
         chargingModifiableDurationFormula: "",
         chantingBaseDurationFormula: "0",
-        chantingModifiableDurationFormula: "max(0,min((2 - (s.lv - 1) * 0.25),(1 - (s.lv - 5) * 0.5)))",
+        chantingModifiableDurationFormula: "max(0,min((2 - (p.lv - 1) * 0.25),(1 - (p.lv - 5) * 0.5)))",
         skillWindUpFormula: "0",
         belongToskillId: "",
         skillCost: [
@@ -310,7 +323,7 @@ export default function AnalyzePageClient(props: Props) {
             id: "",
             name: "Damage",
             yieldType: "ImmediateEffect",
-            yieldFormula: "m.hp - (vMatk + 200) * 500%",
+            yieldFormula: "m.hp - (s.vMatk + 200) * 5",
             mutationTimingFormula: null,
             skillEffectId: null,
           },
@@ -371,13 +384,22 @@ export default function AnalyzePageClient(props: Props) {
 
   // 状态管理参数
   const workerRef = useRef<Worker>();
+  const { monsterList, setMonsterList } = useStore((state) => state.monsterPage);
+  const { characterList, setCharacterList } = useStore((state) => state.characterPage);
+  const { monster, setMonster, character, setCharacter } = useStore((state) => state);
   const { analyzeDialogState, setAnalyzeDialogState } = useStore((state) => state.analyzePage);
   const [computeResult, setComputeResult] = useState<React.ReactNode>(null);
   const [dialogSkillData, setDialogSkillData] = useState<SkillData | null>(null);
   const [dialogSkillFrame, setDialogSkillFrame] = useState<number>(0);
+  const [defaultMonsterList, setDefaultMonsterList] = useState(props.monsterList);
 
   useEffect(() => {
     console.log("--ComboAnalyze Client Render");
+    setMonsterList(computeMonsterAugmentedList(defaultMonsterList, dictionary));
+    setCharacterList(props.characterList);
+
+    setCharacter(test.character);
+    setMonster(test.monster);
 
     // 预定义的颜色数组
     const colors: string[] = [];
@@ -420,61 +442,92 @@ export default function AnalyzePageClient(props: Props) {
         case "success":
           {
             const result = computeResult as SkillData[];
+            const lastSkill = result.at(-1);
+            const lastFrameData = result.at(-1)?.stateFramesData.at(-1);
+            const RemainingHp = lastFrameData ? dynamicTotalValue(lastFrameData?.monster?.hp) : 0;
+            const totalDamge = (lastFrameData?.monster.hp.baseValue ?? 0) - RemainingHp;
+            const totalDuration = lastSkill ? (lastSkill?.passedFrames + lastSkill?.skillDuration) / 60 : 0;
+            const dps = totalDamge / totalDuration;
             setComputeResult(
               <>
-                <div className="Result my-10 flex items-end">
-                  <div className="DPS flex flex-1 flex-col gap-2 ">
+                <div className="Result my-10 flex flex-col gap-4 lg:flex-row lg:items-end">
+                  <div className="DPS flex flex-col gap-2 ">
                     <span className="Key py-2 text-sm">DPS</span>
                     <span className="Value border-y-[1px] border-brand-color-1st p-4 text-6xl lg:border-none lg:p-0 lg:text-8xl lg:text-accent-color">
-                      {math.floor(test.monster.maxhp / (result.length / 60))}
+                      {math.floor(math.abs(dps))}
                     </span>
                   </div>
+                  <div className="OtherData flex flex-1 gap-2">
+                    <div className="Duration flex flex-1 flex-col gap-1 rounded bg-transition-color-8 lg:p-4">
+                      <span className="Key p-1 text-sm text-accent-color-70">总耗时</span>
+                      <span className="Value p-1 text-xl lg:text-2xl lg:text-accent-color">
+                        {math.floor(math.abs(totalDuration))} 秒
+                      </span>
+                    </div>
+                    <div className="Duration flex flex-1 flex-col gap-1 rounded bg-transition-color-8 lg:p-4">
+                      <span className="Key p-1 text-sm text-accent-color-70">总伤害</span>
+                      <span className="Value p-1 text-xl lg:text-2xl lg:text-accent-color">
+                        {math.floor(math.abs(totalDamge) / 10000)} 万
+                      </span>
+                    </div>
+                    <div className="Duration flex flex-1 flex-col gap-1 rounded bg-transition-color-8 lg:p-4">
+                      <span className="Key p-1 text-sm text-accent-color-70">怪物剩余HP</span>
+                      <span className="Value p-1 text-xl lg:text-2xl lg:text-accent-color">
+                        {math.floor(math.abs(RemainingHp) / 10000)}万
+                      </span>
+                    </div>
+                  </div>
                 </div>
-                <div className="TimeLine flex flex-1 flex-wrap gap-2 gap-y-4 shadow-transition-color-20 drop-shadow-2xl">
-                  {result.map((skill, skillIndex) => {
-                    return (
-                      <div key={skill.name + skillIndex} className={`SkillData relative flex rounded`}>
-                        <div className="skillName pointer-events-none absolute left-2 top-3 z-10 text-nowrap text-primary-color">
-                          {skill.name}
-                        </div>
+                <div className="TimeLine flex flex-col gap-4">
+                  <div className="Title border-b-2 border-brand-color-1st p-2">
+                    <span className="Key p-1 ">时间轴</span>
+                  </div>
+                  <div className="Content flex flex-1 flex-wrap gap-2 gap-y-4 shadow-transition-color-20 drop-shadow-2xl">
+                    {result.map((skill, skillIndex) => {
+                      return (
+                        <div key={skill.name + skillIndex} className={`SkillData relative flex rounded`}>
+                          <div className="skillName pointer-events-none absolute left-2 top-3 z-10 text-nowrap text-primary-color">
+                            {skill.name}
+                          </div>
 
-                        <div className="SkillContent flex flex-row flex-wrap gap-y-1">
-                          {skill.stateFramesData.map((frameData, frameIndex) => {
-                            return (
-                              <button
-                                key={skill.name + frameIndex}
-                                onClick={() => {
-                                  setDialogSkillData(skill);
-                                  setDialogSkillFrame(frameIndex);
-                                  setAnalyzeDialogState(true);
-                                }}
-                                className="group relative min-h-12 w-[3px] rounded-sm lg:w-[3px]"
-                                style={{
-                                  backgroundColor: stringToColor(skill.name),
-                                }}
-                              >
-                                <div className="shadowopa absolute -left-4 bottom-14 z-10 hidden w-fit min-w-[300px] flex-col gap-2 rounded bg-primary-color p-4 text-left shadow-2xl shadow-transition-color-20 backdrop-blur-xl lg:group-hover:z-20 lg:group-hover:flex">
-                                  <div className="FrameAttr flex flex-col gap-1 bg-transition-color-8 p-2">
-                                    <span className="Title font-bold">Frame: {skill.passedFrames + frameIndex}</span>
-                                    <span className="Content">
-                                      第 {math.floor((skill.passedFrames + frameIndex) / 60)} 秒的第{" "}
-                                      {(skill.passedFrames + frameIndex) % 60} 帧
-                                      <br />
-                                    </span>
+                          <div className="SkillContent flex flex-row flex-wrap gap-y-1">
+                            {skill.stateFramesData.map((frameData, frameIndex) => {
+                              return (
+                                <button
+                                  key={skill.name + frameIndex}
+                                  onClick={() => {
+                                    setDialogSkillData(skill);
+                                    setDialogSkillFrame(frameIndex);
+                                    setAnalyzeDialogState(true);
+                                  }}
+                                  className="group relative min-h-12 w-[3px] rounded-sm lg:w-[3px]"
+                                  style={{
+                                    backgroundColor: stringToColor(skill.name),
+                                  }}
+                                >
+                                  <div className="shadowopa absolute -left-4 bottom-14 z-10 hidden w-fit min-w-[300px] flex-col gap-2 rounded bg-primary-color p-4 text-left shadow-2xl shadow-transition-color-20 backdrop-blur-xl lg:group-hover:z-20 lg:group-hover:flex">
+                                    <div className="FrameAttr flex flex-col gap-1 bg-transition-color-8 p-2">
+                                      <span className="Title font-bold">Frame: {skill.passedFrames + frameIndex}</span>
+                                      <span className="Content">
+                                        第 {math.floor((skill.passedFrames + frameIndex) / 60)} 秒的第{" "}
+                                        {(skill.passedFrames + frameIndex) % 60} 帧
+                                        <br />
+                                      </span>
 
-                                    <span className="Content ">
-                                      {skill.name} 的第：{frameIndex} / {skill.skillDuration} 帧
-                                      <br />
-                                    </span>
+                                      <span className="Content ">
+                                        {skill.name} 的第：{frameIndex} / {skill.skillDuration} 帧
+                                        <br />
+                                      </span>
+                                    </div>
                                   </div>
-                                </div>
-                              </button>
-                            );
-                          })}
+                                </button>
+                              );
+                            })}
+                          </div>
                         </div>
-                      </div>
-                    );
-                  })}
+                      );
+                    })}
+                  </div>
                 </div>
               </>,
             );
@@ -500,7 +553,17 @@ export default function AnalyzePageClient(props: Props) {
         workerRef.current.terminate();
       }
     };
-  }, [setAnalyzeDialogState]);
+  }, [
+    defaultMonsterList,
+    dictionary,
+    props.characterList,
+    props.monsterList,
+    setAnalyzeDialogState,
+    setCharacter,
+    setCharacterList,
+    setMonster,
+    setMonsterList,
+  ]);
 
   const startCompute = () => {
     setComputeResult(null);
@@ -509,8 +572,8 @@ export default function AnalyzePageClient(props: Props) {
       arg: {
         dictionary: dictionary,
         skillSequence: skillSequence,
-        character: test.character,
-        monster: test.monster,
+        character: character,
+        monster: monster,
       },
     };
     if (workerRef.current) {
@@ -563,9 +626,22 @@ export default function AnalyzePageClient(props: Props) {
             </div>
             <div></div>
           </div>
-          <div className="Content flex flex-col">
+          <div className="Content flex flex-col gap-4">
+            <div className="MonsterConfig flex flex-col items-start gap-4 lg:flex-row lg:items-center">
+              <div className="Title flex gap-4">
+                <span className="Key">怪物：</span>
+                <span className="MonsterName font-bold">{monster.name}</span>
+              </div>
+              <LongSearchBox dictionary={dictionary} monsterList={monsterList} setMonster={setMonster} />
+            </div>
+            <div className="CharacterConfig flex flex-col items-start gap-4 lg:flex-row lg:items-center">
+              <div className="Title flex gap-4">
+                <span className="Key">角色：</span>
+                <span className="CharacterName font-bold">{character.name}</span>
+              </div>
+            </div>
             <div className="SkillSequence flex flex-col items-start gap-4 lg:flex-row lg:items-center">
-              <div className="Title">流程:</div>
+              <div className="Title">流程：</div>
               <div className="Content flex flex-wrap gap-2">
                 {skillSequence.map((skill, index) => {
                   return (
@@ -594,7 +670,7 @@ export default function AnalyzePageClient(props: Props) {
               <div className="h-[2px] flex-1 bg-accent-color"></div>
             </div>
             <div className="Content flex flex-col gap-4 overflow-y-auto">
-              <div className="FrameAttr flex flex-col gap-1 bg-transition-color-8 p-2 mt-4 lg:flex-row">
+              <div className="FrameAttr mt-4 flex flex-col gap-1 bg-transition-color-8 p-2 lg:flex-row">
                 <span className="Content">
                   帧信息： {math.floor(((dialogSkillData?.passedFrames ?? 0) + dialogSkillFrame) / 60)} 秒的第{" "}
                   {((dialogSkillData?.passedFrames ?? 0) + dialogSkillFrame) % 60} 帧
@@ -619,7 +695,10 @@ export default function AnalyzePageClient(props: Props) {
                   <div className="h-[1px] flex-1 bg-brand-color-1st"></div>
                 </div>
                 <div className="Content flex flex-wrap outline-[1px] lg:gap-1">
-                  <ObjectRenderer dictionary={dictionary} data={dialogSkillData?.stateFramesData[dialogSkillFrame]?.character} />
+                  <ObjectRenderer
+                    dictionary={dictionary}
+                    data={dialogSkillData?.stateFramesData[dialogSkillFrame]?.character}
+                  />
                 </div>
               </div>
               <div className="MonsterData flex flex-col gap-1">
@@ -628,11 +707,14 @@ export default function AnalyzePageClient(props: Props) {
                   <div className="h-[1px] flex-1 bg-brand-color-1st"></div>
                 </div>
                 <div className="Content flex flex-wrap outline-[1px] lg:gap-1">
-                  <ObjectRenderer dictionary={dictionary} data={dialogSkillData?.stateFramesData[dialogSkillFrame]?.monster} />
+                  <ObjectRenderer
+                    dictionary={dictionary}
+                    data={dialogSkillData?.stateFramesData[dialogSkillFrame]?.monster}
+                  />
                 </div>
               </div>
             </div>
-            <div className="FunctionArea flex flex-col justify-end bg-primary-color gap-4">
+            <div className="FunctionArea flex flex-col justify-end gap-4 bg-primary-color">
               <div className="h-[1px] flex-none bg-brand-color-1st"></div>
               <div className="btnGroup flex gap-2">
                 <Button

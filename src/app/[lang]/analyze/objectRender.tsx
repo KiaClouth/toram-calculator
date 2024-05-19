@@ -22,7 +22,7 @@ const modifierDynamicClass = " Value text-nowrap rounded-sm px-1 text-accent-col
 const originClass =
   "Origin buttom-full absolute left-0 z-10 hidden rounded-sm bg-primary-color p-2 text-sm text-accent-color-70 shadow-xl shadow-transition-color-8 group-hover:flex pointer-events-none";
 // 由于tailwind编译时生成对应class，此处class将不会生效
-const columns = 8;
+// const columns = 8;
 const columnsWidth = " lg:w-[calc((100%-16px)/5)] ";
 
 // 用于递归遍历对象并生成DOM结构的组件
