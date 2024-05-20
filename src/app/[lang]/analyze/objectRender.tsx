@@ -63,7 +63,9 @@ export const ObjectRenderer = (props: {
               key={currentPath}
               className={`key=${currentPath} Modifiers flex w-full flex-none flex-col gap-1 rounded-sm bg-transition-color-8 p-1 ${!(value.modifiers.static.fixed.length > 0 || value.modifiers.static.percentage.length > 0 || value.modifiers.dynamic.fixed.length > 0 || value.modifiers.dynamic.percentage.length > 0) && !currentPath.includes(".") && columnsWidth}`}
             >
-              <div className="Key text-sm font-bold">{(d[key] as string | number) ?? key}：</div>
+              <div className="Key w-full p-1 text-sm font-bold">
+                {(d[key] as string | number) ?? key}：
+              </div>
               {value.modifiers.static.fixed.length > 0 ||
               value.modifiers.static.percentage.length > 0 ||
               value.modifiers.dynamic.fixed.length > 0 ||
@@ -179,10 +181,10 @@ export const ObjectRenderer = (props: {
             key={currentPath}
             className={`String flex w-full flex-none flex-col gap-1 rounded-sm bg-transition-color-8 p-1 lg:gap-4 ${!currentPath.includes(".") && columnsWidth}`}
           >
-            <span className={`TotalValue flex w-full flex-col rounded-sm p-1`}>
-              <div className="Key text-sm font-bold">{(d[key] as string | number) ?? key}：</div>
-              <div className={`` + actualValueClass}>{JSON.stringify(value)}</div>
-            </span>
+            <div className="Key w-full p-1 text-sm font-bold">
+              {(d[key] as string | number) ?? key}：
+            </div>
+            <div className={`` + actualValueClass}>{JSON.stringify(value)}</div>
           </div>
         );
       }
