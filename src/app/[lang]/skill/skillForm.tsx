@@ -929,7 +929,7 @@ export default function SkillForm(props: {
                                             case "chantingModifiableDurationFormula":
                                             case "chargingBaseDurationFormula":
                                             case "chargingModifiableDurationFormula":
-                                            case "skillWindUpFormula":
+                                            case "skillStartupFramesFormula":
                                             case "belongToskillId":
 
                                             default:

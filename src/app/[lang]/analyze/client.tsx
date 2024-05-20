@@ -50,7 +50,7 @@ export default function AnalyzePageClient(props: Props) {
         chargingModifiableDurationFormula: "",
         chantingBaseDurationFormula: "0",
         chantingModifiableDurationFormula: "0",
-        skillWindUpFormula: "13",
+        skillStartupFramesFormula: "13",
         belongToskillId: "",
         skillCost: [
           {
@@ -100,7 +100,7 @@ export default function AnalyzePageClient(props: Props) {
         chargingModifiableDurationFormula: "",
         chantingBaseDurationFormula: "0",
         chantingModifiableDurationFormula: "0",
-        skillWindUpFormula: "13",
+        skillStartupFramesFormula: "13",
         belongToskillId: "",
         skillCost: [
           {
@@ -150,7 +150,7 @@ export default function AnalyzePageClient(props: Props) {
         chargingModifiableDurationFormula: "",
         chantingBaseDurationFormula: "0",
         chantingModifiableDurationFormula: "0",
-        skillWindUpFormula: "13",
+        skillStartupFramesFormula: "13",
         belongToskillId: "",
         skillCost: [
           {
@@ -200,7 +200,7 @@ export default function AnalyzePageClient(props: Props) {
         chargingModifiableDurationFormula: "",
         chantingBaseDurationFormula: "0",
         chantingModifiableDurationFormula: "0",
-        skillWindUpFormula: "0",
+        skillStartupFramesFormula: "0",
         belongToskillId: "",
         skillCost: [
           {
@@ -250,7 +250,7 @@ export default function AnalyzePageClient(props: Props) {
         chargingModifiableDurationFormula: "0",
         chantingBaseDurationFormula: "0",
         chantingModifiableDurationFormula: "1",
-        skillWindUpFormula: "",
+        skillStartupFramesFormula: "",
         belongToskillId: "",
         skillCost: [
           {
@@ -308,7 +308,7 @@ export default function AnalyzePageClient(props: Props) {
         chargingModifiableDurationFormula: "",
         chantingBaseDurationFormula: "0",
         chantingModifiableDurationFormula: "max(0,min((2 - (p.lv - 1) * 0.25),(1 - (p.lv - 5) * 0.5)))",
-        skillWindUpFormula: "0",
+        skillStartupFramesFormula: "0",
         belongToskillId: "",
         skillCost: [
           {
@@ -357,7 +357,7 @@ export default function AnalyzePageClient(props: Props) {
         chargingModifiableDurationFormula: "",
         chantingBaseDurationFormula: "0",
         chantingModifiableDurationFormula: "8",
-        skillWindUpFormula: "0",
+        skillStartupFramesFormula: "0",
         belongToskillId: "",
         description: null,
         skillCost: [
@@ -391,7 +391,7 @@ export default function AnalyzePageClient(props: Props) {
   const [computeResult, setComputeResult] = useState<React.ReactNode>(null);
   const [dialogSkillData, setDialogSkillData] = useState<SkillData | null>(null);
   const [dialogSkillFrame, setDialogSkillFrame] = useState<number>(0);
-  const [defaultMonsterList, setDefaultMonsterList] = useState(props.monsterList);
+  const [defaultMonsterList] = useState(props.monsterList);
 
   useEffect(() => {
     console.log("--ComboAnalyze Client Render");
@@ -602,6 +602,20 @@ export default function AnalyzePageClient(props: Props) {
 
   return (
     <main className="flex flex-col lg:w-[calc(100dvw-96px)] lg:flex-row">
+      <div
+        className={`Module1 pointer-events-none invisible fixed left-0 top-0 z-50 flex-none basis-[0px] -translate-x-full border-transition-color-8 bg-primary-color opacity-0 backdrop-blur-xl lg:sticky lg:z-0 lg:translate-x-0 lg:border-x-1.5 lg:bg-transition-color-8`}
+      >
+        <div
+          className={`Content flex h-dvh w-dvw flex-col gap-4 overflow-y-auto px-6 pt-8 lg:absolute lg:left-0 lg:top-0 lg:w-[260px]`}
+        >
+          <div className="Title flex items-center justify-between">
+            <h1 className="text-lg">{dictionary.ui.filter}</h1>
+            <Button level="tertiary">
+              X
+            </Button>
+          </div>
+        </div>
+      </div>
       <div className="Module2 flex flex-1 px-3 backdrop-blur-xl">
         <div className="LeftArea sticky top-0 z-10 flex-1"></div>
         <div

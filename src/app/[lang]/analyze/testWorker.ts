@@ -7,6 +7,7 @@ import { type SkillEffect } from "~/server/api/routers/skill";
 import { type ModifiersList } from "~/server/api/routers/crystal";
 import { type getDictionary } from "~/app/get-dictionary";
 import { type MathNode, all, create, floor, max, min, parse } from "mathjs";
+import { defaultSkill } from "~/app/store";
 
 const fps = 60;
 
@@ -69,81 +70,6 @@ export class modifiers {
     };
   }
 }
-
-export type pTpye = {
-  lv: number;
-  str: number;
-  int: number;
-  vit: number;
-  dex: number;
-  agi: number;
-  luk: number;
-  tec: number;
-  cri: number;
-  men: number;
-  mainWeaponType: MainWeaponType;
-  mainWeaponBaseAtk: number;
-  mainWeaponRefinement: number;
-  mainWeaponStability: number;
-  subWeaponType: SubWeaponType;
-  subWeaponBaseAtk: number;
-  subWeaponRefinement: number;
-  subWeaponStability: number;
-  bodyArmorType: BodyArmorType;
-  bodyArmorBaseDef: number;
-  bodyArmorRefinement: number;
-  pPie: number;
-  mPie: number;
-  pStab: number;
-  nDis: number;
-  fDis: number;
-  crT: number;
-  cdT: number;
-  weaMatkT: number;
-  stro: number;
-  unsheatheAtk: number;
-  total: number;
-  final: number;
-  am: number;
-  cm: number;
-  aggro: number;
-  maxHp: number;
-  maxMp: number;
-  pCr: number;
-  pCd: number;
-  mainWeaponAtk: number;
-  subWeaponAtk: number;
-  weaponAtk: number;
-  pAtk: number;
-  mAtk: number;
-  aspd: number;
-  cspd: number;
-  hp: number;
-  mp: number;
-  ampr: number;
-};
-
-export type mType = {
-  name: string;
-  lv: number;
-  hp: number;
-  pDef: number;
-  mDef: number;
-  pRes: number;
-  mRes: number;
-  cRes: number;
-};
-
-export type sType = {
-  index: number;
-  frame: number;
-  name: string;
-  lv: number;
-  am: number;
-  cm: number;
-  vMatk: number;
-  vPatk: number;
-};
 
 export type computeArgType = {
   frame: number;
@@ -236,6 +162,16 @@ const math = create(all, {
   predictable: false,
   randomSeed: randomSeed,
 });
+
+// 定义一个自定义节点转换函数
+function replaceNode(node: MathNode) {
+  // 如果节点是AccessorNode，替换成FunctionNode dynamicTotalValue(SymbolNode)
+  if ("isAccessorNode" in node && node.isAccessorNode) {
+    return new math.FunctionNode(new math.SymbolNode("dynamicTotalValue"), [node]);
+  }
+  // 遍历节点的子节点并递归替换
+  return node.map(replaceNode);
+}
 
 // 导入自定义方法
 // 此处需要考虑参数的上下文环境，静态加成的上下文环境为CharacterData，动态加成的上下文环境为computeArgType
@@ -856,41 +792,39 @@ export class CharacterData {
   ampr: modifiers;
   hp: modifiers;
   mp: modifiers;
+
+  // 过程属性
+  skillIndex: number;
+  state: "free" | "chanting" | "charging" | "startup" | "recovery";
+  actionQueue: tSkill[];
+  currentSkill: SkillData;
+  eventSequence: eventSequenceType[];
   [key: string]: object | string | number;
 
-  constructor(dictionary: ReturnType<typeof getDictionary>, character: Character) {
+  constructor(
+    dictionary: ReturnType<typeof getDictionary>,
+    monsterData: MonsterData,
+    scope: Scope,
+    character: { config: Character; actionQueue: tSkill[] },
+  ) {
     console.log("正在实例化CharacterData");
-    const mainWeaponType = character.mainWeapon?.mainWeaponType ?? "NO_WEAPON";
-    const subWeaponType = character.subWeapon?.subWeaponType ?? "NO_WEAPON";
-    const bodyArmorType = character.bodyArmor?.bodyArmorType ?? "NORMAL";
+    const config = character.config;
+    const actionQueue = character.actionQueue;
+    const mainWeaponType = config.mainWeapon?.mainWeaponType ?? "NO_WEAPON";
+    const subWeaponType = config.subWeapon?.subWeaponType ?? "NO_WEAPON";
+    const bodyArmorType = config.bodyArmor?.bodyArmorType ?? "NORMAL";
 
     // 计算基础值
-    this.lv = character.lv;
-    
-    this.weaMatkT = new modifiers();
-    this.weaMatkT.baseValue = CharacterData.weaponAbiT[mainWeaponType].weaAtk_Matk_Convert;
-    this.weaMatkT.update = () => {
-      const relation: modifiers[] = [this.mAtk];
-      relation.map((r) => r.update());
-      return [""].join(",");
-    };
-
-    this.weaPatkT = new modifiers();
-    this.weaPatkT.baseValue = CharacterData.weaponAbiT[mainWeaponType].weaAtk_Patk_Convert;
-    this.weaPatkT.update = () => {
-      const relation: modifiers[] = [this.pAtk];
-      relation.map((r) => r.update());
-      return ["_pAtk"].join(",");
-    };
+    this.lv = config.lv;
 
     this.mainWeapon = {
       type: mainWeaponType,
       baseAtk: new modifiers(),
-      refinement: character.mainWeapon?.refinement ?? 0,
-      stability: character.mainWeapon?.stability ?? 0,
+      refinement: config.mainWeapon?.refinement ?? 0,
+      stability: config.mainWeapon?.stability ?? 0,
     };
-    this.mainWeapon.baseAtk.baseValue = character.mainWeapon?.baseAtk ?? 0;
     this.mainWeapon.baseAtk.update = () => {
+      this.mainWeapon.baseAtk.baseValue = config.mainWeapon?.baseAtk ?? 0;
       const relation: modifiers[] = [this.mainWeaponAtk];
       relation.map((r) => r.update());
       return [""].join(",");
@@ -899,11 +833,11 @@ export class CharacterData {
     this.subWeapon = {
       type: subWeaponType,
       baseAtk: new modifiers(),
-      refinement: character.subWeapon?.refinement ?? 0,
-      stability: character.subWeapon?.stability ?? 0,
+      refinement: config.subWeapon?.refinement ?? 0,
+      stability: config.subWeapon?.stability ?? 0,
     };
-    this.subWeapon.baseAtk.baseValue = character.subWeapon?.baseAtk ?? 0;
     this.subWeapon.baseAtk.update = () => {
+      this.subWeapon.baseAtk.baseValue = config.subWeapon?.baseAtk ?? 0;
       const relation: modifiers[] = [this.subWeaponAtk];
       relation.map((r) => r.update());
       return [""].join(",");
@@ -912,131 +846,96 @@ export class CharacterData {
     this.bodyArmor = {
       type: bodyArmorType,
       baseDef: new modifiers(),
-      refinement: character.bodyArmor?.refinement ?? 0,
+      refinement: config.bodyArmor?.refinement ?? 0,
     };
-    this.bodyArmor.baseDef.baseValue = character.bodyArmor?.baseDef ?? 0;
     this.bodyArmor.baseDef.update = () => {
+      this.bodyArmor.baseDef.baseValue = config.bodyArmor?.baseDef ?? 0;
       const relation: modifiers[] = [];
       relation.map((r) => r.update());
       return [""].join(",");
     };
 
     this.str = new modifiers();
-    this.str.baseValue = character.baseStr ?? 0;
     this.str.update = () => {
+      this.str.baseValue = config.baseStr ?? 0;
       const relation: modifiers[] = [this.pCd, this.pAtk, this.mAtk, this.pStab, this.aspd];
       relation.map((r) => r.update());
       return [""].join(",");
     };
 
     this.int = new modifiers();
-    this.int.baseValue = character.baseInt ?? 0;
     this.int.update = () => {
+      this.int.baseValue = config.baseInt ?? 0;
       const relation: modifiers[] = [this.maxMp, this.pAtk, this.mAtk, this.aspd, this.pStab];
       relation.map((r) => r.update());
       return [""].join(",");
     };
 
     this.vit = new modifiers();
-    this.vit.baseValue = character.baseVit ?? 0;
     this.vit.update = () => {
+      this.vit.baseValue = config.baseVit ?? 0;
       const relation: modifiers[] = [this.maxHp];
       relation.map((r) => r.update());
       return [""].join(",");
     };
 
     this.agi = new modifiers();
-    this.agi.baseValue = character.baseAgi ?? 0;
     this.agi.update = () => {
+      this.agi.baseValue = config.baseAgi ?? 0;
       const relation: modifiers[] = [this.pAtk, this.mAtk, this.pStab, this.pCd, this.aspd, this.cspd];
       relation.map((r) => r.update());
       return [""].join(",");
     };
 
     this.dex = new modifiers();
-    this.dex.baseValue = character.baseDex ?? 0;
     this.dex.update = () => {
+      this.dex.baseValue = config.baseDex ?? 0;
       const relation: modifiers[] = [this.pAtk, this.mAtk, this.pStab, this.aspd, this.cspd];
       relation.map((r) => r.update());
       return [""].join(",");
     };
 
     this.luk = new modifiers();
-    this.luk.baseValue = character.specialAbiType === "LUK" ? character.specialAbiValue ?? 0 : 0;
     this.luk.update = () => {
+      this.luk.baseValue = config.specialAbiType === "LUK" ? config.specialAbiValue ?? 0 : 0;
       const relation: modifiers[] = [];
       relation.map((r) => r.update());
       return [""].join(",");
     };
 
     this.tec = new modifiers();
-    this.tec.baseValue = character.specialAbiType === "TEC" ? character.specialAbiValue ?? 0 : 0;
     this.tec.update = () => {
+      this.tec.baseValue = config.specialAbiType === "TEC" ? config.specialAbiValue ?? 0 : 0;
       const relation: modifiers[] = [this.maxMp];
       relation.map((r) => r.update());
       return [""].join(",");
     };
 
     this.men = new modifiers();
-    this.men.baseValue = character.specialAbiType === "MEN" ? character.specialAbiValue ?? 0 : 0;
     this.men.update = () => {
+      this.men.baseValue = config.specialAbiType === "MEN" ? config.specialAbiValue ?? 0 : 0;
       const relation: modifiers[] = [];
       relation.map((r) => r.update());
       return [""].join(",");
     };
 
     this.cri = new modifiers();
-    this.cri.baseValue = character.specialAbiType === "CRI" ? character.specialAbiValue ?? 0 : 0;
     this.cri.update = () => {
+      this.cri.baseValue = config.specialAbiType === "CRI" ? config.specialAbiValue ?? 0 : 0;
       const relation: modifiers[] = [];
       relation.map((r) => r.update());
       return [""].join(",");
     };
 
     // 二级属性
-    this.mainWeaponAtk = new modifiers();
-    this.mainWeaponAtk.baseValue = dynamicTotalValue(this.mainWeapon.baseAtk);
-    this.mainWeaponAtk.modifiers.static.fixed[0] = {
-      value: this.mainWeapon.refinement,
-      origin: dictionary.ui.analyze.dialogData.mainWeapon.refinement,
-    };
-    this.mainWeaponAtk.modifiers.static.percentage[0] = {
-      value: Math.pow(this.mainWeapon.refinement, 2),
-      origin: dictionary.ui.analyze.dialogData.mainWeapon.refinement,
-    };
-    this.mainWeaponAtk.update = () => {
-      this.mainWeaponAtk.baseValue = dynamicTotalValue(this.mainWeapon.baseAtk);
-      const relation: modifiers[] = [];
-      relation.map((r) => r.update());
-      return [""].join(",");
-    };
-
-    this.subWeaponAtk = new modifiers();
-    this.subWeaponAtk.baseValue = dynamicTotalValue(this.subWeapon.baseAtk);
-    this.subWeaponAtk.update = () => {
-      this.subWeaponAtk.baseValue = dynamicTotalValue(this.subWeapon.baseAtk);
-      const relation: modifiers[] = [];
-      relation.map((r) => r.update());
-      return [""].join(",");
-    };
-
     this.weaponAtk = new modifiers();
-    this.weaponAtk.baseValue = dynamicTotalValue(this.mainWeaponAtk) + dynamicTotalValue(this.subWeaponAtk);
     this.weaponAtk.update = () => {
       this.weaponAtk.baseValue = dynamicTotalValue(this.mainWeaponAtk) + dynamicTotalValue(this.subWeaponAtk);
       const relation: modifiers[] = [this.pAtk, this.mAtk];
       relation.map((r) => r.update());
       return [""].join(",");
     };
-    
     this.pAtk = new modifiers();
-    this.pAtk.baseValue =
-      this.lv +
-      dynamicTotalValue(this.weaponAtk) * dynamicTotalValue(this.weaPatkT) +
-      CharacterData.weaponAbiT[mainWeaponType].abi_Attr_Convert.str.pAtkT * dynamicTotalValue(this.str) +
-      CharacterData.weaponAbiT[mainWeaponType].abi_Attr_Convert.int.pAtkT * dynamicTotalValue(this.int) +
-      CharacterData.weaponAbiT[mainWeaponType].abi_Attr_Convert.agi.pAtkT * dynamicTotalValue(this.agi) +
-      CharacterData.weaponAbiT[mainWeaponType].abi_Attr_Convert.dex.pAtkT * dynamicTotalValue(this.dex);
     this.pAtk.update = () => {
       this.pAtk.baseValue =
         this.lv +
@@ -1051,13 +950,6 @@ export class CharacterData {
     };
 
     this.mAtk = new modifiers();
-    this.mAtk.baseValue =
-      this.lv +
-      dynamicTotalValue(this.weaponAtk) * dynamicTotalValue(this.weaMatkT) +
-      CharacterData.weaponAbiT[mainWeaponType].abi_Attr_Convert.str.mAtkT * dynamicTotalValue(this.str) +
-      CharacterData.weaponAbiT[mainWeaponType].abi_Attr_Convert.int.mAtkT * dynamicTotalValue(this.int) +
-      CharacterData.weaponAbiT[mainWeaponType].abi_Attr_Convert.agi.mAtkT * dynamicTotalValue(this.agi) +
-      CharacterData.weaponAbiT[mainWeaponType].abi_Attr_Convert.dex.mAtkT * dynamicTotalValue(this.dex);
     this.mAtk.update = () => {
       this.mAtk.baseValue =
         this.lv +
@@ -1072,13 +964,6 @@ export class CharacterData {
     };
 
     this.aspd = new modifiers();
-    this.aspd.baseValue =
-      CharacterData.weaponAbiT[mainWeaponType].baseAspd +
-      this.lv +
-      CharacterData.weaponAbiT[mainWeaponType].abi_Attr_Convert.str.aspdT * dynamicTotalValue(this.str) +
-      CharacterData.weaponAbiT[mainWeaponType].abi_Attr_Convert.int.aspdT * dynamicTotalValue(this.int) +
-      CharacterData.weaponAbiT[mainWeaponType].abi_Attr_Convert.agi.aspdT * dynamicTotalValue(this.agi) +
-      CharacterData.weaponAbiT[mainWeaponType].abi_Attr_Convert.dex.aspdT * dynamicTotalValue(this.dex);
     this.aspd.update = () => {
       this.aspd.baseValue =
         CharacterData.weaponAbiT[mainWeaponType].baseAspd +
@@ -1093,7 +978,6 @@ export class CharacterData {
     };
 
     this.cspd = new modifiers();
-    this.cspd.baseValue = dynamicTotalValue(this.dex) * 2.94 + dynamicTotalValue(this.agi) * 1.16;
     this.cspd.update = () => {
       this.cspd.baseValue = dynamicTotalValue(this.dex) * 2.94 + dynamicTotalValue(this.agi) * 1.16;
       const relation: modifiers[] = [this.cm];
@@ -1102,7 +986,6 @@ export class CharacterData {
     };
 
     this.pCr = new modifiers();
-    this.pCr.baseValue = 25 + dynamicTotalValue(this.cri) / 5;
     this.pCr.update = () => {
       this.pCr.baseValue = 25 + dynamicTotalValue(this.cri) / 5;
       const relation: modifiers[] = [];
@@ -1111,11 +994,6 @@ export class CharacterData {
     };
 
     this.pCd = new modifiers();
-    this.pCd.baseValue =
-      150 +
-      Math.floor(
-        Math.max(dynamicTotalValue(this.str) / 5, dynamicTotalValue(this.str) + dynamicTotalValue(this.agi)) / 10,
-      );
     this.pCd.update = () => {
       this.pCd.baseValue =
         150 +
@@ -1128,7 +1006,6 @@ export class CharacterData {
     };
 
     this.maxHp = new modifiers();
-    this.maxHp.baseValue = Math.floor(93 + this.lv * (127 / 17 + dynamicTotalValue(this.vit) / 3));
     this.maxHp.update = () => {
       this.maxHp.baseValue = Math.floor(93 + this.lv * (127 / 17 + dynamicTotalValue(this.vit) / 3));
       const relation: modifiers[] = [];
@@ -1137,9 +1014,31 @@ export class CharacterData {
     };
 
     this.maxMp = new modifiers();
-    this.maxMp.baseValue = Math.floor(99 + this.lv + dynamicTotalValue(this.int) / 10 + dynamicTotalValue(this.tec));
     this.maxMp.update = () => {
       this.maxMp.baseValue = Math.floor(99 + this.lv + dynamicTotalValue(this.int) / 10 + dynamicTotalValue(this.tec));
+      const relation: modifiers[] = [];
+      relation.map((r) => r.update());
+      return [""].join(",");
+    };
+    this.mainWeaponAtk = new modifiers();
+    this.mainWeaponAtk.update = () => {
+      this.mainWeaponAtk.baseValue = dynamicTotalValue(this.mainWeapon.baseAtk);
+      this.mainWeaponAtk.modifiers.static.fixed[0] = {
+        value: this.mainWeapon.refinement,
+        origin: dictionary.ui.analyze.dialogData.mainWeapon.refinement,
+      };
+      this.mainWeaponAtk.modifiers.static.percentage[0] = {
+        value: Math.pow(this.mainWeapon.refinement, 2),
+        origin: dictionary.ui.analyze.dialogData.mainWeapon.refinement,
+      };
+      const relation: modifiers[] = [];
+      relation.map((r) => r.update());
+      return [""].join(",");
+    };
+
+    this.subWeaponAtk = new modifiers();
+    this.subWeaponAtk.update = () => {
+      this.subWeaponAtk.baseValue = dynamicTotalValue(this.subWeapon.baseAtk);
       const relation: modifiers[] = [];
       relation.map((r) => r.update());
       return [""].join(",");
@@ -1147,43 +1046,28 @@ export class CharacterData {
 
     // 系统属性
     this.pPie = new modifiers();
-    this.pPie.baseValue = 0;
     this.pPie.update = () => {
+      this.pPie.baseValue = 0;
       const relation: modifiers[] = [];
       relation.map((r) => r.update());
       return [""].join(",");
     };
 
     this.mPie = new modifiers();
-    this.mPie.baseValue = 0;
     this.mPie.update = () => {
+      this.mPie.baseValue = 0;
       const relation: modifiers[] = [];
       relation.map((r) => r.update());
       return [""].join(",");
     };
 
     this.pStab = new modifiers();
-    this.pStab.baseValue = 0;
-    this.pStab.modifiers.static.fixed[0] = {
-      value: character.mainWeapon?.stability ?? 0,
-      origin: dictionary.ui.analyze.dialogData.mainWeapon.stability,
-    };
-    this.pStab.modifiers.static.fixed[1] = {
-      value:
-        floor(
-          CharacterData.weaponAbiT[mainWeaponType].abi_Attr_Convert.str.stabT * dynamicTotalValue(this.str) +
-            CharacterData.weaponAbiT[mainWeaponType].abi_Attr_Convert.int.stabT * dynamicTotalValue(this.int) +
-            CharacterData.weaponAbiT[mainWeaponType].abi_Attr_Convert.agi.stabT * dynamicTotalValue(this.agi) +
-            CharacterData.weaponAbiT[mainWeaponType].abi_Attr_Convert.dex.stabT * dynamicTotalValue(this.dex),
-        ) ?? 0,
-      origin: [
-        dictionary.ui.analyze.dialogData.str,
-        dictionary.ui.analyze.dialogData.int,
-        dictionary.ui.analyze.dialogData.agi,
-        dictionary.ui.analyze.dialogData.dex,
-      ].join(" + "),
-    };
     this.pStab.update = () => {
+      this.pStab.baseValue = 0;
+      this.pStab.modifiers.static.fixed[0] = {
+        value: config.mainWeapon?.stability ?? 0,
+        origin: dictionary.ui.analyze.dialogData.mainWeapon.stability,
+      };
       this.pStab.modifiers.static.fixed[1] = {
         value:
           floor(
@@ -1205,85 +1089,97 @@ export class CharacterData {
     };
 
     this.nDis = new modifiers();
-    this.nDis.baseValue = 100;
     this.nDis.update = () => {
+      this.nDis.baseValue = 100;
       const relation: modifiers[] = [];
       relation.map((r) => r.update());
       return [""].join(",");
     };
 
     this.fDis = new modifiers();
-    this.fDis.baseValue = 100;
     this.fDis.update = () => {
+      this.fDis.baseValue = 100;
       const relation: modifiers[] = [];
       relation.map((r) => r.update());
       return [""].join(",");
     };
 
     this.crT = new modifiers();
-    this.crT.baseValue = 0;
     this.crT.update = () => {
+      this.crT.baseValue = 0;
       const relation: modifiers[] = [];
       relation.map((r) => r.update());
       return [""].join(",");
     };
 
     this.cdT = new modifiers();
-    this.cdT.baseValue = 50;
     this.cdT.update = () => {
+      this.cdT.baseValue = 50;
       const relation: modifiers[] = [];
       relation.map((r) => r.update());
       return [""].join(",");
     };
 
     this.stro = new modifiers();
-    this.stro.baseValue = 100;
     this.stro.update = () => {
+      this.stro.baseValue = 100;
       const relation: modifiers[] = [];
       relation.map((r) => r.update());
       return [""].join(",");
     };
 
     this.unsheatheAtk = new modifiers();
-    this.unsheatheAtk.baseValue = 100;
     this.unsheatheAtk.update = () => {
+      this.unsheatheAtk.baseValue = 100;
       const relation: modifiers[] = [];
       relation.map((r) => r.update());
       return [""].join(",");
     };
 
     this.total = new modifiers();
-    this.total.baseValue = 100;
     this.total.update = () => {
+      this.total.baseValue = 100;
       const relation: modifiers[] = [];
       relation.map((r) => r.update());
       return [""].join(",");
     };
 
     this.final = new modifiers();
-    this.final.baseValue = 100;
     this.final.update = () => {
+      this.final.baseValue = 100;
       const relation: modifiers[] = [];
       relation.map((r) => r.update());
       return [""].join(",");
     };
 
     this.anticipate = new modifiers();
-    this.anticipate.baseValue = 0;
     this.anticipate.update = () => {
+      this.anticipate.baseValue = 0;
       const relation: modifiers[] = [];
       relation.map((r) => r.update());
       return [""].join(",");
     };
 
+    this.weaMatkT = new modifiers();
+    this.weaMatkT.update = () => {
+      this.weaMatkT.baseValue = CharacterData.weaponAbiT[mainWeaponType].weaAtk_Matk_Convert;
+      const relation: modifiers[] = [this.mAtk];
+      relation.map((r) => r.update());
+      return [""].join(",");
+    };
+
+    this.weaPatkT = new modifiers();
+    this.weaPatkT.update = () => {
+      this.weaPatkT.baseValue = CharacterData.weaponAbiT[mainWeaponType].weaAtk_Patk_Convert;
+      const relation: modifiers[] = [this.pAtk];
+      relation.map((r) => r.update());
+      return ["_pAtk"].join(",");
+    };
+
     // 三级属性
     this.am = new modifiers();
-    this.am.baseValue = 0;
-    this.am.modifiers.static.fixed[0] = {
-      value: max(0, floor((dynamicTotalValue(this.aspd) - 1000) / 180)),
-      origin: dictionary.ui.analyze.dialogData.aspd,
-    };
     this.am.update = () => {
+      this.am.baseValue = 0;
       this.am.modifiers.static.fixed[0] = {
         value: max(0, floor((dynamicTotalValue(this.aspd) - 1000) / 180)),
         origin: dictionary.ui.analyze.dialogData.aspd,
@@ -1294,12 +1190,8 @@ export class CharacterData {
     };
 
     this.cm = new modifiers();
-    this.cm.baseValue = 0;
-    this.cm.modifiers.static.fixed[0] = {
-      value: min(50 + floor((dynamicTotalValue(this.cspd) - 1000) / 180), floor(dynamicTotalValue(this.cspd) / 20)),
-      origin: dictionary.ui.analyze.dialogData.cspd,
-    };
     this.cm.update = () => {
+      this.cm.baseValue = 0;
       this.cm.modifiers.static.fixed[0] = {
         value: min(50 + floor((dynamicTotalValue(this.cspd) - 1000) / 180), floor(dynamicTotalValue(this.cspd) / 20)),
         origin: dictionary.ui.analyze.dialogData.cspd,
@@ -1310,15 +1202,14 @@ export class CharacterData {
     };
 
     this.aggro = new modifiers();
-    this.aggro.baseValue = 100;
     this.aggro.update = () => {
+      this.aggro.baseValue = 100;
       const relation: modifiers[] = [];
       relation.map((r) => r.update());
       return [""].join(",");
     };
 
     this.ampr = new modifiers();
-    this.ampr.baseValue = 10 + dynamicTotalValue(this.maxMp) / 10;
     this.ampr.update = () => {
       this.ampr.baseValue = 10 + dynamicTotalValue(this.maxMp) / 10;
       const relation: modifiers[] = [];
@@ -1328,7 +1219,6 @@ export class CharacterData {
 
     // 状态记录
     this.hp = new modifiers();
-    this.hp.baseValue = dynamicTotalValue(this.maxHp);
     this.hp.update = () => {
       this.hp.baseValue = dynamicTotalValue(this.maxHp);
       const relation: modifiers[] = [];
@@ -1337,7 +1227,6 @@ export class CharacterData {
     };
 
     this.mp = new modifiers();
-    this.mp.baseValue = dynamicTotalValue(this.maxMp);
     this.mp.update = () => {
       this.mp.baseValue = dynamicTotalValue(this.maxMp);
       const relation: modifiers[] = [];
@@ -1345,9 +1234,9 @@ export class CharacterData {
       return [""].join(",");
     };
 
-    console.log(_.cloneDeep(this));
     // 添加加成项
-    characterModifiersApplicator(character, this);
+    characterModifiersApplicator(config, this);
+
     // 初始化
     this.weaPatkT.update();
     this.weaMatkT.update();
@@ -1395,6 +1284,22 @@ export class CharacterData {
 
     this.hp.update();
     this.mp.update();
+
+    this.state = "free";
+    this.actionQueue = actionQueue;
+    this.skillIndex = 0;
+    this.eventSequence = [];
+    this.currentSkill = new SkillData(
+      dictionary,
+      this.skillIndex,
+      actionQueue[0]!,
+      this,
+      monsterData,
+      scope,
+      this.eventSequence,
+      scope.frame,
+    );
+    this.eventSequence = this.currentSkill.finalEventSequence;
 
     console.log("实例化完毕，this：", _.cloneDeep(this));
   }
@@ -1526,7 +1431,7 @@ export class SkillData {
   skillActionFrames: number;
   skillChantingFrames: number;
   skillDuration: number;
-  skillWindUp: number;
+  skillStartupFrames: number;
   stateFramesData: stateFrameData[];
   finalEventSequence: eventSequenceType[];
   [key: string]: object | string | number;
@@ -1536,92 +1441,12 @@ export class SkillData {
     skill: tSkill,
     characterData: CharacterData,
     monsterData: MonsterData,
-    computeArg: computeArgType,
+    scope: Scope,
     eventSequence: eventSequenceType[],
     passedFrames: number,
   ) {
-    // 封装当前状态的公式计算方法
-    const cEvaluate = (formula: string) => {
-      // console.log("表达式为：", formula, "计算环境为：", JSON.parse(JSON.stringify(computeArg)))
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-      return math.evaluate(formula, { ...JSON.parse(JSON.stringify(computeArg)) }) as number | void;
-    };
     this.passedFrames = passedFrames;
     this.finalEventSequence = _.cloneDeep(eventSequence);
-    // 计算技能前摇
-    const skillWindUpComputer = (
-      skillWindUpFormula: string | null,
-      skillDuration: number,
-      computeArg: computeArgType,
-    ) => {
-      if (!skillWindUpFormula) {
-        console.log("未注明前摇值，默认为技能总时长：" + skillDuration + "帧");
-        return skillDuration;
-      }
-      // 判断前摇计算公式是否包含百分比符号，未注明前摇时长的技能效果都默认在技能动画执行3/4后生效
-      const perMatch = skillWindUpFormula.match(/^([\s\S]+?)\s*(%?)$/);
-      if (perMatch) {
-        // 表达式非空时
-        if (perMatch[2] === "%") {
-          // 当末尾存在百分比符号时，转换未固定帧数
-          // console.log("技能前摇表达式为百分比形式");
-          if (perMatch[1]) {
-            // 尝试计算表达式结果
-            const result = math.evaluate(perMatch[1], computeArg) as number;
-            if (result) {
-              // console.log("前摇百分比表达式计算结果", result);
-              return floor((skillDuration * result) / 100);
-            } else {
-              // console.log("前摇百分比表达式计算结果为空，默认为技能总时长：" + skillTotalFrame * 3/4  + "帧");
-              return floor((skillDuration * 3) / 4);
-            }
-          }
-        } else {
-          // 否则，尝试将计算结果添加进常数值数组中
-          if (perMatch[1]) {
-            const result = math.evaluate(perMatch[1], computeArg) as number;
-            if (result) {
-              // console.log("前摇常数表达式计算结果", result);
-              return floor(result);
-            } else {
-              // console.log("前摇常数表达式计算结果为空，默认为技能总时长：" + skillTotalFrame *3/4 + "帧");
-              return floor((skillDuration * 3) / 4);
-            }
-          } else {
-            console.log("perMatch[1]为空");
-          }
-        }
-      } else {
-        console.log("未注明前摇值，默认为技能总时长：" + floor((skillDuration * 3) / 4) + "帧");
-      }
-      return floor((skillDuration * 3) / 4);
-    };
-    // 计算技能动作期间角色和怪物的状态数据
-    const stateFrameComputer = (
-      character: CharacterData,
-      monster: MonsterData,
-      computeArg: computeArgType,
-      eventSequence: eventSequenceType[],
-    ): stateFrameData[] => {
-      const stateFrames: stateFrameData[] = [
-        {
-          frame: 0,
-          character,
-          monster,
-        },
-      ];
-      for (let frame = 0; frame < this.skillDuration; frame++) {
-        eventSequence = frameData(passedFrames + frame, character, monster, computeArg, eventSequence, cEvaluate);
-        // console.log("-----------------当前技能帧", frame,"当前角色属性：", _.cloneDeep(character));
-        stateFrames.push({
-          frame: frame,
-          character: _.cloneDeep(character),
-          monster: _.cloneDeep(monster),
-        });
-      }
-      this.finalEventSequence = eventSequence;
-      return stateFrames;
-    };
     Index++;
     this.index = Index;
     this.name = skill.name;
@@ -1694,6 +1519,12 @@ export class SkillData {
     // this.actionModifiableDurationFormula = skill.skillEffect.actionModifiableDurationFormula;
     // this.chantingFixedDurationFormula = skill.skillEffect.chantingBaseDurationFormula;
     // this.chantingModifiableDurationFormula = skill.skillEffect.chantingModifiableDurationFormula;
+    // 封装当前状态的公式计算方法
+    const cEvaluate = (formula: string) => {
+      // console.log("表达式为：", formula, "计算环境为：", JSON.parse(JSON.stringify(computeArg)))
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+      return math.evaluate(formula, { ...JSON.parse(JSON.stringify(scope)) }) as number | void;
+    };
     this.actionFixedDuration = {
       baseValue: cEvaluate(skill.skillEffect.actionBaseDurationFormula) as number,
       modifiers: {
@@ -1739,7 +1570,7 @@ export class SkillData {
     console.log(
       "技能可加速咏唱计算公式：" + skill.skillEffect.chantingModifiableDurationFormula,
       "计算环境：",
-      _.cloneDeep(computeArg),
+      _.cloneDeep(scope),
     );
     this.chantingModifiableDuration = {
       baseValue: cEvaluate(skill.skillEffect.chantingModifiableDurationFormula) as number,
@@ -1764,38 +1595,96 @@ export class SkillData {
         (dynamicTotalValue(this.chantingModifiableDuration) * (100 - min(dynamicTotalValue(this.cm), 50))) / 100,
     );
     this.skillDuration = this.skillActionFrames + this.skillChantingFrames * fps;
-    this.skillWindUp = skillWindUpComputer(skill.skillEffect.skillStartupFramesFormula, this.skillDuration, computeArg);
-    computeArg.s = _.cloneDeep(this);
+    // 计算技能前摇
+    const skillStartupFramesComputer = (
+      skillStartupFramesFormula: string | null,
+      skillDuration: number,
+      scope: Scope,
+    ) => {
+      if (!skillStartupFramesFormula) {
+        console.log("未注明前摇值，默认为技能总时长：" + skillDuration + "帧");
+        return skillDuration;
+      }
+      // 判断前摇计算公式是否包含百分比符号，未注明前摇时长的技能效果都默认在技能动画执行3/4后生效
+      const perMatch = skillStartupFramesFormula.match(/^([\s\S]+?)\s*(%?)$/);
+      if (perMatch) {
+        // 表达式非空时
+        if (perMatch[2] === "%") {
+          // 当末尾存在百分比符号时，转换未固定帧数
+          // console.log("技能前摇表达式为百分比形式");
+          if (perMatch[1]) {
+            // 尝试计算表达式结果
+            const result = math.evaluate(perMatch[1], scope) as number;
+            if (result) {
+              // console.log("前摇百分比表达式计算结果", result);
+              return floor((skillDuration * result) / 100);
+            } else {
+              // console.log("前摇百分比表达式计算结果为空，默认为技能总时长：" + skillTotalFrame * 3/4  + "帧");
+              return floor((skillDuration * 3) / 4);
+            }
+          }
+        } else {
+          // 否则，尝试将计算结果添加进常数值数组中
+          if (perMatch[1]) {
+            const result = math.evaluate(perMatch[1], scope) as number;
+            if (result) {
+              // console.log("前摇常数表达式计算结果", result);
+              return floor(result);
+            } else {
+              // console.log("前摇常数表达式计算结果为空，默认为技能总时长：" + skillTotalFrame *3/4 + "帧");
+              return floor((skillDuration * 3) / 4);
+            }
+          } else {
+            console.log("perMatch[1]为空");
+          }
+        }
+      } else {
+        console.log("未注明前摇值，默认为技能总时长：" + floor((skillDuration * 3) / 4) + "帧");
+      }
+      return floor((skillDuration * 3) / 4);
+    };
+    this.skillStartupFrames = skillStartupFramesComputer(
+      skill.skillEffect.skillStartupFramesFormula,
+      this.skillDuration,
+      scope,
+    );
+    scope.s = _.cloneDeep(this);
     console.log(
       "实例化SkillData，技能序号：" + this.index,
       "名称：" + this.name,
       "技能总帧数：" + this.skillDuration,
       "已经过帧数：" + passedFrames,
     );
-    // 依据技能效果向事件队列添加事件，需要考虑技能前摇
-    skill.skillEffect.skillYield.forEach((yield_) => {
-      let baseCondition = yield_.mutationTimingFormula;
-      if (yield_.mutationTimingFormula === "null" || !yield_.mutationTimingFormula) {
-        baseCondition = "true";
-      }
-      eventSequence.push(
-        _.cloneDeep({
-          type: yield_.yieldType,
-          behavior: yield_.yieldFormula,
-          condition: "frame > " + (passedFrames + this.skillWindUp - 2) + " and " + baseCondition,
-          origin: skill.name,
-          registrationFrame: passedFrames,
-        }),
-      );
-      console.log(
-        "已将" + skill.name + "的技能效果：" + yield_.yieldFormula,
-        "添加到事件队列，当前队列为：",
-        _.cloneDeep(eventSequence),
-      );
-    });
 
     // 计算与帧相关的技能效果参数
-    this.stateFramesData = stateFrameComputer(characterData, monsterData, computeArg, eventSequence);
+    this.stateFramesData = [];
+    // 计算技能动作期间角色和怪物的状态数据
+    const stateFrameComputer = (
+      character: CharacterData,
+      monster: MonsterData,
+      scope: Scope,
+      eventSequence: eventSequenceType[],
+    ): stateFrameData[] => {
+      const stateFrames: stateFrameData[] = [
+        {
+          frame: 0,
+          character,
+          monster,
+        },
+      ];
+      for (let frame = 0; frame < this.skillDuration; frame++) {
+        eventSequence = frameData(passedFrames + frame, character, monster, scope, eventSequence, cEvaluate);
+        // console.log("-----------------当前技能帧", frame,"当前角色属性：", _.cloneDeep(character));
+        stateFrames.push({
+          frame: frame,
+          character: _.cloneDeep(character),
+          monster: _.cloneDeep(monster),
+        });
+      }
+      this.finalEventSequence = eventSequence;
+      return stateFrames;
+    };
+    // this.stateFramesData = stateFrameComputer(characterData, monsterData, scope, eventSequence);
   }
 }
 
@@ -1803,7 +1692,7 @@ const frameData = (
   frame: number,
   character: CharacterData,
   monster: MonsterData,
-  computeArg: computeArgType,
+  scope: Scope,
   eventSequence: eventSequenceType[],
   cEvaluate: (formula: string) => number | void,
 ) => {
@@ -1813,26 +1702,16 @@ const frameData = (
     computeResult: "已完成:" + frame + "帧",
   } satisfies analyzeWorkerOutput);
   // 每帧需要做的事
-  computeArg.frame = frame;
+  scope.frame = frame;
 
-  // monster.hp.modifiers.dynamic.fixed.push({
-  //   value: -5000,
-  //   origin: "测试阶段系统自动减损" + frame,
-  // });
+  monster.hp.modifiers.dynamic.fixed.push({
+    value: -5000,
+    origin: "测试阶段系统自动减损" + frame,
+  });
 
   // 检查怪物死亡
   if (_.isNumber(monster.hp.baseValue) ? monster.hp.baseValue <= 0 : dynamicTotalValue(monster.hp) <= 0) {
     console.log("怪物死亡");
-  }
-
-  // 定义一个自定义节点转换函数
-  function replaceNode(node: MathNode) {
-    // 如果节点是AccessorNode，替换成FunctionNode dynamicTotalValue(SymbolNode)
-    if ("isAccessorNode" in node && node.isAccessorNode) {
-      return new math.FunctionNode(new math.SymbolNode("dynamicTotalValue"), [node]);
-    }
-    // 遍历节点的子节点并递归替换
-    return node.map(replaceNode);
   }
 
   // 执行并更新事件队列
@@ -1856,7 +1735,7 @@ const frameData = (
             if (_.isNumber(cEvaluate(formulaStr))) {
               modifier.baseValue = cEvaluate(formulaStr) as number;
             }
-            _.set(computeArg, attr, modifier);
+            _.set(scope, attr, modifier);
           }
           break;
 
@@ -1881,8 +1760,8 @@ const frameData = (
               // 查找对应对象的内部属性值
 
               let target: modifiers | number | undefined;
-              if (_.get(computeArg, targetStr)) {
-                target = _.get(computeArg, targetStr) as modifiers;
+              if (_.get(scope, targetStr)) {
+                target = _.get(scope, targetStr) as modifiers;
                 console.log("找到了：", target);
                 // 先判断值类型，依据字符串结尾是否具有百分比符号分为百分比加成和常数加成
                 const perMatch = transformSubNodeStr.match(/^([\s\S]+?)\s*(%?)$/);
@@ -1957,7 +1836,7 @@ const frameData = (
           }
           break;
       }
-      console.log("----------结果：", _.cloneDeep(computeArg));
+      console.log("----------结果：", _.cloneDeep(scope));
       // 不论是否已执行，将持续型事件加入后续队列
       if (event.type === "PersistentEffect") {
         console.log("已执行的事件是持续型事件，保留此事件");
@@ -1976,51 +1855,241 @@ const frameData = (
   return _.cloneDeep(eventSequence);
 };
 
-export const computeFrameData = (
+type Reault = {
+  frame: number;
+  characterDataArray: CharacterData[];
+  monsterData: MonsterData;
+};
+
+type Scope = {
+  frame: number;
+  p?: CharacterData;
+  m?: MonsterData;
+  s?: SkillData;
+};
+
+export const compute = (
   dictionary: ReturnType<typeof getDictionary>,
-  skillSequence: tSkill[],
-  character: Character,
+  team: {
+    config: Character;
+    actionQueue: tSkill[];
+  }[],
   monster: Monster,
 ) => {
-  const characterData = new CharacterData(dictionary, character);
+  // 定义存储数据的结构
+  let frame = 0;
+  const result: Reault[] = [];
   const monsterData = new MonsterData(monster);
-  const skillData = new SkillData(
-    dictionary,
-    0,
-    skillSequence[0]!,
-    characterData,
-    monsterData,
-    {
-      frame: 0,
-      p: characterData,
-      m: monsterData,
-    },
-    [],
-    0,
-  );
-  const computeArg: computeArgType = {
-    frame: 0,
-    p: characterData,
+  const scope: Scope = {
+    frame: frame,
     m: monsterData,
-    s: skillData,
+  };
+  const teamData = team.map((character) => new CharacterData(dictionary, monsterData, scope, character));
+  // 封装当前状态的公式计算方法
+  const cEvaluate = (formula: string) => {
+    // console.log("表达式为：", formula, "计算环境为：", JSON.parse(JSON.stringify(computeArg)))
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    return math.evaluate(formula, { ...JSON.parse(JSON.stringify(scope)) }) as number | void;
   };
 
-  let eventSequence: eventSequenceType[] = [];
-  const result: SkillData[] = [];
-  skillSequence.forEach((skill, index) => {
-    let passedFrames = 0;
-    result.forEach((skillData) => {
-      passedFrames += skillData.skillDuration + 1;
-    });
-    // console.log("当前已储存的结果：", _.cloneDeep(result));
-    const newSkill = _.cloneDeep(
-      new SkillData(dictionary, index, skill, characterData, monsterData, computeArg, eventSequence, passedFrames),
-    );
-    eventSequence = newSkill.finalEventSequence;
-    result.push(newSkill);
-  });
+  // 开始逐帧计算
+  for (; frame < 7200; frame++) {
+    // 发送进度
+    self.postMessage({
+      type: "progress",
+      computeResult: "正在计算第" + frame + "帧",
+    } satisfies analyzeWorkerOutput);
 
-  return result;
+    teamData.forEach((characterData, characterIndex) => {
+      console.log("第 " + frame + " 帧的第 " + characterIndex + " 个角色：", characterData);
+      // 向scope中添加角色数据
+      scope.p = teamData[characterIndex];
+      if (scope.p) {
+        // 先执行事件队列
+        scope.p.eventSequence.filter((event, eventIndex) => {
+          console.log("第 " + eventIndex + " 个事件：", event);
+          if (cEvaluate(event.condition)) {
+            // 执行当前帧需要做的事
+            console.log("条件成立，事件行为表达式：" + event.behavior);
+            const node = parse(event.behavior);
+            const nodeString = node.toString();
+            switch (node.type) {
+              case "AssignmentNode":
+                {
+                  const attr = nodeString.substring(0, nodeString.indexOf("=")).trim();
+                  const formulaStr = nodeString.substring(nodeString.indexOf("=") + 1, nodeString.length).trim();
+                  console.log("发现赋值节点：" + nodeString);
+                  console.log("赋值对象路径：", attr);
+                  const formulaResult = cEvaluate(formulaStr) as number;
+                  console.log("赋值表达式只允许修改基础值，表达式结果：", formulaResult);
+                  const modifier = new modifiers();
+                  if (_.isNumber(formulaResult)) {
+                    modifier.baseValue = formulaResult;
+                  }
+                  _.set(scope, attr, modifier);
+                }
+                break;
+
+              default:
+                {
+                  console.log("非赋值表达式：" + nodeString + " 判定为：" + node.type);
+                  // 非赋值表达式说明该行为是对当前战斗环境已有属性进行增减,从第一个加减号开始分解表达式
+                  const match = event.behavior.match(/(.+?)([+\-])(.+)/);
+                  if (match) {
+                    const targetStr = _.trim(match[1]);
+                    const operatorStr = match[2];
+                    const formulaStr = _.trim(match[3]);
+                    // 将属性节点转换成总值计算
+                    const subNode = parse(formulaStr);
+                    const transformSubNode = replaceNode(subNode);
+                    const transformSubNodeStr = transformSubNode.toString();
+                    console.log("转换后的表达式：", transformSubNodeStr);
+                    // 如果能够发现加减乘除运算符，则对符号左右侧字符串进行验证
+                    console.log(
+                      "表达式拆解为：1:[" + targetStr + "]   2:[" + operatorStr + "]   3:[" + transformSubNodeStr + "]",
+                    );
+                    // 查找对应对象的内部属性值
+                    let target: modifiers | number | undefined;
+                    if (_.get(scope, targetStr)) {
+                      target = _.get(scope, targetStr) as modifiers;
+                      console.log("在计算环境中找到了targetStr：", target);
+                      // 先判断值类型，依据字符串结尾是否具有百分比符号分为百分比加成和常数加成
+                      console.log("开始拆解表达式：", transformSubNodeStr);
+                      const perMatch = transformSubNodeStr.match(/^([\s\S]+?)\s*(%?)$/);
+                      if (perMatch) {
+                        // 表达式非空时
+                        if (perMatch[2] === "%") {
+                          // 当末尾存在百分比符号时，尝试将计算结果添加进百分比数组中
+                          console.log("表达式值为百分比类型，计算非百分比号部分：", perMatch[1]);
+                          if (perMatch[1]) {
+                            // 尝试计算表达式结果
+                            const result = cEvaluate(perMatch[1]);
+                            if (result) {
+                              // 表达能够正确计算的话
+                              console.log("计算结果", result);
+                              // 根据运算符类型，将计算结果添加进百分比数组中
+                              if (operatorStr === "+") {
+                                target.modifiers.dynamic.percentage.push({
+                                  value: result,
+                                  origin: event.origin,
+                                });
+                              } else if (operatorStr === "-") {
+                                target.modifiers.dynamic.percentage.push({
+                                  value: -result,
+                                  origin: event.origin,
+                                });
+                              } else {
+                                console.log("未知运算符");
+                              }
+                            } else {
+                              // 表达式计算结果为空时
+                              console.log("计算出错");
+                            }
+                          }
+                        } else {
+                          // 否则，尝试将计算结果添加进常数值数组中
+                          const result = cEvaluate(transformSubNodeStr);
+                          if (result) {
+                            // 表达能够正确计算的话
+                            console.log("表达式为小数类型，计算结果：", result);
+                            // 根据运算符类型，将计算结果添加进百分比数组中
+                            if (operatorStr === "+") {
+                              target.modifiers.dynamic.fixed.push({
+                                value: result,
+                                origin: event.origin,
+                              });
+                            } else if (operatorStr === "-") {
+                              target.modifiers.dynamic.fixed.push({
+                                value: -result,
+                                origin: event.origin,
+                              });
+                            } else {
+                              console.log("未知运算符");
+                            }
+                          } else {
+                            // 表达式计算结果为空时
+                            console.log("第3部计算出错分没有返回值");
+                          }
+                        }
+                      } else {
+                        console.log("拆解出错");
+                      }
+                      console.log("修改后的属性值为：", target);
+                      // 更新相关值
+                      console.log("将更新受影响的属性：" + target.update());
+                    } else {
+                      console.log("在计算上下文中没有找到对应的自定义属性:" + targetStr);
+                    }
+                  } else {
+                    // 如果未匹配到，则返回空字符串或其他你希望的默认值
+                    console.log("在：" + event.behavior + "中没有匹配到加减号内容");
+                  }
+                }
+                break;
+            }
+            // 不论是否已执行，将持续型事件加入后续队列
+            if (event.type === "PersistentEffect") {
+              console.log("由于类型为持续型事件，保留此事件");
+              return true;
+            } else {
+              console.log("由于类型为单次事件，删除此事件");
+              return false;
+            }
+          } else {
+            console.log("条件不成立，将事件保留");
+            // 条件不成立，则不分类型直接放入后续队列
+            return true;
+          }
+        });
+
+        // 判断是否处于空闲时间，以判断是否需要执行下一个技能
+        if (scope.p.state === "free") {
+          console.log("角色已空闲，执行下一个技能");
+          characterData.skillIndex++;
+          const skill = characterData.actionQueue[characterData.skillIndex];  
+          if (skill && scope.p) {
+            const skillData = new SkillData(
+              dictionary,
+              characterData.skillIndex,
+              skill,
+              characterData,
+              monsterData,
+              scope,
+              scope.p.eventSequence,
+              frame,
+            );
+
+            // 依据技能效果向事件队列添加事件，需要考虑技能前摇
+            characterData.eventSequence = skill.skillEffect.skillYield.map((yield_) => {
+              let baseCondition = yield_.mutationTimingFormula;
+              if (yield_.mutationTimingFormula === "null" || !yield_.mutationTimingFormula) {
+                baseCondition = "true";
+              }
+              const event = {
+                type: yield_.yieldType,
+                behavior: yield_.yieldFormula,
+                condition: "frame > " + (frame + skillData.skillStartupFrames - 2) + " and " + baseCondition,
+                origin: skill.name,
+                registrationFrame: frame,
+              };
+              console.log(
+                "将" + skill.name + "的技能效果：" + yield_.yieldFormula,
+                "添加到事件队列，当前队列为：",
+                event,
+              );
+              return event;
+            });
+          }
+        }
+      }
+    });
+    const characterDataArray = teamData.map((character) => character.data);
+    result.push({
+      frame,
+      characterDataArray: _.cloneDeep(characterDataArray),
+      monsterData: _.cloneDeep(monsterData),
+    });
+  }
 };
 
 const self = globalThis;
@@ -2033,7 +2102,7 @@ self.onmessage = (e: MessageEvent<analyzeWorkerInput>) => {
         if (e.data.arg) {
           const { dictionary, skillSequence, character, monster } = e.data.arg;
           // 执行计算
-          const result = computeFrameData(dictionary, skillSequence, character, monster);
+          const result = compute(dictionary, [{config: character, actionQueue: skillSequence}], monster);
           console.log("计算结果：", result);
           // 发送结果
           self.postMessage({

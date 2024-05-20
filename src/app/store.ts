@@ -91,7 +91,7 @@ export const defaultSkillEffect: SkillEffect = {
   chargingModifiableDurationFormula: "0",
   chantingBaseDurationFormula: "0",
   chantingModifiableDurationFormula: "0",
-  skillWindUpFormula: "0",
+  skillStartupFramesFormula: "0",
   skillCost: [defaultSkillEffectCost],
   skillYield: [defaultSkillEffectYield],
   belongToskillId: "",
