@@ -1526,7 +1526,7 @@ export class SkillData {
   skillActionFrames: number;
   skillChantingFrames: number;
   skillDuration: number;
-  skillWindUp: number;
+  skillStartupFrames: number;
   stateFramesData: stateFrameData[];
   finalEventSequence: eventSequenceType[];
   [key: string]: object | string | number;
@@ -1549,17 +1549,17 @@ export class SkillData {
     this.passedFrames = passedFrames;
     this.finalEventSequence = _.cloneDeep(eventSequence);
     // 计算技能前摇
-    const skillWindUpComputer = (
-      skillWindUpFormula: string | null,
+    const skillStartupFramesComputer = (
+      skillStartupFramesFormula: string | null,
       skillDuration: number,
       computeArg: computeArgType,
     ) => {
-      if (!skillWindUpFormula) {
+      if (!skillStartupFramesFormula) {
         console.log("未注明前摇值，默认为技能总时长：" + skillDuration + "帧");
         return skillDuration;
       }
       // 判断前摇计算公式是否包含百分比符号，未注明前摇时长的技能效果都默认在技能动画执行3/4后生效
-      const perMatch = skillWindUpFormula.match(/^([\s\S]+?)\s*(%?)$/);
+      const perMatch = skillStartupFramesFormula.match(/^([\s\S]+?)\s*(%?)$/);
       if (perMatch) {
         // 表达式非空时
         if (perMatch[2] === "%") {
@@ -1764,7 +1764,7 @@ export class SkillData {
         (dynamicTotalValue(this.chantingModifiableDuration) * (100 - min(dynamicTotalValue(this.cm), 50))) / 100,
     );
     this.skillDuration = this.skillActionFrames + this.skillChantingFrames * fps;
-    this.skillWindUp = skillWindUpComputer(skill.skillEffect.skillStartupFramesFormula, this.skillDuration, computeArg);
+    this.skillStartupFrames = skillStartupFramesComputer(skill.skillEffect.skillStartupFramesFormula, this.skillDuration, computeArg);
     computeArg.s = _.cloneDeep(this);
     console.log(
       "实例化SkillData，技能序号：" + this.index,
@@ -1782,7 +1782,7 @@ export class SkillData {
         _.cloneDeep({
           type: yield_.yieldType,
           behavior: yield_.yieldFormula,
-          condition: "frame > " + (passedFrames + this.skillWindUp - 2) + " and " + baseCondition,
+          condition: "frame > " + (passedFrames + this.skillStartupFrames - 2) + " and " + baseCondition,
           origin: skill.name,
           registrationFrame: passedFrames,
         }),
