@@ -9,10 +9,10 @@ function isTargetType(obj: unknown): obj is modifiers {
   return isModifier;
 }
 
-const hiddenKey: (keyof SkillData | keyof CharacterData | keyof MonsterData)[] = [
-  "finalEventSequence",
-  "passedFrames",
-  "stateFramesData",
+type keyObj = SkillData & CharacterData & MonsterData
+
+const hiddenKey: (keyof keyObj)[] = [
+  "weaponPatkT", "weaponMatkT"
 ];
 
 const actualValueClass = "Value text-nowrap rounded-sm px-1 flex-1 flex items-center ";
@@ -29,9 +29,13 @@ const columnsWidth = " lg:w-[calc((100%-16px)/5)] ";
 export const ObjectRenderer = (props: {
   dictionary: ReturnType<typeof getDictionary>;
   data?: SkillData | CharacterData | MonsterData;
+  display: boolean;
 }) => {
   if (!props.data) {
     return null;
+  }
+  if(!props.display) {
+    return null
   }
   const { dictionary, data } = props;
   // 递归遍历对象的辅助函数

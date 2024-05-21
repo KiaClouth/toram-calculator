@@ -8,11 +8,11 @@ import { test, useStore } from "~/app/store";
 import Button from "../_components/button";
 import Dialog from "../_components/dialog";
 import {
-  type analyzeWorkerInput,
-  type SkillData,
-  type analyzeWorkerOutput,
+  type computeInput,
+  type computeOutput,
   type tSkill,
   dynamicTotalValue,
+  type FrameData,
 } from "./worker";
 import { ObjectRenderer } from "./objectRender";
 import LongSearchBox from "./monsterSearchBox";
@@ -20,367 +20,20 @@ import { type Monster } from "~/server/api/routers/monster";
 import { type Character } from "~/server/api/routers/character";
 import { computeMonsterAugmentedList } from "../monster/client";
 
+export type skillSequenceList = {
+  name: string;
+  data: tSkill[];
+};
+
 export interface Props {
   dictionary: ReturnType<typeof getDictionary>;
   session: Session | null;
   monsterList: Monster[];
   characterList: Character[];
 }
+
 export default function AnalyzePageClient(props: Props) {
   const { dictionary } = props;
-  const [skillSequenceList, setSkillSequenceList] = useState([]);
-  const skillSequence: tSkill[] = [
-    {
-      id: "",
-      state: "PUBLIC",
-      skillTreeName: "MAGIC",
-      name: "神速掌握",
-      skillDescription: "",
-      level: 10,
-      weaponElementDependencyType: "TRUE",
-      element: "NO_ELEMENT",
-      skillType: "ACTIVE_SKILL",
-      skillEffect: {
-        id: "",
-        description: null,
-        actionBaseDurationFormula: "13",
-        actionModifiableDurationFormula: "48",
-        skillExtraActionType: "None",
-        chargingBaseDurationFormula: "",
-        chargingModifiableDurationFormula: "",
-        chantingBaseDurationFormula: "0",
-        chantingModifiableDurationFormula: "0",
-        skillStartupFramesFormula: "13",
-        belongToskillId: "",
-        skillCost: [
-          {
-            id: "",
-            name: "MP Cost",
-            costFormula: "100",
-            skillEffectId: null,
-          },
-        ],
-        skillYield: [
-          {
-            id: "",
-            name: "角色行动速度+10%",
-            yieldType: "ImmediateEffect",
-            yieldFormula: "p.am + 10",
-            mutationTimingFormula: null,
-            skillEffectId: null,
-          },
-          {
-            id: "",
-            name: "角色攻速+300",
-            yieldType: "ImmediateEffect",
-            mutationTimingFormula: null,
-            yieldFormula: "p.aspd + 300",
-            skillEffectId: null,
-          },
-        ],
-      },
-    },
-    {
-      id: "",
-      state: "PUBLIC",
-      skillTreeName: "MAGIC",
-      name: "神速掌握",
-      skillDescription: "",
-      level: 10,
-      weaponElementDependencyType: "TRUE",
-      element: "NO_ELEMENT",
-      skillType: "ACTIVE_SKILL",
-      skillEffect: {
-        id: "",
-        description: null,
-        actionBaseDurationFormula: "13",
-        actionModifiableDurationFormula: "48",
-        skillExtraActionType: "None",
-        chargingBaseDurationFormula: "",
-        chargingModifiableDurationFormula: "",
-        chantingBaseDurationFormula: "0",
-        chantingModifiableDurationFormula: "0",
-        skillStartupFramesFormula: "13",
-        belongToskillId: "",
-        skillCost: [
-          {
-            id: "",
-            name: "MP Cost",
-            costFormula: "100",
-            skillEffectId: null,
-          },
-        ],
-        skillYield: [
-          {
-            id: "",
-            name: "角色行动速度+10%",
-            yieldType: "ImmediateEffect",
-            yieldFormula: "p.am + 10",
-            mutationTimingFormula: null,
-            skillEffectId: null,
-          },
-          {
-            id: "",
-            name: "角色攻速+300",
-            yieldType: "ImmediateEffect",
-            mutationTimingFormula: null,
-            yieldFormula: "p.aspd + 300",
-            skillEffectId: null,
-          },
-        ],
-      },
-    },
-    {
-      id: "",
-      state: "PUBLIC",
-      skillTreeName: "MAGIC",
-      name: "神速掌握",
-      skillDescription: "",
-      level: 10,
-      weaponElementDependencyType: "TRUE",
-      element: "NO_ELEMENT",
-      skillType: "ACTIVE_SKILL",
-      skillEffect: {
-        id: "",
-        description: null,
-        actionBaseDurationFormula: "13",
-        actionModifiableDurationFormula: "48",
-        skillExtraActionType: "None",
-        chargingBaseDurationFormula: "",
-        chargingModifiableDurationFormula: "",
-        chantingBaseDurationFormula: "0",
-        chantingModifiableDurationFormula: "0",
-        skillStartupFramesFormula: "13",
-        belongToskillId: "",
-        skillCost: [
-          {
-            id: "",
-            name: "MP Cost",
-            costFormula: "100",
-            skillEffectId: null,
-          },
-        ],
-        skillYield: [
-          {
-            id: "",
-            name: "角色行动速度+10%",
-            yieldType: "ImmediateEffect",
-            yieldFormula: "p.am + 10",
-            mutationTimingFormula: null,
-            skillEffectId: null,
-          },
-          {
-            id: "",
-            name: "角色攻速+300",
-            yieldType: "ImmediateEffect",
-            mutationTimingFormula: null,
-            yieldFormula: "p.aspd + 300",
-            skillEffectId: null,
-          },
-        ],
-      },
-    },
-    {
-      id: "",
-      state: "PUBLIC",
-      skillTreeName: "MAGIC",
-      name: "魔法炮充填",
-      skillDescription: "",
-      level: 10,
-      weaponElementDependencyType: "TRUE",
-      element: "NO_ELEMENT",
-      skillType: "ACTIVE_SKILL",
-      skillEffect: {
-        id: "",
-        description: null,
-        actionBaseDurationFormula: "13",
-        actionModifiableDurationFormula: "48",
-        skillExtraActionType: "Chanting",
-        chargingBaseDurationFormula: "",
-        chargingModifiableDurationFormula: "",
-        chantingBaseDurationFormula: "0",
-        chantingModifiableDurationFormula: "0",
-        skillStartupFramesFormula: "0",
-        belongToskillId: "",
-        skillCost: [
-          {
-            id: "",
-            name: "MP Cost",
-            costFormula: "0",
-            skillEffectId: null,
-          },
-        ],
-        skillYield: [
-          {
-            id: "",
-            name: "添加魔法炮层数计数器",
-            yieldType: "ImmediateEffect",
-            yieldFormula: "p.mfp = 0",
-            mutationTimingFormula: null,
-            skillEffectId: null,
-          },
-          {
-            id: "",
-            name: "魔法炮层数自动增长行为",
-            yieldType: "PersistentEffect",
-            mutationTimingFormula: "frame % 60 == 0 and frame > 0",
-            yieldFormula: "p.mfp + ( p.mfp >= 100 ? 1/3 : 1 )",
-            skillEffectId: null,
-          },
-        ],
-      },
-    },
-    {
-      id: "",
-      state: "PUBLIC",
-      skillTreeName: "MAGIC",
-      name: "勇气源泉",
-      skillDescription: "",
-      level: 10,
-      weaponElementDependencyType: "TRUE",
-      element: "NO_ELEMENT",
-      skillType: "ACTIVE_SKILL",
-      skillEffect: {
-        id: "",
-        description: null,
-        actionBaseDurationFormula: "23",
-        actionModifiableDurationFormula: "148",
-        skillExtraActionType: "Chanting",
-        chargingBaseDurationFormula: "0",
-        chargingModifiableDurationFormula: "0",
-        chantingBaseDurationFormula: "0",
-        chantingModifiableDurationFormula: "1",
-        skillStartupFramesFormula: "",
-        belongToskillId: "",
-        skillCost: [
-          {
-            id: "",
-            name: "MP Cost",
-            costFormula: "400",
-            skillEffectId: null,
-          },
-        ],
-        skillYield: [
-          {
-            id: "",
-            name: "角色最终伤害+20%",
-            yieldType: "ImmediateEffect",
-            yieldFormula: "p.final + 20",
-            mutationTimingFormula: null,
-            skillEffectId: null,
-          },
-          {
-            id: "",
-            name: "角色武器攻击+30%",
-            yieldType: "ImmediateEffect",
-            mutationTimingFormula: null,
-            yieldFormula: "p.weaponAtk + 30%",
-            skillEffectId: null,
-          },
-          {
-            id: "",
-            name: "角色命中-50%",
-            yieldType: "ImmediateEffect",
-            mutationTimingFormula: null,
-            yieldFormula: "p.hit - 50%",
-            skillEffectId: null,
-          },
-        ],
-      },
-    },
-    {
-      id: "",
-      state: "PUBLIC",
-      skillTreeName: "MAGIC",
-      name: "冲击波",
-      skillDescription: "",
-      level: 7,
-      weaponElementDependencyType: "TRUE",
-      element: "NO_ELEMENT",
-      skillType: "ACTIVE_SKILL",
-      skillEffect: {
-        id: "",
-        description: null,
-        actionBaseDurationFormula: "13",
-        actionModifiableDurationFormula: "48",
-        skillExtraActionType: "Chanting",
-        chargingBaseDurationFormula: "",
-        chargingModifiableDurationFormula: "",
-        chantingBaseDurationFormula: "0",
-        chantingModifiableDurationFormula: "max(0,min((2 - (p.lv - 1) * 0.25),(1 - (p.lv - 5) * 0.5)))",
-        skillStartupFramesFormula: "0",
-        belongToskillId: "",
-        skillCost: [
-          {
-            id: "",
-            name: "MP Cost",
-            costFormula: "p.mp = p.mp - 200",
-            skillEffectId: null,
-          },
-        ],
-        skillYield: [
-          {
-            id: "",
-            name: "Damage",
-            yieldType: "ImmediateEffect",
-            yieldFormula: "m.hp - (s.vMatk + 200) * 5",
-            mutationTimingFormula: null,
-            skillEffectId: null,
-          },
-          {
-            id: "",
-            name: "MP Cost half",
-            yieldType: "PersistentEffect",
-            yieldFormula: "",
-            skillEffectId: null,
-            mutationTimingFormula: "false",
-          },
-        ],
-      },
-    },
-    {
-      id: "",
-      state: "PUBLIC",
-      skillTreeName: "MAGIC",
-      name: "爆能",
-      level: 10,
-      weaponElementDependencyType: "TRUE",
-      element: "NO_ELEMENT",
-      skillType: "ACTIVE_SKILL",
-      skillDescription: "",
-      skillEffect: {
-        id: "",
-        actionBaseDurationFormula: "24",
-        actionModifiableDurationFormula: "98",
-        skillExtraActionType: "Chanting",
-        chargingBaseDurationFormula: "",
-        chargingModifiableDurationFormula: "",
-        chantingBaseDurationFormula: "0",
-        chantingModifiableDurationFormula: "8",
-        skillStartupFramesFormula: "0",
-        belongToskillId: "",
-        description: null,
-        skillCost: [
-          {
-            id: "",
-            name: "MP Cost",
-            costFormula: "p.mp = p.mp - 500",
-            skillEffectId: null,
-          },
-        ],
-        skillYield: [
-          {
-            id: "",
-            yieldFormula: "1+1",
-            name: "Damage",
-            skillEffectId: null,
-            yieldType: "ImmediateEffect",
-            mutationTimingFormula: null,
-          },
-        ],
-      },
-    },
-  ];
 
   // 状态管理参数
   const workerRef = useRef<Worker>();
@@ -389,9 +42,19 @@ export default function AnalyzePageClient(props: Props) {
   const { monster, setMonster, character, setCharacter } = useStore((state) => state);
   const { analyzeDialogState, setAnalyzeDialogState } = useStore((state) => state.analyzePage);
   const [computeResult, setComputeResult] = useState<React.ReactNode>(null);
-  const [dialogSkillData, setDialogSkillData] = useState<SkillData | null>(null);
-  const [dialogSkillFrame, setDialogSkillFrame] = useState<number>(0);
+  const [dialogFrameData, setDialogFrameData] = useState<FrameData | null>(null);
+  const [dialogMeberIndex, setDialogMeberIndex] = useState<number>(0);
   const [defaultMonsterList] = useState(props.monsterList);
+  const [team, setTeam] = useState<computeInput["arg"]["team"]>([
+    {
+      config: test.character,
+      actionQueue: test.skillSequence1.data,
+    },
+    {
+      config: test.character,
+      actionQueue: test.skillSequence2.data,
+    },
+  ]);
 
   useEffect(() => {
     console.log("--ComboAnalyze Client Render");
@@ -415,7 +78,7 @@ export default function AnalyzePageClient(props: Props) {
       colors.push(color);
     }
 
-    function stringToColor(str: string) {
+    function stringToColor(str: string): string {
       let hash = 0;
       for (let i = 0; i < str.length; i++) {
         hash += str.charCodeAt(i);
@@ -425,12 +88,12 @@ export default function AnalyzePageClient(props: Props) {
       const index = hash % colors.length;
 
       // 返回对应索引的颜色值
-      return colors[index];
+      return colors[index]!;
     }
 
     workerRef.current = new Worker(new URL("./worker.ts", import.meta.url));
 
-    workerRef.current.onmessage = (e: MessageEvent<analyzeWorkerOutput>) => {
+    workerRef.current.onmessage = (e: MessageEvent<computeOutput>) => {
       const { type, computeResult } = e.data;
       switch (type) {
         case "progress":
@@ -441,12 +104,11 @@ export default function AnalyzePageClient(props: Props) {
           break;
         case "success":
           {
-            const result = computeResult as SkillData[];
-            const lastSkill = result.at(-1);
-            const lastFrameData = result.at(-1)?.stateFramesData.at(-1);
-            const RemainingHp = lastFrameData ? dynamicTotalValue(lastFrameData?.monster?.hp) : 0;
-            const totalDamge = (lastFrameData?.monster.hp.baseValue ?? 0) - RemainingHp;
-            const totalDuration = lastSkill ? (lastSkill?.passedFrames + lastSkill?.skillDuration) / 60 : 0;
+            const result = computeResult as FrameData[];
+            const lastFrameData = result.at(-1);
+            const RemainingHp = lastFrameData ? dynamicTotalValue(lastFrameData.monsterData.hp) : 0;
+            const totalDamge = (lastFrameData?.monsterData.hp.baseValue ?? 0) - RemainingHp;
+            const totalDuration = result.length / 60;
             const dps = totalDamge / totalDuration;
             setComputeResult(
               <>
@@ -482,48 +144,54 @@ export default function AnalyzePageClient(props: Props) {
                   <div className="Title border-b-2 border-brand-color-1st p-2">
                     <span className="Key p-1 ">时间轴</span>
                   </div>
-                  <div className="Content flex flex-1 flex-wrap gap-2 gap-y-4 shadow-transition-color-20 drop-shadow-2xl">
-                    {result.map((skill, skillIndex) => {
+                  <div className="Content flex flex-1 flex-wrap gap-y-4 shadow-transition-color-20 drop-shadow-2xl">
+                    {result.map((frameData, frame) => {
                       return (
-                        <div key={skill.name + skillIndex} className={`SkillData relative flex rounded`}>
-                          <div className="skillName pointer-events-none absolute left-2 top-3 z-10 text-nowrap text-primary-color">
-                            {skill.name}
-                          </div>
-
-                          <div className="SkillContent flex flex-row flex-wrap gap-y-1">
-                            {skill.stateFramesData.map((frameData, frameIndex) => {
-                              return (
-                                <button
-                                  key={skill.name + frameIndex}
-                                  onClick={() => {
-                                    setDialogSkillData(skill);
-                                    setDialogSkillFrame(frameIndex);
+                        <div
+                          key={"frameData" + frame}
+                          className={`FrameData${frame} flex flex-col justify-around gap-1`}
+                        >
+                          {frameData.teamState.map((member, memberIndex) => {
+                            const color = stringToColor(member?.skillData.name ?? "");
+                            return frame === 0 ? (
+                              <button className="MemberName p-1 text-sm " key={"member" + memberIndex}>
+                                {member?.name}
+                              </button>
+                            ) : (
+                              <button
+                                className={`MemberData group relative h-4 px-[1px] `}
+                                key={"member" + memberIndex}
+                                style={{
+                                  backgroundColor: member ? color : "transparent",
+                                }}
+                                onClick={() => {
+                                  console.log("点击了队员：", member?.name, "的第：", frame, "帧");
+                                  if (member) {
+                                    setDialogFrameData(frameData);
                                     setAnalyzeDialogState(true);
-                                  }}
-                                  className="group relative min-h-12 w-[3px] rounded-sm lg:w-[3px]"
-                                  style={{
-                                    backgroundColor: stringToColor(skill.name),
-                                  }}
-                                >
-                                  <div className="shadowopa absolute -left-4 bottom-14 z-10 hidden w-fit min-w-[300px] flex-col gap-2 rounded bg-primary-color p-4 text-left shadow-2xl shadow-transition-color-20 backdrop-blur-xl lg:group-hover:z-20 lg:group-hover:flex">
-                                    <div className="FrameAttr flex flex-col gap-1 bg-transition-color-8 p-2">
-                                      <span className="Title font-bold">Frame: {skill.passedFrames + frameIndex}</span>
+                                  }
+                                }}
+                              >
+                                {member ? (
+                                  <div className="absolute -left-4 bottom-14 z-10 hidden w-fit min-w-[300px] flex-col gap-2 rounded bg-primary-color p-2 text-left shadow-2xl shadow-transition-color-20 backdrop-blur-xl lg:group-hover:z-20 lg:group-hover:flex">
+                                    <div className="FrameAttr flex flex-col gap-1 bg-transition-color-8 p-1">
+                                      <span className="Title font-bold">队员: {member?.name}</span>
                                       <span className="Content">
-                                        第 {math.floor((skill.passedFrames + frameIndex) / 60)} 秒的第{" "}
-                                        {(skill.passedFrames + frameIndex) % 60} 帧
+                                        第 {math.floor(frame / 60)} 秒的第 {frame % 60} 帧
                                         <br />
                                       </span>
 
                                       <span className="Content ">
-                                        {skill.name} 的第：{frameIndex} / {skill.skillDuration} 帧
+                                        技能 {member?.actionIndex ?? 0 + 1} {member?.skillData.name} 的第：
+                                        {member?.actionFrameIndex} / {member?.skillData.skillDuration} 帧
                                         <br />
                                       </span>
                                     </div>
                                   </div>
-                                </button>
-                              );
-                            })}
-                          </div>
+                                ) : null}
+                              </button>
+                            );
+                          })}
                         </div>
                       );
                     })}
@@ -567,12 +235,11 @@ export default function AnalyzePageClient(props: Props) {
 
   const startCompute = () => {
     setComputeResult(null);
-    const workerMessage: analyzeWorkerInput = {
+    const workerMessage: computeInput = {
       type: "start",
       arg: {
         dictionary: dictionary,
-        skillSequence: skillSequence,
-        character: character,
+        team: team,
         monster: monster,
       },
     };
@@ -582,7 +249,7 @@ export default function AnalyzePageClient(props: Props) {
   };
 
   // const stopCompute = () => {
-  //   const workerMessage: analyzeWorkerInput = {
+  //   const workerMessage: computeInput = {
   //     type: "stop",
   //   };
   //   if (workerRef.current) {
@@ -591,7 +258,7 @@ export default function AnalyzePageClient(props: Props) {
   // };
 
   // const terminateWorker = () => {
-  //   const workerMessage: analyzeWorkerInput = {
+  //   const workerMessage: computeInput = {
   //     type: "stop",
   //   };
   //   if (workerRef.current) {
@@ -610,9 +277,7 @@ export default function AnalyzePageClient(props: Props) {
         >
           <div className="Title flex items-center justify-between">
             <h1 className="text-lg">{dictionary.ui.filter}</h1>
-            <Button level="tertiary">
-              X
-            </Button>
+            <Button level="tertiary">X</Button>
           </div>
         </div>
       </div>
@@ -641,34 +306,49 @@ export default function AnalyzePageClient(props: Props) {
             <div></div>
           </div>
           <div className="Content flex flex-col gap-4">
-            <div className="MonsterConfig flex flex-col items-start gap-4 lg:flex-row lg:items-center">
+            <div className="MonsterConfig flex flex-col gap-4 lg:flex-row lg:items-center">
               <div className="Title flex gap-4">
                 <span className="Key">怪物：</span>
                 <span className="MonsterName font-bold">{monster.name}</span>
               </div>
               <LongSearchBox dictionary={dictionary} monsterList={monsterList} setMonster={setMonster} />
             </div>
-            <div className="CharacterConfig flex flex-col items-start gap-4 lg:flex-row lg:items-center">
-              <div className="Title flex gap-4">
-                <span className="Key">角色：</span>
-                <span className="CharacterName font-bold">{character.name}</span>
-              </div>
-            </div>
-            <div className="SkillSequence flex flex-col items-start gap-4 lg:flex-row lg:items-center">
-              <div className="Title">流程：</div>
-              <div className="Content flex flex-wrap gap-2">
-                {skillSequence.map((skill, index) => {
+            <div className="TeamConfig flex flex-col gap-4 lg:flex-row lg:items-center">
+              <div className="Title flex flex-col gap-4">队伍配置：</div>
+              <div className="Content flex flex-col">
+                {team.map((member, index) => {
                   return (
-                    <Button key={index} size="sm" level="tertiary">
-                      {skill.name}
-                    </Button>
+                    <div
+                      key={"member" + index}
+                      className="Member flex flex-col gap-4 border-b border-transition-color-20 p-4 lg:flex-row lg:items-center"
+                    >
+                      <div className="CharacterConfig flex flex-col gap-4 lg:flex-row lg:items-center">
+                        <div className="Title flex gap-4">
+                          <span className="Key">角色：</span>
+                          <span className="CharacterName font-bold">{member.config.name}</span>
+                        </div>
+                      </div>
+                      <div className="SkillSequence flex flex-col gap-4 lg:flex-row lg:items-center">
+                        <div className="Title">流程：</div>
+                        <div className="Content flex flex-wrap gap-2">
+                          {member.actionQueue.map((skill, index) => {
+                            return (
+                              <Button key={index} size="sm" level="tertiary">
+                                {skill.name}
+                              </Button>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </div>
                   );
                 })}
-                <Button size="sm" level="primary" onClick={startCompute}>
-                  开始计算
-                </Button>
               </div>
             </div>
+
+            <Button size="sm" level="primary" onClick={startCompute}>
+              开始计算
+            </Button>
             {computeResult}
           </div>
         </div>
@@ -686,22 +366,9 @@ export default function AnalyzePageClient(props: Props) {
             <div className="Content flex flex-col gap-4 overflow-y-auto">
               <div className="FrameAttr mt-4 flex flex-col gap-1 bg-transition-color-8 p-2 lg:flex-row">
                 <span className="Content">
-                  帧信息： {math.floor(((dialogSkillData?.passedFrames ?? 0) + dialogSkillFrame) / 60)} 秒的第{" "}
-                  {((dialogSkillData?.passedFrames ?? 0) + dialogSkillFrame) % 60} 帧
+                  帧信息： {math.floor((dialogFrameData?.frame ?? 0) / 60)} 秒的第 {(dialogFrameData?.frame ?? 0) % 60}{" "}
+                  帧
                 </span>
-                <span className="hidden lg:block">|</span>
-                <span className="Content">
-                  位于 {dialogSkillData?.name} 的第：{dialogSkillFrame}帧
-                </span>
-              </div>
-              <div className="SkillData flex flex-col gap-1">
-                <div className="Title sticky top-0 z-10 flex items-center gap-6 bg-primary-color pt-4">
-                  <span className="Title text-base font-bold lg:text-xl">Skill</span>
-                  <div className="h-[1px] flex-1 bg-brand-color-1st"></div>
-                </div>
-                <div className="Content flex flex-wrap outline-[1px] lg:gap-1">
-                  <ObjectRenderer dictionary={dictionary} data={dialogSkillData!} />
-                </div>
               </div>
               <div className="CharacterData flex flex-col gap-1">
                 <div className="Title sticky top-0 z-10 flex items-center gap-6 bg-primary-color pt-4">
@@ -709,10 +376,44 @@ export default function AnalyzePageClient(props: Props) {
                   <div className="h-[1px] flex-1 bg-brand-color-1st"></div>
                 </div>
                 <div className="Content flex flex-wrap outline-[1px] lg:gap-1">
-                  <ObjectRenderer
-                    dictionary={dictionary}
-                    data={dialogSkillData?.stateFramesData[dialogSkillFrame]?.character}
-                  />
+                  <div className="Tab flex flex-wrap gap-1">
+                    {dialogFrameData?.teamState.map((member, memberIndex) => {
+                      return (
+                        <Button
+                          key={"member" + memberIndex}
+                          onClick={() => setDialogMeberIndex(memberIndex)}
+                          size="sm"
+                          level="tertiary"
+                        >
+                          {member?.name}
+                        </Button>
+                      );
+                    })}
+                  </div>
+                  {dialogFrameData?.teamState.map((member, memberIndex) => {
+                    return (
+                      <ObjectRenderer
+                        key={"member" + memberIndex}
+                        data={member?.characterData}
+                        dictionary={dictionary}
+                        display={dialogMeberIndex === memberIndex}
+                      />
+                    );
+                  })}
+                  <div className="Title flex items-center gap-6 bg-primary-color pt-4">
+                    <span className="Title text-base font-bold">Skill</span>
+                    <div className="h-[1px] flex-1 bg-brand-color-1st"></div>
+                  </div>
+                  {dialogFrameData?.teamState.map((member, memberIndex) => {
+                    return (
+                      <ObjectRenderer
+                        key={"member" + memberIndex}
+                        data={member?.skillData}
+                        dictionary={dictionary}
+                        display={dialogMeberIndex === memberIndex}
+                      />
+                    );
+                  })}
                 </div>
               </div>
               <div className="MonsterData flex flex-col gap-1">
@@ -721,10 +422,9 @@ export default function AnalyzePageClient(props: Props) {
                   <div className="h-[1px] flex-1 bg-brand-color-1st"></div>
                 </div>
                 <div className="Content flex flex-wrap outline-[1px] lg:gap-1">
-                  <ObjectRenderer
-                    dictionary={dictionary}
-                    data={dialogSkillData?.stateFramesData[dialogSkillFrame]?.monster}
-                  />
+                  {dialogFrameData ? (
+                    <ObjectRenderer dictionary={dictionary} data={dialogFrameData.monsterData} display />
+                  ) : null}
                 </div>
               </div>
             </div>
