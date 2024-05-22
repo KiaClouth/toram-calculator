@@ -1,0 +1,303 @@
+import { type $Enums } from "@prisma/client";
+import { type DeepKeys, type FieldApi, type FormApi } from "@tanstack/react-form";
+import { type zodValidator } from "@tanstack/zod-form-adapter";
+import React from "react";
+import { ZodFirstPartyTypeKind, type ZodObject, type ZodType, z, ZodArray } from "zod";
+import { type getDictionary } from "~/app/get-dictionary";
+import { type modifiers } from "../analyze/worker";
+
+type ConvertToAllString<T> = T extends Date | Date[] | modifiers | Array<object>
+  ? string
+  : T extends object
+    ? {
+        [K in keyof T]: ConvertToAllString<T[K]>;
+      }
+    : string;
+
+// 泛型类型守卫函数
+function getZodTypeKind<T>(schema: z.ZodType<T>): ZodFirstPartyTypeKind {
+  switch (true) {
+    case schema instanceof z.ZodEnum:
+      return ZodFirstPartyTypeKind.ZodEnum;
+    case schema instanceof z.ZodString:
+      return ZodFirstPartyTypeKind.ZodString;
+    case schema instanceof z.ZodNumber:
+      return ZodFirstPartyTypeKind.ZodNumber;
+    case schema instanceof z.ZodBigInt:
+      return ZodFirstPartyTypeKind.ZodBigInt;
+    case schema instanceof z.ZodBoolean:
+      return ZodFirstPartyTypeKind.ZodBoolean;
+    case schema instanceof z.ZodUndefined:
+      return ZodFirstPartyTypeKind.ZodUndefined;
+    case schema instanceof z.ZodObject:
+      return ZodFirstPartyTypeKind.ZodObject;
+    case schema instanceof z.ZodFunction:
+      return ZodFirstPartyTypeKind.ZodFunction;
+    case schema instanceof z.ZodArray:
+      return ZodFirstPartyTypeKind.ZodArray;
+    default:
+      return ZodFirstPartyTypeKind.ZodUndefined;
+  }
+}
+
+function FieldInfo<T extends Record<string, unknown>>({
+  field,
+}: {
+  field: FieldApi<T, DeepKeys<T>, undefined, typeof zodValidator>;
+}) {
+  return (
+    <React.Fragment>
+      {field.state.meta.touchedErrors ? (
+        <span className=" text-brand-color-2nd">
+          {` `} : {field.state.meta.touchedErrors}
+        </span>
+      ) : null}
+    </React.Fragment>
+  );
+}
+
+type Props<T> = {
+  form: FormApi<T, typeof zodValidator>;
+  data: T;
+  dictionary: ReturnType<typeof getDictionary>;
+  dictionaryFragment: ConvertToAllString<T>;
+  hiddenDataList: (keyof T)[];
+  formFragmentState: boolean;
+  schema: ZodObject<{ [K in keyof T]: ZodType<T[K]> }>;
+};
+
+export const FormFragment = <T extends Record<string, unknown>>(props: Props<T>) => {
+  const { form, data, dictionary, dictionaryFragment, hiddenDataList, formFragmentState, schema } = props;
+  return (
+    <fieldset className={`dataKinds flex flex-row flex-wrap gap-y-[4px]`}>
+      {Object.entries(data).map(([key, value]) => {
+        console.log(":" + key, "：", value);
+        // 过滤掉隐藏的数据
+        const shouldHidden = hiddenDataList.includes(key as keyof T);
+        // shouldHidden && console.log(key, "被过滤");
+        if (shouldHidden) return undefined;
+        // 输入框的类型计算
+        console.log("key", key, "value", value, "schema", schema.shape[key as keyof T]);
+        const zodValue = schema.shape[key as keyof T] as z.ZodType;
+        // 值与常规变量值存在结构差异，因此在此进行区分
+        const defaultFieldsetClass = (field?: FieldApi<T, DeepKeys<T>, undefined, typeof zodValidator>) =>
+          `${field ? (hiddenDataList.some((item) => field.name === item) ? "hidden" : "flex") : "flex"} basis-1/2 flex-col gap-1 p-2 lg:basis-1/4`;
+        let fieldsetClass: string = defaultFieldsetClass();
+        let inputBox: React.ReactNode = null;
+        return (
+          <form.Field
+            key={key}
+            name={key as DeepKeys<T>}
+            validators={{
+              onChangeAsyncDebounceMs: 500,
+              onChangeAsync: schema.shape[key as keyof T],
+            }}
+          >
+            {(field) => {
+              switch (getZodTypeKind(zodValue)) {
+                case ZodFirstPartyTypeKind.ZodEnum:
+                  {
+                    console.log(key, "类型为：", getZodTypeKind(zodValue));
+                    fieldsetClass = defaultFieldsetClass(field);
+                    return (
+                      <fieldset className={fieldsetClass}>
+                        <span>
+                          {dictionaryFragment[key]}
+                          {/* <FieldInfo field={field} /> */}
+                        </span>
+                        <div
+                          className={`inputContianer mt-1 flex flex-wrap self-start rounded lg:gap-2 ${formFragmentState ? " outline-transition-color-20" : ""}`}
+                        >
+                          {"options" in zodValue &&
+                            (zodValue.options as string[]).map((option) => {
+                              const defaultInputClass = "mt-0.5 rounded px-4 py-2";
+                              const defaultLabelSizeClass = "";
+                              const inputClass = defaultInputClass;
+                              const labelSizeClass = defaultLabelSizeClass;
+                              const icon: React.ReactNode = null;
+                              return (
+                                <fieldset key={key + option} className={fieldsetClass}>
+                                  <label
+                                    key={key + option}
+                                    className={`flex ${labelSizeClass} cursor-pointer items-center justify-between gap-1 rounded-full p-2 px-4 hover:border-transition-color-20 lg:basis-auto lg:flex-row-reverse lg:justify-end lg:gap-2 lg:rounded-sm lg:hover:opacity-100 ${field.getValue() === option ? "opacity-100" : "opacity-20"} ${formFragmentState ? " pointer-events-none border-transparent bg-transparent" : " pointer-events-auto border-transition-color-8 bg-transition-color-8"}`}
+                                  >
+                                    {
+                                      dictionary.db.enums[
+                                        (key.charAt(0).toLocaleUpperCase() + key.slice(1)) as keyof typeof $Enums
+                                      ][option as keyof (typeof $Enums)[keyof typeof $Enums]] ?? key
+                                    }
+                                    <input
+                                      disabled={formFragmentState}
+                                      id={field.name + option}
+                                      name={field.name}
+                                      value={option}
+                                      checked={field.getValue() === option}
+                                      type="radio"
+                                      onBlur={field.handleBlur}
+                                      onChange={(e) => field.handleChange(e.target.value)}
+                                      className={inputClass}
+                                    />
+                                    {icon}
+                                  </label>
+                                </fieldset>
+                              );
+                            })}
+                        </div>
+                      </fieldset>
+                    );
+                  }
+                  break;
+
+                case ZodFirstPartyTypeKind.ZodArray:
+                  {
+                    console.log(key, "类型为：", getZodTypeKind(zodValue));
+                    const arrayValue = value as unknown[];
+                    console.log("arrayValue：", arrayValue, arrayValue.length);
+                    console.log(arrayValue.map((subObj) => subObj));
+                    fieldsetClass = defaultFieldsetClass(field);
+                    return arrayValue.length === 0 ? (
+                      "数组长度为零"
+                    ) : (
+                      <fieldset className={fieldsetClass}>
+                        {arrayValue.map((subObj, subKey) => {
+                          console.log("在数组中遍历：", key, "：", subObj);
+                          return (
+                            <FormFragment
+                              key={key + subKey}
+                              form={form}
+                              data={subObj as T}
+                              dictionary={dictionary}
+                              dictionaryFragment={dictionaryFragment}
+                              hiddenDataList={hiddenDataList}
+                              formFragmentState={formFragmentState}
+                              schema={(schema.shape.[key as keyof T]).element}
+                            />
+                          );
+                        })}
+                      </fieldset>
+                    );
+                  }
+                  break;
+
+                case ZodFirstPartyTypeKind.ZodDate:
+                  {
+                    console.log(key, "类型为：", getZodTypeKind(zodValue));
+                    fieldsetClass = defaultFieldsetClass(field);
+                    inputBox = (
+                      <input
+                        autoComplete="off"
+                        disabled={formFragmentState}
+                        id={field.name}
+                        name={field.name}
+                        value={field.state.value as number}
+                        type="date"
+                        onBlur={field.handleBlur}
+                        onChange={(e) => field.handleChange(new Date(e.target.value as string))}
+                        className={`mt-1 w-full flex-1 rounded px-4 py-2 ${formFragmentState ? " pointer-events-none bg-transparent outline-transition-color-20" : " pointer-events-auto bg-transition-color-8"}`}
+                      />
+                    );
+                    return (
+                      <fieldset className={fieldsetClass}>
+                        <label htmlFor={field.name} className="flex w-full flex-col gap-1">
+                          <span>
+                            {dictionaryFragment[key] ?? key}
+                            {/* <FieldInfo field={field} /> */}
+                          </span>
+                          {inputBox}
+                        </label>
+                      </fieldset>
+                    );
+                  }
+                  break;
+
+                case ZodFirstPartyTypeKind.ZodObject:
+                  {
+                    console.log(key, "类型为：", getZodTypeKind(zodValue));
+                    const objValue = value as Record<string, unknown>;
+                    fieldsetClass = defaultFieldsetClass(field);
+                    return (
+                      <fieldset className={fieldsetClass}>
+                        <FormFragment
+                          key={key}
+                          form={form}
+                          data={objValue as T}
+                          dictionary={dictionary}
+                          dictionaryFragment={dictionaryFragment}
+                          hiddenDataList={hiddenDataList}
+                          formFragmentState={formFragmentState}
+                          schema={schema.shape[key as keyof T]}
+                        />
+                      </fieldset>
+                    );
+                  }
+                  break;
+
+                case ZodFirstPartyTypeKind.ZodNumber:
+                  {
+                    console.log(key, "类型为：", getZodTypeKind(zodValue));
+                    fieldsetClass = defaultFieldsetClass(field);
+                    inputBox = (
+                      <input
+                        autoComplete="off"
+                        disabled={formFragmentState}
+                        id={field.name}
+                        name={field.name}
+                        value={field.state.value as number}
+                        type="number"
+                        onBlur={field.handleBlur}
+                        onChange={(e) => field.handleChange(parseFloat(e.target.value))}
+                        className={`mt-1 w-full flex-1 rounded px-4 py-2 ${formFragmentState ? " pointer-events-none bg-transparent outline-transition-color-20" : " pointer-events-auto bg-transition-color-8"}`}
+                      />
+                    );
+                    return (
+                      <fieldset className={fieldsetClass}>
+                        <label htmlFor={field.name} className="flex w-full flex-col gap-1">
+                          <span>
+                            {dictionaryFragment[key] ?? key}
+                            {/* <FieldInfo field={field} /> */}
+                          </span>
+                          {inputBox}
+                        </label>
+                      </fieldset>
+                    );
+                  }
+                  break;
+
+                default:
+                  {
+                    console.log(key, "类型为：", getZodTypeKind(zodValue));
+                    fieldsetClass = defaultFieldsetClass(field);
+                    inputBox = (
+                      <input
+                        autoComplete="off"
+                        disabled={formFragmentState}
+                        id={field.name}
+                        name={field.name}
+                        value={field.state.value as number}
+                        type="text"
+                        onBlur={field.handleBlur}
+                        onChange={(e) => field.handleChange(e.target.value)}
+                        className={`mt-1 w-full flex-1 rounded px-4 py-2 ${formFragmentState ? " pointer-events-none bg-transparent outline-transition-color-20" : " pointer-events-auto bg-transition-color-8"}`}
+                      />
+                    );
+                    return (
+                      <fieldset className={fieldsetClass}>
+                        <label htmlFor={field.name} className="flex w-full flex-col gap-1">
+                          <span>
+                            {dictionaryFragment[key] ?? key}
+                            <FieldInfo field={field} />
+                          </span>
+                          {inputBox}
+                        </label>
+                      </fieldset>
+                    );
+                  }
+                  break;
+              }
+            }}
+          </form.Field>
+        );
+      })}
+    </fieldset>
+  );
+};

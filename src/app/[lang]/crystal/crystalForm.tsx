@@ -60,6 +60,7 @@ export default function CrystalForm(props: {
     "viewCount",
     "usageCount",
     "createdByUserId",
+    "updatedByUserId",
     "viewTimestamps",
     "usageTimestamps",
   ];
@@ -182,9 +183,15 @@ export default function CrystalForm(props: {
           <div className="mb-4 rounded-sm bg-transition-color-8 p-4">{typeof dictionary.ui.crystal.discription}</div>
         )}
         <fieldset className="dataKinds flex flex-row flex-wrap gap-y-[4px]">
-          {/* {
-            formFragment(form, defaultCrystal,dictionary,dictionary.db.models.crystal,crystalHiddenData,crystalFormState === "DISPLAY",CrystalInputSchema)
-          } */}
+          {/* <FormFragment
+            form={form}
+            data={defaultCrystal}
+            dictionary={dictionary}
+            dictionaryFragment={dictionary.db.models.crystal}
+            hiddenDataList={crystalHiddenData}
+            formFragmentState={crystalFormState === "DISPLAY"}
+            schema={CrystalInputSchema}
+          /> */}
           {Object.entries(crystal).map(([key, _value]) => {
             // 遍历角色模型
             // 过滤掉隐藏的数据

@@ -42,6 +42,7 @@ import {
 import { useTheme } from "next-themes";
 import { type Monster } from "~/server/api/routers/monster";
 import { MonsterInputSchema } from "~/schema/monsterSchema";
+import LineWrappingInput from "../_components/autoLineWrappingInput";
 
 export default function MonsterForm(props: {
   dictionary: ReturnType<typeof getDictionary>;
@@ -51,9 +52,14 @@ export default function MonsterForm(props: {
 }) {
   const { dictionary, session, defaultMonsterList, setDefaultMonsterList } = props;
   // 状态管理参数
-  const { augmented, monsterDialogState, setMonsterList, setMonsterDialogState, monsterFormState, setMonsterFormState } = useStore(
-    (state) => state.monsterPage,
-  );
+  const {
+    augmented,
+    monsterDialogState,
+    setMonsterList,
+    setMonsterDialogState,
+    monsterFormState,
+    setMonsterFormState,
+  } = useStore((state) => state.monsterPage);
   const { monster, setMonster } = useStore((state) => state);
   let newMonster: Monster;
   const formTitle = {
@@ -224,12 +230,6 @@ export default function MonsterForm(props: {
             // 输入框的类型计算
             const zodValue = MonsterInputSchema.shape[key as keyof Monster];
             const valueType = getZodType(zodValue);
-            const { ZodNumber, ZodString, ...Others } = ZodFirstPartyTypeKind;
-            const inputType = {
-              [ZodNumber]: "number",
-              [ZodString]: "text",
-              ...Others,
-            }[valueType];
             // 由于数组类型的值与常规变量值存在结构差异，因此在此进行区分
             switch (valueType) {
               case ZodFirstPartyTypeKind.ZodEnum: {
@@ -396,7 +396,7 @@ export default function MonsterForm(props: {
                 );
               }
 
-              default: {
+              case ZodFirstPartyTypeKind.ZodNumber: {
                 return (
                   <form.Field
                     key={key}
@@ -415,12 +415,77 @@ export default function MonsterForm(props: {
                           id={field.name}
                           name={field.name}
                           value={typeof field.state.value !== "object" ? field.state.value : undefined}
-                          type={inputType}
+                          type="number"
                           onBlur={field.handleBlur}
-                          onChange={(e) =>
-                            field.handleChange(inputType === "number" ? parseFloat(e.target.value) : e.target.value)
-                          }
+                          onChange={(e) => field.handleChange(parseFloat(e.target.value))}
                           className={`mt-1 w-full flex-1 rounded px-4 py-2 ${monsterFormState === "DISPLAY" ? " pointer-events-none bg-transparent outline-transition-color-20" : " pointer-events-auto bg-transition-color-8"}`}
+                        />
+                      );
+                      const fieldsetClass: string = defaultFieldsetClass;
+                      const inputBox: React.ReactNode = defaultInputBox;
+                      switch (key as keyof Monster) {
+                        // case "radius":
+                        // case "maxhp":
+                        // case "physicalDefense":
+                        // case "physicalResistance":
+                        // case "magicalDefense":
+                        // case "magicalResistance":
+                        // case "criticalResistance":
+                        // case "avoidance":
+                        // case "dodge":
+                        // case "block":
+                        // case "normalAttackResistanceModifier":
+                        // case "physicalAttackResistanceModifier":
+                        // case "magicalAttackResistanceModifier":
+                        // case "difficultyOfTank":
+                        // case "difficultyOfMelee":
+                        // case "difficultyOfRanged":
+                        // case "possibilityOfRunningAround":
+
+                        default:
+                          break;
+                      }
+                      return (
+                        <fieldset key={key} className={fieldsetClass}>
+                          <label htmlFor={field.name} className="flex w-full flex-col gap-1">
+                            <span>
+                              {dictionary.db.models.monster[key as keyof Monster]}
+                              <FieldInfo field={field} />
+                            </span>
+                            {inputBox}
+                          </label>
+                        </fieldset>
+                      );
+                    }}
+                  </form.Field>
+                );
+              }
+
+              default: {
+                return (
+                  <form.Field
+                    key={key}
+                    name={key as keyof Monster}
+                    validators={{
+                      onChangeAsyncDebounceMs: 500,
+                      onChangeAsync: MonsterInputSchema.shape[key as keyof Monster],
+                    }}
+                  >
+                    {(field) => {
+                      const defaultFieldsetClass = "flex basis-1/2 flex-col gap-1 p-2 lg:basis-1/4";
+                      const defaultInputBox = (
+                        <LineWrappingInput
+                          value={field.state.value as string}
+                          id={field.name}
+                          name={field.name}
+                          type="text"
+                          onBlur={field.handleBlur}
+                          readOnly={monsterFormState === "DISPLAY"}
+                          onChange={(e) => {
+                            const target = e.target as HTMLTextAreaElement;
+                            field.handleChange(target.value);
+                          }}
+                          className=""
                         />
                       );
                       let fieldsetClass: string = defaultFieldsetClass;
@@ -442,23 +507,6 @@ export default function MonsterForm(props: {
                           }
                           break;
                         // case "element":
-                        // case "radius":
-                        // case "maxhp":
-                        // case "physicalDefense":
-                        // case "physicalResistance":
-                        // case "magicalDefense":
-                        // case "magicalResistance":
-                        // case "criticalResistance":
-                        // case "avoidance":
-                        // case "dodge":
-                        // case "block":
-                        // case "normalAttackResistanceModifier":
-                        // case "physicalAttackResistanceModifier":
-                        // case "magicalAttackResistanceModifier":
-                        // case "difficultyOfTank":
-                        // case "difficultyOfMelee":
-                        // case "difficultyOfRanged":
-                        // case "possibilityOfRunningAround":
                         // case "updatedByUserId":
                         // case "createdByUserId":
                         // case "viewCount":
