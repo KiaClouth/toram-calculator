@@ -5,12 +5,8 @@ import { cookies } from "next/headers";
 import { TRPCReactProvider } from "~/trpc/react";
 import type { Metadata, Viewport } from "next";
 import type { Locale } from "~/app/i18n-config";
-import { getServerAuthSession } from "~/server/auth";
 import { GoogleAnalytics } from '@next/third-parties/google'
-import { getDictionary } from "~/app/get-dictionary";
 import ThemeProvider from "./_components/themeProvider";
-import Nav from "./_components/nav";
-import BabylonBg from "./_components/babylonBg";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -74,8 +70,6 @@ export default async function RootLayout({
   children: React.ReactNode;
   params: { lang: Locale };
 }) {
-  const session = await getServerAuthSession();
-  const dictionary = getDictionary(lang);
 
   return (
     <html lang={lang} suppressHydrationWarning>
@@ -88,7 +82,6 @@ export default async function RootLayout({
         <TRPCReactProvider cookies={cookies().toString()}>
           <ThemeProvider>
             {/* <BabylonBg /> */}
-            <Nav dictionary={dictionary} session={session} />
             {children}
           </ThemeProvider>
         </TRPCReactProvider>

@@ -27,8 +27,8 @@
     --primary: var(--white);
     --transition: var(--navyBlue);
     --brand-1st: var(--greenBlue);
-    --brand-2nd: var(--orange);
-    --brand-3rd: var(--yellow);
+    --brand-2nd: var(--yellow);
+    --brand-3rd: var(--orange);
   }
 
   .dark {
@@ -36,8 +36,8 @@
     --primary: var(--grey);
     --transition: var(--white);
     --brand-1st: var(--greenBlue);
-    --brand-2nd: var(--orange);
-    --brand-3rd: var(--yellow);
+    --brand-2nd: var(--yellow);
+    --brand-3rd: var(--orange);
   }
 }
 

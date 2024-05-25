@@ -3,6 +3,8 @@ import { type Locale } from "~/app/i18n-config";
 import { getServerAuthSession } from "~/server/auth";
 import AnalyzePageClient from "./client";
 import { sApi } from "~/trpc/server";
+import Nav from "../_components/nav";
+import React from "react";
 
 export default async function MonsterPage({ params: { lang } }: { params: { lang: Locale } }) {
   const dictionary = getDictionary(lang);
@@ -11,11 +13,14 @@ export default async function MonsterPage({ params: { lang } }: { params: { lang
   const characterList = await sApi.character.getUserVisbleList.query();
 
   return (
-    <AnalyzePageClient
-      dictionary={dictionary}
-      session={session}
-      monsterList={monsterList}
-      characterList={characterList}
-    />
+    <React.Fragment>
+      <Nav dictionary={dictionary} session={session} />
+      <AnalyzePageClient
+        dictionary={dictionary}
+        session={session}
+        monsterList={monsterList}
+        characterList={characterList}
+      />
+    </React.Fragment>
   );
 }
