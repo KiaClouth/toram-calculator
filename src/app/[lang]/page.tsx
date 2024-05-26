@@ -44,11 +44,11 @@ export default async function Index({ params: { lang } }: { params: { lang: Loca
       <div className={`flex flex-1 flex-col justify-between p-8`}>
         <div className="Top flex flex-col items-start justify-center gap-6 pt-8 lg:flex-1 lg:items-center lg:pt-20">
           <IconLogoText className="h-12 w-fit rounded-md backdrop-blur lg:h-auto" />
-          <div className="SearchBox flex w-full items-center gap-1 border-b-2 border-transition-color-20 p-0.5 focus-within:max-w-[426px] hover:max-w-[426px] hover:border-accent-color focus-within:border-accent-color lg:max-w-[400px]">
+          <div className="SearchBox flex w-full items-center gap-1 border-b-2 border-transition-color-20 p-0.5 focus-within:max-w-[426px] focus-within:border-accent-color hover:max-w-[426px] hover:border-accent-color lg:max-w-[400px]">
             <input
               type="text"
               placeholder={greetings + "," + session?.user.name}
-              className="flex-1 px-4 py-3 bg-transparent placeholder:accent-primary-color-70 focus-within:outline-none"
+              className="flex-1 bg-transparent px-4 py-2 text-lg font-bold mix-blend-multiply placeholder:font-normal placeholder:text-accent-color-50 focus-within:outline-none"
             />
             <Button
               level="tertiary"
@@ -57,8 +57,8 @@ export default async function Index({ params: { lang } }: { params: { lang: Loca
             ></Button>
           </div>
         </div>
-        <div className="Bottom flex flex-col items-center rounded-md lg:py-24">
-          <div className="Content flex-co flex flex-1 flex-wrap gap-3 rounded-md lg:flex-row lg:bg-transition-color-8 backdrop-blur lg:p-3">
+        <div className="Bottom flex flex-col items-center rounded-md lg:py-20">
+          <div className="Content flex-co flex flex-1 flex-wrap gap-3 rounded-md backdrop-blur lg:flex-row lg:bg-transition-color-8 lg:p-3">
             <Link href={"/monster"} className=" basis-[calc(50%-6px)] lg:basis-auto">
               <Button
                 className="group w-full flex-col rounded-md px-4 py-3 lg:w-fit lg:flex-row"

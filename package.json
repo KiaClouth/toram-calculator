@@ -36,6 +36,7 @@
     "@types/lodash-es": "^4.17.12",
     "babylonjs": "^6.44.0",
     "babylonjs-loaders": "^6.44.0",
+    "framer-motion": "^11.2.6",
     "immer": "^10.0.4",
     "lodash-es": "^4.17.21",
     "mathjs": "^12.4.1",

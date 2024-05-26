@@ -8,7 +8,7 @@ export default function RandomBallBackground() {
   const numBalls = 10;
 
   for (let i = 0; i < numBalls; i++) {
-    const keyFramesName = "randomMove";
+    const keyFramesName = "randomMove" + i;
     const ball = (
       <React.Fragment>
         <Keyframes
