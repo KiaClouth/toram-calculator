@@ -30,6 +30,7 @@ const dictionary: dictionary = {
     modify: "修改",
     cancel: "取消",
     close: "关闭",
+    back: "返回",
     searchPlaceholder: "这里是搜索框~",
     columnsHidden: "隐藏列",
     filter: "过滤",
@@ -43,6 +44,8 @@ const dictionary: dictionary = {
       items: "消耗品",
       character: "角色配置",
       comboAnalyze: "连击分析",
+      nullSearchResultWarring: "没有找到相关内容!!!∑(ﾟДﾟノ)ノ",
+      nullSearchResultTips: "变强之旅总有艰险阻道，求知路上不免遍布荆棘\n但是这里没有\n搜索结果里没有就是没有"
     },
     index: {
       goodMorning: "哦哈喵~ (=´ω｀=)",

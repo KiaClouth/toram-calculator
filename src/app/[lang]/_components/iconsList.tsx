@@ -18,6 +18,19 @@ export const IconBasketball = (props: React.SVGAttributes<SVGElement>) => {
   );
 };
 
+export const IconBack = (props: React.SVGAttributes<SVGElement>) => {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+      <path
+        d="M8.00009 16L4.7072 12.7071C4.31668 12.3166 4.31668 11.6834 4.7072 11.2929L8.00009 8M5.00009 12L19.0001 12"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+};
+
 export const IconBox2 = (props: React.SVGAttributes<SVGElement>) => {
   return (
     <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>

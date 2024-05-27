@@ -27,6 +27,7 @@ interface dictionary {
     cancel: string;
     open: string;
     close: string;
+    back: string;
     searchPlaceholder: string;
     filter: string;
     columnsHidden: string;
@@ -40,6 +41,8 @@ interface dictionary {
       items: string;
       character: string;
       comboAnalyze: string;
+      nullSearchResultWarring: string;
+      nullSearchResultTips: string;
     };
     index: {
       goodMorning: string;

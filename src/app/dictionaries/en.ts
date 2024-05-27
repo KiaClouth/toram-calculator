@@ -29,6 +29,7 @@ const dictionary: dictionary = {
     modify: "Modify",
     cancel: "Cancel",
     close: "close",
+    back: "Back",
     columnsHidden: "Columns Hidden",
     filter: "Filter",
     searchPlaceholder: "Search something ~",
@@ -42,6 +43,8 @@ const dictionary: dictionary = {
       items: "Items",
       character: "Character",
       comboAnalyze: "Combo",
+      nullSearchResultWarring: "Can not find anything!",
+      nullSearchResultTips: "Emmm..."
     },
     index: {
       goodMorning: "Good Morning ~",
