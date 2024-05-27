@@ -5,7 +5,7 @@ import { cookies } from "next/headers";
 import { TRPCReactProvider } from "~/trpc/react";
 import type { Metadata, Viewport } from "next";
 import type { Locale } from "~/app/i18n-config";
-import { GoogleAnalytics } from '@next/third-parties/google'
+import { GoogleAnalytics } from "@next/third-parties/google";
 import ThemeProvider from "./_components/themeProvider";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
@@ -55,8 +55,8 @@ export const metadata: Metadata = {
   metadataBase: new URL(env.NEXTAUTH_URL),
   other: {
     // 百度HTML标签验证字段
-    "baidu-site-verification":"codeva-RFvyQ61tbi"
-  }
+    "baidu-site-verification": "codeva-RFvyQ61tbi",
+  },
 };
 
 export const viewport: Viewport = {
@@ -70,15 +70,9 @@ export default async function RootLayout({
   children: React.ReactNode;
   params: { lang: Locale };
 }) {
-
   return (
     <html lang={lang} suppressHydrationWarning>
-      <body
-        className={
-          `font-sans ${inter.variable}` +
-          " flex h-dvh w-dvw flex-col-reverse lg:flex-row @text-transparent"
-        }
-      >
+      <body className={`font-sans ${inter.variable}`}>
         <TRPCReactProvider cookies={cookies().toString()}>
           <ThemeProvider>
             {/* <BabylonBg /> */}
