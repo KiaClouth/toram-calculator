@@ -336,7 +336,7 @@ export default function IndexPageClient(props: {
                     return (
                       <motion.button
                         key={index}
-                        className="Item flex flex-col gap-2 rounded-md border-transition-color-20 bg-primary-color p-2"
+                        className="Item flex flex-col gap-2 rounded-md border border-transition-color-20 bg-primary-color p-2"
                       >
                         <div className="Name p-1 font-bold">{item?.name}</div>
                         <div className="Value p-1 text-sm text-accent-color-70">
