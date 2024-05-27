@@ -387,7 +387,7 @@ export default function IndexPageClient(props: {
           </div>
         </div>
         <div
-          className={`ResultDialog ${resultDialogOpened ? "pointer-events-auto visible translate-y-0 opacity-100" : "pointer-events-none invisible translate-y-1/2 opacity-0"} items-center bg-primary-color`}
+          className={`ResultDialog ${resultDialogOpened ? "pointer-events-auto visible translate-y-0 opacity-100" : "pointer-events-none invisible translate-y-1/2 opacity-0 h-0 w-0 overflow-hidden"} items-center bg-primary-color`}
         >
           {JSON.stringify(searchResult)}
         </div>
