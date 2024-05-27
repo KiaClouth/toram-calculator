@@ -5,8 +5,8 @@ import { type getDictionary } from "~/app/get-dictionary";
 import { type Session } from "next-auth";
 
 import { test, useStore } from "~/app/store";
-import Button from "../_components/button";
-import Dialog from "../_components/dialog";
+import Button from "../../_components/button";
+import Dialog from "../../_components/dialog";
 import {
   type computeInput,
   type computeOutput,

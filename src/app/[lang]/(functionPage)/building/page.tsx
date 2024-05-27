@@ -1,5 +1,5 @@
 import React from "react";
-import LoadingBox from "../_components/loadingBox";
+import LoadingBox from "../../_components/loadingBox";
 import Link from "next/link";
 
 export default function Loading() {

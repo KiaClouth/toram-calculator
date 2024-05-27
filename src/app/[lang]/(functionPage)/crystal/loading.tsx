@@ -1,5 +1,5 @@
 import React from "react";
-import LoadingBox from "../_components/loadingBox";
+import LoadingBox from "../../_components/loadingBox";
 
 export default function CharacterLoading() {
   return (

@@ -24,7 +24,7 @@ import {
 import { tApi } from "~/trpc/react";
 import { type sApi } from "~/trpc/server";
 import type { getDictionary } from "~/app/get-dictionary";
-import Button from "../_components/button";
+import Button from "../../_components/button";
 import { SkillEffectInputSchema, SkillInputSchema } from "~/schema/skillSchema";
 import { type FieldApi, useForm } from "@tanstack/react-form";
 import { zodValidator } from "@tanstack/zod-form-adapter";
@@ -47,7 +47,7 @@ import {
   IconElementLight,
   IconElementDark,
   IconElementNoElement,
-} from "../_components/iconsList";
+} from "../../_components/iconsList";
 import { useTheme } from "next-themes";
 import { SkillCostSchema, SkillYieldSchema } from "prisma/generated/zod";
 

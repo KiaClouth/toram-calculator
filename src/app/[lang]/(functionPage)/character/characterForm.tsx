@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import "@mdxeditor/editor/style.css";
 import { tApi } from "~/trpc/react";
 import type { getDictionary } from "~/app/get-dictionary";
-import Button from "../_components/button";
+import Button from "../../_components/button";
 import { type FieldApi, useForm } from "@tanstack/react-form";
 import { zodValidator } from "@tanstack/zod-form-adapter";
 import { ZodFirstPartyTypeKind, type z } from "zod";

@@ -14,7 +14,7 @@ import { type getDictionary } from "~/app/get-dictionary";
 import { type Session } from "next-auth";
 import React, { useState, type CSSProperties, useEffect } from "react";
 import SkillForm from "./skillForm";
-import Button from "../_components/button";
+import Button from "../../_components/button";
 import {
   IconCloudUpload,
   IconElementWind,
@@ -25,8 +25,8 @@ import {
   IconElementNoElement,
   IconElementWater,
   IconFilter,
-} from "../_components/iconsList";
-import Dialog from "../_components/dialog";
+} from "../../_components/iconsList";
+import Dialog from "../../_components/dialog";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { useStore } from "~/app/store";
 import { defaultSkill } from "~/app/store";

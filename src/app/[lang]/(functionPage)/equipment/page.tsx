@@ -2,7 +2,7 @@ import React from "react";
 import { type Locale } from "~/app/i18n-config";
 import { getDictionary } from "~/app/get-dictionary";
 import { getServerAuthSession } from "~/server/auth";
-import Nav from "../_components/nav";
+import Nav from "../../_components/nav";
 
 export default async function EquipmentPage({
   params: { lang },
@@ -14,7 +14,6 @@ export default async function EquipmentPage({
   return (
     
     <React.Fragment>
-      <Nav dictionary={dictionary} session={session} />
     </React.Fragment>
   );
 }

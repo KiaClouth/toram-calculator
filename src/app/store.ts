@@ -15,7 +15,7 @@ import {
 import type { Crystal, ModifiersList, Modifier } from "~/server/api/routers/crystal";
 import type { Consumable } from "~/server/api/routers/consumable";
 import type { Pet } from "~/server/api/routers/pet";
-import { type skillSequenceList } from "./[lang]/analyze/client";
+import { type skillSequenceList } from "./[lang]/(functionPage)/analyze/client";
 
 // if you need middleware
 // import { devtools, persist } from 'zustand/middleware'

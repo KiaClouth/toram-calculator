@@ -3,7 +3,6 @@ import { getDictionary } from "~/app/get-dictionary";
 import { type Locale } from "~/app/i18n-config";
 import { getServerAuthSession } from "~/server/auth";
 import SkillPageClient from "./client";
-import Nav from "../_components/nav";
 import React from "react";
 
 export default async function CharacterPage({ params: { lang } }: { params: { lang: Locale } }) {
@@ -13,7 +12,6 @@ export default async function CharacterPage({ params: { lang } }: { params: { la
 
   return (
     <React.Fragment>
-      <Nav dictionary={dictionary} session={session} />
       <SkillPageClient session={session} dictionary={dictionary} skillList={skillList} />
     </React.Fragment>
   );

@@ -1,7 +1,7 @@
 import React from "react";
-import LoadingBox from "../_components/loadingBox";
+import LoadingBox from "../../_components/loadingBox";
 
-export default function PetLoading() {
+export default function CharacterLoading() {
   return (
     <div className="LoadingModule w-full h-full flex justify-center items-center backdrop-blur">
       <LoadingBox className=" w-2/3" />

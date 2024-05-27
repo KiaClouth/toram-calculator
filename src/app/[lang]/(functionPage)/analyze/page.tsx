@@ -3,7 +3,6 @@ import { type Locale } from "~/app/i18n-config";
 import { getServerAuthSession } from "~/server/auth";
 import AnalyzePageClient from "./client";
 import { sApi } from "~/trpc/server";
-import Nav from "../_components/nav";
 import React from "react";
 
 export default async function MonsterPage({ params: { lang } }: { params: { lang: Locale } }) {
@@ -14,7 +13,6 @@ export default async function MonsterPage({ params: { lang } }: { params: { lang
 
   return (
     <React.Fragment>
-      <Nav dictionary={dictionary} session={session} />
       <AnalyzePageClient
         dictionary={dictionary}
         session={session}

@@ -23,7 +23,7 @@ import {
 } from "@mdxeditor/editor";
 import { tApi } from "~/trpc/react";
 import type { getDictionary } from "~/app/get-dictionary";
-import Button from "../_components/button";
+import Button from "../../_components/button";
 import { type FieldApi, useForm } from "@tanstack/react-form";
 import { zodValidator } from "@tanstack/zod-form-adapter";
 import { ZodFirstPartyTypeKind, type z } from "zod";
@@ -38,11 +38,11 @@ import {
   IconElementLight,
   IconElementDark,
   IconElementNoElement,
-} from "../_components/iconsList";
+} from "../../_components/iconsList";
 import { useTheme } from "next-themes";
 import { type Monster } from "~/server/api/routers/monster";
 import { MonsterInputSchema } from "~/schema/monsterSchema";
-import LineWrappingInput from "../_components/autoLineWrappingInput";
+import LineWrappingInput from "../../_components/autoLineWrappingInput";
 
 export default function MonsterForm(props: {
   dictionary: ReturnType<typeof getDictionary>;
