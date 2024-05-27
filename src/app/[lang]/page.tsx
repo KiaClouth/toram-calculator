@@ -43,8 +43,8 @@ export default async function Index({ params: { lang } }: { params: { lang: Loca
   return (
     <React.Fragment>
       <div className={`flex flex-1 flex-col justify-between gap-4 lg:p-8`}>
-        <div className="Top flex flex-1 flex-col p-6 lg:flex-1 lg:items-center lg:pt-20">
-          <div className="Greetings flex flex-1 flex-col items-center justify-center gap-2">
+        <div className="Top flex flex-1 flex-col p-6 lg:flex-1 lg:items-center lg:justify-center lg:pt-20">
+          <div className="Greetings flex flex-1 flex-col items-center lg:flex-none pb-12 justify-center gap-2">
             <IconLogoText className="mb-2 h-12 w-fit rounded-md backdrop-blur lg:mb-0 lg:h-auto" />
             <h1 className="py-4 text-accent-color-70 lg:hidden">{greetings + ",  " + session?.user.name}</h1>
           </div>
@@ -52,7 +52,7 @@ export default async function Index({ params: { lang } }: { params: { lang: Loca
             <input
               type="text"
               placeholder={greetings + "," + session?.user.name}
-              className="hidden w-full flex-1 rounded bg-transition-color-8 px-4 py-2 text-lg font-bold mix-blend-multiply placeholder:font-normal placeholder:text-accent-color-50 focus-within:outline-none lg:flex lg:bg-transparent"
+              className="hidden w-full flex-1 rounded px-4 py-2 text-lg font-bold mix-blend-multiply placeholder:text-base placeholder:font-normal placeholder:text-accent-color-50 focus-within:outline-none lg:flex lg:bg-transparent"
             />
             <input
               type="text"
