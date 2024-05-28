@@ -19,6 +19,7 @@ const statistics = {
 
 const dictionary: dictionary = {
   ui: {
+    adventurer: "冒险者",
     add: "添加",
     create: "创建",
     remove: "删除",

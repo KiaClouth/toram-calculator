@@ -276,10 +276,11 @@ export default function IndexPageClient(props: {
             <motion.div className={`LogoBox mb-2 overflow-hidden rounded-md backdrop-blur lg:mb-0`}>
               <IconLogoText className="h-12 w-fit lg:h-auto" />
             </motion.div>
-            <h1 className={`py-4 text-accent-color-70 lg:hidden`}>{greetings + ",  " + session?.user.name}</h1>
+            <h1 className={`py-4 text-accent-color-70 lg:hidden`}>
+              {greetings + ",  " + (session?.user.name ?? dictionary.ui.adventurer)}
+            </h1>
           </motion.div>
-          <motion.div
-            className="FunctionBox flex w-full flex-col items-center justify-center lg:flex-row">
+          <motion.div className="FunctionBox flex w-full flex-col items-center justify-center lg:flex-row">
             <motion.div
               className="BackButton w-full flex-none lg:w-60"
               animate={resultDialogOpened ? "open" : "closed"}
@@ -305,7 +306,7 @@ export default function IndexPageClient(props: {
               </Button>
             </motion.div>
             <motion.div
-              className={`SearchBox lg:focus-within:max-w-[426px] lg:hover:max-w-[426px] border-b-none flex w-full items-center gap-1 border-transition-color-20 p-0.5  focus-within:border-accent-color hover:border-accent-color lg:border-b-2`}
+              className={`SearchBox border-b-none flex w-full items-center gap-1 border-transition-color-20 p-0.5 focus-within:border-accent-color hover:border-accent-color  lg:border-b-2 lg:focus-within:max-w-[426px] lg:hover:max-w-[426px]`}
               animate={resultDialogOpened ? "open" : "closed"}
               variants={{
                 open: {
@@ -318,7 +319,7 @@ export default function IndexPageClient(props: {
             >
               <input
                 type="text"
-                placeholder={greetings + "," + session?.user.name}
+                placeholder={greetings + "," + (session?.user.name ?? dictionary.ui.adventurer)}
                 onFocus={() => setSearchInputFocused(true)}
                 onBlur={() => setSearchInputFocused(false)}
                 value={searchInputValue}

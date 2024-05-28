@@ -16,6 +16,7 @@ type ConvertToAllString<T> = T extends Date | Date[] | modifiers | Array<object>
 
 interface dictionary {
   ui: {
+    adventurer: string;
     add: string;
     create: string;
     remove: string;

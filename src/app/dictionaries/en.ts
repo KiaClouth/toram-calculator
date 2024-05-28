@@ -18,6 +18,7 @@ const statistics = {
 
 const dictionary: dictionary = {
   ui: {
+    adventurer: "Adventurer",
     add: "Add",
     create: "Create",
     remove: "Remove",
