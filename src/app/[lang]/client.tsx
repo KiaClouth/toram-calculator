@@ -64,7 +64,6 @@ export default function IndexPageClient(props: {
   const [isNullResult, setIsNullResult] = React.useState(true);
 
   const [isPC, setIsPC] = React.useState(true);
-  const [screenWidth, setScreenWidth] = React.useState(1536);
 
   // 搜索函数
   const monsterHiddenData: Array<keyof Monster> = useMemo(
@@ -211,7 +210,6 @@ export default function IndexPageClient(props: {
 
     // 设置初始状态
     setIsPC(!mediaQuery.matches);
-    setScreenWidth(window.screen.width);
 
     // 监听绑带与清除
     document.addEventListener("keydown", handleEnterKeyPress);
@@ -280,20 +278,21 @@ export default function IndexPageClient(props: {
             </motion.div>
             <h1 className={`py-4 text-accent-color-70 lg:hidden`}>{greetings + ",  " + session?.user.name}</h1>
           </motion.div>
-          <motion.div className="FunctionBox flex w-full flex-col items-center justify-center gap-2 lg:flex-row">
+          <motion.div
+            className="FunctionBox flex w-full flex-col items-center justify-center lg:flex-row">
             <motion.div
+              className="BackButton w-full flex-none lg:w-60"
               animate={resultDialogOpened ? "open" : "closed"}
               variants={{
                 open: {
                   opacity: 1,
-                  display: "block",
+                  margin: isPC ? "0rem 0.5rem 0rem 0rem" : "0rem 0rem 0.75rem 0rem",
                 },
                 closed: {
+                  margin: isPC ? "0rem -15rem 0rem 0rem" : "0rem 0rem -3rem 0rem",
                   opacity: 0,
-                  display: "none",
                 },
               }}
-              className="BackButton w-full flex-none lg:w-60"
             >
               <Button
                 level="quaternary"
@@ -306,14 +305,14 @@ export default function IndexPageClient(props: {
               </Button>
             </motion.div>
             <motion.div
-              className={`SearchBox ${resultDialogOpened ? "max-w-full" : "lg:max-w-[400px] lg:focus-within:max-w-[426px] lg:hover:max-w-[426px]"} border-b-none flex w-full items-center gap-1 border-transition-color-20 p-0.5  focus-within:border-accent-color hover:border-accent-color lg:border-b-2`}
+              className={`SearchBox lg:focus-within:max-w-[426px] lg:hover:max-w-[426px] border-b-none flex w-full items-center gap-1 border-transition-color-20 p-0.5  focus-within:border-accent-color hover:border-accent-color lg:border-b-2`}
               animate={resultDialogOpened ? "open" : "closed"}
               variants={{
                 open: {
-                  maxWidth: `${screenWidth}px`,
+                  maxWidth: `2000px`,
                 },
                 closed: {
-                  maxWidth: isPC ? `400px` : `${screenWidth}px`,
+                  maxWidth: isPC ? `400px` : `2000px`,
                 },
               }}
             >
