@@ -64,6 +64,7 @@ export default function IndexPageClient(props: {
   const [isNullResult, setIsNullResult] = React.useState(true);
 
   const [isPC, setIsPC] = React.useState(true);
+  const [screenWidth, setScreenWidth] = React.useState(1536);
 
   // 搜索函数
   const monsterHiddenData: Array<keyof Monster> = useMemo(
@@ -210,6 +211,7 @@ export default function IndexPageClient(props: {
 
     // 设置初始状态
     setIsPC(!mediaQuery.matches);
+    setScreenWidth(window.screen.width);
 
     // 监听绑带与清除
     document.addEventListener("keydown", handleEnterKeyPress);
@@ -291,7 +293,7 @@ export default function IndexPageClient(props: {
                   display: "none",
                 },
               }}
-              className="BackButton flex-none w-full lg:w-60"
+              className="BackButton w-full flex-none lg:w-60"
             >
               <Button
                 level="quaternary"
@@ -305,12 +307,13 @@ export default function IndexPageClient(props: {
             </motion.div>
             <motion.div
               className={`SearchBox ${resultDialogOpened ? "max-w-full" : "lg:max-w-[400px] lg:focus-within:max-w-[426px] lg:hover:max-w-[426px]"} border-b-none flex w-full items-center gap-1 border-transition-color-20 p-0.5  focus-within:border-accent-color hover:border-accent-color lg:border-b-2`}
+              animate={resultDialogOpened ? "open" : "closed"}
               variants={{
                 open: {
-                  maxWidth: `${screen.width}px`,
+                  maxWidth: `${screenWidth}px`,
                 },
                 closed: {
-                  maxWidth: isPC ? `400px` : `${screen.width}px`,
+                  maxWidth: isPC ? `400px` : `${screenWidth}px`,
                 },
               }}
             >
