@@ -279,19 +279,30 @@ export default function IndexPageClient(props: {
             <h1 className={`py-4 text-accent-color-70 lg:hidden`}>{greetings + ",  " + session?.user.name}</h1>
           </motion.div>
           <motion.div className="FunctionBox flex w-full flex-col items-center justify-center gap-2 lg:flex-row">
-            <Button
-              level="quaternary"
-              style={{
-                display: resultDialogOpened ? "flex" : "none",
+            <motion.div
+              animate={resultDialogOpened ? "open" : "closed"}
+              variants={{
+                open: {
+                  opacity: 1,
+                  display: "block",
+                },
+                closed: {
+                  opacity: 0,
+                  display: "none",
+                },
               }}
-              onClick={() => {
-                setResultDialogOpened(false);
-              }}
-              className="w-full lg:w-60"
+              className="BackButton flex-none w-full lg:w-60"
             >
-              <IconBack />
-              <span className="w-full text-left">{dictionary.ui.back}</span>
-            </Button>
+              <Button
+                level="quaternary"
+                onClick={() => {
+                  setResultDialogOpened(false);
+                }}
+              >
+                <IconBack />
+                <span className="w-full text-left">{dictionary.ui.back}</span>
+              </Button>
+            </motion.div>
             <motion.div
               className={`SearchBox ${resultDialogOpened ? "max-w-full" : "lg:max-w-[400px] lg:focus-within:max-w-[426px] lg:hover:max-w-[426px]"} border-b-none flex w-full items-center gap-1 border-transition-color-20 p-0.5  focus-within:border-accent-color hover:border-accent-color lg:border-b-2`}
               variants={{
