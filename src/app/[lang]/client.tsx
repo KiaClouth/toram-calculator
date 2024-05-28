@@ -293,7 +293,7 @@ export default function IndexPageClient(props: {
               </div>
             ) : (
               <React.Fragment>
-                <div className="Tab flex bg-primary-color w-full p-1 sticky z-10 top-0 gap-2 self-start rounded-md lg:bg-transition-color-8 lg:w-60 lg:flex-col lg:p-3">
+                <div className="Tab flex bg-primary-color w-full py-1 sticky z-10 top-0 gap-1 lg:gap-2 self-start lg:rounded-md lg:bg-transition-color-8 lg:w-60 lg:flex-col lg:p-3">
                   {searchResult.monsters && searchResult.monsters?.length > 0 && (
                     <Button
                       className="lg:w-full"
