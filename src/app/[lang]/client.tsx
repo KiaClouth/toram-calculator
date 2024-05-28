@@ -310,10 +310,10 @@ export default function IndexPageClient(props: {
               animate={resultDialogOpened ? "open" : "closed"}
               variants={{
                 open: {
-                  maxWidth: `2000px`,
+                  maxWidth: `100vw`,
                 },
                 closed: {
-                  maxWidth: isPC ? `400px` : `2000px`,
+                  maxWidth: isPC ? `400px` : `100vw`,
                 },
               }}
             >
