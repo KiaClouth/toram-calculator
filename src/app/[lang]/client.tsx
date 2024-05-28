@@ -241,7 +241,7 @@ export default function IndexPageClient(props: {
               }}
             >
               <IconBack />
-              {dictionary.ui.back}
+              <span className="hidden lg:flex">{dictionary.ui.back}</span>
             </Button>
             <div
               className={`SearchBox ${resultDialogOpened ? "max-w-full" : "focus-within:max-w-[426px] hover:max-w-[426px] lg:max-w-[400px]"} border-b-none flex w-full items-center gap-1 border-transition-color-20 p-0.5  focus-within:border-accent-color hover:border-accent-color lg:border-b-2`}
@@ -357,7 +357,7 @@ export default function IndexPageClient(props: {
           ) : null}
         </motion.div>
         <motion.div
-          className={`Bottom ${resultDialogOpened ? "pointer-events-none invisible h-0 overflow-hidden p-0 opacity-0" : "pointer-events-auto visible p-6 opacity-100 lg:py-20"} flex flex-none flex-col items-center rounded-t-md bg-accent-color lg:bg-transparent`}
+          className={`Bottom ${resultDialogOpened ? "pointer-events-none invisible h-0 overflow-hidden p-0 opacity-0" : "pointer-events-auto visible p-6 opacity-100 lg:py-20"} flex flex-none flex-col items-center bg-accent-color lg:bg-transparent`}
         >
           <div className="Content flex flex-wrap gap-3 rounded-md backdrop-blur lg:flex-1 lg:bg-transition-color-8 lg:p-3">
             <Link href={"/monster"} className=" flex-none basis-[calc(33.33%-8px)] overflow-hidden lg:basis-auto">
