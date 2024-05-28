@@ -63,6 +63,8 @@ export default function IndexPageClient(props: {
   const [resultTaleContent, setResultTaleContent] = React.useState<Result[]>([]);
   const [isNullResult, setIsNullResult] = React.useState(true);
 
+  const [isPC, setIsPC] = React.useState(true);
+
   // 搜索函数
   const monsterHiddenData: Array<keyof Monster> = useMemo(
     () => ["id", "updatedAt", "updatedByUserId", "state", "createdByUserId", "specialBehavior"],
@@ -105,7 +107,6 @@ export default function IndexPageClient(props: {
         if (_.isString(obj[key])) {
           const value = obj[key] as string;
           if (value.match(keyWord)) {
-            console.log(currentPath.join("."), value);
             relateds.push({ key: currentPath.join("."), value: value });
           }
         }
@@ -200,13 +201,25 @@ export default function IndexPageClient(props: {
       }
     };
 
+    // 媒体查询
+    const mediaQuery = window.matchMedia("(max-width: 1024px)");
+
+    const handleMediaQueryChange = (e: MediaQueryListEvent) => {
+      setIsPC(!e.matches);
+    };
+
+    // 设置初始状态
+    setIsPC(!mediaQuery.matches);
+
     // 监听绑带与清除
     document.addEventListener("keydown", handleEnterKeyPress);
     document.addEventListener("keydown", handleEscapeKeyPress);
+    mediaQuery.addEventListener("change", handleMediaQueryChange);
 
     return () => {
       document.removeEventListener("keydown", handleEnterKeyPress);
       document.removeEventListener("keydown", handleEscapeKeyPress);
+      mediaQuery.removeEventListener("change", handleMediaQueryChange);
     };
   }, [
     dictionary.ui.index.goodAfternoon,
@@ -218,33 +231,77 @@ export default function IndexPageClient(props: {
 
   return (
     <React.Fragment>
-      <div
+      <motion.div
+        initial={false}
+        animate={resultDialogOpened ? "open" : "closed"}
         className={`Client flex max-h-[100dvh] max-w-[100dvw] flex-1 flex-col justify-between lg:mx-auto lg:max-w-[1536px] lg:p-8`}
       >
         <motion.div
-          className={`Top flex flex-col lg:items-center lg:px-0  ${resultDialogOpened ? "lg:justify-start p-3 lg:pt-0 " : "lg:justify-center p-6 lg:pt-20 flex-1 "}`}
+          initial={false}
+          className={`Top flex flex-col items-center justify-center lg:px-0`}
+          animate={resultDialogOpened ? "open" : "closed"}
+          variants={{
+            open: {
+              flex: "0 0 auto",
+              padding: isPC ? "0rem" : "0.75rem",
+              paddingTop: isPC ? "0rem" : "0.75rem",
+              paddingBottom: "0.75rem",
+            },
+            closed: {
+              flex: "1 1 0%",
+              padding: "1.5rem",
+              paddingTop: isPC ? "5rem" : "1.5rem",
+              paddingBottom: "1.5rem",
+            },
+          }}
         >
           <motion.div
-            className={`Greetings ${resultDialogOpened ? "hidden" : " pb-12"} flex flex-1 flex-col items-center justify-center gap-2 lg:flex-none`}
+            className={`Greetings flex-col items-center justify-center gap-2 overflow-hidden lg:flex-none  `}
+            animate={resultDialogOpened ? "open" : "closed"}
+            variants={{
+              open: {
+                opacity: 0,
+                paddingBottom: "0rem",
+                flex: "0 0 auto",
+                display: "none",
+              },
+              closed: {
+                opacity: 1,
+                paddingBottom: "3rem",
+                flex: isPC ? "0 0 auto" : "1 1 0%",
+                display: "flex",
+              },
+            }}
           >
-            <IconLogoText className={`mb-2 h-12 w-fit rounded-md backdrop-blur lg:mb-0 lg:h-auto`} />
+            <motion.div className={`LogoBox mb-2 overflow-hidden rounded-md backdrop-blur lg:mb-0`}>
+              <IconLogoText className="h-12 w-fit lg:h-auto" />
+            </motion.div>
             <h1 className={`py-4 text-accent-color-70 lg:hidden`}>{greetings + ",  " + session?.user.name}</h1>
           </motion.div>
-          <motion.div className="FunctionBox flex w-full items-center justify-center gap-4">
+          <motion.div className="FunctionBox flex w-full flex-col items-center justify-center gap-2 lg:flex-row">
             <Button
-              level="tertiary"
+              level="quaternary"
               style={{
                 display: resultDialogOpened ? "flex" : "none",
               }}
               onClick={() => {
                 setResultDialogOpened(false);
               }}
+              className="w-full lg:w-60"
             >
               <IconBack />
-              <span className="hidden lg:flex">{dictionary.ui.back}</span>
+              <span className="w-full text-left">{dictionary.ui.back}</span>
             </Button>
-            <div
-              className={`SearchBox ${resultDialogOpened ? "max-w-full" : "focus-within:max-w-[426px] hover:max-w-[426px] lg:max-w-[400px]"} border-b-none flex w-full items-center gap-1 border-transition-color-20 p-0.5  focus-within:border-accent-color hover:border-accent-color lg:border-b-2`}
+            <motion.div
+              className={`SearchBox ${resultDialogOpened ? "max-w-full" : "lg:max-w-[400px] lg:focus-within:max-w-[426px] lg:hover:max-w-[426px]"} border-b-none flex w-full items-center gap-1 border-transition-color-20 p-0.5  focus-within:border-accent-color hover:border-accent-color lg:border-b-2`}
+              variants={{
+                open: {
+                  maxWidth: `${screen.width}px`,
+                },
+                closed: {
+                  maxWidth: isPC ? `400px` : `${screen.width}px`,
+                },
+              }}
             >
               <input
                 type="text"
@@ -270,94 +327,177 @@ export default function IndexPageClient(props: {
                 className="hidden bg-transparent focus-within:outline-none lg:flex"
                 onClick={() => search(searchInputValue)}
               ></Button>
-            </div>
+            </motion.div>
           </motion.div>
         </motion.div>
         <motion.div
-          className={`Result ${resultDialogOpened ? "pointer-events-auto translate-y-0 pt-0 opacity-100 flex-1 p-3" : "pointer-events-none invisible h-0 translate-y-1/2 overflow-hidden opacity-0"} flex flex-col gap-1 lg:flex-row lg:p-0 overflow-y-auto`}
+          className={`Result flex h-full flex-col gap-1 overflow-hidden lg:flex-row lg:p-0`}
+          animate={resultDialogOpened ? "open" : "closed"}
+          variants={{
+            open: {
+              flex: "1 1 0%",
+              transform: "translateY(0px)",
+              padding: isPC ? "0rem" : "0.75rem",
+              paddingTop: "0rem",
+              opacity: 1,
+            },
+            closed: {
+              flex: "0 0 0%",
+              transform: "translateY(50%)",
+              padding: "0rem",
+              opacity: 0,
+            },
+          }}
         >
-          {resultDialogOpened ? (
-            isNullResult ? (
-              <div className="NullResult flex h-full flex-1 flex-col items-center justify-center gap-12 p-6 lg:p-0">
-                <span className="NullResultWarring text-xl font-bold lg:text-2xl leading-loose">
-                  {dictionary.ui.root.nullSearchResultWarring}
-                </span>
-                <p className="NullResultTips text-center leading-loose text-accent-color-70">
-                  {dictionary.ui.root.nullSearchResultTips.split("\n").map((line, index) => (
-                    <React.Fragment key={index}>
-                      {line}
-                      <br />
-                    </React.Fragment>
-                  ))}
-                </p>
-              </div>
-            ) : (
-              <React.Fragment>
-                <div className="Tab flex bg-primary-color w-full py-1 sticky z-10 top-0 gap-1 lg:gap-2 self-start lg:rounded-md lg:bg-transition-color-8 lg:w-60 lg:flex-col lg:p-3">
-                  {searchResult.monsters && searchResult.monsters?.length > 0 && (
-                    <Button
-                      className="lg:w-full"
-                      level="tertiary"
-                      onClick={() => {
-                        searchResult.monsters && setResultTaleContent(searchResult.monsters);
+          {isNullResult ? (
+            <div className="NullResult flex h-full flex-1 flex-col items-center justify-center gap-12 p-6 lg:p-0">
+              <span className="NullResultWarring text-xl font-bold leading-loose lg:text-2xl">
+                {dictionary.ui.root.nullSearchResultWarring}
+              </span>
+              <p className="NullResultTips text-center leading-loose text-accent-color-70">
+                {dictionary.ui.root.nullSearchResultTips.split("\n").map((line, index) => (
+                  <React.Fragment key={index}>
+                    {line}
+                    <br />
+                  </React.Fragment>
+                ))}
+              </p>
+            </div>
+          ) : (
+            <React.Fragment>
+              <motion.div
+                variants={{
+                  open: {
+                    clipPath: "inset(0% 0% 0% 0% round 12px)",
+                    transition: {
+                      type: "spring",
+                      bounce: 0,
+                      duration: 0.7,
+                      delayChildren: 0.3,
+                      staggerChildren: 0.05,
+                    },
+                  },
+                  closed: {
+                    clipPath: "inset(10% 50% 90% 50% round 12px)",
+                    transition: {
+                      type: "spring",
+                      bounce: 0,
+                      duration: 0.3,
+                    },
+                  },
+                }}
+                className="Tab flex w-full gap-1 self-start bg-primary-color py-1 lg:w-60 lg:flex-col lg:gap-2 lg:rounded-md lg:bg-transition-color-8 lg:p-3"
+              >
+                {searchResult.monsters && searchResult.monsters?.length > 0 && (
+                  <Button
+                    className="lg:w-full"
+                    level="tertiary"
+                    onClick={() => {
+                      searchResult.monsters && setResultTaleContent(searchResult.monsters);
+                    }}
+                  >
+                    <IconCalendar />
+                    <span className="w-full text-left">{dictionary.ui.root.monsters}</span>
+                  </Button>
+                )}
+                {searchResult.skills && searchResult.skills.length > 0 && (
+                  <Button
+                    className="lg:w-full"
+                    level="tertiary"
+                    onClick={() => {
+                      searchResult.skills && setResultTaleContent(searchResult.skills);
+                    }}
+                  >
+                    <IconBasketball />
+                    <span className="w-full text-left">{dictionary.ui.root.skills}</span>
+                  </Button>
+                )}
+                {searchResult.crystals && searchResult.crystals.length > 0 && (
+                  <Button
+                    className="lg:w-full"
+                    level="tertiary"
+                    onClick={() => {
+                      searchResult.crystals && setResultTaleContent(searchResult.crystals);
+                    }}
+                  >
+                    <IconBox2 />
+                    <span className="w-full text-left">{dictionary.ui.root.crystals}</span>
+                  </Button>
+                )}
+              </motion.div>
+              <motion.div
+                variants={{
+                  open: {
+                    clipPath: "inset(0% 0% 0% 0% round 12px)",
+                    transition: {
+                      type: "spring",
+                      bounce: 0,
+                      duration: 0.7,
+                      delayChildren: 0.3,
+                      staggerChildren: 0.05,
+                    },
+                  },
+                  closed: {
+                    clipPath: "inset(10% 50% 90% 50% round 12px)",
+                    transition: {
+                      type: "spring",
+                      bounce: 0,
+                      duration: 0.3,
+                    },
+                  },
+                }}
+                className={`Content flex h-full flex-1 flex-col gap-2 overflow-y-auto rounded-md bg-transition-color-8 p-2 backdrop-blur-md`}
+              >
+                {resultTaleContent.map((item, index) => {
+                  return (
+                    <motion.button
+                      key={index}
+                      className="Item group flex flex-col gap-1 rounded-md border border-transition-color-20 bg-primary-color p-3"
+                      variants={{
+                        open: {
+                          opacity: 1,
+                          y: 0,
+                          transition: { type: "spring", stiffness: 300, damping: 24 },
+                        },
+                        closed: { opacity: 0, y: 20, transition: { duration: 0.2 } },
                       }}
                     >
-                      <IconCalendar />
-                      <span className="w-full text-left">{dictionary.ui.root.monsters}</span>
-                    </Button>
-                  )}
-                  {searchResult.skills && searchResult.skills.length > 0 && (
-                    <Button
-                      className="lg:w-full"
-                      level="tertiary"
-                      onClick={() => {
-                        searchResult.skills && setResultTaleContent(searchResult.skills);
-                      }}
-                    >
-                      <IconBasketball />
-                      <span className="w-full text-left">{dictionary.ui.root.skills}</span>
-                    </Button>
-                  )}
-                  {searchResult.crystals && searchResult.crystals.length > 0 && (
-                    <Button
-                      className="lg:w-full"
-                      level="tertiary"
-                      onClick={() => {
-                        searchResult.crystals && setResultTaleContent(searchResult.crystals);
-                      }}
-                    >
-                      <IconBox2 />
-                      <span className="w-full text-left">{dictionary.ui.root.crystals}</span>
-                    </Button>
-                  )}
-                </div>
-                <div className="Content flex flex-1 flex-col gap-2 rounded-md bg-transition-color-8 p-2 backdrop-blur-md">
-                  {resultTaleContent.map((item, index) => {
-                    return (
-                      <motion.button
-                        key={index}
-                        className="Item flex flex-col gap-2 rounded-md border border-transition-color-20 bg-primary-color p-2"
-                      >
-                        <div className="Name p-1 font-bold">{item?.name}</div>
-                        <div className="Value p-1 text-sm text-accent-color-70">
-                          {item?.relateds.map((related, index) => {
-                            return (
-                              <div key={index} className="pr-2">
-                                {related?.key}: {related?.value}
-                              </div>
-                            );
-                          })}
-                        </div>
-                      </motion.button>
-                    );
-                  })}
-                </div>
-              </React.Fragment>
-            )
-          ) : null}
+                      <div className="Name border-b-2 border-transparent p-1 font-bold group-hover:border-accent-color">
+                        {item?.name}
+                      </div>
+                      <div className="Value p-1 text-sm text-accent-color-70 group-hover:text-accent-color">
+                        {item?.relateds.map((related, index) => {
+                          return (
+                            <div key={index} className="pr-2">
+                              {related?.key}: {related?.value}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </motion.button>
+                  );
+                })}
+              </motion.div>
+            </React.Fragment>
+          )}
         </motion.div>
         <motion.div
-          className={`Bottom ${resultDialogOpened ? "pointer-events-none invisible h-0 overflow-hidden p-0 opacity-0" : "pointer-events-auto visible p-6 opacity-100 lg:py-20"} flex flex-none flex-col items-center bg-accent-color lg:bg-transparent`}
+          className={`Bottom flex-none flex-col items-center bg-accent-color lg:bg-transparent`}
+          animate={resultDialogOpened ? "open" : "closed"}
+          variants={{
+            open: {
+              opacity: 0,
+              padding: 0,
+              display: "none",
+            },
+            closed: {
+              opacity: 1,
+              padding: "1.5rem",
+              paddingTop: isPC ? "5rem" : "1.5rem",
+              paddingBottom: isPC ? "5rem" : "1.5rem",
+              display: "flex",
+            },
+          }}
         >
           <div className="Content flex flex-wrap gap-3 rounded-md backdrop-blur lg:flex-1 lg:bg-transition-color-8 lg:p-3">
             <Link href={"/monster"} className=" flex-none basis-[calc(33.33%-8px)] overflow-hidden lg:basis-auto">
@@ -522,7 +662,7 @@ export default function IndexPageClient(props: {
             </Link>
           </div>
         </motion.div>
-      </div>
+      </motion.div>
     </React.Fragment>
   );
 }
