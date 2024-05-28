@@ -48,7 +48,6 @@ export default function IndexPageClient(props: {
   crystalList: Crystal[];
 }) {
   const { dictionary, session, skillList, monsterList, crystalList } = props;
-  const screen = globalThis.screen;
 
   type FinalResult = Partial<Record<keyof (typeof dictionary)["ui"]["root"], Result[]>>;
 
