@@ -162,7 +162,10 @@ export default function IndexPageClient(props: {
         setResultDialogOpened(false);
         return;
       }
-      setResultDialogOpened(true);
+      if (!resultDialogOpened) {
+        setResultDialogOpened(true);
+        history.pushState({ popup: true }, "");
+      }
       const finalResult: FinalResult = {
         monsters: searchMonster(key),
         skills: searchSkill(key),
@@ -176,7 +179,7 @@ export default function IndexPageClient(props: {
         }
       });
     },
-    [searchCrystal, searchMonster, searchSkill],
+    [resultDialogOpened, searchCrystal, searchMonster, searchSkill],
   );
 
   useEffect(() => {
@@ -201,6 +204,12 @@ export default function IndexPageClient(props: {
       }
     };
 
+    // 浏览器后退事件监听
+    const handlePopState = () => {
+      setResultDialogOpened(false);
+      history.replaceState(null, "", location.href);
+    };
+
     // 媒体查询
     const mediaQuery = window.matchMedia("(max-width: 1024px)");
 
@@ -215,11 +224,13 @@ export default function IndexPageClient(props: {
     document.addEventListener("keydown", handleEnterKeyPress);
     document.addEventListener("keydown", handleEscapeKeyPress);
     mediaQuery.addEventListener("change", handleMediaQueryChange);
+    window.addEventListener("popstate", handlePopState);
 
     return () => {
       document.removeEventListener("keydown", handleEnterKeyPress);
       document.removeEventListener("keydown", handleEscapeKeyPress);
       mediaQuery.removeEventListener("change", handleMediaQueryChange);
+      window.removeEventListener("popstate", handlePopState);
     };
   }, [
     dictionary.ui.index.goodAfternoon,
@@ -282,7 +293,7 @@ export default function IndexPageClient(props: {
           </motion.div>
           <motion.div className="FunctionBox flex w-full flex-col items-center justify-center lg:flex-row">
             <motion.div
-              className="BackButton w-full flex-none lg:w-60"
+              className="BackButton hidden w-full flex-none lg:flex lg:w-60"
               animate={resultDialogOpened ? "open" : "closed"}
               variants={{
                 open: {
