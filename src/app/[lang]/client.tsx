@@ -349,7 +349,7 @@ export default function IndexPageClient(props: {
               <Button
                 level="tertiary"
                 icon={<IconSearch />}
-                className="hidden bg-transparent focus-within:outline-none lg:flex"
+                className="flex lg:bg-transparent focus-within:outline-none"
                 onClick={() => search(searchInputValue)}
               ></Button>
             </motion.div>
