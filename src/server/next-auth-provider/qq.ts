@@ -102,7 +102,7 @@ export default function QQProvider<P extends QQProfile>(
         id: profile.open_id,
         name: profile.nickname,
         image: profile.figureurl,
-        role: "USER",
+        userRole: "USER",
       };
     },
     style: {
