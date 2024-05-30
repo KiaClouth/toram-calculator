@@ -57,6 +57,13 @@ export const metadata: Metadata = {
   other: {
     // 百度HTML标签验证字段
     "baidu-site-verification": "codeva-RFvyQ61tbi",
+    // 增加两种 theme-color
+    "theme-color-light": "#ffffff",
+    "theme-color-dark": "#373737",
+  },
+  // 添加 theme-color Meta 标签
+  viewport: {
+    viewportFit: 'cover',
   },
 };
 

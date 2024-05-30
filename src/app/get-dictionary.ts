@@ -5,8 +5,6 @@ import zh_TW from "~/app/dictionaries/zh_TW"
 import en from "~/app/dictionaries/en"
 import ja from "~/app/dictionaries/ja"
 
-// We enumerate all dictionaries here for better linting and typescript support
-// We also get the default import for cleaner types
 const dictionaries = {
   zh_CN: zh_CN,
   zh_TW: zh_TW,
