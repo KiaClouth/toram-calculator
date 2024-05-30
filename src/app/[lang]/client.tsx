@@ -329,6 +329,7 @@ export default function IndexPageClient(props: {
               }}
             >
               <input
+                id="searchInput-PC"
                 type="text"
                 placeholder={greetings + "," + (session?.user.name ?? dictionary.ui.adventurer)}
                 onFocus={() => setSearchInputFocused(true)}
@@ -338,6 +339,7 @@ export default function IndexPageClient(props: {
                 className="hidden w-full flex-1 rounded px-4 py-2 text-lg font-bold mix-blend-multiply placeholder:text-base placeholder:font-normal placeholder:text-accent-color-50 focus-within:outline-none lg:flex lg:bg-transparent"
               />
               <input
+                id="searchInput-Mobile"
                 type="text"
                 placeholder={dictionary.ui.searchPlaceholder}
                 onFocus={() => setSearchInputFocused(true)}

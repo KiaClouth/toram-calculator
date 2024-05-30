@@ -14,13 +14,13 @@
   "prefer_related_applications": true,
   "screenshots": [
     {
-      "src": "app-image/screenShotPC.jpg",
+      "src": "app-image/screenShotPC.png",
       "sizes": "1920x1080",
       "form_factor": "wide",
       "label": "wide screenshot."
     },
     {
-      "src": "app-image/screenShotMobile.jpg",
+      "src": "app-image/screenShotMobile.png",
       "sizes": "375x812",
       "form_factor": "narrow",
       "label": "narrow screenshot."

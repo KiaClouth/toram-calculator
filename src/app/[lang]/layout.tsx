@@ -5,8 +5,9 @@ import { cookies } from "next/headers";
 import { TRPCReactProvider } from "~/trpc/react";
 import type { Metadata, Viewport } from "next";
 import type { Locale } from "~/app/i18n-config";
-import { GoogleAnalytics } from "@next/third-parties/google";
+// import { GoogleAnalytics } from "@next/third-parties/google";
 import ThemeProvider from "./_components/themeProvider";
+import Script from "next/script";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -79,8 +80,14 @@ export default async function RootLayout({
             {children}
           </ThemeProvider>
         </TRPCReactProvider>
+        <Script
+          id="umami"
+          defer
+          src="https://cloud.umami.is/script.js"
+          data-website-id="6ab25552-3669-47d1-87ad-41cd21e225fb"
+        ></Script>
       </body>
-      <GoogleAnalytics gaId="G-2QS470LRB3" />
+      {/* <GoogleAnalytics gaId="G-2QS470LRB3" /> */}
     </html>
   );
 }
