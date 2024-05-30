@@ -299,10 +299,12 @@ export default function IndexPageClient(props: {
                 open: {
                   opacity: 1,
                   margin: isPC ? "0rem 0.5rem 0rem 0rem" : "0rem 0rem 0.75rem 0rem",
+                  pointerEvents: "auto",
                 },
                 closed: {
                   margin: isPC ? "0rem -15rem 0rem 0rem" : "0rem 0rem -3rem 0rem",
                   opacity: 0,
+                  pointerEvents: "none",
                 },
               }}
             >
@@ -336,7 +338,7 @@ export default function IndexPageClient(props: {
                 onBlur={() => setSearchInputFocused(false)}
                 value={searchInputValue}
                 onChange={(e) => setSearchInputValue(e.target.value)}
-                className="hidden w-full flex-1 rounded px-4 py-2 text-lg font-bold mix-blend-multiply placeholder:text-base placeholder:font-normal placeholder:text-accent-color-50 focus-within:outline-none lg:flex lg:bg-transparent"
+                className="hidden w-full flex-1 rounded px-4 py-2 text-lg font-bold mix-blend-multiply dark:mix-blend-normal placeholder:text-base placeholder:font-normal placeholder:text-accent-color-50 focus-within:outline-none lg:flex lg:bg-transparent"
               />
               <input
                 id="searchInput-Mobile"
@@ -346,7 +348,7 @@ export default function IndexPageClient(props: {
                 onBlur={() => setSearchInputFocused(false)}
                 value={searchInputValue}
                 onChange={(e) => setSearchInputValue(e.target.value)}
-                className="w-full flex-1 rounded bg-transition-color-8 px-4 py-2 text-lg font-bold mix-blend-multiply backdrop-blur placeholder:font-normal placeholder:text-accent-color-50 lg:hidden"
+                className="w-full flex-1 rounded bg-transition-color-8 px-4 py-2 text-lg font-bold mix-blend-multiply dark:mix-blend-normal backdrop-blur placeholder:font-normal placeholder:text-accent-color-50 lg:hidden"
               />
               <Button
                 level="tertiary"

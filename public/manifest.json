@@ -3,14 +3,14 @@
   "name": "托拉姆计算器-ToramCalculactor",
   "short_name": "托拉姆计算器",
   "categories": "games",
-  "theme_color": "#ffffff",
-  "background_color": "#ffffff",
+  "theme_color": "#373737",
+  "background_color": "#888888",
   "display": "standalone",
   "orientation": "portrait",
   "scope": "/",
   "start_url": "/",
   "description": "一个简单的托拉姆数值计算器：角色配置、连击计算等",
-  "display_override": ["fullscreen", "minimal-ui"],
+  "display_override": ["fullscreen", "minimal-ui","window-controls-overlay"],
   "prefer_related_applications": true,
   "screenshots": [
     {
