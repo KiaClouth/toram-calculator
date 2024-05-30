@@ -11,9 +11,9 @@ const ThemeSwitch = () => {
   const setThemeColorMetaAttr = useCallback(
     (themeString: typeof theme) => {
       if (themeString === "dark") {
-        themeColorMeta?.setAttribute("content", `#373737`);
-      } else if (themeString === "light") {
         themeColorMeta?.setAttribute("content", `#ffffff`);
+      } else if (themeString === "light") {
+        themeColorMeta?.setAttribute("content", `#373737`);
       }
     },
     [themeColorMeta],
@@ -21,9 +21,8 @@ const ThemeSwitch = () => {
 
   useEffect(() => {
     setThemeColorMeta(document.querySelector('meta[name="theme-color"]'));
-    setThemeColorMetaAttr(theme);
     setMounted(true);
-  }, [setThemeColorMetaAttr, theme, themeColorMeta]);
+  }, [ theme]);
 
   const handleClick = () => {
     setThemeColorMetaAttr(theme);

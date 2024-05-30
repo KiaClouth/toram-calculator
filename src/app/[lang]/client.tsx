@@ -1,6 +1,6 @@
 "use client";
 import { type getDictionary } from "~/app/get-dictionary";
-import React, { useCallback, useEffect, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   IconBack,
   IconBasketball,
@@ -25,6 +25,7 @@ import { type SkillCost, type SkillEffect, type Skill } from "~/server/api/route
 import { type Monster } from "~/server/api/routers/monster";
 import { type Crystal } from "~/server/api/routers/crystal";
 import { motion } from "framer-motion";
+
 type Related =
   | {
       key: string;
@@ -47,6 +48,7 @@ export default function IndexPageClient(props: {
   skillList: Skill[];
   crystalList: Crystal[];
 }) {
+
   const { dictionary, session, skillList, monsterList, crystalList } = props;
 
   type FinalResult = Partial<Record<keyof (typeof dictionary)["ui"]["root"], Result[]>>;
@@ -338,7 +340,7 @@ export default function IndexPageClient(props: {
                 onBlur={() => setSearchInputFocused(false)}
                 value={searchInputValue}
                 onChange={(e) => setSearchInputValue(e.target.value)}
-                className="hidden w-full flex-1 rounded px-4 py-2 text-lg font-bold mix-blend-multiply dark:mix-blend-normal placeholder:text-base placeholder:font-normal placeholder:text-accent-color-50 focus-within:outline-none lg:flex lg:bg-transparent"
+                className="hidden w-full flex-1 rounded px-4 py-2 text-lg font-bold mix-blend-multiply placeholder:text-base placeholder:font-normal placeholder:text-accent-color-50 focus-within:outline-none dark:mix-blend-normal lg:flex lg:bg-transparent"
               />
               <input
                 id="searchInput-Mobile"
@@ -348,12 +350,12 @@ export default function IndexPageClient(props: {
                 onBlur={() => setSearchInputFocused(false)}
                 value={searchInputValue}
                 onChange={(e) => setSearchInputValue(e.target.value)}
-                className="w-full flex-1 rounded bg-transition-color-8 px-4 py-2 text-lg font-bold mix-blend-multiply dark:mix-blend-normal backdrop-blur placeholder:font-normal placeholder:text-accent-color-50 lg:hidden"
+                className="w-full flex-1 rounded bg-transition-color-8 px-4 py-2 text-lg font-bold mix-blend-multiply backdrop-blur placeholder:font-normal placeholder:text-accent-color-50 dark:mix-blend-normal lg:hidden"
               />
               <Button
                 level="tertiary"
                 icon={<IconSearch />}
-                className="flex lg:bg-transparent focus-within:outline-none"
+                className="flex focus-within:outline-none lg:bg-transparent"
                 onClick={() => search(searchInputValue)}
               ></Button>
             </motion.div>

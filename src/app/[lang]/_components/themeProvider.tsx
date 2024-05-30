@@ -4,7 +4,7 @@ import React from "react";
 
 export default function Provider({ children }: { children: React.ReactNode }) {
   return (
-    <ThemeProvider attribute="class" enableSystem enableColorScheme>
+    <ThemeProvider attribute="class" enableSystem enableColorScheme disableTransitionOnChange>
       {children}
     </ThemeProvider>
   );
