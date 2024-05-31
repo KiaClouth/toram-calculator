@@ -84,10 +84,10 @@ const LineWrappingInput = forwardRef<HTMLTextAreaElement, Props>(function LineWr
         ...(overlapTechnique === "grid" ? { display: "grid" } : { position: "relative" }),
       }}
     >
-      {!readOnly && (
-        <textarea
+      
+      <textarea
           {...props}
-          className={`line-wrapping-input ${props.className ?? ""} w-full flex-1 rounded bg-transition-color-8 px-4 py-2 outline-1 outline-transparent focus-within:bg-transparent focus-within:outline-brand-color-1st hover:bg-transparent hover:outline-brand-color-1st`}
+          className={`line-wrapping-input ${props.className ?? ""} ${readOnly ? "hidden" : ""} w-full flex-1 rounded bg-transition-color-8 px-4 py-2 outline-1 outline-transparent focus-within:bg-transparent focus-within:outline-brand-color-1st hover:bg-transparent hover:outline-brand-color-1st`}
           value={value}
           aria-multiline="false"
           style={{
@@ -121,7 +121,6 @@ const LineWrappingInput = forwardRef<HTMLTextAreaElement, Props>(function LineWr
           rows={1}
           ref={ref}
         />
-      )}
       <div
         className={`line-wrapping-input ${props.className ?? ""} w-full flex-1 rounded px-4 py-2 `}
         style={{

@@ -481,6 +481,7 @@ export default function MonsterForm(props: {
                           type="text"
                           onBlur={field.handleBlur}
                           readOnly={monsterFormState === "DISPLAY"}
+                          autoComplete="off"
                           onChange={(e) => {
                             const target = e.target as HTMLTextAreaElement;
                             field.handleChange(target.value);
