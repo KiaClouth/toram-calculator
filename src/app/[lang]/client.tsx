@@ -28,17 +28,17 @@ import { motion } from "framer-motion";
 
 type Related =
   | {
-    key: string;
-    value: string;
-  }
+      key: string;
+      value: string;
+    }
   | undefined;
 
 type Result =
   | {
-    id: string;
-    name: string;
-    relateds: Related[];
-  }
+      id: string;
+      name: string;
+      relateds: Related[];
+    }
   | undefined;
 
 export default function IndexPageClient(props: {
@@ -48,7 +48,6 @@ export default function IndexPageClient(props: {
   skillList: Skill[];
   crystalList: Crystal[];
 }) {
-
   const { dictionary, session, skillList, monsterList, crystalList } = props;
 
   type FinalResult = Partial<Record<keyof (typeof dictionary)["ui"]["root"], Result[]>>;
@@ -513,7 +512,7 @@ export default function IndexPageClient(props: {
           )}
         </motion.div>
         <motion.div
-          className={`Bottom flex-none flex-col items-center bg-transition-color-8 lg:bg-transparent`}
+          className={`Bottom flex-none flex-col items-center bg-accent-color dark:bg-transition-color-8 lg:bg-transparent dark:lg:bg-transparent`}
           animate={resultDialogOpened ? "open" : "closed"}
           variants={{
             open: {
@@ -531,164 +530,94 @@ export default function IndexPageClient(props: {
           }}
         >
           <div className="Content flex flex-wrap gap-3 rounded-md backdrop-blur lg:flex-1 lg:bg-transition-color-8 lg:p-3">
-            <Link href={"/monster"} className=" flex-none basis-[calc(33.33%-8px)] overflow-hidden lg:basis-auto">
+            <Link href={"/monster"} className=" flex-none basis-[calc(25%-9px)] overflow-hidden lg:basis-auto">
               <Button
-                className="group w-full flex-col rounded-md border-2 border-primary-color-10 bg-primary-color-10 text-sm lg:hidden lg:w-fit lg:flex-row lg:px-4 lg:py-3 lg:text-base"
+                className="group w-full flex-col rounded-md border-2 border-primary-color-10 bg-primary-color-10 dark:bg-primary-color dark:text-accent-color lg:w-fit lg:flex-row lg:bg-accent-color lg:px-4 lg:py-3"
                 level="primary"
                 icon={
                   <IconFaceBrowser className="h-10 w-10 text-brand-color-1st group-hover:text-primary-color lg:h-6 lg:w-6" />
                 }
               >
-                {dictionary.ui.root.monsters}
-              </Button>
-              <Button
-                className="group hidden w-full flex-col rounded-md text-sm lg:flex lg:w-fit lg:flex-row lg:px-4 lg:py-3 lg:text-base"
-                level="primary"
-                icon={
-                  <IconFaceBrowser className="h-10 w-10 text-brand-color-1st group-hover:text-primary-color lg:h-6 lg:w-6" />
-                }
-              >
-                {dictionary.ui.root.monsters}
+                <span className="text-ellipsis text-nowrap text-sm lg:text-base">{dictionary.ui.root.monsters}</span>
               </Button>
             </Link>
-            <Link href={"/skill"} className=" flex-none basis-[calc(33.33%-8px)] overflow-hidden lg:basis-auto">
+            <Link href={"/skill"} className=" flex-none basis-[calc(25%-9px)] overflow-hidden lg:basis-auto">
               <Button
-                className="group w-full flex-col rounded-md border-2 border-primary-color-10 bg-primary-color-10 text-sm lg:hidden lg:w-fit lg:flex-row lg:px-4 lg:py-3 lg:text-base"
+                className="group w-full flex-col rounded-md border-2 border-primary-color-10 bg-primary-color-10 dark:bg-primary-color dark:text-accent-color lg:w-fit lg:flex-row lg:bg-accent-color lg:px-4 lg:py-3"
                 level="primary"
                 icon={
                   <IconFaceBasketball className="h-10 w-10 text-brand-color-2nd group-hover:text-primary-color lg:h-6 lg:w-6" />
                 }
               >
-                {dictionary.ui.root.skills}
-              </Button>
-              <Button
-                className="group hidden w-full flex-col rounded-md text-sm lg:flex lg:w-fit lg:flex-row lg:px-4 lg:py-3 lg:text-base"
-                level="primary"
-                icon={
-                  <IconFaceBasketball className="h-10 w-10 text-brand-color-2nd group-hover:text-primary-color lg:h-6 lg:w-6" />
-                }
-              >
-                {dictionary.ui.root.skills}
+                <span className="text-ellipsis text-nowrap text-sm lg:text-base">{dictionary.ui.root.skills}</span>
               </Button>
             </Link>
-            <Link href={"/equipment"} className=" flex-none basis-[calc(33.33%-8px)] overflow-hidden lg:basis-auto">
+            <Link href={"/equipment"} className=" flex-none basis-[calc(25%-9px)] overflow-hidden lg:basis-auto">
               <Button
-                className="group w-full flex-col rounded-md border-2 border-primary-color-10 bg-primary-color-10 text-sm lg:hidden lg:w-fit lg:flex-row lg:px-4 lg:py-3 lg:text-base"
+                className="group w-full flex-col rounded-md border-2 border-primary-color-10 bg-primary-color-10 dark:bg-primary-color dark:text-accent-color lg:w-fit lg:flex-row lg:bg-accent-color lg:px-4 lg:py-3"
                 level="primary"
                 icon={
                   <IconFaceCategory2 className="h-10 w-10 text-brand-color-3rd group-hover:text-primary-color lg:h-6 lg:w-6" />
                 }
               >
-                {dictionary.ui.root.equipments}
-              </Button>
-              <Button
-                className="group hidden w-full flex-col rounded-md text-sm lg:flex lg:w-fit lg:flex-row lg:px-4 lg:py-3 lg:text-base"
-                level="primary"
-                icon={
-                  <IconFaceCategory2 className="h-10 w-10 text-brand-color-3rd group-hover:text-primary-color lg:h-6 lg:w-6" />
-                }
-              >
-                {dictionary.ui.root.equipments}
+                <span className="text-ellipsis text-nowrap text-sm lg:text-base">{dictionary.ui.root.equipments}</span>
               </Button>
             </Link>
-            <Link href={"/crystal"} className=" flex-none basis-[calc(33.33%-8px)] overflow-hidden lg:basis-auto">
+            <Link href={"/crystal"} className=" flex-none basis-[calc(25%-9px)] overflow-hidden lg:basis-auto">
               <Button
-                className="group w-full flex-col rounded-md border-2 border-primary-color-10 bg-primary-color-10 text-sm lg:hidden lg:w-fit lg:flex-row lg:px-4 lg:py-3 lg:text-base"
+                className="group w-full flex-col rounded-md border-2 border-primary-color-10 bg-primary-color-10 dark:bg-primary-color dark:text-accent-color lg:w-fit lg:flex-row lg:bg-accent-color lg:px-4 lg:py-3"
                 level="primary"
                 icon={
                   <IconFaceBox2 className="h-10 w-10 text-brand-color-1st group-hover:text-primary-color lg:h-6 lg:w-6" />
                 }
               >
-                {dictionary.ui.root.crystals}
-              </Button>
-              <Button
-                className="group hidden w-full flex-col rounded-md text-sm lg:flex lg:w-fit lg:flex-row lg:px-4 lg:py-3 lg:text-base"
-                level="primary"
-                icon={
-                  <IconFaceBox2 className="h-10 w-10 text-brand-color-1st group-hover:text-primary-color lg:h-6 lg:w-6" />
-                }
-              >
-                {dictionary.ui.root.crystals}
+                <span className="text-ellipsis text-nowrap text-sm lg:text-base">{dictionary.ui.root.crystals}</span>
               </Button>
             </Link>
-            <Link href={"/pet"} className=" flex-none basis-[calc(33.33%-8px)] overflow-hidden lg:basis-auto">
+            <Link href={"/pet"} className=" flex-none basis-[calc(25%-9px)] overflow-hidden lg:basis-auto">
               <Button
-                className="group w-full flex-col rounded-md border-2 border-primary-color-10 bg-primary-color-10 text-sm lg:hidden lg:w-fit lg:flex-row lg:px-4 lg:py-3 lg:text-base"
+                className="group w-full flex-col rounded-md border-2 border-primary-color-10 bg-primary-color-10 dark:bg-primary-color dark:text-accent-color lg:w-fit lg:flex-row lg:bg-accent-color lg:px-4 lg:py-3"
                 level="primary"
                 icon={
                   <IconFaceHeart className="h-10 w-10 text-brand-color-2nd group-hover:text-primary-color lg:h-6 lg:w-6" />
                 }
               >
-                {dictionary.ui.root.pets}
-              </Button>
-              <Button
-                className="group hidden w-full flex-col rounded-md text-sm lg:flex lg:w-fit lg:flex-row lg:px-4 lg:py-3 lg:text-base"
-                level="primary"
-                icon={
-                  <IconFaceHeart className="h-10 w-10 text-brand-color-2nd group-hover:text-primary-color lg:h-6 lg:w-6" />
-                }
-              >
-                {dictionary.ui.root.pets}
+                <span className="text-ellipsis text-nowrap text-sm lg:text-base">{dictionary.ui.root.pets}</span>
               </Button>
             </Link>
-            <Link href={"/building"} className=" flex-none basis-[calc(33.33%-8px)] overflow-hidden lg:basis-auto">
+            <Link href={"/building"} className=" flex-none basis-[calc(25%-9px)] overflow-hidden lg:basis-auto">
               <Button
-                className="group w-full flex-col rounded-md border-2 border-primary-color-10 bg-primary-color-10 text-sm lg:hidden lg:w-fit lg:flex-row lg:px-4 lg:py-3 lg:text-base"
+                className="group w-full flex-col rounded-md border-2 border-primary-color-10 bg-primary-color-10 dark:bg-primary-color dark:text-accent-color lg:w-fit lg:flex-row lg:bg-accent-color lg:px-4 lg:py-3"
                 level="primary"
                 icon={
                   <IconFaceLayers className="h-10 w-10 text-brand-color-3rd group-hover:text-primary-color lg:h-6 lg:w-6" />
                 }
               >
-                {dictionary.ui.root.items}
-              </Button>
-              <Button
-                className="group hidden w-full flex-col rounded-md text-sm lg:flex lg:w-fit lg:flex-row lg:px-4 lg:py-3 lg:text-base"
-                level="primary"
-                icon={
-                  <IconFaceLayers className="h-10 w-10 text-brand-color-3rd group-hover:text-primary-color lg:h-6 lg:w-6" />
-                }
-              >
-                {dictionary.ui.root.items}
+                <span className="text-ellipsis text-nowrap text-sm lg:text-base">{dictionary.ui.root.items}</span>
               </Button>
             </Link>
-            <Link href={"/character"} className=" flex-none basis-[calc(33.33%-8px)] overflow-hidden lg:basis-auto">
+            <Link href={"/character"} className=" flex-none basis-[calc(25%-9px)] overflow-hidden lg:basis-auto">
               <Button
-                className="group w-full flex-col rounded-md border-2 border-primary-color-10 bg-primary-color-10 text-sm lg:hidden lg:w-fit lg:flex-row lg:px-4 lg:py-3 lg:text-base"
+                className="group w-full flex-col rounded-md border-2 border-primary-color-10 bg-primary-color-10 dark:bg-primary-color dark:text-accent-color lg:w-fit lg:flex-row lg:bg-accent-color lg:px-4 lg:py-3"
                 level="primary"
                 icon={
                   <IconFaceUser className="h-10 w-10 text-brand-color-1st group-hover:text-primary-color lg:h-6 lg:w-6" />
                 }
               >
-                {dictionary.ui.root.character}
-              </Button>
-              <Button
-                className="group hidden w-full flex-col rounded-md text-sm lg:flex lg:w-fit lg:flex-row lg:px-4 lg:py-3 lg:text-base"
-                level="primary"
-                icon={
-                  <IconFaceUser className="h-10 w-10 text-brand-color-1st group-hover:text-primary-color lg:h-6 lg:w-6" />
-                }
-              >
-                {dictionary.ui.root.character}
+                <span className="text-ellipsis text-nowrap text-sm lg:text-base">{dictionary.ui.root.character}</span>
               </Button>
             </Link>
-            <Link href={"/analyze"} className=" flex-none basis-[calc(33.33%-8px)] overflow-hidden lg:basis-auto">
+            <Link href={"/analyze"} className=" flex-none basis-[calc(25%-9px)] overflow-hidden lg:basis-auto">
               <Button
-                className="group w-full flex-col rounded-md border-2 border-primary-color-10 bg-primary-color-10 text-sm lg:hidden lg:w-fit lg:flex-row lg:px-4 lg:py-3 lg:text-base"
+                className="group w-full flex-col rounded-md border-2 border-primary-color-10 bg-primary-color-10 dark:bg-primary-color dark:text-accent-color lg:w-fit lg:flex-row lg:bg-accent-color lg:px-4 lg:py-3"
                 level="primary"
                 icon={
                   <IconFaceGamepad className="h-10 w-10 text-brand-color-2nd group-hover:text-primary-color lg:h-6 lg:w-6" />
                 }
               >
-                {dictionary.ui.root.comboAnalyze}
-              </Button>
-              <Button
-                className="group hidden w-full flex-col rounded-md text-sm lg:flex lg:w-fit lg:flex-row lg:px-4 lg:py-3 lg:text-base"
-                level="primary"
-                icon={
-                  <IconFaceGamepad className="h-10 w-10 text-brand-color-2nd group-hover:text-primary-color lg:h-6 lg:w-6" />
-                }
-              >
-                {dictionary.ui.root.comboAnalyze}
+                <span className="text-ellipsis text-nowrap text-sm lg:text-base">
+                  {dictionary.ui.root.comboAnalyze}
+                </span>
               </Button>
             </Link>
           </div>
