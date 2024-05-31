@@ -1,6 +1,6 @@
 "use client";
 import { type getDictionary } from "~/app/get-dictionary";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import {
   IconBack,
   IconBasketball,
@@ -25,7 +25,6 @@ import { type SkillCost, type SkillEffect, type Skill } from "~/server/api/route
 import { type Monster } from "~/server/api/routers/monster";
 import { type Crystal } from "~/server/api/routers/crystal";
 import { motion } from "framer-motion";
-import { useTheme } from "next-themes";
 
 type Related =
   | {
@@ -49,16 +48,6 @@ export default function IndexPageClient(props: {
   skillList: Skill[];
   crystalList: Crystal[];
 }) {
-  // 用于pwa状态栏颜色动态切换
-  const { theme } = useTheme();
-  useEffect(() => {
-    const themeColorMeta = document.querySelector('meta[name="theme-color"]')
-    if (theme === "dark") {
-      themeColorMeta?.setAttribute("content", `#373737`);
-    } else if (theme === "light") {
-      themeColorMeta?.setAttribute("content", `#ffffff`);
-    }
-  }, [theme]);
 
   const { dictionary, session, skillList, monsterList, crystalList } = props;
 
@@ -524,7 +513,7 @@ export default function IndexPageClient(props: {
           )}
         </motion.div>
         <motion.div
-          className={`Bottom flex-none flex-col items-center bg-accent-color lg:bg-transparent`}
+          className={`Bottom flex-none flex-col items-center bg-transition-color-8 lg:bg-transparent`}
           animate={resultDialogOpened ? "open" : "closed"}
           variants={{
             open: {
