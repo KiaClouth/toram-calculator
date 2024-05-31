@@ -25,20 +25,21 @@ import { type SkillCost, type SkillEffect, type Skill } from "~/server/api/route
 import { type Monster } from "~/server/api/routers/monster";
 import { type Crystal } from "~/server/api/routers/crystal";
 import { motion } from "framer-motion";
+import { useTheme } from "next-themes";
 
 type Related =
   | {
-      key: string;
-      value: string;
-    }
+    key: string;
+    value: string;
+  }
   | undefined;
 
 type Result =
   | {
-      id: string;
-      name: string;
-      relateds: Related[];
-    }
+    id: string;
+    name: string;
+    relateds: Related[];
+  }
   | undefined;
 
 export default function IndexPageClient(props: {
@@ -48,6 +49,16 @@ export default function IndexPageClient(props: {
   skillList: Skill[];
   crystalList: Crystal[];
 }) {
+  // 用于pwa状态栏颜色动态切换
+  const { theme } = useTheme();
+  useEffect(() => {
+    const themeColorMeta = document.querySelector('meta[name="theme-color"]')
+    if (theme === "dark") {
+      themeColorMeta?.setAttribute("content", `#373737`);
+    } else if (theme === "light") {
+      themeColorMeta?.setAttribute("content", `#ffffff`);
+    }
+  }, [theme]);
 
   const { dictionary, session, skillList, monsterList, crystalList } = props;
 
