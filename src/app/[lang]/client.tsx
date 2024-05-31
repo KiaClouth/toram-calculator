@@ -530,7 +530,7 @@ export default function IndexPageClient(props: {
           }}
         >
           <div className="Content flex flex-wrap gap-3 rounded-md backdrop-blur lg:flex-1 lg:bg-transition-color-8 lg:p-3">
-            <Link href={"/monster"} className=" flex-none basis-[calc(25%-9px)] overflow-hidden lg:basis-auto">
+            <Link href={"/monster"} className=" flex-none basis-[calc(33.33%-8px)] overflow-hidden lg:basis-auto">
               <Button
                 className="group w-full flex-col rounded-md border-2 border-primary-color-10 bg-primary-color-10 dark:bg-primary-color dark:text-accent-color lg:w-fit lg:flex-row lg:bg-accent-color lg:px-4 lg:py-3"
                 level="primary"
@@ -541,7 +541,7 @@ export default function IndexPageClient(props: {
                 <span className="text-ellipsis text-nowrap text-sm lg:text-base">{dictionary.ui.root.monsters}</span>
               </Button>
             </Link>
-            <Link href={"/skill"} className=" flex-none basis-[calc(25%-9px)] overflow-hidden lg:basis-auto">
+            <Link href={"/skill"} className=" flex-none basis-[calc(33.33%-8px)] overflow-hidden lg:basis-auto">
               <Button
                 className="group w-full flex-col rounded-md border-2 border-primary-color-10 bg-primary-color-10 dark:bg-primary-color dark:text-accent-color lg:w-fit lg:flex-row lg:bg-accent-color lg:px-4 lg:py-3"
                 level="primary"
@@ -552,7 +552,7 @@ export default function IndexPageClient(props: {
                 <span className="text-ellipsis text-nowrap text-sm lg:text-base">{dictionary.ui.root.skills}</span>
               </Button>
             </Link>
-            <Link href={"/equipment"} className=" flex-none basis-[calc(25%-9px)] overflow-hidden lg:basis-auto">
+            <Link href={"/equipment"} className=" flex-none basis-[calc(33.33%-8px)] overflow-hidden lg:basis-auto">
               <Button
                 className="group w-full flex-col rounded-md border-2 border-primary-color-10 bg-primary-color-10 dark:bg-primary-color dark:text-accent-color lg:w-fit lg:flex-row lg:bg-accent-color lg:px-4 lg:py-3"
                 level="primary"
@@ -563,7 +563,7 @@ export default function IndexPageClient(props: {
                 <span className="text-ellipsis text-nowrap text-sm lg:text-base">{dictionary.ui.root.equipments}</span>
               </Button>
             </Link>
-            <Link href={"/crystal"} className=" flex-none basis-[calc(25%-9px)] overflow-hidden lg:basis-auto">
+            <Link href={"/crystal"} className=" flex-none basis-[calc(33.33%-8px)] overflow-hidden lg:basis-auto">
               <Button
                 className="group w-full flex-col rounded-md border-2 border-primary-color-10 bg-primary-color-10 dark:bg-primary-color dark:text-accent-color lg:w-fit lg:flex-row lg:bg-accent-color lg:px-4 lg:py-3"
                 level="primary"
@@ -574,7 +574,7 @@ export default function IndexPageClient(props: {
                 <span className="text-ellipsis text-nowrap text-sm lg:text-base">{dictionary.ui.root.crystals}</span>
               </Button>
             </Link>
-            <Link href={"/pet"} className=" flex-none basis-[calc(25%-9px)] overflow-hidden lg:basis-auto">
+            <Link href={"/pet"} className=" flex-none basis-[calc(33.33%-8px)] overflow-hidden lg:basis-auto">
               <Button
                 className="group w-full flex-col rounded-md border-2 border-primary-color-10 bg-primary-color-10 dark:bg-primary-color dark:text-accent-color lg:w-fit lg:flex-row lg:bg-accent-color lg:px-4 lg:py-3"
                 level="primary"
@@ -585,7 +585,7 @@ export default function IndexPageClient(props: {
                 <span className="text-ellipsis text-nowrap text-sm lg:text-base">{dictionary.ui.root.pets}</span>
               </Button>
             </Link>
-            <Link href={"/building"} className=" flex-none basis-[calc(25%-9px)] overflow-hidden lg:basis-auto">
+            <Link href={"/building"} className=" flex-none basis-[calc(33.33%-8px)] overflow-hidden lg:basis-auto">
               <Button
                 className="group w-full flex-col rounded-md border-2 border-primary-color-10 bg-primary-color-10 dark:bg-primary-color dark:text-accent-color lg:w-fit lg:flex-row lg:bg-accent-color lg:px-4 lg:py-3"
                 level="primary"
@@ -596,7 +596,7 @@ export default function IndexPageClient(props: {
                 <span className="text-ellipsis text-nowrap text-sm lg:text-base">{dictionary.ui.root.items}</span>
               </Button>
             </Link>
-            <Link href={"/character"} className=" flex-none basis-[calc(25%-9px)] overflow-hidden lg:basis-auto">
+            <Link href={"/character"} className=" flex-none basis-[calc(33.33%-8px)] overflow-hidden lg:basis-auto">
               <Button
                 className="group w-full flex-col rounded-md border-2 border-primary-color-10 bg-primary-color-10 dark:bg-primary-color dark:text-accent-color lg:w-fit lg:flex-row lg:bg-accent-color lg:px-4 lg:py-3"
                 level="primary"
@@ -607,7 +607,7 @@ export default function IndexPageClient(props: {
                 <span className="text-ellipsis text-nowrap text-sm lg:text-base">{dictionary.ui.root.character}</span>
               </Button>
             </Link>
-            <Link href={"/analyze"} className=" flex-none basis-[calc(25%-9px)] overflow-hidden lg:basis-auto">
+            <Link href={"/analyze"} className=" flex-none basis-[calc(33.33%-8px)] overflow-hidden lg:basis-auto">
               <Button
                 className="group w-full flex-col rounded-md border-2 border-primary-color-10 bg-primary-color-10 dark:bg-primary-color dark:text-accent-color lg:w-fit lg:flex-row lg:bg-accent-color lg:px-4 lg:py-3"
                 level="primary"
