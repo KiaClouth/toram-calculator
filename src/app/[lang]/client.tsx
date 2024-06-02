@@ -132,11 +132,13 @@ export default function IndexPageClient(props: {
         if (_.isArray(obj[key])) {
           const currentArr = obj[key] as unknown[];
           currentArr.forEach((item) => {
-            relateds.concat(keyWordSearch(item as Record<string, unknown>, keyWord, hiddenData, currentPath));
+            const subRealateds = keyWordSearch(item as Record<string, unknown>, keyWord, hiddenData, currentPath);
+            if(subRealateds) relateds = relateds.concat(subRealateds);
           });
         } else if (_.isObject(obj[key])) {
           const currentObj = obj[key] as Record<string, unknown>;
-          relateds.concat(keyWordSearch(currentObj, keyWord, hiddenData, currentPath));
+          const subRealateds = keyWordSearch(currentObj, keyWord, hiddenData, currentPath);
+          if(subRealateds) relateds = relateds.concat(subRealateds);
         } else if (_.isNumber(obj[key])) {
           // console.log("数字类型：", currentPath.join("."), obj[key]);
           const value = obj[key] as number;
@@ -157,7 +159,9 @@ export default function IndexPageClient(props: {
           const value = obj[key] as string;
           // console.log("字符串类型：", currentPath.join("."), obj[key]);
           if (typeof keyWord === "string") {
+            // console.log("在：", value, "中寻找：", keyWord);
             if (value.match(keyWord)) {
+              // console.log("符合条件");
               // 常规字符串匹配
               relateds.push({ key: currentPath.join("."), value: value });
             }
@@ -167,6 +171,7 @@ export default function IndexPageClient(props: {
         }
       });
       if (relateds.length > 0) {
+        // console.log("在：", path.join("."), "匹配的结果：", relateds);
         return relateds;
       }
     },
@@ -185,6 +190,7 @@ export default function IndexPageClient(props: {
             })
           : null;
       });
+      // console.log("怪物搜索结果：", result);
       return result;
     },
     [keyWordSearch, monsterHiddenData, monsterList],
@@ -194,6 +200,7 @@ export default function IndexPageClient(props: {
     (key: string | number) => {
       const result: Result[] = [];
       skillList.forEach((skill) => {
+        // console.log("技能：", skill, "搜索结果：", keyWordSearch(skill, key, skillHiddenData));
         keyWordSearch(skill, key, skillHiddenData)
           ? result.push({
               name: skill.name,
@@ -202,6 +209,7 @@ export default function IndexPageClient(props: {
             })
           : null;
       });
+      // console.log("技能搜索结果：", result);
       return result;
     },
     [keyWordSearch, skillHiddenData, skillList],
@@ -219,6 +227,7 @@ export default function IndexPageClient(props: {
             })
           : null;
       });
+      // console.log("锻晶搜索结果：", result);
       return result;
     },
     [crystalHiddenData, crystalList, keyWordSearch],
@@ -251,11 +260,10 @@ export default function IndexPageClient(props: {
       Object.entries(finalResult).forEach(([_key, value]) => {
         if (value.length > 0) {
           setIsNullResult(false);
-          resultListSate.push(true);
         }
+        resultListSate.push(true);
       });
       setResultListState(resultListSate);
-      console.log(resultListSate);
     },
     [resultDialogOpened, searchCrystal, searchMonster, searchSkill],
   );
@@ -529,7 +537,7 @@ export default function IndexPageClient(props: {
               }}
               className={`Content flex h-full flex-1 flex-col gap-2 overflow-y-auto rounded-md bg-transition-color-8 p-2 backdrop-blur-md`}
             >
-              {Object.entries(searchResult).map(([key, value], groupIndex) => {
+                {Object.entries(searchResult).map(([key, value], groupIndex) => {
                 let icon: React.ReactNode = null;
                 let groupName = "未知分类";
                 switch (key) {
