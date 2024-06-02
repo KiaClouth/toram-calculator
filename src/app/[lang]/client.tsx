@@ -14,6 +14,7 @@ import {
   IconFaceHeart,
   IconFaceLayers,
   IconFaceUser,
+  IconLeft,
   IconLogoText,
   IconSearch,
 } from "./_components/iconsList";
@@ -25,19 +26,23 @@ import { type SkillCost, type SkillEffect, type Skill } from "~/server/api/route
 import { type Monster } from "~/server/api/routers/monster";
 import { type Crystal } from "~/server/api/routers/crystal";
 import { motion } from "framer-motion";
+import { evaluate } from "mathjs";
+
+type DataType = Monster | Skill | Crystal;
+type DataName = "monsters" | "skills" | "crystals";
 
 type Related =
   | {
       key: string;
-      value: string;
+      value: string | number;
     }
   | undefined;
 
 type Result =
   | {
-      id: string;
       name: string;
       relateds: Related[];
+      data: DataType;
     }
   | undefined;
 
@@ -50,7 +55,7 @@ export default function IndexPageClient(props: {
 }) {
   const { dictionary, session, skillList, monsterList, crystalList } = props;
 
-  type FinalResult = Partial<Record<keyof (typeof dictionary)["ui"]["root"], Result[]>>;
+  type FinalResult = Partial<Record<DataName, Result[]>>;
 
   const [greetings, setGreetings] = React.useState(dictionary.ui.index.goodMorning);
   const [searchInputFocused, setSearchInputFocused] = React.useState(false);
@@ -61,70 +66,123 @@ export default function IndexPageClient(props: {
     crystals: [],
   });
   const [resultDialogOpened, setResultDialogOpened] = React.useState(false);
-  const [resultTaleContent, setResultTaleContent] = React.useState<Result[]>([]);
   const [isNullResult, setIsNullResult] = React.useState(true);
+  const [resultListSate, setResultListState] = React.useState<boolean[]>([]);
+  const [currentCardId, setCurrentCardId] = React.useState<string>("defaultId");
 
   const [isPC, setIsPC] = React.useState(true);
 
   // 搜索函数
-  const monsterHiddenData: Array<keyof Monster> = useMemo(
-    () => ["id", "updatedAt", "updatedByUserId", "state", "createdByUserId", "specialBehavior"],
+  const monsterHiddenData = useMemo<Array<keyof Monster>>(
+    () => [
+      "id",
+      "updatedAt",
+      "updatedByUserId",
+      "state",
+      "createdByUserId",
+      "specialBehavior",
+      "viewCount",
+      "usageCount",
+    ],
     [],
   );
-  const skillHiddenData: Array<keyof (Skill & SkillEffect & SkillCost)> = useMemo(
+  const skillHiddenData = useMemo<Array<keyof (Skill & SkillEffect & SkillCost)>>(
     () => [
       "id",
       "state",
+      "level",
       "skillEffectId",
       "belongToskillId",
       "updatedAt",
       "updatedByUserId",
       "createdAt",
       "createdByUserId",
+      "viewCount",
+      "usageCount",
     ],
     [],
   );
-  const crystalHiddenData: Array<keyof Crystal> = useMemo(
-    () => ["id", "state", "updatedAt", "updatedByUserId", "createdAt", "createdByUserId", "modifiersListId"],
+  const crystalHiddenData = useMemo<Array<keyof Crystal>>(
+    () => [
+      "id",
+      "state",
+      "front",
+      "updatedAt",
+      "updatedByUserId",
+      "createdAt",
+      "createdByUserId",
+      "modifiersListId",
+      "viewCount",
+      "usageCount",
+    ],
     [],
   );
 
   const keyWordSearch = useCallback(
-    <T extends Record<string, unknown>>(obj: T, keyWord: string, hiddenData: string[], path: string[] = []) => {
-      const relateds: Related[] = [];
+    <T extends Record<string, unknown>>(
+      obj: T,
+      keyWord: string | number,
+      hiddenData: string[],
+      path: string[] = [],
+      relateds: Related[] = [],
+    ): Related[] | undefined => {
       Object.keys(obj).forEach((key) => {
         const currentPath = [...path, key];
         if (hiddenData.some((data) => data === key)) return;
         if (_.isArray(obj[key])) {
           const currentArr = obj[key] as unknown[];
           currentArr.forEach((item) => {
-            keyWordSearch(item as Record<string, unknown>, keyWord, hiddenData, currentPath);
+            relateds.concat(keyWordSearch(item as Record<string, unknown>, keyWord, hiddenData, currentPath));
           });
-        }
-        if (_.isObject(obj[key])) {
+        } else if (_.isObject(obj[key])) {
           const currentObj = obj[key] as Record<string, unknown>;
-          keyWordSearch(currentObj, keyWord, hiddenData, currentPath);
-        }
-        if (_.isString(obj[key])) {
-          const value = obj[key] as string;
-          if (value.match(keyWord)) {
+          relateds.concat(keyWordSearch(currentObj, keyWord, hiddenData, currentPath));
+        } else if (_.isNumber(obj[key])) {
+          // console.log("数字类型：", currentPath.join("."), obj[key]);
+          const value = obj[key] as number;
+          if (value === keyWord) {
             relateds.push({ key: currentPath.join("."), value: value });
+          } else if (typeof keyWord === "string") {
+            try {
+              // const node = parse(keyWord);
+              // const nodeString = node.toString();
+              // math表达式匹配
+              // console.log("准备评估：", keyWord, "上下文为：", { [`${key}`]: value }, "节点类型为：", node.type);
+              if (evaluate(keyWord, { [`${key}`]: value })) {
+                relateds.push({ key: currentPath.join("."), value: value });
+              }
+            } catch (error) {}
           }
+        } else if (_.isString(obj[key])) {
+          const value = obj[key] as string;
+          // console.log("字符串类型：", currentPath.join("."), obj[key]);
+          if (typeof keyWord === "string") {
+            if (value.match(keyWord)) {
+              // 常规字符串匹配
+              relateds.push({ key: currentPath.join("."), value: value });
+            }
+          }
+        } else {
+          // console.log("未知类型：", currentPath.join("."), obj[key]);
         }
       });
       if (relateds.length > 0) {
-        return { id: obj.id as string, name: obj.name as string, relateds: relateds };
+        return relateds;
       }
     },
     [],
   );
 
   const searchMonster = useCallback(
-    (key: string) => {
+    (key: string | number) => {
       const result: Result[] = [];
       monsterList.forEach((monster) => {
         keyWordSearch(monster, key, monsterHiddenData)
-          ? result.push(keyWordSearch(monster, key, monsterHiddenData))
+          ? result.push({
+              name: monster.name,
+              relateds: keyWordSearch(monster, key, monsterHiddenData)!,
+              data: monster,
+            })
           : null;
       });
       return result;
@@ -133,10 +191,16 @@ export default function IndexPageClient(props: {
   );
 
   const searchSkill = useCallback(
-    (key: string) => {
+    (key: string | number) => {
       const result: Result[] = [];
       skillList.forEach((skill) => {
-        keyWordSearch(skill, key, skillHiddenData) ? result.push(keyWordSearch(skill, key, skillHiddenData)) : null;
+        keyWordSearch(skill, key, skillHiddenData)
+          ? result.push({
+              name: skill.name,
+              relateds: keyWordSearch(skill, key, skillHiddenData)!,
+              data: skill,
+            })
+          : null;
       });
       return result;
     },
@@ -144,11 +208,15 @@ export default function IndexPageClient(props: {
   );
 
   const searchCrystal = useCallback(
-    (key: string) => {
+    (key: string | number) => {
       const result: Result[] = [];
       crystalList.forEach((crystal) => {
         keyWordSearch(crystal, key, crystalHiddenData)
-          ? result.push(keyWordSearch(crystal, key, crystalHiddenData))
+          ? result.push({
+              name: crystal.name,
+              relateds: keyWordSearch(crystal, key, crystalHiddenData)!,
+              data: crystal,
+            })
           : null;
       });
       return result;
@@ -167,18 +235,27 @@ export default function IndexPageClient(props: {
         setResultDialogOpened(true);
         history.pushState({ popup: true }, "");
       }
+
+      const parsedInput = parseFloat(key);
+      const isNumber = !isNaN(parsedInput) && key.trim() !== "";
+      const searchValue = isNumber ? parsedInput : key;
+
       const finalResult: FinalResult = {
-        monsters: searchMonster(key),
-        skills: searchSkill(key),
-        crystals: searchCrystal(key),
+        monsters: searchMonster(searchValue),
+        skills: searchSkill(searchValue),
+        crystals: searchCrystal(searchValue),
       };
       setSearchResult(finalResult);
+      // 动态初始化列表状态
+      const resultListSate: boolean[] = [];
       Object.entries(finalResult).forEach(([_key, value]) => {
         if (value.length > 0) {
           setIsNullResult(false);
-          setResultTaleContent(value);
+          resultListSate.push(true);
         }
       });
+      setResultListState(resultListSate);
+      console.log(resultListSate);
     },
     [resultDialogOpened, searchCrystal, searchMonster, searchSkill],
   );
@@ -294,17 +371,18 @@ export default function IndexPageClient(props: {
           </motion.div>
           <motion.div className="FunctionBox flex w-full flex-col items-center justify-center lg:flex-row">
             <motion.div
-              className="BackButton hidden w-full flex-none lg:flex lg:w-60"
+              className="BackButton hidden w-full flex-none self-start lg:flex lg:w-60"
               animate={resultDialogOpened ? "open" : "closed"}
+              layout
               variants={{
                 open: {
                   opacity: 1,
-                  margin: isPC ? "0rem 0.5rem 0rem 0rem" : "0rem 0rem 0.75rem 0rem",
+                  margin: isPC ? "0rem 0rem 0rem 0rem" : "0rem 0rem 0.75rem 0rem",
                   pointerEvents: "auto",
                 },
                 closed: {
-                  margin: isPC ? "0rem -15rem 0rem 0rem" : "0rem 0rem -3rem 0rem",
                   opacity: 0,
+                  margin: isPC ? "0rem 0rem 0rem 0rem" : "0rem 0rem -3rem 0rem",
                   pointerEvents: "none",
                 },
               }}
@@ -314,20 +392,21 @@ export default function IndexPageClient(props: {
                 onClick={() => {
                   setResultDialogOpened(false);
                 }}
+                className="w-full"
               >
                 <IconBack />
                 <span className="w-full text-left">{dictionary.ui.back}</span>
               </Button>
             </motion.div>
             <motion.div
-              className={`SearchBox border-b-none flex w-full items-center gap-1 border-transition-color-20 p-0.5 focus-within:border-accent-color hover:border-accent-color  lg:border-b-2 lg:focus-within:max-w-[426px] lg:hover:max-w-[426px]`}
+              className={`SearchBox border-b-none box-content flex w-full items-center gap-1 border-transition-color-20 p-0.5 focus-within:border-accent-color hover:border-accent-color  lg:border-b-2 lg:focus-within:px-4 lg:hover:px-4`}
               animate={resultDialogOpened ? "open" : "closed"}
               variants={{
                 open: {
-                  maxWidth: `100vw`,
+                  width: `100%`,
                 },
                 closed: {
-                  maxWidth: isPC ? `400px` : `100vw`,
+                  width: isPC ? `400px` : `100%`,
                 },
               }}
             >
@@ -358,6 +437,7 @@ export default function IndexPageClient(props: {
                 onClick={() => search(searchInputValue)}
               ></Button>
             </motion.div>
+            <motion.div className="hidden w-60 flex-none lg:flex"></motion.div>
           </motion.div>
         </motion.div>
         <motion.div
@@ -369,7 +449,9 @@ export default function IndexPageClient(props: {
               transform: "translateY(0px)",
               padding: isPC ? "0rem" : "0.75rem",
               paddingTop: "0rem",
-              opacity: 1,
+              transitionEnd: {
+                opacity: 1,
+              },
             },
             closed: {
               flex: "0 0 0%",
@@ -384,131 +466,203 @@ export default function IndexPageClient(props: {
               <span className="NullResultWarring text-xl font-bold leading-loose lg:text-2xl">
                 {dictionary.ui.root.nullSearchResultWarring}
               </span>
-              <p className="NullResultTips text-center leading-loose text-accent-color-70">
+              <motion.p
+                className="NullResultTips text-center leading-loose text-accent-color-70"
+                variants={{
+                  open: {
+                    clipPath: "inset(0% 0% 0% 0% round 12px)",
+                    transition: {
+                      type: "spring",
+                      bounce: 0,
+                      duration: 0.7,
+                      delayChildren: 0.3,
+                      staggerChildren: 0.05,
+                    },
+                  },
+                  closed: {
+                    clipPath: "inset(10% 50% 90% 50% round 12px)",
+                    transition: {
+                      type: "spring",
+                      bounce: 0,
+                      duration: 0.3,
+                    },
+                  },
+                }}
+              >
                 {dictionary.ui.root.nullSearchResultTips.split("\n").map((line, index) => (
-                  <React.Fragment key={index}>
+                  <motion.span
+                    key={index}
+                    variants={{
+                      open: {
+                        opacity: 1,
+                        y: 0,
+                        transition: { type: "spring", stiffness: 300, damping: 24 },
+                      },
+                      closed: { opacity: 0, y: 20, transition: { duration: 0.2 } },
+                    }}
+                  >
                     {line}
                     <br />
-                  </React.Fragment>
+                  </motion.span>
                 ))}
-              </p>
+              </motion.p>
             </div>
           ) : (
-            <React.Fragment>
-              <motion.div
-                variants={{
-                  open: {
-                    clipPath: "inset(0% 0% 0% 0% round 12px)",
-                    transition: {
-                      type: "spring",
-                      bounce: 0,
-                      duration: 0.7,
-                      delayChildren: 0.3,
-                      staggerChildren: 0.05,
-                    },
+            <motion.div
+              variants={{
+                open: {
+                  clipPath: "inset(0% 0% 0% 0% round 12px)",
+                  transition: {
+                    type: "spring",
+                    bounce: 0,
+                    duration: 0.7,
                   },
-                  closed: {
-                    clipPath: "inset(10% 50% 90% 50% round 12px)",
-                    transition: {
-                      type: "spring",
-                      bounce: 0,
-                      duration: 0.3,
-                    },
+                },
+                closed: {
+                  clipPath: "inset(10% 50% 90% 50% round 12px)",
+                  transition: {
+                    type: "spring",
+                    bounce: 0,
+                    duration: 0.3,
                   },
-                }}
-                className="Tab flex w-full gap-1 self-start bg-primary-color py-1 lg:w-60 lg:flex-col lg:gap-2 lg:rounded-md lg:bg-transition-color-8 lg:p-3"
-              >
-                {searchResult.monsters && searchResult.monsters?.length > 0 && (
-                  <Button
-                    className="lg:w-full"
-                    level="tertiary"
-                    onClick={() => {
-                      searchResult.monsters && setResultTaleContent(searchResult.monsters);
-                    }}
-                  >
-                    <IconCalendar />
-                    <span className="w-full text-left">{dictionary.ui.root.monsters}</span>
-                  </Button>
-                )}
-                {searchResult.skills && searchResult.skills.length > 0 && (
-                  <Button
-                    className="lg:w-full"
-                    level="tertiary"
-                    onClick={() => {
-                      searchResult.skills && setResultTaleContent(searchResult.skills);
-                    }}
-                  >
-                    <IconBasketball />
-                    <span className="w-full text-left">{dictionary.ui.root.skills}</span>
-                  </Button>
-                )}
-                {searchResult.crystals && searchResult.crystals.length > 0 && (
-                  <Button
-                    className="lg:w-full"
-                    level="tertiary"
-                    onClick={() => {
-                      searchResult.crystals && setResultTaleContent(searchResult.crystals);
-                    }}
-                  >
-                    <IconBox2 />
-                    <span className="w-full text-left">{dictionary.ui.root.crystals}</span>
-                  </Button>
-                )}
-              </motion.div>
-              <motion.div
-                variants={{
-                  open: {
-                    clipPath: "inset(0% 0% 0% 0% round 12px)",
-                    transition: {
-                      type: "spring",
-                      bounce: 0,
-                      duration: 0.7,
-                      delayChildren: 0.3,
-                      staggerChildren: 0.05,
-                    },
-                  },
-                  closed: {
-                    clipPath: "inset(10% 50% 90% 50% round 12px)",
-                    transition: {
-                      type: "spring",
-                      bounce: 0,
-                      duration: 0.3,
-                    },
-                  },
-                }}
-                className={`Content flex h-full flex-1 flex-col gap-2 overflow-y-auto rounded-md bg-transition-color-8 p-2 backdrop-blur-md`}
-              >
-                {resultTaleContent.map((item, index) => {
-                  return (
-                    <motion.button
-                      key={index}
-                      className="Item group flex flex-col gap-1 rounded-md border border-transition-color-20 bg-primary-color p-3"
-                      variants={{
-                        open: {
-                          opacity: 1,
-                          y: 0,
-                          transition: { type: "spring", stiffness: 300, damping: 24 },
-                        },
-                        closed: { opacity: 0, y: 20, transition: { duration: 0.2 } },
-                      }}
-                    >
-                      <div className="Name border-b-2 border-transparent p-1 font-bold group-hover:border-accent-color">
-                        {item?.name}
-                      </div>
-                      <div className="Value p-1 text-sm text-accent-color-70 group-hover:text-accent-color">
-                        {item?.relateds.map((related, index) => {
+                },
+              }}
+              className={`Content flex h-full flex-1 flex-col gap-2 overflow-y-auto rounded-md bg-transition-color-8 p-2 backdrop-blur-md`}
+            >
+              {Object.entries(searchResult).map(([key, value], groupIndex) => {
+                let icon: React.ReactNode = null;
+                let groupName = "未知分类";
+                switch (key) {
+                  case "skills":
+                    icon = <IconBasketball />;
+                    groupName = dictionary.ui.root.skills;
+                    break;
+                  case "crystals":
+                    icon = <IconBox2 />;
+                    groupName = dictionary.ui.root.crystals;
+                    break;
+                  case "monsters":
+                    icon = <IconCalendar />;
+                    groupName = dictionary.ui.root.monsters;
+                    break;
+                  default:
+                    break;
+                }
+
+                return (
+                  value.length > 0 && (
+                    <motion.div className="RsultGroup flex flex-col gap-1" key={key}>
+                      <motion.button
+                        onClick={() =>
+                          setResultListState([
+                            ...resultListSate.slice(0, groupIndex),
+                            !resultListSate[groupIndex],
+                            ...resultListSate.slice(groupIndex + 1),
+                          ])
+                        }
+                        className={`Group flex cursor-pointer justify-center gap-2 ${resultListSate[groupIndex] ? "bg-transition-color-8" : " bg-primary-color"} rounded-md px-3 py-4`}
+                      >
+                        {icon}
+                        <span className="w-full text-left">
+                          {groupName} [{value.length}]
+                        </span>
+                        {resultListSate[groupIndex] ? (
+                          <IconLeft className="rotate-[360deg]" />
+                        ) : (
+                          <IconLeft className=" rotate-[270deg]" />
+                        )}
+                      </motion.button>
+                      <motion.div
+                        className="Content flex flex-col gap-1"
+                        transition={{
+                          ease: "easeInOut",
+                        }}
+                        variants={{
+                          open: {
+                            transition: {
+                              delayChildren: 0.3,
+                              staggerChildren: 0.05,
+                            },
+                          },
+                          closed: {},
+                        }}
+                      >
+                        {value.map((item, index) => {
                           return (
-                            <div key={index} className="pr-2">
-                              {related?.key}: {related?.value}
-                            </div>
+                            <motion.button
+                              key={index}
+                              className={`Item group flex flex-col gap-1 ${resultListSate[groupIndex] ? "" : "hidden"} rounded-md border border-transition-color-20 bg-primary-color p-3`}
+                              variants={{
+                                open: {
+                                  opacity: 1,
+                                  y: 0,
+                                  transition: { type: "spring", stiffness: 300, damping: 24 },
+                                },
+                                closed: { opacity: 0, y: 20, transition: { duration: 0.2 } },
+                              }}
+                              onClick={() => {
+                                if (item?.data.id === currentCardId) {
+                                  setCurrentCardId("defaultId");
+                                } else {
+                                  setCurrentCardId(item?.data.id ?? "未知ID");
+                                }
+                              }}
+                            >
+                              <div className="Name border-b-2 border-transparent p-1 font-bold group-hover:border-accent-color">
+                                {item?.name}
+                              </div>
+                              <div className="Value flex w-full flex-col flex-wrap p-1 text-sm text-accent-color-70 group-hover:text-accent-color">
+                                {item?.relateds.map((related, index) => {
+                                  return (
+                                    <motion.div key={index} className="Related w-fit pr-2">
+                                      <span>
+                                        {related?.key}: {related?.value}
+                                      </span>
+                                    </motion.div>
+                                  );
+                                })}
+                              </div>
+                              <motion.div
+                                className={`Data ${currentCardId === item?.data.id ? "flex" : "hidden"} flex-wrap flex-1 w-full rounded-md bg-transition-color-8 p-1`}
+                                // animate={currentCardId === item?.data.id ? "open" : "closed"}
+                                // layout
+                                // variants={{
+                                //   open: {
+                                //     height: "auto",
+                                //     clipPath: "inset(0% 0% 0% 0% round 4px)",
+                                //     transition: {
+                                //       bounce: 0,
+                                //       duration: isPC ? 0.1 : 0.3,
+                                //     },
+                                //   },
+                                //   closed: {
+                                //     height: 0,
+                                //     clipPath: "inset(10% 50% 10% 50% round 4px)",
+                                //     transition: {
+                                //       bounce: 0,
+                                //       duration: isPC ? 0 : 0.3,
+                                //     },
+                                //   },
+                                // }}
+                              >
+                                {JSON.stringify(item?.data, null, 2)
+                                  .split(",")
+                                  .map((line, index) => (
+                                    <motion.span key={index} className="lg:basis-1/4 text-left">
+                                      {line}
+                                      <br />
+                                    </motion.span>
+                                  ))}
+                              </motion.div>
+                            </motion.button>
                           );
                         })}
-                      </div>
-                    </motion.button>
-                  );
-                })}
-              </motion.div>
-            </React.Fragment>
+                      </motion.div>
+                    </motion.div>
+                  )
+                );
+              })}
+            </motion.div>
           )}
         </motion.div>
         <motion.div

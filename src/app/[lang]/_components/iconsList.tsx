@@ -289,6 +289,19 @@ export const IconSearch = (props: React.SVGAttributes<SVGElement>) => {
   );
 };
 
+export const IconLeft = (props: React.SVGAttributes<SVGElement>) => {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+      <path
+        d="M15 19L9.66939 12.7809C9.2842 12.3316 9.2842 11.6684 9.66939 11.2191L15 5"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+};
+
 export const IconLogo = (props: React.SVGAttributes<SVGElement>) => {
   return (
     <svg width="50" height="50" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg" fill="none" {...props}>

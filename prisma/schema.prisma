@@ -630,7 +630,7 @@ model Skill {
     id                          String                      @id @default(uuid())
     state                       State                       @default(PRIVATE)
     skillTreeName               SkillTreeName               @default(BLADE)
-    name                        String?                     @default("SYSTEM")
+    name                        String                      @default("SYSTEM")
     level                       Int                         @default(10)
     skillType                   SkillType                   @default(ACTIVE_SKILL)
     weaponElementDependencyType WeaponElementDependencyType @default(TRUE)
