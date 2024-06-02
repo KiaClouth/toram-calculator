@@ -19,8 +19,14 @@ export default function Template({ children }: { children: React.ReactNode }) {
   return (
     <motion.div
       className="Template @text-transparent flex h-dvh w-dvw flex-col-reverse lg:flex-row"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
+      initial={{
+        opacity: 0,
+        // clipPath: "inset(50% 50% 50% 50% round 36px)",
+      }}
+      animate={{
+        opacity: 1,
+        // clipPath: "inset(0% 0% 0% 0% round 0px)",
+      }}
       transition={{ ease: "easeInOut", duration: 0.75 }}
     >
       {children}
