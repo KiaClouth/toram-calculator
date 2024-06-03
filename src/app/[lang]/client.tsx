@@ -118,6 +118,7 @@ export default function IndexPageClient(props: {
     [],
   );
 
+  // 对象属性字符串匹配方法
   const keyWordSearch = useCallback(
     <T extends Record<string, unknown>>(
       obj: T,
@@ -178,8 +179,31 @@ export default function IndexPageClient(props: {
     [],
   );
 
+  // 变量对象，返回所有字符串属性值组成的数组
+  function getAllValues(obj:Record<string, unknown>) {
+    const values: string[] = [];
+  
+    function collectValues(o: object) {
+      _.forOwn(o, value => {
+        if (_.isObject(value) && !_.isArray(value)) {
+          collectValues(value);
+        } else if (_.isString(value)) {
+          values.push(value);
+        }
+      });
+    }
+  
+    collectValues(obj);
+    return values;
+  }
+
   const searchMonster = useCallback(
     (key: string | number) => {
+      if (typeof key === "string") {
+        // 字典替换
+        // 获取所有字典值
+        console.log(getAllValues(dictionary.db.models.monster))
+      };
       const result: Result[] = [];
       monsterList.forEach((monster) => {
         keyWordSearch(monster, key, monsterHiddenData)
@@ -193,11 +217,16 @@ export default function IndexPageClient(props: {
       // console.log("怪物搜索结果：", result);
       return result;
     },
-    [keyWordSearch, monsterHiddenData, monsterList],
+    [dictionary.db.models.monster, keyWordSearch, monsterHiddenData, monsterList],
   );
 
   const searchSkill = useCallback(
     (key: string | number) => {
+      if (typeof key === "string") {
+        // 字典替换
+        // 获取所有字典值
+        console.log(getAllValues(dictionary.db.models.skill))
+      };
       const result: Result[] = [];
       skillList.forEach((skill) => {
         // console.log("技能：", skill, "搜索结果：", keyWordSearch(skill, key, skillHiddenData));
@@ -212,11 +241,16 @@ export default function IndexPageClient(props: {
       // console.log("技能搜索结果：", result);
       return result;
     },
-    [keyWordSearch, skillHiddenData, skillList],
+    [dictionary.db.models.skill, keyWordSearch, skillHiddenData, skillList],
   );
 
   const searchCrystal = useCallback(
     (key: string | number) => {
+      if (typeof key === "string") {
+        // 字典替换
+        // 获取所有字典值
+        console.log(getAllValues(dictionary.db.models.crystal))
+      };
       const result: Result[] = [];
       crystalList.forEach((crystal) => {
         keyWordSearch(crystal, key, crystalHiddenData)
@@ -230,7 +264,7 @@ export default function IndexPageClient(props: {
       // console.log("锻晶搜索结果：", result);
       return result;
     },
-    [crystalHiddenData, crystalList, keyWordSearch],
+    [crystalHiddenData, crystalList, dictionary.db.models.crystal, keyWordSearch],
   );
 
   const search = useCallback(

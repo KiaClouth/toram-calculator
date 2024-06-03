@@ -288,7 +288,6 @@ const dictionary: dictionary = {
     models: {
       monster: {
         id: "ID",
-        updatedByUserId: "更新者",
         state: "状态",
         name: "名称",
         monsterType: "类型",
@@ -314,15 +313,9 @@ const dictionary: dictionary = {
         difficultyOfRanged: "难度：远程",
         possibilityOfRunningAround: "好动程度",
         specialBehavior: "特殊说明",
-        createdByUserId: "属于[ID]",
-        viewCount: "被查看次数",
-        usageCount: "被使用次数",
-        createdAt: "创建于",
-        updatedAt: "更新于",
-        usageTimestamps: "被使用记录",
-        viewTimestamps: "被查看记录",
         rates: "评分列表",
         dataSources: "数据来源",
+        ...statistics,
       },
       crystal: {
         rates: "评分",
