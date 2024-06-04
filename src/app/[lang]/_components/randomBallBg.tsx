@@ -37,6 +37,7 @@ export default function RandomBallBackground() {
 
     balls.push(ball);
   }
+  
   return (
     <div className="Background -z-10 w-dvw h-dvh fixed">{balls}</div>
   );

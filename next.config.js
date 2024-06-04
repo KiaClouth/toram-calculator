@@ -8,8 +8,6 @@ import withSerwistInit from "@serwist/next";
 const withSerwist = withSerwistInit({
   swSrc: "src/app/sw.ts",
   swDest: "public/sw.js",
-  injectionPoint: "precacheManifest",
-  cacheOnFrontEndNav: true,
   disable: false,
 });
 
@@ -36,17 +34,3 @@ export default withSerwist({
     ],
   },
 });
-
-// const nextConfig = {
-//   images: {
-//     remotePatterns: [
-//       {
-//         protocol: 'https',
-//         hostname: 'assets.example.com',
-//         port: '',
-//         pathname: '/account123/**',
-//       },
-//     ],
-//   },
-// };
-// export default nextConfig
