@@ -10,7 +10,7 @@ const withSerwist = withSerwistInit({
   swDest: "public/sw.js",
   injectionPoint: "precacheManifest",
   cacheOnFrontEndNav: true,
-  disable: true,
+  disable: false,
 });
 
 export default withSerwist({
