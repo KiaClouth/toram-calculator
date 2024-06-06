@@ -1,7 +1,6 @@
 "use client";
 
 import type { $Enums } from "@prisma/client";
-import type { Monster } from "~/server/api/routers/monster";
 import {
   type Column,
   type ColumnDef,
@@ -29,7 +28,7 @@ import {
 import Dialog from "../../_components/dialog";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { useStore } from "~/app/store";
-import { defaultMonster } from "~/app/store";
+import { Monster, defaultMonster } from "~/schema/monster";
 
 interface Props {
   dictionary: ReturnType<typeof getDictionary>;
@@ -115,7 +114,6 @@ export default function MonserPageClient(props: Props) {
     // 搜索时需要忽略的数据
     const monsterHiddenData: Array<keyof Monster> = [
       "id",
-      "state",
       "experience",
       "radius",
       "difficultyOfMelee",

@@ -25,20 +25,13 @@ import { tApi } from "~/trpc/react";
 import { type sApi } from "~/trpc/server";
 import type { getDictionary } from "~/app/get-dictionary";
 import Button from "../../_components/button";
-import { SkillEffectInputSchema, SkillInputSchema } from "~/schema/skillSchema";
 import { type FieldApi, useForm } from "@tanstack/react-form";
 import { zodValidator } from "@tanstack/zod-form-adapter";
 import { ZodFirstPartyTypeKind, type z } from "zod";
-import { type SkillCost, type SkillYield, type $Enums } from "@prisma/client";
 import {
-  defaultSkill,
-  defaultSkillEffect,
-  defaultSkillEffectCost,
-  defaultSkillEffectYield,
   useStore,
 } from "~/app/store";
 import { type Session } from "next-auth";
-import type { Skill, SkillEffect } from "~/server/api/routers/skill";
 import {
   IconElementWater,
   IconElementFire,
@@ -49,13 +42,18 @@ import {
   IconElementNoElement,
 } from "../../_components/iconsList";
 import { useTheme } from "next-themes";
-import { SkillCostSchema, SkillYieldSchema } from "prisma/generated/zod";
+import { Skill, SkillInputSchema, defaultSkill } from "~/schema/skill";
+import { SkillEffect, SkillEffectInputSchema, defaultSkillEffect } from "~/schema/skillEffect";
+import { SkillCost, SkillCostInputSchema, defaultSkillCost } from "~/schema/skillCost";
+import { SkillYield, SkillYieldInputSchema, defaultSkillYield } from "~/schema/skillYield";
+import { defaultStatistics } from "~/schema/statistics";
+import { $Enums } from "@prisma/client";
 
 export default function SkillForm(props: {
   dictionary: ReturnType<typeof getDictionary>;
   session: Session | null;
   defaultSkillList: Skill[];
-  setDefaultSkillList: (list: Awaited<ReturnType<typeof sApi.skill.getUserVisbleList.query>>) => void;
+  setDefaultSkillList: (list: Awaited<ReturnType<typeof sApi.skill.getAll.query>>) => void;
 }) {
   const { dictionary, session, defaultSkillList, setDefaultSkillList } = props;
   // 状态管理参数
@@ -95,12 +93,8 @@ export default function SkillForm(props: {
     "id",
     "createdAt",
     "updatedAt",
-    "viewCount",
-    "usageCount",
     "createdByUserId",
     "updatedByUserId",
-    "viewTimestamps",
-    "usageTimestamps",
   ]);
 
   const [skillEffectHiddenData, setSkillEffectHiddenData] = useState<Array<keyof SkillEffect>>([
@@ -150,10 +144,7 @@ export default function SkillForm(props: {
         }),
         createdAt: new Date(),
         updatedAt: new Date(),
-        usageCount: 0,
-        viewCount: 0,
-        usageTimestamps: [],
-        viewTimestamps: [],
+        statistics: defaultStatistics,
       } satisfies Skill;
       switch (skillFormState) {
         case "CREATE":
@@ -284,7 +275,6 @@ export default function SkillForm(props: {
                       switch (key as keyof Skill) {
                         // case "id":
                         // case "skillEffect":
-                        case "state":
                         case "skillTreeName":
                         // case "name":
                         // case "level":
@@ -444,8 +434,6 @@ export default function SkillForm(props: {
                         // case "usageCount":
                         // case "createdAt":
                         // case "updatedAt":
-                        case "usageTimestamps":
-                        case "viewTimestamps":
                         case "skillEffect":
                           {
                             content = (subObj, i): React.ReactNode => {
@@ -597,7 +585,7 @@ export default function SkillForm(props: {
                                                     subsubObj &&
                                                     Object.entries(subsubObj).map(([subsubKey, _]) => {
                                                       const zodValue =
-                                                        SkillCostSchema.shape[subsubKey as keyof SkillCost];
+                                                        SkillCostInputSchema.shape[subsubKey as keyof SkillCost];
                                                       const valueType = getZodType(zodValue);
                                                       const { ZodNumber, ZodString, ...Others } = ZodFirstPartyTypeKind;
                                                       const inputType = {
@@ -614,7 +602,7 @@ export default function SkillForm(props: {
                                                               validators={{
                                                                 onChangeAsyncDebounceMs: 500,
                                                                 onChangeAsync:
-                                                                  SkillCostSchema.shape[subsubKey as keyof SkillCost],
+                                                                  SkillCostInputSchema.shape[subsubKey as keyof SkillCost],
                                                               }}
                                                             >
                                                               {(subsubField) => (
@@ -711,7 +699,7 @@ export default function SkillForm(props: {
                                                               validators={{
                                                                 onChangeAsyncDebounceMs: 500,
                                                                 onChangeAsync:
-                                                                  SkillCostSchema.shape[subsubKey as keyof SkillCost],
+                                                                SkillCostInputSchema.shape[subsubKey as keyof SkillCost],
                                                               }}
                                                             >
                                                               {(subsubField) => {
@@ -767,7 +755,7 @@ export default function SkillForm(props: {
                                                     // 遍历技能消耗模型
                                                     // 输入框的类型计算
                                                     const zodValue =
-                                                      SkillYieldSchema.shape[subsubKey as keyof SkillYield];
+                                                      SkillYieldInputSchema.shape[subsubKey as keyof SkillYield];
                                                     const valueType = getZodType(zodValue);
                                                     const { ZodNumber, ZodString, ...Others } = ZodFirstPartyTypeKind;
                                                     const inputType = {
@@ -784,7 +772,7 @@ export default function SkillForm(props: {
                                                             validators={{
                                                               onChangeAsyncDebounceMs: 500,
                                                               onChangeAsync:
-                                                                SkillYieldSchema.shape[subsubKey as keyof SkillYield],
+                                                              SkillYieldInputSchema.shape[subsubKey as keyof SkillYield],
                                                             }}
                                                           >
                                                             {(subsubField) => (
@@ -877,7 +865,7 @@ export default function SkillForm(props: {
                                                             validators={{
                                                               onChangeAsyncDebounceMs: 500,
                                                               onChangeAsync:
-                                                                SkillYieldSchema.shape[subsubKey as keyof SkillYield],
+                                                                SkillYieldInputSchema.shape[subsubKey as keyof SkillYield],
                                                             }}
                                                           >
                                                             {(subsubField) => {
@@ -991,8 +979,8 @@ export default function SkillForm(props: {
                                                     console.log(subField.state.value);
                                                     subField.pushValue(
                                                       subKey === "skillCost"
-                                                        ? defaultSkillEffectCost
-                                                        : defaultSkillEffectYield,
+                                                        ? defaultSkillCost
+                                                        : defaultSkillYield,
                                                     );
                                                     console.log(subField.state.value);
                                                   }}
@@ -1136,7 +1124,7 @@ export default function SkillForm(props: {
                           type={inputType}
                           onBlur={field.handleBlur}
                           onChange={(e) =>
-                            field.handleChange(inputType === "number" ? parseFloat(e.target.value) : e.target.value)
+                            field.handleChange(e.target.value)
                           }
                           className={`mt-1 w-full flex-1 rounded px-4 py-2 ${skillFormState === "DISPLAY" ? " pointer-events-none bg-transparent outline-transition-color-20" : " pointer-events-auto bg-transition-color-8"}`}
                         />

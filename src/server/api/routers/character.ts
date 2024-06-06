@@ -1,313 +1,16 @@
 import { PrismaClient, type Prisma } from "@prisma/client";
 import { randomUUID } from "crypto";
 import { z } from "zod";
-import {
-  CharacterInputSchema,
-  ComboInputSchema,
-  ModifiersListInputSchema,
-  PetInputSchema,
-} from "~/schema/characterSchema";
+import { CharacterInclude, CharacterInputSchema } from "~/schema/characterSchema";
+import { ComboInputSchema } from "~/schema/combo";
+import { ModifiersListInputSchema } from "~/schema/modifiersList";
+import { PetInputSchema } from "~/schema/pet";
 
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "~/server/api/trpc";
 
 const prisma = new PrismaClient();
-
-export type Combo = Prisma.ComboGetPayload<{
-  include: {
-    comboStep: true;
-  };
-}>;
-
-export type Character = Prisma.CharacterGetPayload<{
-  include: {
-    mainWeapon: {
-      include: {
-        modifiersList: {
-          include: {
-            modifiers: true;
-          };
-        };
-        crystal: {
-          include: {
-            modifiersList: {
-              include: {
-                modifiers: true;
-              };
-            };
-            rates: true;
-          };
-        };
-      };
-    };
-    subWeapon: {
-      include: {
-        modifiersList: {
-          include: {
-            modifiers: true;
-          };
-        };
-      };
-    };
-    bodyArmor: {
-      include: {
-        modifiersList: {
-          include: {
-            modifiers: true;
-          };
-        };
-        crystal: {
-          include: {
-            modifiersList: {
-              include: {
-                modifiers: true;
-              };
-            };
-            rates: true;
-          };
-        };
-      };
-    };
-    additionalEquipment: {
-      include: {
-        modifiersList: {
-          include: {
-            modifiers: true;
-          };
-        };
-        crystal: {
-          include: {
-            modifiersList: {
-              include: {
-                modifiers: true;
-              };
-            };
-            rates: true;
-          };
-        };
-      };
-    };
-    specialEquipment: {
-      include: {
-        modifiersList: {
-          include: {
-            modifiers: true;
-          };
-        };
-        crystal: {
-          include: {
-            modifiersList: {
-              include: {
-                modifiers: true;
-              };
-            };
-            rates: true;
-          };
-        };
-      };
-    };
-    fashion: {
-      include: {
-        modifiers: true;
-      };
-    };
-    cuisine: {
-      include: {
-        modifiers: true;
-      };
-    };
-    consumableList: {
-      include: {
-        modifiersList: {
-          include: {
-            modifiers: true;
-          };
-        };
-      }
-    };
-    skillList: {
-      include: {
-        skillEffect: {
-          include: {
-            skillCost: true;
-            skillYield: true;
-          };
-        };
-      };
-    };
-    combos: {
-      include: {
-        comboStep: true;
-      };
-    };
-    pet: true;
-    modifiersList: {
-      include: {
-        modifiers: true;
-      };
-    };
-  };
-}>;
-
-const dataType = {
-  mainWeapon: {
-    include: {
-      modifiersList: {
-        include: {
-          modifiers: true,
-        },
-      },
-      crystal: {
-        include: {
-          modifiersList: {
-            include: {
-              modifiers: true,
-            },
-          },
-          rates: true,
-        },
-      },
-    },
-  },
-  subWeapon: {
-    include: {
-      modifiersList: {
-        include: {
-          modifiers: true,
-        },
-      },
-    },
-  },
-  bodyArmor: {
-    include: {
-      modifiersList: {
-        include: {
-          modifiers: true,
-        },
-      },
-      crystal: {
-        include: {
-          modifiersList: {
-            include: {
-              modifiers: true,
-            },
-          },
-          rates: true,
-        },
-      },
-    },
-  },
-  additionalEquipment: {
-    include: {
-      modifiersList: {
-        include: {
-          modifiers: true,
-        },
-      },
-      crystal: {
-        include: {
-          modifiersList: {
-            include: {
-              modifiers: true,
-            },
-          },
-          rates: true,
-        },
-      },
-    },
-  },
-  specialEquipment: {
-    include: {
-      modifiersList: {
-        include: {
-          modifiers: true,
-        },
-      },
-      crystal: {
-        include: {
-          modifiersList: {
-            include: {
-              modifiers: true,
-            },
-          },
-          rates: true,
-        },
-      },
-    },
-  },
-  fashion: {
-    include: {
-      modifiers: true,
-    },
-  },
-  cuisine: {
-    include: {
-      modifiers: true,
-    },
-  },
-  consumableList: {
-    include: {
-      modifiersList: {
-        include: {
-          modifiers: true,
-        },
-      },
-    }
-  },
-  skillList: {
-    include: {
-      skillEffect: {
-        include: {
-          skillCost: true,
-          skillYield: true,
-        },
-      },
-    },
-  },
-  pet: true,
-  combos: {
-    include: {
-      comboStep: true,
-    },
-  },
-  modifiersList: {
-    include: {
-      modifiers: true,
-    },
-  }}
-
 export const characterRouter = createTRPCRouter({
-  getAll: publicProcedure.query(({ ctx }) => {
-    console.log(
-      new Date().toLocaleDateString() +
-        "--" +
-        new Date().toLocaleTimeString() +
-        "--" +
-        (ctx.session?.user.name ?? ctx.session?.user.email) +
-        "请求了完整的技能列表",
-    );
-    return ctx.db.character.findMany({
-      relationLoadStrategy: "join", // or 'query'
-      include: dataType
-    });
-  }),
-
-  getPublicList: publicProcedure.query(({ ctx }) => {
-    console.log(
-      new Date().toLocaleDateString() +
-        "--" +
-        new Date().toLocaleTimeString() +
-        "--" +
-        (ctx.session?.user.name ?? ctx.session?.user.email) +
-        "请求了公用的技能列表",
-    );
-    return ctx.db.character.findMany({
-      where: { state: "PUBLIC" },
-      relationLoadStrategy: "join", // or 'query'
-      include: dataType
-    });
-  }),
-
-  getPrivateList: protectedProcedure.query(({ ctx }) => {
+  getPrivate: protectedProcedure.query(({ ctx }) => {
     console.log(
       new Date().toLocaleDateString() +
         "--" +
@@ -319,14 +22,13 @@ export const characterRouter = createTRPCRouter({
     return ctx.db.character.findMany({
       where: {
         createdByUserId: ctx.session?.user.id,
-        state: "PRIVATE",
       },
       relationLoadStrategy: "join", // or 'query'
-      include: dataType
+      include: CharacterInclude.include,
     });
   }),
 
-  getUserVisbleList: publicProcedure.query(({ ctx }) => {
+  getAll: publicProcedure.query(({ ctx }) => {
     console.log(
       new Date().toLocaleDateString() +
         "--" +
@@ -337,26 +39,22 @@ export const characterRouter = createTRPCRouter({
     );
     if (ctx.session?.user.id) {
       return ctx.db.character.findMany({
-        where: {
-          OR: [{ state: "PUBLIC" }, { createdByUserId: ctx.session?.user.id }],
-        },
         relationLoadStrategy: "join", // or 'query'
-        include: dataType
+        include: CharacterInclude.include,
       });
     }
     return ctx.db.character.findMany({
-      where: { state: "PUBLIC" },
       relationLoadStrategy: "join", // or 'query'
-      include: dataType
+      include: CharacterInclude.include,
     });
   }),
 
   create: protectedProcedure
     .input(
       CharacterInputSchema.omit({ id: true }).extend({
-        combos: z.array(ComboInputSchema.omit({ id: true, characterId: true })),
-        pet: PetInputSchema.omit({ id: true, characterId: true }),
-        modifiersList: ModifiersListInputSchema.omit({ id: true, characterId: true }),
+        combos: z.array(ComboInputSchema.omit({ id: true })),
+        pet: PetInputSchema.omit({ id: true }),
+        modifiersList: ModifiersListInputSchema.omit({ id: true }),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -393,7 +91,7 @@ export const characterRouter = createTRPCRouter({
       }
 
       // 输入内容拆分成4个表的数据
-      const { combos: combosInputArray, ...characterInput } = input;
+      const { combos: combosInputArray, statistics: statisticsInput, ...characterInput } = input;
 
       return prisma.$transaction(async () => {
         const characterId = randomUUID();
@@ -415,7 +113,7 @@ export const characterRouter = createTRPCRouter({
             combos: undefined,
             createdByUserId: userCreate.userId,
           },
-          include: dataType
+          include: CharacterInclude.include,
         });
 
         const combos = combosInputArray.map(async (combosInput) => {
@@ -485,7 +183,7 @@ export const characterRouter = createTRPCRouter({
     }
 
     // 输入内容拆分成4个表的数据
-    const { combos: combosInputArray, ...characterInput } = input;
+    const { combos: combosInputArray, statistics: statisticsInput, ...characterInput } = input;
 
     return prisma.$transaction(async () => {
       const character = await ctx.db.character.update({
@@ -505,7 +203,7 @@ export const characterRouter = createTRPCRouter({
           modifiersList: undefined,
           combos: undefined,
         },
-        include: dataType
+        include: CharacterInclude.include,
       });
 
       const combo = combosInputArray.map(async (effect) => {

@@ -1,7 +1,6 @@
 "use client";
 
 import type { $Enums } from "@prisma/client";
-import type { Skill } from "~/server/api/routers/skill";
 import {
   type Column,
   type ColumnDef,
@@ -29,7 +28,7 @@ import {
 import Dialog from "../../_components/dialog";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { useStore } from "~/app/store";
-import { defaultSkill } from "~/app/store";
+import { type Skill, defaultSkill } from "~/schema/skill";
 
 interface Props {
   dictionary: ReturnType<typeof getDictionary>;
@@ -62,7 +61,6 @@ export default function MonserPageClient(props: Props) {
     // 搜索时需要忽略的数据
     const skillHiddenData: Array<keyof Skill> = [
       "id",
-      "state",
       "updatedAt",
       "updatedByUserId",
       "createdAt",

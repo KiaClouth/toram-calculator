@@ -10,13 +10,13 @@ import Filing from "./_components/filing";
 export default async function Index({ params: { lang } }: { params: { lang: Locale } }) {
   const dictionary = getDictionary(lang);
   const session = await getServerAuthSession();
-  const monsterList = await sApi.monster.getUserVisbleList.query();
-  const skillList = await sApi.skill.getUserVisbleList.query();
-  // const equipmentList = await sApi.equipment.getUserVisbleList.query();
-  const crystalList = await sApi.crystal.getUserVisbleList.query();
-  // const petList = await sApi.pet.getUserVisbleList.query();
-  // const consumableList = await sApi.consumable.getUserVisbleList.query();
-  // const characterList = await sApi.character.getUserVisbleList.query();
+  const monsterList = await sApi.monster.getAll.query();
+  const skillList = await sApi.skill.getAll.query();
+  // const equipmentList = await sApi.equipment.getAll.query();
+  const crystalList = await sApi.crystal.getAll.query();
+  // const petList = await sApi.pet.getAll.query();
+  // const consumableList = await sApi.consumable.getAll.query();
+  // const characterList = await sApi.character.getAll.query();
 
   return (
     <React.Fragment>

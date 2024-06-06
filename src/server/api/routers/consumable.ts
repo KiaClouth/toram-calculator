@@ -2,52 +2,8 @@ import type { Prisma } from "@prisma/client";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 import { ConsumableSchema } from "prisma/generated/zod";
 
-export type Consumable = Prisma.ConsumableGetPayload<{
-  include: {
-      modifiersList: {
-        include: {
-          modifiers: true;
-        };
-      }
-        rates: true;
-  };
-}>;
-
 export const consumableRouter = createTRPCRouter({
-  getall: publicProcedure.query(({ ctx }) => {
-    console.log(
-      new Date().toLocaleDateString() +
-        "--" +
-        new Date().toLocaleTimeString() +
-        "--" +
-        (ctx.session?.user.name ?? ctx.session?.user.email) +
-        "请求了完整的消耗品列表",
-    );
-    return ctx.db.consumable.findMany({
-      include: {
-        rates: true,
-      },
-    });
-  }),
-
-  getPublicList: publicProcedure.query(({ ctx }) => {
-    console.log(
-      new Date().toLocaleDateString() +
-        "--" +
-        new Date().toLocaleTimeString() +
-        "--" +
-        (ctx.session?.user.name ?? ctx.session?.user.email) +
-        "请求了公用的消耗品列表",
-    );
-    return ctx.db.consumable.findMany({
-      where: { state: "PUBLIC" },
-      include: {
-        rates: true,
-      },
-    });
-  }),
-
-  getPrivateList: protectedProcedure.query(({ ctx }) => {
+  getPrivate: protectedProcedure.query(({ ctx }) => {
     console.log(
       new Date().toLocaleDateString() +
         "--" +
@@ -59,15 +15,11 @@ export const consumableRouter = createTRPCRouter({
     return ctx.db.consumable.findMany({
       where: {
         createdByUserId: ctx.session?.user.id,
-        state: "PRIVATE",
-      },
-      include: {
-        rates: true,
       },
     });
   }),
 
-  getUserVisbleList: publicProcedure.query(({ ctx }) => {
+  getAll: publicProcedure.query(({ ctx }) => {
     console.log(
       new Date().toLocaleDateString() +
         "--" +
@@ -78,19 +30,9 @@ export const consumableRouter = createTRPCRouter({
     );
     if (ctx.session?.user.id) {
       return ctx.db.consumable.findMany({
-        where: {
-          OR: [{ state: "PUBLIC" }, { createdByUserId: ctx.session?.user.id }],
-        },
-        include: {
-          rates: true,
-        },
       });
     }
     return ctx.db.consumable.findMany({
-      where: { state: "PUBLIC" },
-      include: {
-        rates: true,
-      },
     });
   }),
 
@@ -166,9 +108,6 @@ export const consumableRouter = createTRPCRouter({
         createdByUserId: userCreate.userId,
         updatedByUserId: userCreate.userId,
       },
-      include: {
-        rates: true,
-      },
     });
   }),
 
@@ -217,9 +156,6 @@ export const consumableRouter = createTRPCRouter({
     return ctx.db.consumable.update({
       where: { id: input.id },
       data: { ...input },
-      include: {
-        rates: true,
-      },
     });
   }),
 })

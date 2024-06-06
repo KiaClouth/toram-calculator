@@ -22,11 +22,13 @@ import Button from "./_components/button";
 import Link from "next/link";
 import { type Session } from "next-auth";
 import * as _ from "lodash-es";
-import { type SkillCost, type SkillEffect, type Skill } from "~/server/api/routers/skill";
-import { type Monster } from "~/server/api/routers/monster";
-import { type Crystal } from "~/server/api/routers/crystal";
 import { motion } from "framer-motion";
 import { evaluate } from "mathjs";
+import { Monster } from "~/schema/monster";
+import { Skill } from "~/schema/skill";
+import { Crystal } from "~/schema/crystal";
+import { SkillEffect } from "~/schema/skillEffect";
+import { SkillCost } from "~/schema/skillCost";
 
 type DataType = Monster | Skill | Crystal;
 type DataName = "monsters" | "skills" | "crystals";
@@ -78,42 +80,31 @@ export default function IndexPageClient(props: {
       "id",
       "updatedAt",
       "updatedByUserId",
-      "state",
       "createdByUserId",
-      "specialBehavior",
-      "viewCount",
-      "usageCount",
     ],
     [],
   );
   const skillHiddenData = useMemo<Array<keyof (Skill & SkillEffect & SkillCost)>>(
     () => [
       "id",
-      "state",
-      "level",
       "skillEffectId",
       "belongToskillId",
       "updatedAt",
       "updatedByUserId",
       "createdAt",
       "createdByUserId",
-      "viewCount",
-      "usageCount",
     ],
     [],
   );
   const crystalHiddenData = useMemo<Array<keyof Crystal>>(
     () => [
       "id",
-      "state",
       "front",
       "updatedAt",
       "updatedByUserId",
       "createdAt",
       "createdByUserId",
       "modifiersListId",
-      "viewCount",
-      "usageCount",
     ],
     [],
   );

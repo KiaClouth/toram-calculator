@@ -1,7 +1,6 @@
 "use client";
 
 import type { $Enums, Rate } from "@prisma/client";
-import type { Crystal, ModifiersList } from "~/server/api/routers/crystal";
 import {
   type Column,
   type ColumnDef,
@@ -19,9 +18,10 @@ import { IconCloudUpload, IconFilter } from "../../_components/iconsList";
 import Dialog from "../../_components/dialog";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { useStore } from "~/app/store";
-import { defaultCrystal } from "~/app/store";
 import * as _ from "lodash-es";
 import * as math from "mathjs";
+import { Crystal, defaultCrystal } from "~/schema/crystal";
+import { ModifiersList } from "~/schema/modifiersList";
 
 interface Props {
   dictionary: ReturnType<typeof getDictionary>;
@@ -52,7 +52,7 @@ export default function MonserPageClient(props: Props) {
       setCrystalList(currentList);
     }
     // 搜索时需要忽略的数据
-    const crystalHiddenData: Array<keyof Crystal> = ["id", "state", "updatedAt", "createdAt", "createdByUserId"];
+    const crystalHiddenData: Array<keyof Crystal> = ["id", "updatedAt", "createdAt", "createdByUserId"];
     const newCrystalList: Crystal[] = [];
     currentList.forEach((crystal) => {
       let filter = false;

@@ -5,7 +5,7 @@ generator client {
 
 generator zod {
     provider                 = "zod-prisma-types"
-    writeNullishInModelTypes = false // 是否将可选字段类型转换为 null | undefined
+    writeNullishInModelTypes = true // 是否将可选字段类型转换为 null | undefined
     useMultipleFiles         = false // 是否生成拆分的ts
     createInputTypes         = false // 是否生成input类型
 }
@@ -115,51 +115,35 @@ model UserUpdate {
     consumables          Consumable[]
     belongToUser         User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
     userId               String                @id
-    Character            Character[]
-    Analyzer             Analyzer[]
 }
 
 model Rate {
-    id                 String      @id @default(cuid())
-    rate               Int         @default(10)
-    belongToUser       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-    userId             String
-    belongToStatistics Statistics? @relation(fields: [statisticsId], references: [id])
-    statisticsId       String?
-}
-
-model Statistics {
-    id              String     @id @default(cuid())
-    viewCount       Int        @default(0)
-    usageCount      Int        @default(0)
-    usageTimestamps DateTime[]
-    viewTimestamps  DateTime[]
-    rates           Rate[]
-
+    id                          String               @id @default(cuid())
+    rate                        Int                  @default(10)
+    belongToUser                User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId                      String
     belongToMonster             Monster?             @relation(fields: [monsterId], references: [id], onDelete: Cascade)
-    monsterId                   String?              @unique
+    monsterId                   String?
     belongToCrystal             Crystal?             @relation(fields: [crystalId], references: [id])
-    crystalId                   String?              @unique
+    crystalId                   String?
     belongToMainWeapon          MainWeapon?          @relation(fields: [mainWeaponId], references: [id])
-    mainWeaponId                String?              @unique
+    mainWeaponId                String?
     belongToSubWeapon           SubWeapon?           @relation(fields: [subWeaponId], references: [id])
-    subWeaponId                 String?              @unique
+    subWeaponId                 String?
     belongToBodyArmor           BodyArmor?           @relation(fields: [bodyArmorId], references: [id])
-    bodyArmorId                 String?              @unique
+    bodyArmorId                 String?
     belongToAdditionalEquipment AdditionalEquipment? @relation(fields: [additionalEquipmentId], references: [id])
-    additionalEquipmentId       String?              @unique
+    additionalEquipmentId       String?
     belongToSpecialEquipment    SpecialEquipment?    @relation(fields: [specialEquipmentId], references: [id])
-    specialEquipmentId          String?              @unique
+    specialEquipmentId          String?
     belongToSkill               Skill?               @relation(fields: [skillId], references: [id])
-    skillId                     String?              @unique
+    skillId                     String?
     belongToPet                 Pet?                 @relation(fields: [petId], references: [id])
-    petId                       String?              @unique
+    petId                       String?
     belongToConsumable          Consumable?          @relation(fields: [consumableId], references: [id])
-    consumableId                String?              @unique
-    Character                   Character?           @relation(fields: [characterId], references: [id], onDelete: Cascade)
-    characterId                 String?              @unique
-    Analyzer                    Analyzer?            @relation(fields: [analyzerId], references: [id], onDelete: Cascade)
-    analyzerId                  String?              @unique
+    consumableId                String?
+
+    @@unique([userId, monsterId, crystalId, mainWeaponId, subWeaponId, bodyArmorId, additionalEquipmentId, specialEquipmentId, skillId, petId, consumableId])
 }
 
 // 可公开资源的状态枚举
@@ -191,8 +175,8 @@ enum MonsterType {
 
 // 怪物模型
 model Monster {
-    id String @id @default(cuid())
-
+    id                               String      @id @default(cuid())
+    state                            State       @default(PRIVATE)
     name                             String      @default("SYSTEM") ///  @zod.string.min(2, { message: "最少2个字符" })
     monsterType                      MonsterType @default(COMMON_BOSS)
     baseLv                           Int?
@@ -216,19 +200,20 @@ model Monster {
     difficultyOfMelee                Int         @default(5)
     difficultyOfRanged               Int         @default(5)
     possibilityOfRunningAround       Int         @default(5)
-    extraDetails                     String?
+    specialBehavior                  String?
     dataSources                      String?
-
-    belongToAnalyzers Analyzer[]
-
-    updatedAt       DateTime    @updatedAt
-    updatedBy       UserUpdate? @relation(fields: [updatedByUserId], references: [userId])
-    updatedByUserId String?
-    createdAt       DateTime    @default(now())
-    createdBy       UserCreate? @relation(fields: [createdByUserId], references: [userId])
-    createdByUserId String?
-    statistics      Statistics?
-    statisticsId    String?
+    rates                            Rate[]
+    belongToAnalyzers                Analyzer[]
+    updatedBy                        UserUpdate? @relation(fields: [updatedByUserId], references: [userId])
+    updatedByUserId                  String?
+    createdBy                        UserCreate? @relation(fields: [createdByUserId], references: [userId])
+    createdByUserId                  String?
+    viewCount                        Int         @default(0)
+    usageCount                       Int         @default(0)
+    createdAt                        DateTime    @default(now())
+    updatedAt                        DateTime    @updatedAt
+    usageTimestamps                  DateTime[]
+    viewTimestamps                   DateTime[]
 }
 
 // 加成值名称枚举
@@ -353,11 +338,9 @@ model Modifier {
 
 // 加成项集（附魔等）模型
 model ModifiersList {
-    id String @id @default(cuid())
-
-    name      String?    @default("SYSTEM")
-    modifiers Modifier[]
-
+    id                        String                @id @default(cuid())
+    name                      String?               @default("SYSTEM")
+    modifiers                 Modifier[]
     usedByMainWeapon          MainWeapon[]
     usedBySubWeapon           SubWeapon[]
     usedByBodyArmor           BodyArmor[]
@@ -380,6 +363,7 @@ enum CharacterType {
 // 机体模型
 model Character {
     id            String        @id @default(cuid())
+    state         State         @default(PRIVATE)
     name          String        @default("SYSTEM")
     characterType CharacterType
 
@@ -413,17 +397,14 @@ model Character {
     consumableList         Consumable[]
     combos                 Combo[]
     belongToAnalyzers      Analyzer[]
-
-    extraDetails String?
-
-    updatedAt       DateTime    @updatedAt
-    updatedBy       UserUpdate? @relation(fields: [updatedByUserId], references: [userId])
-    updatedByUserId String?
-    createdAt       DateTime    @default(now())
-    createdBy       UserCreate? @relation(fields: [createdByUserId], references: [userId])
-    createdByUserId String?
-    statistics      Statistics?
-    statisticsId    String?
+    createdBy              UserCreate?         @relation(fields: [createdByUserId], references: [userId], onDelete: Cascade)
+    createdByUserId        String?
+    viewCount              Int                 @default(0)
+    usageCount             Int                 @default(0)
+    createdAt              DateTime            @default(now())
+    updatedAt              DateTime            @updatedAt
+    usageTimestamps        DateTime[]
+    viewTimestamps         DateTime[]
 }
 
 // 特殊能力值类型枚举
@@ -446,30 +427,28 @@ enum CrystalType {
 
 // 锻晶模型
 model Crystal {
-    id String @id @default(cuid())
-
-    name            String        @default("SYSTEM")
-    crystalType     CrystalType   @default(GENERAL)
-    front           Int           @default(0)
-    modifiersList   ModifiersList @relation(fields: [modifiersListId], references: [id])
-    modifiersListId String
-
+    id                        String                @id @default(cuid())
+    state                     State                 @default(PRIVATE)
+    name                      String                @default("SYSTEM")
+    crystalType               CrystalType           @default(GENERAL)
+    front                     Int                   @default(0)
+    modifiersList             ModifiersList         @relation(fields: [modifiersListId], references: [id])
+    modifiersListId           String
+    updatedBy                 UserUpdate?           @relation(fields: [updatedByUserId], references: [userId])
+    updatedByUserId           String?
+    createdBy                 UserCreate?           @relation(fields: [createdByUserId], references: [userId])
+    createdByUserId           String?
     usedByMainWeapon          MainWeapon[]
     usedByBodyArmor           BodyArmor[]
     usedByAdditionalEquipment AdditionalEquipment[]
     usedBySpecialEquipment    SpecialEquipment[]
-
-    extraDetails String?
-    dataSources  String?
-
-    updatedAt       DateTime    @updatedAt
-    updatedBy       UserUpdate? @relation(fields: [updatedByUserId], references: [userId])
-    updatedByUserId String?
-    createdAt       DateTime    @default(now())
-    createdBy       UserCreate? @relation(fields: [createdByUserId], references: [userId])
-    createdByUserId String?
-    statistics      Statistics?
-    statisticsId    String?
+    viewCount                 Int                   @default(0)
+    usageCount                Int                   @default(0)
+    createdAt                 DateTime              @default(now())
+    updatedAt                 DateTime              @updatedAt
+    usageTimestamps           DateTime[]
+    viewTimestamps            DateTime[]
+    rates                     Rate[]
 }
 
 // 主武器类型枚举
@@ -501,58 +480,55 @@ enum SubWeaponType {
 
 // 主武器模型
 model MainWeapon {
-    id String @id @default(cuid())
-
+    id              String         @id @default(cuid())
+    state           State          @default(PRIVATE)
     name            String         @default("SYSTEM")
     mainWeaponType  MainWeaponType @default(ONE_HAND_SWORD)
     baseAtk         Int            @default(0)
     refinement      Int            @default(0)
     stability       Int            @default(60)
     element         Element        @default(NO_ELEMENT)
+    usedBy          Character[]
     modifiersList   ModifiersList  @relation(fields: [modifiersListId], references: [id])
     modifiersListId String
     crystal         Crystal[]
-
-    usedBy Character[]
-
-    extraDetails String?
-    dataSources  String?
-
-    updatedAt       DateTime    @updatedAt
-    updatedBy       UserUpdate? @relation(fields: [updatedByUserId], references: [userId])
-    updatedByUserId String?
-    createdAt       DateTime    @default(now())
-    createdBy       UserCreate? @relation(fields: [createdByUserId], references: [userId])
+    createdBy       UserCreate?    @relation(fields: [createdByUserId], references: [userId])
     createdByUserId String?
-    statistics      Statistics?
-    statisticsId    String?
+    updatedBy       UserUpdate?    @relation(fields: [updatedByUserId], references: [userId])
+    updatedByUserId String?
+    viewCount       Int            @default(0)
+    usageCount      Int            @default(0)
+    createdAt       DateTime       @default(now())
+    updatedAt       DateTime       @updatedAt
+    usageTimestamps DateTime[]
+    viewTimestamps  DateTime[]
+    rates           Rate[]
 }
 
 // 副武器模型
 model SubWeapon {
-    id String @id @default(cuid())
-
+    id              String        @id @default(cuid())
+    state           State         @default(PRIVATE)
     name            String        @default("SYSTEM")
     subWeaponType   SubWeaponType @default(NO_WEAPON)
     baseAtk         Int           @default(0)
     refinement      Int           @default(0)
     stability       Int           @default(60)
     element         Element       @default(NO_ELEMENT)
+    usedBy          Character[]
     modifiersList   ModifiersList @relation(fields: [modifiersListId], references: [id])
     modifiersListId String
-    usedBy          Character[]
-
-    extraDetails String?
-    dataSources  String?
-
-    updatedAt       DateTime    @updatedAt
-    updatedBy       UserUpdate? @relation(fields: [updatedByUserId], references: [userId])
-    updatedByUserId String?
-    createdAt       DateTime    @default(now())
-    createdBy       UserCreate? @relation(fields: [createdByUserId], references: [userId])
+    createdBy       UserCreate?   @relation(fields: [createdByUserId], references: [userId])
     createdByUserId String?
-    statistics      Statistics?
-    statisticsId    String?
+    updatedBy       UserUpdate?   @relation(fields: [updatedByUserId], references: [userId])
+    updatedByUserId String?
+    viewCount       Int           @default(0)
+    usageCount      Int           @default(0)
+    createdAt       DateTime      @default(now())
+    updatedAt       DateTime      @updatedAt
+    usageTimestamps DateTime[]
+    viewTimestamps  DateTime[]
+    rates           Rate[]
 }
 
 // 身体装备轻重化类型枚举
@@ -564,78 +540,72 @@ enum BodyArmorType {
 
 // 身体装备模型
 model BodyArmor {
-    id String @id @default(cuid())
-
+    id              String        @id @default(cuid())
+    state           State         @default(PRIVATE)
     name            String        @default("SYSTEM")
     bodyArmorType   BodyArmorType @default(NORMAL)
     refinement      Int           @default(0)
     baseDef         Int           @default(0)
+    usedBy          Character[]
     modifiersList   ModifiersList @relation(fields: [modifiersListId], references: [id])
     modifiersListId String
     crystal         Crystal[]
-
-    usedBy Character[]
-
-    extraDetails String?
-    dataSources  String?
-
-    updatedAt       DateTime    @updatedAt
-    updatedBy       UserUpdate? @relation(fields: [updatedByUserId], references: [userId])
-    updatedByUserId String?
-    createdAt       DateTime    @default(now())
-    createdBy       UserCreate? @relation(fields: [createdByUserId], references: [userId])
+    createdBy       UserCreate?   @relation(fields: [createdByUserId], references: [userId])
     createdByUserId String?
-    statistics      Statistics?
-    statisticsId    String?
+    updatedBy       UserUpdate?   @relation(fields: [updatedByUserId], references: [userId])
+    updatedByUserId String?
+    viewCount       Int           @default(0)
+    usageCount      Int           @default(0)
+    createdAt       DateTime      @default(now())
+    updatedAt       DateTime      @updatedAt
+    usageTimestamps DateTime[]
+    viewTimestamps  DateTime[]
+    rates           Rate[]
 }
 
 // 追加装备模型
 model AdditionalEquipment {
-    id String @id @default(cuid())
-
+    id              String        @id @default(cuid())
+    state           State         @default(PRIVATE)
     name            String        @default("SYSTEM")
     refinement      Int           @default(0)
+    usedBy          Character[]
     modifiersList   ModifiersList @relation(fields: [modifiersListId], references: [id])
     modifiersListId String
     crystal         Crystal[]
-
-    usedBy Character[]
-
-    extraDetails String?
-    dataSources  String?
-
-    updatedAt       DateTime    @updatedAt
-    updatedBy       UserUpdate? @relation(fields: [updatedByUserId], references: [userId])
-    updatedByUserId String?
-    createdAt       DateTime    @default(now())
-    createdBy       UserCreate? @relation(fields: [createdByUserId], references: [userId])
+    createdBy       UserCreate?   @relation(fields: [createdByUserId], references: [userId])
     createdByUserId String?
-    statistics      Statistics?
-    statisticsId    String?
+    updatedBy       UserUpdate?   @relation(fields: [updatedByUserId], references: [userId])
+    updatedByUserId String?
+    viewCount       Int           @default(0)
+    usageCount      Int           @default(0)
+    createdAt       DateTime      @default(now())
+    updatedAt       DateTime      @updatedAt
+    usageTimestamps DateTime[]
+    viewTimestamps  DateTime[]
+    rates           Rate[]
 }
 
 // 特殊装备模型
 model SpecialEquipment {
-    id String @id @default(cuid())
-
+    id              String        @id @default(cuid())
+    state           State         @default(PRIVATE)
     name            String        @default("SYSTEM")
+    usedBy          Character[]
     modifiersList   ModifiersList @relation(fields: [modifiersListId], references: [id])
     modifiersListId String
     crystal         Crystal[]
-
-    usedBy Character[]
-
-    extraDetails String?
-    dataSources  String?
-
-    updatedAt       DateTime    @updatedAt
-    updatedBy       UserUpdate? @relation(fields: [updatedByUserId], references: [userId])
-    updatedByUserId String?
-    createdAt       DateTime    @default(now())
-    createdBy       UserCreate? @relation(fields: [createdByUserId], references: [userId])
+    createdBy       UserCreate?   @relation(fields: [createdByUserId], references: [userId])
     createdByUserId String?
-    statistics      Statistics?
-    statisticsId    String?
+    updatedBy       UserUpdate?   @relation(fields: [updatedByUserId], references: [userId])
+    updatedByUserId String?
+    viewCount       Int           @default(0)
+    usageCount      Int           @default(0)
+    createdAt       DateTime      @default(now())
+    updatedAt       DateTime      @updatedAt
+    usageTimestamps DateTime[]
+    viewTimestamps  DateTime[]
+    rates           Rate[]
 }
 
 enum SkillTreeName {
@@ -657,31 +627,30 @@ enum WeaponElementDependencyType {
 
 // 技能卡片模型
 model Skill {
-    id String @id @default(uuid())
-
+    id                          String                      @id @default(uuid())
+    state                       State                       @default(PRIVATE)
     skillTreeName               SkillTreeName               @default(BLADE)
     name                        String                      @default("SYSTEM")
+    level                       Int                         @default(10)
     skillType                   SkillType                   @default(ACTIVE_SKILL)
     weaponElementDependencyType WeaponElementDependencyType @default(TRUE)
     element                     Element                     @default(NO_ELEMENT)
     skillDescription            String?
     skillEffect                 SkillEffect[]
-
-    usedBySkillList Character[]
-    usedByComboStep ComboStep[]
-    usedByStep      Step[]
-
-    extraDetails String?
-    dataSources  String?
-
-    updatedAt       DateTime    @updatedAt
-    updatedBy       UserUpdate? @relation(fields: [updatedByUserId], references: [userId])
-    updatedByUserId String?
-    createdAt       DateTime    @default(now())
-    createdBy       UserCreate? @relation(fields: [createdByUserId], references: [userId])
-    createdByUserId String?
-    statistics      Statistics?
-    statisticsId    String?
+    usedBySkillList             Character[]
+    usedByComboStep             ComboStep[]
+    usedByStep                  Step[]
+    createdBy                   UserCreate?                 @relation(fields: [createdByUserId], references: [userId])
+    createdByUserId             String?
+    updatedBy                   UserUpdate?                 @relation(fields: [updatedByUserId], references: [userId])
+    updatedByUserId             String?
+    viewCount                   Int                         @default(0)
+    usageCount                  Int                         @default(0)
+    createdAt                   DateTime                    @default(now())
+    updatedAt                   DateTime                    @updatedAt
+    usageTimestamps             DateTime[]
+    viewTimestamps              DateTime[]
+    rates                       Rate[]
 }
 
 enum SkillType {
@@ -697,8 +666,7 @@ enum SkillExtraActionType {
 
 // 技能效果
 model SkillEffect {
-    id String @id @default(cuid())
-
+    id                                String               @id @default(cuid())
     condition                         String
     description                       String?
     actionBaseDurationFormula         String               @default("13")
@@ -711,18 +679,15 @@ model SkillEffect {
     skillStartupFramesFormula         String?              @default("0")
     skillCost                         SkillCost[]
     skillYield                        SkillYield[]
-
-    belongToSkill   Skill  @relation(fields: [belongToskillId], references: [id], onDelete: Cascade)
-    belongToskillId String
+    belongToSkill                     Skill                @relation(fields: [belongToskillId], references: [id], onDelete: Cascade)
+    belongToskillId                   String
 }
 
 // 技能消耗
 model SkillCost {
-    id String @id @default(cuid())
-
-    name        String? @default("MP Cost")
-    costFormula String  @default("0")
-
+    id                  String       @id @default(cuid())
+    name                String?      @default("MP Cost")
+    costFormula         String       @default("0")
     belongToSkillEffect SkillEffect? @relation(fields: [skillEffectId], references: [id], onDelete: Cascade)
     skillEffectId       String?
 }
@@ -735,15 +700,13 @@ enum YieldType {
 
 // 技能效果
 model SkillYield {
-    id String @id @default(cuid())
-
-    name                  String?   @default("Damage")
-    yieldType             YieldType @default(ImmediateEffect)
+    id                    String       @id @default(cuid())
+    name                  String?      @default("Damage")
+    yieldType             YieldType    @default(ImmediateEffect)
     yieldFormula          String
     mutationTimingFormula String?
-
-    belongToSkillEffect SkillEffect? @relation(fields: [skillEffectId], references: [id], onDelete: Cascade)
-    skillEffectId       String?
+    belongToSkillEffect   SkillEffect? @relation(fields: [skillEffectId], references: [id], onDelete: Cascade)
+    skillEffectId         String?
 }
 
 // 效果有效期类型枚举
@@ -755,23 +718,21 @@ enum DurationType {
 
 // 宠物模型
 model Pet {
-    id String @id @default(cuid())
-
-    name String? @default("SYSTEM")
-
-    usedBy Character[]
-
-    extraDetails String?
-    dataSources  String?
-
-    updatedAt       DateTime    @updatedAt
-    updatedBy       UserUpdate? @relation(fields: [updatedByUserId], references: [userId])
-    updatedByUserId String?
-    createdAt       DateTime    @default(now())
+    id              String      @id @default(cuid())
+    state           State       @default(PRIVATE)
+    name            String?     @default("SYSTEM")
     createdBy       UserCreate? @relation(fields: [createdByUserId], references: [userId])
     createdByUserId String?
-    statistics      Statistics?
-    statisticsId    String?
+    updatedBy       UserUpdate? @relation(fields: [updatedByUserId], references: [userId])
+    updatedByUserId String?
+    usedBy          Character[]
+    viewCount       Int         @default(0)
+    usageCount      Int         @default(0)
+    createdAt       DateTime    @default(now())
+    updatedAt       DateTime    @updatedAt
+    usageTimestamps DateTime[]
+    viewTimestamps  DateTime[]
+    rates           Rate[]
 }
 
 // 消耗品类型枚举
@@ -789,60 +750,50 @@ enum ConsumableType {
 
 // 消耗品模型
 model Consumable {
-    id String @id @default(cuid())
-
+    id              String        @id @default(cuid())
+    state           State         @default(PRIVATE)
     name            String        @default("SYSTEM")
     modifiersList   ModifiersList @relation(fields: [modifiersListId], references: [id])
     modifiersListId String
-
-    usedBy Character[]
-
-    extraDetails String?
-    dataSources  String?
-
-    updatedAt       DateTime    @updatedAt
-    updatedBy       UserUpdate? @relation(fields: [updatedByUserId], references: [userId])
-    updatedByUserId String?
-    createdAt       DateTime    @default(now())
-    createdBy       UserCreate? @relation(fields: [createdByUserId], references: [userId])
+    usedBy          Character[]
+    createdBy       UserCreate?   @relation(fields: [createdByUserId], references: [userId])
     createdByUserId String?
-    statistics      Statistics?
-    statisticsId    String?
+    updatedBy       UserUpdate?   @relation(fields: [updatedByUserId], references: [userId])
+    updatedByUserId String?
+    viewCount       Int           @default(0)
+    usageCount      Int           @default(0)
+    createdAt       DateTime      @default(now())
+    updatedAt       DateTime      @updatedAt
+    usageTimestamps DateTime[]
+    viewTimestamps  DateTime[]
+    rates           Rate[]
 }
 
 // 分析器模型
 model Analyzer {
-    id String @id @default(cuid())
-
-    name        String?    @default("SYSTEM")
-    monster     Monster?   @relation(fields: [monsterId], references: [id])
-    monsterId   String?
-    character   Character? @relation(fields: [characterId], references: [id], onDelete: Cascade)
-    characterId String?
-    processes   Process[]
-
-    extraDetails String?
-
-    updatedAt       DateTime    @updatedAt
-    updatedBy       UserUpdate? @relation(fields: [updatedByUserId], references: [userId])
-    updatedByUserId String?
+    id              String      @id @default(cuid())
+    state           State       @default(PRIVATE)
+    name            String?     @default("SYSTEM")
     createdAt       DateTime    @default(now())
-    createdBy       UserCreate? @relation(fields: [createdByUserId], references: [userId])
+    createdBy       UserCreate? @relation(fields: [createdByUserId], references: [userId], onDelete: Cascade)
     createdByUserId String?
-    statistics      Statistics?
-    statisticsId    String?
+    monster         Monster?    @relation(fields: [monsterId], references: [id])
+    monsterId       String?
+    character       Character?  @relation(fields: [characterId], references: [id], onDelete: Cascade)
+    characterId     String?
+    processes       Process[]
 }
 
 // 连击模型
 model Combo {
-    id String @id @default(cuid())
-
-    name      String?     @default("SYSTEM")
-    comboStep ComboStep[]
-
-    usedBy           Character[]
-    UserCreate       UserCreate? @relation(fields: [userCreateUserId], references: [userId])
-    userCreateUserId String?
+    id              String      @id @default(cuid())
+    state           State       @default(PRIVATE)
+    name            String?     @default("SYSTEM")
+    comboStep       ComboStep[]
+    usedBy          Character[]
+    createdAt       DateTime    @default(now())
+    createdBy       UserCreate? @relation(fields: [createdByUserId], references: [userId], onDelete: Cascade)
+    createdByUserId String?
 }
 
 enum ComboType {
@@ -850,35 +801,29 @@ enum ComboType {
 }
 
 model ComboStep {
-    id String @id @default(cuid())
-
-    order     Int
-    comboType ComboType @default(NULL)
-    skill     Skill     @relation(fields: [skillId], references: [id], onDelete: Cascade)
-    skillId   String
-
-    belongToCombo Combo  @relation(fields: [comboId], references: [id], onDelete: Cascade)
+    id            String    @id @default(cuid())
+    order         Int
+    comboType     ComboType @default(NULL)
+    skill         Skill     @relation(fields: [skillId], references: [id], onDelete: Cascade)
+    skillId       String
+    belongToCombo Combo     @relation(fields: [comboId], references: [id], onDelete: Cascade)
     comboId       String
 }
 
 // 输出流程模型
 model Process {
-    id String @id @default(cuid())
-
-    steps Step[]
-
+    id               String   @id @default(cuid())
+    steps            Step[]
     belongToAnalyzer Analyzer @relation(fields: [analyzerId], references: [id], onDelete: Cascade)
     analyzerId       String
 }
 
 // 输出流程步骤模型
 model Step {
-    id String @id @default(cuid())
-
-    order   Int
-    skill   Skill  @relation(fields: [skillId], references: [id], onDelete: Cascade)
-    skillId String
-
+    id              String  @id @default(cuid())
+    order           Int
+    skill           Skill   @relation(fields: [skillId], references: [id], onDelete: Cascade)
+    skillId         String
     belongToProcess Process @relation(fields: [processId], references: [id], onDelete: Cascade)
     processId       String
 }

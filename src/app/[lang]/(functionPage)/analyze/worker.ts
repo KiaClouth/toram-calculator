@@ -1,12 +1,12 @@
 "use client";
 import * as _ from "lodash-es";
 import { type MainWeaponType, type SubWeaponType, type BodyArmorType, type $Enums } from "@prisma/client";
-import { type Character } from "~/server/api/routers/character";
-import { type Monster } from "~/server/api/routers/monster";
-import { type SkillEffect } from "~/server/api/routers/skill";
-import { type ModifiersList } from "~/server/api/routers/crystal";
 import { type getDictionary } from "~/app/get-dictionary";
 import { type MathNode, all, create, floor, max, min, parse } from "mathjs";
+import { Character } from "~/schema/characterSchema";
+import { Monster } from "~/schema/monster";
+import { SkillEffect } from "~/schema/skillEffect";
+import { ModifiersList } from "~/schema/modifiersList";
 
 const fps = 60;
 

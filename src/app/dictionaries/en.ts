@@ -1,19 +1,31 @@
-import { type dictionary } from "./type";
+import { Statistics } from "~/schema/statistics";
+import { ConvertToAllString, type dictionary } from "./type";
+import { ModifiersList } from "~/schema/modifiersList";
 
-const modifiersList = {
+const modifiersList: ConvertToAllString<ModifiersList> = {
   modifiers: "Modifiers",
   name:"Name",
   id: "ID"
 }
-const statistics = {
-  createdByUserId: "CreatedByUserId",
-  updatedByUserId: "UpdatedByUserId",
+const statistics: ConvertToAllString<Statistics> = {
+  id: "ID",
   viewCount: "ViewCount",
   usageCount: "UsageCount",
-  createdAt: "CreatedAt",
-  updatedAt: "UpdatedAt",
   usageTimestamps: "UsageTimestamps",
   viewTimestamps: "ViewTimestamps",
+  rates: "Rates",
+  monsterId: "MonsterId",
+  crystalId: "CrystalId",
+  mainWeaponId: "MainWeaponId",
+  subWeaponId: "SubWeaponId",
+  bodyArmorId: "BodyArmorId",
+  additionalEquipmentId: "AdditionalEquipmentId",
+  specialEquipmentId: "SpecialEquipmentId",
+  skillId: "SkillId",
+  petId: "PetId",
+  consumableId: "ConsumableId",
+  characterId: "CharacterId",
+  analyzerId: "AnalyzerId",
 };
 
 const dictionary: dictionary = {
@@ -178,10 +190,6 @@ const dictionary: dictionary = {
   },
   db: {
     enums: {
-      State: {
-        PRIVATE: "Private",
-        PUBLIC: "Public",
-      },
       MonsterType: {
         COMMON_BOSS: "Common Boss",
         COMMON_MINI_BOSS: "Common mini Boss",
@@ -286,7 +294,6 @@ const dictionary: dictionary = {
     models: {
       monster: {
         id: "ID",
-        state: "State",
         name: "Name",
         monsterType: "Type",
         baseLv: "Lv",
@@ -310,10 +317,14 @@ const dictionary: dictionary = {
         difficultyOfMelee: "DifficultyOfMelee",
         difficultyOfRanged: "DifficultyOfRanged",
         possibilityOfRunningAround: "PossibilityOfRunningAround",
-        specialBehavior: "SpecialBehavior",
-        ...statistics,
-        rates: "Raters",
-        dataSources: "",
+        extraDetails: "SpecialBehavior",
+        dataSources: "DataSources",
+        createdByUserId: "CreatedByUserId",
+        updatedByUserId: "UpdatedByUserId",
+        createdAt: "CreatedAt",
+        updatedAt: "UpdatedAt",
+        statistics: statistics,
+        statisticsId: "StatisticsId",
       },
       crystal: {
         rates: "Rates",
@@ -324,7 +335,12 @@ const dictionary: dictionary = {
         crystalType: "crystalType",
         front: "Front",
         modifiersListId: "",
-        ...statistics
+        createdByUserId: "CreatedByUserId",
+        updatedByUserId: "UpdatedByUserId",
+        createdAt: "CreatedAt",
+        updatedAt: "UpdatedAt",
+        statistics: statistics,
+        statisticsId: "StatisticsId",
       },
       skill: {
         id: "ID",
@@ -337,7 +353,12 @@ const dictionary: dictionary = {
         element: "Element",
         skillEffect: "SkillEffect",
         skillDescription: "",
-        ...statistics,
+        createdByUserId: "CreatedByUserId",
+        updatedByUserId: "UpdatedByUserId",
+        createdAt: "CreatedAt",
+        updatedAt: "UpdatedAt",
+        statistics: statistics,
+        statisticsId: "StatisticsId",
       },
       user: {
         id: "ID",
@@ -402,7 +423,12 @@ const dictionary: dictionary = {
           element: "",
           modifiersList: modifiersList,
           modifiersListId: "",
-          ...statistics,
+          createdByUserId: "CreatedByUserId",
+          updatedByUserId: "UpdatedByUserId",
+          createdAt: "CreatedAt",
+          updatedAt: "UpdatedAt",
+          statistics: statistics,
+          statisticsId: "StatisticsId",
         },
         mainWeaponId: "",
         subWeapon: {
@@ -416,7 +442,12 @@ const dictionary: dictionary = {
           stability: "",
           element: "",
           modifiersListId: "",
-          ...statistics,
+          createdByUserId: "CreatedByUserId",
+          updatedByUserId: "UpdatedByUserId",
+          createdAt: "CreatedAt",
+          updatedAt: "UpdatedAt",
+          statistics: statistics,
+          statisticsId: "StatisticsId",
         },
         subWeaponId: "",
         bodyArmor: {
@@ -429,7 +460,12 @@ const dictionary: dictionary = {
           refinement: "",
           baseDef: "",
           modifiersListId: "",
-          ...statistics,
+          createdByUserId: "CreatedByUserId",
+          updatedByUserId: "UpdatedByUserId",
+          createdAt: "CreatedAt",
+          updatedAt: "UpdatedAt",
+          statistics: statistics,
+          statisticsId: "StatisticsId",
         },
         bodyArmorId: "",
         additionalEquipment: {
@@ -440,7 +476,12 @@ const dictionary: dictionary = {
           name: "",
           refinement: "",
           modifiersListId: "",
-          ...statistics,
+          createdByUserId: "CreatedByUserId",
+          updatedByUserId: "UpdatedByUserId",
+          createdAt: "CreatedAt",
+          updatedAt: "UpdatedAt",
+          statistics: statistics,
+          statisticsId: "StatisticsId",
         },
         additionalEquipmentId: "",
         specialEquipment: {
@@ -450,7 +491,12 @@ const dictionary: dictionary = {
           state: "",
           name: "",
           modifiersListId: "",
-          ...statistics,
+          createdByUserId: "CreatedByUserId",
+          updatedByUserId: "UpdatedByUserId",
+          createdAt: "CreatedAt",
+          updatedAt: "UpdatedAt",
+          statistics: statistics,
+          statisticsId: "StatisticsId",
         },
         specialEquipmentId: "",
         fashion: modifiersList,
@@ -464,12 +510,22 @@ const dictionary: dictionary = {
           id: "ID",
           state: "",
           name: "",
-          ...statistics,
+          createdByUserId: "CreatedByUserId",
+          updatedByUserId: "UpdatedByUserId",
+          createdAt: "CreatedAt",
+          updatedAt: "UpdatedAt",
+          statistics: statistics,
+          statisticsId: "StatisticsId",
         },
         petId: "",
         modifiersList: modifiersList,
         modifiersListId: "",
-        ...statistics,
+        createdByUserId: "CreatedByUserId",
+        updatedByUserId: "UpdatedByUserId",
+        createdAt: "CreatedAt",
+        updatedAt: "UpdatedAt",
+        statistics: statistics,
+        statisticsId: "StatisticsId",
       },
     },
   },

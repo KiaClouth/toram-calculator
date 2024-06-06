@@ -8,11 +8,11 @@ import { type FieldApi, useForm } from "@tanstack/react-form";
 import { zodValidator } from "@tanstack/zod-form-adapter";
 import { ZodFirstPartyTypeKind, type z } from "zod";
 import { type $Enums } from "@prisma/client";
-import { defaultCrystal, useStore } from "~/app/store";
+import { useStore } from "~/app/store";
 import { type Session } from "next-auth";
-import { type Crystal } from "~/server/api/routers/crystal";
-import { CrystalInputSchema } from "~/schema/crystalSchema";
 import LineWrappingInput from "../../_components/autoLineWrappingInput";
+import { Crystal, CrystalInputSchema, defaultCrystal } from "~/schema/crystal";
+import { defaultStatistics } from "~/schema/statistics";
 
 export default function CrystalForm(props: {
   dictionary: ReturnType<typeof getDictionary>;
@@ -57,12 +57,8 @@ export default function CrystalForm(props: {
     "id",
     "createdAt",
     "updatedAt",
-    "viewCount",
-    "usageCount",
     "createdByUserId",
     "updatedByUserId",
-    "viewTimestamps",
-    "usageTimestamps",
   ];
   // 定义表单
   const form = useForm({
@@ -76,12 +72,7 @@ export default function CrystalForm(props: {
       newCrystal = {
         ...defaultCrystal,
         ...value,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        usageCount: 0,
-        viewCount: 0,
-        usageTimestamps: [],
-        viewTimestamps: [],
+        statistics: defaultStatistics
       } satisfies Crystal;
       switch (crystalFormState) {
         case "CREATE":
@@ -223,9 +214,6 @@ export default function CrystalForm(props: {
                       switch (key as keyof Crystal) {
                         // case "rates":
                         // case "id":
-                        case "state": {
-                          fieldsetClass = crystalFormState === "DISPLAY" ? "hidden" : defaultFieldsetClass;
-                        }
                         case "crystalType":
                         default:
                           break;

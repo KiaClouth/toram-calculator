@@ -2,47 +2,8 @@ import type { Prisma } from "@prisma/client";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 import { PetSchema } from "prisma/generated/zod";
 
-export type Pet = Prisma.PetGetPayload<{
-    include: {
-        rates: true;
-  };
-}>;
-
 export const petRouter = createTRPCRouter({
-  getall: publicProcedure.query(({ ctx }) => {
-    console.log(
-      new Date().toLocaleDateString() +
-        "--" +
-        new Date().toLocaleTimeString() +
-        "--" +
-        (ctx.session?.user.name ?? ctx.session?.user.email) +
-        "请求了完整的怪物列表",
-    );
-    return ctx.db.pet.findMany({
-      include: {
-        rates: true,
-      },
-    });
-  }),
-
-  getPublicList: publicProcedure.query(({ ctx }) => {
-    console.log(
-      new Date().toLocaleDateString() +
-        "--" +
-        new Date().toLocaleTimeString() +
-        "--" +
-        (ctx.session?.user.name ?? ctx.session?.user.email) +
-        "请求了公用的怪物列表",
-    );
-    return ctx.db.pet.findMany({
-      where: { state: "PUBLIC" },
-      include: {
-        rates: true,
-      },
-    });
-  }),
-
-  getPrivateList: protectedProcedure.query(({ ctx }) => {
+  getPrivate: protectedProcedure.query(({ ctx }) => {
     console.log(
       new Date().toLocaleDateString() +
         "--" +
@@ -54,15 +15,13 @@ export const petRouter = createTRPCRouter({
     return ctx.db.pet.findMany({
       where: {
         createdByUserId: ctx.session?.user.id,
-        state: "PRIVATE",
       },
       include: {
-        rates: true,
       },
     });
   }),
 
-  getUserVisbleList: publicProcedure.query(({ ctx }) => {
+  getAll: publicProcedure.query(({ ctx }) => {
     console.log(
       new Date().toLocaleDateString() +
         "--" +
@@ -73,18 +32,12 @@ export const petRouter = createTRPCRouter({
     );
     if (ctx.session?.user.id) {
       return ctx.db.pet.findMany({
-        where: {
-          OR: [{ state: "PUBLIC" }, { createdByUserId: ctx.session?.user.id }],
-        },
         include: {
-          rates: true,
         },
       });
     }
     return ctx.db.pet.findMany({
-      where: { state: "PUBLIC" },
       include: {
-        rates: true,
       },
     });
   }),
@@ -162,7 +115,6 @@ export const petRouter = createTRPCRouter({
         updatedByUserId: userCreate.userId,
       },
       include: {
-        rates: true,
       },
     });
   }),
@@ -213,7 +165,6 @@ export const petRouter = createTRPCRouter({
       where: { id: input.id },
       data: { ...input },
       include: {
-        rates: true,
       },
     });
   }),

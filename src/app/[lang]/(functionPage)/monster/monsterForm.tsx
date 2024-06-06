@@ -28,7 +28,7 @@ import { type FieldApi, useForm } from "@tanstack/react-form";
 import { zodValidator } from "@tanstack/zod-form-adapter";
 import { ZodFirstPartyTypeKind, type z } from "zod";
 import { type $Enums } from "@prisma/client";
-import { defaultMonster, useStore } from "~/app/store";
+import { useStore } from "~/app/store";
 import { type Session } from "next-auth";
 import {
   IconElementWater,
@@ -40,9 +40,8 @@ import {
   IconElementNoElement,
 } from "../../_components/iconsList";
 import { useTheme } from "next-themes";
-import { type Monster } from "~/server/api/routers/monster";
-import { MonsterInputSchema } from "~/schema/monsterSchema";
 import LineWrappingInput from "../../_components/autoLineWrappingInput";
+import { Monster, MonsterInputSchema, defaultMonster } from "~/schema/monster";
 
 export default function MonsterForm(props: {
   dictionary: ReturnType<typeof getDictionary>;
@@ -94,13 +93,8 @@ export default function MonsterForm(props: {
     "id",
     "createdAt",
     "updatedAt",
-    "viewCount",
-    "usageCount",
     "createdByUserId",
     "updatedByUserId",
-    "viewTimestamps",
-    "usageTimestamps",
-    "rates",
   ];
 
   // 定义表单
@@ -116,10 +110,6 @@ export default function MonsterForm(props: {
         ...value,
         createdAt: new Date(),
         updatedAt: new Date(),
-        usageCount: 0,
-        viewCount: 0,
-        usageTimestamps: [],
-        viewTimestamps: [],
       } satisfies Monster;
       switch (monsterFormState) {
         case "CREATE":
@@ -185,7 +175,7 @@ export default function MonsterForm(props: {
 
   useEffect(() => {
     console.log("---MonsterForm render");
-    mdxEditorRef.current?.setMarkdown(monster.specialBehavior ?? "");
+    mdxEditorRef.current?.setMarkdown(monster.extraDetails ?? "");
     // escape键监听
     const handleEscapeKeyPress = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
@@ -248,9 +238,6 @@ export default function MonsterForm(props: {
                       switch (key as keyof Monster) {
                         // case "rates":
                         // case "id":
-                        case "state": {
-                          fieldsetClass = monsterFormState === "DISPLAY" ? "hidden" : defaultFieldsetClass;
-                        }
                         // case "name":
                         case "monsterType":
                         // case "baseLv":
@@ -516,7 +503,7 @@ export default function MonsterForm(props: {
                         // case "updatedAt":
                         // case "usageTimestamps":
                         // case "viewTimestamps":
-                        case "specialBehavior":
+                        case "extraDetails":
                           {
                             inputBox = (
                               <>
@@ -524,7 +511,7 @@ export default function MonsterForm(props: {
                                 <MDXEditor
                                   ref={mdxEditorRef}
                                   contentEditableClassName="prose"
-                                  markdown={monster.specialBehavior ?? ""}
+                                  markdown={monster.extraDetails ?? ""}
                                   onBlur={field.handleBlur}
                                   onChange={(markdown) => field.handleChange(markdown)}
                                   plugins={[

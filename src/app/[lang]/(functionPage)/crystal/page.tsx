@@ -8,7 +8,7 @@ import { sApi } from "~/trpc/server";
 export default async function CrystalPage({ params: { lang } }: { params: { lang: Locale } }) {
   const dictionary = getDictionary(lang);
   const session = await getServerAuthSession();
-  const crystalList = await sApi.crystal.getUserVisbleList.query();
+  const crystalList = await sApi.crystal.getAll.query();
   return (
     <React.Fragment>
       <CrystalPageClient dictionary={dictionary} session={session} crystalList={crystalList} />

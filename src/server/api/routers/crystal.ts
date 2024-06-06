@@ -1,33 +1,13 @@
 import { PrismaClient, type Prisma } from "@prisma/client";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
-import { CrystalInputSchema } from "~/schema/crystalSchema";
 import { randomUUID } from "crypto";
+import { CrystalInputSchema } from "~/schema/crystal";
+import { defaultRate } from "~/schema/rate";
 
 const prisma = new PrismaClient();
 
-export type Modifier = Prisma.ModifierGetPayload<{
-  include: object;
-}>;
-
-export type ModifiersList = Prisma.ModifiersListGetPayload<{
-  include: {
-    modifiers: true;
-  };
-}>;
-
-export type Crystal = Prisma.CrystalGetPayload<{
-  include: {
-    rates: true;
-    modifiersList: {
-      include: {
-        modifiers: true;
-      };
-    };
-  };
-}>;
-
 export const crystalRouter = createTRPCRouter({
-  getUserVisbleList: publicProcedure.query(({ ctx }) => {
+  getAll: publicProcedure.query(({ ctx }) => {
     console.log(
       new Date().toLocaleDateString() +
         "--" +
@@ -38,28 +18,22 @@ export const crystalRouter = createTRPCRouter({
     );
     if (ctx.session?.user.id) {
       return ctx.db.crystal.findMany({
-        where: {
-          OR: [{ state: "PUBLIC" }, { createdByUserId: ctx.session?.user.id }],
-        },
         include: {
           modifiersList: {
             include: {
               modifiers: true,
             },
           },
-          rates: true,
         },
       });
     }
     return ctx.db.crystal.findMany({
-      where: { state: "PUBLIC" },
       include: {
         modifiersList: {
           include: {
             modifiers: true,
           },
         },
-        rates: true,
       },
     });
   }),
@@ -131,7 +105,7 @@ export const crystalRouter = createTRPCRouter({
     );
 
     // 输入内容拆分成4个表的数据
-    const { rates: ratesInput, modifiersList: modifiersListInput, ...crystalInput } = input;
+    const { modifiersList: modifiersListInput, statistics: statisticsInput, ...crystalInput } = input;
 
     return prisma.$transaction(async () => {
       const crystalId = randomUUID();
@@ -139,11 +113,7 @@ export const crystalRouter = createTRPCRouter({
         data: {
           ...crystalInput,
           modifiersList: undefined,
-          rates: undefined,
           id: crystalId,
-        },
-        include: {
-          rates: true,
         },
       });
 
@@ -165,14 +135,16 @@ export const crystalRouter = createTRPCRouter({
         });
       });
 
-      const rates = ratesInput.map(async (rateInput) => {
-        return await ctx.db.rate.create({
-          data: {
-            ...rateInput,
-            userId: ctx.session?.user.id,
-            crystalId: crystalId,
+      const statistics = await ctx.db.statistics.create({
+        data: {
+          ...statisticsInput,
+          rates: {
+            create: statisticsInput?.rates,
           },
-        });
+        },
+        include: {
+          rates: true,
+        },
       });
 
       console.log(
@@ -191,7 +163,7 @@ export const crystalRouter = createTRPCRouter({
           ...modifiersList,
           modifiers: await Promise.all(modifiers),
         },
-        rates: await Promise.all(rates),
+        statistics: statistics,
       };
     });
   }),
@@ -240,7 +212,7 @@ export const crystalRouter = createTRPCRouter({
     );
 
     // 输入内容拆分成4个表的数据
-    const { rates: ratesInput, modifiersList: modifiersListInput, ...crystalInput } = input;
+    const { statistics: statisticsInput, modifiersList: modifiersListInput, ...crystalInput } = input;
 
     return prisma.$transaction(async () => {
       const crystal = await ctx.db.crystal.update({
@@ -248,10 +220,6 @@ export const crystalRouter = createTRPCRouter({
         data: {
           ...crystalInput,
           modifiersList: undefined,
-          rates: undefined,
-        },
-        include: {
-          rates: true,
         },
       });
 
@@ -274,13 +242,17 @@ export const crystalRouter = createTRPCRouter({
         });
       });
 
-      const rates = ratesInput.map(async (rateInput) => {
-        return await ctx.db.rate.update({
-          where: { id: rateInput.id },
-          data: {
-            ...rateInput,
+      const statistics = statisticsInput && await ctx.db.statistics.update({
+        where: { id: statisticsInput.id },
+        data: {
+          ...statisticsInput,
+          rates: {
+            create: statisticsInput?.rates,
           },
-        });
+        },
+        include: {
+          rates: true,
+        },
       });
 
       console.log(
@@ -299,7 +271,7 @@ export const crystalRouter = createTRPCRouter({
           ...modifiersList,
           modifiers: await Promise.all(modifiers),
         },
-        rates: await Promise.all(rates),
+        statistics: statistics,
       };
     });
   }),

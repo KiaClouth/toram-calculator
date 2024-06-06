@@ -8,7 +8,7 @@ import React from "react";
 export default async function MonsterPage({ params: { lang } }: { params: { lang: Locale } }) {
   const dictionary = getDictionary(lang);
   const session = await getServerAuthSession();
-  const monsterList = await sApi.monster.getUserVisbleList.query();
+  const monsterList = await sApi.monster.getAll.query();
 
   return (
     <React.Fragment>

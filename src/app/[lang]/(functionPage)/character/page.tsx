@@ -8,7 +8,7 @@ import { sApi } from "~/trpc/server";
 export default async function CharacterPage({ params: { lang } }: { params: { lang: Locale } }) {
   const dictionary = getDictionary(lang);
   const session = await getServerAuthSession();
-  const characterList = await sApi.character.getUserVisbleList.query();
+  const characterList = await sApi.character.getAll.query();
   return (
     <React.Fragment>
       <CharacterPageClient dictionary={dictionary} session={session} characterList={characterList} />

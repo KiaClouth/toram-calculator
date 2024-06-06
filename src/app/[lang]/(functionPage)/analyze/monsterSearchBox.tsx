@@ -1,7 +1,7 @@
 "use client";
 import * as React from "react";
 import { type getDictionary } from "~/app/get-dictionary";
-import { type Monster } from "~/server/api/routers/monster";
+import { Monster } from "~/schema/monster";
 
 interface Film {
   id: string;
@@ -34,9 +34,7 @@ export default function LongSearchBox(props: {
       "id",
       "updatedAt",
       "updatedByUserId",
-      "state",
       "createdByUserId",
-      "specialBehavior",
     ];
     monsterList.forEach((monster) => {
       const related: [string, string | undefined][] = [];

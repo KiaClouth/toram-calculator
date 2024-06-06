@@ -8,7 +8,7 @@ import React from "react";
 export default async function CharacterPage({ params: { lang } }: { params: { lang: Locale } }) {
   const dictionary = getDictionary(lang);
   const session = await getServerAuthSession();
-  const skillList = await sApi.skill.getUserVisbleList.query();
+  const skillList = await sApi.skill.getAll.query();
 
   return (
     <React.Fragment>

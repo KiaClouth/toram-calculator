@@ -1,49 +1,14 @@
-import { type Prisma } from "@prisma/client";
-import { MonsterSchema } from "prisma/generated/zod";
-
+import { UserCreate, UserUpdate, type Prisma } from "@prisma/client";
+import { MonsterInputSchema } from "~/schema/monster";
+import { defaultStatistics } from "~/schema/statistics";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "~/server/api/trpc";
+import { PrismaClient } from "@prisma/client";
+import { findOrCreateUserEntry } from "./untils";
 
-export type Monster = Prisma.MonsterGetPayload<{
-  include: {
-    rates: true;
-  };
-}>;
+const prisma = new PrismaClient();
 
 export const monsterRouter = createTRPCRouter({
-  getall: publicProcedure.query(({ ctx }) => {
-    console.log(
-      new Date().toLocaleDateString() +
-        "--" +
-        new Date().toLocaleTimeString() +
-        "--" +
-        (ctx.session?.user.name ?? ctx.session?.user.email) +
-        "请求了完整的怪物列表",
-    );
-    return ctx.db.monster.findMany({
-      include: {
-        rates: true,
-      },
-    });
-  }),
-
-  getPublicList: publicProcedure.query(({ ctx }) => {
-    console.log(
-      new Date().toLocaleDateString() +
-        "--" +
-        new Date().toLocaleTimeString() +
-        "--" +
-        (ctx.session?.user.name ?? ctx.session?.user.email) +
-        "请求了公用的怪物列表",
-    );
-    return ctx.db.monster.findMany({
-      where: { state: "PUBLIC" },
-      include: {
-        rates: true,
-      },
-    });
-  }),
-
-  getPrivateList: protectedProcedure.query(({ ctx }) => {
+  getPrivate: protectedProcedure.query(({ ctx }) => {
     console.log(
       new Date().toLocaleDateString() +
         "--" +
@@ -55,15 +20,12 @@ export const monsterRouter = createTRPCRouter({
     return ctx.db.monster.findMany({
       where: {
         createdByUserId: ctx.session?.user.id,
-        state: "PRIVATE",
       },
-      include: {
-        rates: true,
-      },
+      include: {},
     });
   }),
 
-  getUserVisbleList: publicProcedure.query(({ ctx }) => {
+  getAll: publicProcedure.query(({ ctx }) => {
     console.log(
       new Date().toLocaleDateString() +
         "--" +
@@ -74,148 +36,79 @@ export const monsterRouter = createTRPCRouter({
     );
     if (ctx.session?.user.id) {
       return ctx.db.monster.findMany({
-        where: {
-          OR: [{ state: "PUBLIC" }, { createdByUserId: ctx.session?.user.id }],
+        include: {},
+      });
+    }
+    return ctx.db.monster.findMany({
+      include: {},
+    });
+  }),
+
+  create: protectedProcedure.input(MonsterInputSchema.omit({ id: true })).mutation(async ({ ctx, input }) => {
+    // 检查或创建 UserCreate
+    const userCreate = (await findOrCreateUserEntry("userCreate", ctx.session?.user.id, ctx)) as UserCreate;
+    // 使用实务创建多层嵌套数据
+    return await prisma.$transaction(async () => {
+      // 拆分输入数据
+      const { statistics: statisticsInput, ...OtherMonsterInput } = input;
+      const monster = await ctx.db.monster.create({
+        data: {
+          ...OtherMonsterInput,
+          createdByUserId: userCreate.userId,
+        },
+        include: {},
+      });
+
+      const { rates, ...OtherStatistics } = defaultStatistics;
+      const statistics = await ctx.db.statistics.create({
+        data: {
+          ...OtherStatistics,
+          rates: {
+            create: rates,
+          },
         },
         include: {
           rates: true,
         },
       });
-    }
-    return ctx.db.monster.findMany({
-      where: { state: "PUBLIC" },
-      include: {
-        rates: true,
-      },
+
+      return {
+        ...monster,
+        statistics: {
+          ...statistics,
+        },
+      };
     });
   }),
 
-  create: protectedProcedure.input(MonsterSchema.omit({ id: true })).mutation(async ({ ctx, input }) => {
-    // 检查用户权限
-    // if (ctx.session.user.role !== "ADMIN") {
-    //   console.log(
-    //     (ctx.session?.user.name ?? ctx.session?.user.email) +
-    //       "没有权限上传怪物",
-    //   );
-    //   return;
-    // }
+  update: protectedProcedure.input(MonsterInputSchema).mutation(async ({ ctx, input }) => {
+    // 检查或创建 UserUpdate
+    const userUpdate = (await findOrCreateUserEntry("userUpdate", ctx.session?.user.id, ctx)) as UserUpdate;
+    // 使用实务更新多层嵌套数据
+    return await prisma.$transaction(async () => {
+    // 拆分输入数据
+      const { statistics: statisticsInput, ...OtherMonsterInput } = input;
+      const monster = await ctx.db.monster.update({
+        where: { id: input.id },
+        data: { ...OtherMonsterInput },
+        include: {},
+      });
 
-    // 检查用户是否存在关联的 UserCreate
-    let userCreate = await ctx.db.userCreate.findUnique({
-      where: { userId: ctx.session?.user.id },
-    });
-
-    // 如果不存在，创建一个新的 UserCreate
-    if (!userCreate) {
-      console.log(
-        new Date().toLocaleDateString() +
-          "--" +
-          new Date().toLocaleTimeString() +
-          "--" +
-          (ctx.session?.user.name ?? ctx.session?.user.email) +
-          "初次上传怪物，自动创建对应userCreate",
-      );
-      userCreate = await ctx.db.userCreate.create({
-        data: {
-          userId: ctx.session?.user.id ?? "",
-          // 其他 UserCreate 的属性，根据实际情况填写
+      const { rates, ...OtherStatistics } = defaultStatistics;
+      const statistics = await ctx.db.statistics.update({
+        where: { id: statisticsInput?.id },
+        data: { ...OtherStatistics },
+        include: {
+          rates: true,
         },
       });
-    }
 
-    // 检查用户是否存在关联的 UserUpdate
-    let userUpdate = await ctx.db.userUpdate.findUnique({
-      where: { userId: ctx.session?.user.id },
-    });
-
-    // 如果不存在，创建一个新的 UserUpdate
-    if (!userUpdate) {
-      console.log(
-        new Date().toLocaleDateString() +
-          "--" +
-          new Date().toLocaleTimeString() +
-          "--" +
-          (ctx.session?.user.name ?? ctx.session?.user.email) +
-          "初次上传怪物，自动创建对应userUpdate",
-      );
-      userUpdate = await ctx.db.userUpdate.create({
-        data: {
-          userId: ctx.session?.user.id ?? "",
-          // 其他 UserUpdate 的属性，根据实际情况填写
+      return {
+        ...monster,
+        statistics: {
+          ...statistics,
         },
-      });
-    }
-
-    console.log(
-      new Date().toLocaleDateString() +
-        "--" +
-        new Date().toLocaleTimeString() +
-        "--" +
-        (ctx.session?.user.name ?? ctx.session?.user.email) +
-        "上传了Monster: " +
-        input.name,
-    );
-    // 创建怪物并关联创建者和统计信息
-    return ctx.db.monster.create({
-      data: {
-        ...input,
-        createdByUserId: userCreate.userId,
-        updatedByUserId: userCreate.userId,
-      },
-      include: {
-        rates: true,
-      },
-    });
-  }),
-
-  update: protectedProcedure.input(MonsterSchema).mutation(async ({ ctx, input }) => {
-    // 检查用户权限
-    // if (ctx.session.user.role !== "ADMIN") {
-    //   console.log(
-    //     (ctx.session?.user.name ?? ctx.session?.user.email) +
-    //       "没有权限更新怪物",
-    //   );
-    //   return;
-    // }
-
-    // 检查用户是否存在关联的 UserUpdate
-    let userUpdate = await ctx.db.userUpdate.findUnique({
-      where: { userId: ctx.session?.user.id },
-    });
-
-    // 如果不存在，创建一个新的 UserUpdate
-    if (!userUpdate) {
-      console.log(
-        new Date().toLocaleDateString() +
-          "--" +
-          new Date().toLocaleTimeString() +
-          "--" +
-          (ctx.session?.user.name ?? ctx.session?.user.email) +
-          "初次上传怪物，自动创建对应userUpdate",
-      );
-      userUpdate = await ctx.db.userUpdate.create({
-        data: {
-          userId: ctx.session?.user.id ?? "",
-          // 其他 UserUpdate 的属性，根据实际情况填写
-        },
-      });
-    }
-
-    console.log(
-      new Date().toLocaleDateString() +
-        "--" +
-        new Date().toLocaleTimeString() +
-        "--" +
-        (ctx.session?.user.name ?? ctx.session?.user.email) +
-        "更新了Monster: " +
-        input.name,
-    );
-    return ctx.db.monster.update({
-      where: { id: input.id },
-      data: { ...input },
-      include: {
-        rates: true,
-      },
+      };
     });
   }),
 });

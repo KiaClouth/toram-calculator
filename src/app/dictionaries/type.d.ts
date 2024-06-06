@@ -1,12 +1,10 @@
 import type { $Enums, User } from "@prisma/client";
-import type { Monster } from "~/server/api/routers/monster";
-import type { Skill } from "~/server/api/routers/skill";
+import type { Monster } from "~/schema/monster";
 import { type MonsterData, type SkillData, type CharacterData, type modifiers } from "../[lang]/(functionPage)/analyze/worker";
-import { type Character } from "~/server/api/routers/character";
-import { type Crystal } from "~/server/api/routers/crystal";
+
 
 // 为了方便编辑器自动补全，这个方法可以将数据库模型的值类型转换为字符串
-type ConvertToAllString<T> = T extends Date | Date[] | modifiers | Array<object>
+export type ConvertToAllString<T> = T extends Date | Date[] | modifiers | Array<object>
   ? string
   : T extends object
   ? {

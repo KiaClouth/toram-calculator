@@ -8,10 +8,10 @@ import { type FieldApi, useForm } from "@tanstack/react-form";
 import { zodValidator } from "@tanstack/zod-form-adapter";
 import { ZodFirstPartyTypeKind, type z } from "zod";
 import { type $Enums } from "@prisma/client";
-import { defaultCharacter, useStore } from "~/app/store";
+import { useStore } from "~/app/store";
 import { type Session } from "next-auth";
-import { type Character } from "~/server/api/routers/character";
-import { CharacterInputSchema } from "~/schema/characterSchema";
+import { Character, CharacterInputSchema, defaultCharacter } from "~/schema/characterSchema";
+import { defaultStatistics } from "~/schema/statistics";
 
 export default function CharacterForm(props: {
   dictionary: ReturnType<typeof getDictionary>;
@@ -60,11 +60,7 @@ export default function CharacterForm(props: {
     "id",
     "createdAt",
     "updatedAt",
-    "viewCount",
-    "usageCount",
     "createdByUserId",
-    "viewTimestamps",
-    "usageTimestamps",
   ];
   // 定义表单
   const form = useForm({
@@ -80,10 +76,8 @@ export default function CharacterForm(props: {
         ...value,
         createdAt: new Date(),
         updatedAt: new Date(),
-        usageCount: 0,
-        viewCount: 0,
-        usageTimestamps: [],
-        viewTimestamps: [],
+        statistics: defaultStatistics,
+        statisticsId: "",
       } satisfies Character;
       switch (characterFormState) {
         case "CREATE":
@@ -218,9 +212,6 @@ export default function CharacterForm(props: {
                       switch (key as keyof Character) {
                         // case "rates":
                         // case "id":
-                        case "state": {
-                          fieldsetClass = characterFormState === "DISPLAY" ? "hidden" : defaultFieldsetClass;
-                        }
                         case "characterType":
                         default:
                           break;

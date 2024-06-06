@@ -1,7 +1,6 @@
 "use client";
 
 import type { $Enums } from "@prisma/client";
-import type { Character } from "~/server/api/routers/character";
 import {
   type Column,
   type ColumnDef,
@@ -19,7 +18,7 @@ import { IconCloudUpload, IconFilter } from "../../_components/iconsList";
 import Dialog from "../../_components/dialog";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { useStore } from "~/app/store";
-import { defaultCharacter } from "~/app/store";
+import { Character, defaultCharacter } from "~/schema/characterSchema";
 
 interface Props {
   dictionary: ReturnType<typeof getDictionary>;
@@ -50,7 +49,7 @@ export default function MonserPageClient(props: Props) {
       setCharacterList(currentList);
     }
     // 搜索时需要忽略的数据
-    const characterHiddenData: Array<keyof Character> = ["id", "state", "updatedAt", "createdAt", "createdByUserId"];
+    const characterHiddenData: Array<keyof Character> = ["id", "updatedAt", "createdAt", "createdByUserId"];
     const newCharacterList: Character[] = [];
     currentList.forEach((character) => {
       let filter = false;
