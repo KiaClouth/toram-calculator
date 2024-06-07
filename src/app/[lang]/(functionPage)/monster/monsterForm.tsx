@@ -236,41 +236,8 @@ export default function MonsterForm(props: {
                       const defaultFieldsetClass = "flex basis-full flex-col gap-1 p-2";
                       let fieldsetClass: string = defaultFieldsetClass;
                       switch (key as keyof Monster) {
-                        // case "rates":
-                        // case "id":
-                        // case "name":
                         case "monsterType":
-                        // case "baseLv":
-                        // case "experience":
-                        // case "address":
                         case "element":
-                        // case "radius":
-                        // case "maxhp":
-                        // case "physicalDefense":
-                        // case "physicalResistance":
-                        // case "magicalDefense":
-                        // case "magicalResistance":
-                        // case "criticalResistance":
-                        // case "avoidance":
-                        // case "dodge":
-                        // case "block":
-                        // case "normalAttackResistanceModifier":
-                        // case "physicalAttackResistanceModifier":
-                        // case "magicalAttackResistanceModifier":
-                        // case "difficultyOfTank":
-                        // case "difficultyOfMelee":
-                        // case "difficultyOfRanged":
-                        // case "possibilityOfRunningAround":
-                        // case "specialBehavior":
-                        // case "dataSources":
-                        // case "updatedByUserId":
-                        // case "createdByUserId":
-                        // case "viewCount":
-                        // case "usageCount":
-                        // case "createdAt":
-                        // case "updatedAt":
-                        // case "usageTimestamps":
-                        // case "viewTimestamps":
                         default:
                           break;
                       }
