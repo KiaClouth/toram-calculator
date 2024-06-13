@@ -1,8 +1,7 @@
 import { PrismaClient, type Prisma } from "@prisma/client";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 import { randomUUID } from "crypto";
-import { CrystalInputSchema } from "~/schema/crystal";
-import { defaultRate } from "~/schema/rate";
+import { CrystalInclude, CrystalInputSchema } from "~/schema/crystal";
 
 const prisma = new PrismaClient();
 
@@ -17,25 +16,9 @@ export const crystalRouter = createTRPCRouter({
         "请求了他可见的怪物列表",
     );
     if (ctx.session?.user.id) {
-      return ctx.db.crystal.findMany({
-        include: {
-          modifiersList: {
-            include: {
-              modifiers: true,
-            },
-          },
-        },
-      });
+      return ctx.db.crystal.findMany(CrystalInclude);
     }
-    return ctx.db.crystal.findMany({
-      include: {
-        modifiersList: {
-          include: {
-            modifiers: true,
-          },
-        },
-      },
-    });
+    return ctx.db.crystal.findMany(CrystalInclude);
   }),
 
   create: protectedProcedure.input(CrystalInputSchema.omit({ id: true })).mutation(async ({ ctx, input }) => {

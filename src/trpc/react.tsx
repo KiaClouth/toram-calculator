@@ -1,12 +1,27 @@
 "use client";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { loggerLink, unstable_httpBatchStreamLink } from "@trpc/client";
 import { createTRPCReact } from "@trpc/react-query";
 import { useState } from "react";
 
 import { type AppRouter } from "~/server/api/root";
 import { getUrl, transformer } from "./shared";
+import {
+  experimental_createPersister,
+  type AsyncStorage,
+  type PersistedQuery
+} from '@tanstack/query-persist-client-core';
+import { get, set, del, createStore, type UseStore } from "idb-keyval";
+
+function newIdbStorage(idbStore: UseStore): AsyncStorage<PersistedQuery> {
+  return {
+    getItem: async (key) => await get(key, idbStore),
+    setItem: async (key, value) => await set(key, value, idbStore),
+    removeItem: async (key) => await del(key, idbStore),
+  };
+}
 
 export const tApi = createTRPCReact<AppRouter>();
 
@@ -18,9 +33,15 @@ export function TRPCReactProvider(props: {
     {
       defaultOptions: {
         queries: {
-          // 默认useQuery的缓存是过期的，将此值提高为5分钟以避免windows获取到焦点时立即重新请求数据。
-          // https://tanstack.com/query/latest/docs/framework/react/guides/important-defaults
-          staleTime: 5 * 60 * 1000,
+          gcTime: 1000 * 30, // 30 seconds
+          persister: typeof window !== 'undefined' ? experimental_createPersister<PersistedQuery>({
+            storage: newIdbStorage(createStore("ToramCalculator本地数据库", "LocalDB")),
+            maxAge: 1000 * 60 * 60 * 12, // 12 hours,
+            serialize: (persistedQuery) => persistedQuery,
+            deserialize: (cached) => cached,
+          }) : undefined,
+          // 禁用当窗口重新聚焦时重新获取数据
+          refetchOnWindowFocus: false,
         },
       },
     }
@@ -28,7 +49,6 @@ export function TRPCReactProvider(props: {
 
   const [trpcClient] = useState(() =>
     tApi.createClient({
-      transformer,
       links: [
         loggerLink({
           enabled: (op) =>
@@ -36,6 +56,7 @@ export function TRPCReactProvider(props: {
             (op.direction === "down" && op.result instanceof Error),
         }),
         unstable_httpBatchStreamLink({
+          transformer,
           url: getUrl(),
           headers() {
             return {
@@ -53,6 +74,7 @@ export function TRPCReactProvider(props: {
       <tApi.Provider client={trpcClient} queryClient={queryClient}>
         {props.children}
       </tApi.Provider>
+      <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );
 }

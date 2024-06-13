@@ -1,25 +1,10 @@
 import { create } from "zustand";
 import { produce } from "immer";
-import { Statistics } from "~/schema/statistics";
-import { Rate } from "~/schema/rate";
-import { Monster, defaultMonster } from "~/schema/monster";
-import { SkillCost } from "~/schema/skillCost";
-import { SkillYield } from "~/schema/skillYield";
-import { SkillEffect } from "~/schema/skillEffect";
-import { Skill, defaultSkill } from "~/schema/skill";
-import { Modifier } from "~/schema/modifier";
-import { ModifiersList } from "~/schema/modifiersList";
-import { Crystal, defaultCrystal } from "~/schema/crystal";
-import { MainWeapon } from "~/schema/mainWeapon";
-import { SubWeapon } from "~/schema/subWeapon";
-import { BodyArmor } from "~/schema/bodyArmor";
-import { AdditionalEquipment } from "~/schema/additionalEquipment";
-import { SpecialEquipment } from "~/schema/specialEquipment";
-import { Consumable } from "~/schema/consumable";
-import { Pet } from "~/schema/pet";
-import { Combo } from "~/schema/combo";
-import { Character, defaultCharacter } from "~/schema/characterSchema";
-import { Analyzer, defaultAnalyzer } from "~/schema/analyzer";
+import { type Monster, defaultMonster } from "~/schema/monster";
+import { type Skill, defaultSkill } from "~/schema/skill";
+import { type Crystal, defaultCrystal } from "~/schema/crystal";
+import { type Character, defaultCharacter } from "~/schema/characterSchema";
+import { type Analyzer, defaultAnalyzer } from "~/schema/analyzer";
 
 // if you need middleware
 // import { devtools, persist } from 'zustand/middleware'

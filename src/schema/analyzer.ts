@@ -12,7 +12,7 @@ export const AnalyzerInclude = {
 export type Analyzer = Prisma.AnalyzerGetPayload<typeof AnalyzerInclude>;
 
 export const AnalyzerInputSchema = AnalyzerSchema.extend({
-  statistics: z.nullable(StatisticsInputShcema),
+  statistics: StatisticsInputShcema,
 }) satisfies ZodType<Analyzer>;
 
 export const defaultAnalyzer: Analyzer = {

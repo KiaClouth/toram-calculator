@@ -15,7 +15,7 @@ export type SubWeapon = Prisma.SubWeaponGetPayload<typeof SubWeaponInclude>;
 
 export const SubWeaponInputSchema = SubWeaponSchema.extend({
   modifiersList: ModifiersListInputSchema,
-  statistics: z.nullable(StatisticsInputShcema),
+  statistics: StatisticsInputShcema,
 }) satisfies ZodType<SubWeapon>;
 
 export const defaultSubWeapon: SubWeapon = {

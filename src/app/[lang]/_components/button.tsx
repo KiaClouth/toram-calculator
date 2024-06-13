@@ -1,4 +1,5 @@
 import * as React from "react";
+import { forwardRef } from "react";
 
 type Size = "sm" | "md" | "lg";
 type Level = "primary" | "secondary" | "tertiary" | "quaternary";
@@ -11,7 +12,7 @@ interface MyButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   active?: boolean;
 }
 
-export default function Button(props: MyButtonProps) {
+const Button = forwardRef<HTMLButtonElement, MyButtonProps>(function ButtonRef(props: MyButtonProps, ref) {
   const { children, icon, size, level, active, ...rest } = props;
   const sizeClass = {
     sm: "gap-1 rounded px-4 py-1",
@@ -31,16 +32,15 @@ export default function Button(props: MyButtonProps) {
   return (
     <React.Fragment>
       <button
+        ref={ref}
         {...rest}
-        className={` `+
-          rest.className
-            ? defaultButtonClassNames + rest.className
-            : defaultButtonClassNames
-        }
+        className={` ` + rest.className ? defaultButtonClassNames + rest.className : defaultButtonClassNames}
       >
         {icon}
         {children}
       </button>
     </React.Fragment>
   );
-}
+});
+
+export default Button;

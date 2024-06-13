@@ -1,6 +1,5 @@
-import { UserCreate, UserUpdate, type Prisma } from "@prisma/client";
-import { MonsterInputSchema } from "~/schema/monster";
-import { defaultStatistics } from "~/schema/statistics";
+import { type UserCreate, type UserUpdate, type Prisma } from "@prisma/client";
+import { MonsterInclude, MonsterInputSchema } from "~/schema/monster";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "~/server/api/trpc";
 import { PrismaClient } from "@prisma/client";
 import { findOrCreateUserEntry } from "./untils";
@@ -21,7 +20,7 @@ export const monsterRouter = createTRPCRouter({
       where: {
         createdByUserId: ctx.session?.user.id,
       },
-      include: {},
+      include: MonsterInclude.include,
     });
   }),
 
@@ -35,18 +34,14 @@ export const monsterRouter = createTRPCRouter({
         "请求了他可见的怪物列表",
     );
     if (ctx.session?.user.id) {
-      return ctx.db.monster.findMany({
-        include: {},
-      });
+      return ctx.db.monster.findMany(MonsterInclude);
     }
-    return ctx.db.monster.findMany({
-      include: {},
-    });
+    return ctx.db.monster.findMany(MonsterInclude);
   }),
 
   create: protectedProcedure.input(MonsterInputSchema.omit({ id: true })).mutation(async ({ ctx, input }) => {
     // 检查或创建 UserCreate
-    const userCreate = (await findOrCreateUserEntry("userCreate", ctx.session?.user.id, ctx)) as UserCreate;
+    const userCreate = (await findOrCreateUserEntry<UserCreate>("userCreate", ctx.session?.user.id, ctx));
     // 使用实务创建多层嵌套数据
     return await prisma.$transaction(async () => {
       // 拆分输入数据
@@ -59,7 +54,7 @@ export const monsterRouter = createTRPCRouter({
         include: {},
       });
 
-      const { rates, ...OtherStatistics } = defaultStatistics;
+      const { rates, ...OtherStatistics } = statisticsInput;
       const statistics = await ctx.db.statistics.create({
         data: {
           ...OtherStatistics,
@@ -83,32 +78,19 @@ export const monsterRouter = createTRPCRouter({
 
   update: protectedProcedure.input(MonsterInputSchema).mutation(async ({ ctx, input }) => {
     // 检查或创建 UserUpdate
-    const userUpdate = (await findOrCreateUserEntry("userUpdate", ctx.session?.user.id, ctx)) as UserUpdate;
+    const userUpdate = (await findOrCreateUserEntry("userUpdate", ctx.session?.user.id, ctx));
     // 使用实务更新多层嵌套数据
     return await prisma.$transaction(async () => {
-    // 拆分输入数据
-      const { statistics: statisticsInput, ...OtherMonsterInput } = input;
       const monster = await ctx.db.monster.update({
         where: { id: input.id },
-        data: { ...OtherMonsterInput },
-        include: {},
+        data: {
+          ...input,
+          statistics: undefined
+        },
+        include: MonsterInclude.include,
       });
 
-      const { rates, ...OtherStatistics } = defaultStatistics;
-      const statistics = await ctx.db.statistics.update({
-        where: { id: statisticsInput?.id },
-        data: { ...OtherStatistics },
-        include: {
-          rates: true,
-        },
-      });
-
-      return {
-        ...monster,
-        statistics: {
-          ...statistics,
-        },
-      };
+      return monster;
     });
   }),
 });

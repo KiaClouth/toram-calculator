@@ -3,10 +3,10 @@ import * as _ from "lodash-es";
 import { type MainWeaponType, type SubWeaponType, type BodyArmorType, type $Enums } from "@prisma/client";
 import { type getDictionary } from "~/app/get-dictionary";
 import { type MathNode, all, create, floor, max, min, parse } from "mathjs";
-import { Character } from "~/schema/characterSchema";
-import { Monster } from "~/schema/monster";
-import { SkillEffect } from "~/schema/skillEffect";
-import { ModifiersList } from "~/schema/modifiersList";
+import { type Character } from "~/schema/characterSchema";
+import { type Monster } from "~/schema/monster";
+import { type SkillEffect } from "~/schema/skillEffect";
+import { type ModifiersList } from "~/schema/modifiersList";
 
 const fps = 60;
 

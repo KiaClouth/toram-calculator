@@ -18,7 +18,7 @@ export type BodyArmor = Prisma.BodyArmorGetPayload<typeof BodyArmorInclude>;
 export const BodyArmorInputSchema = BodyArmorSchema.extend({
   modifiersList: ModifiersListInputSchema,
   crystal: z.array(CrystalInputSchema),
-  statistics: z.nullable(StatisticsInputShcema),
+  statistics: StatisticsInputShcema,
 }) satisfies ZodType<BodyArmor>;
 
 export const defaultBodyArmor: BodyArmor = {

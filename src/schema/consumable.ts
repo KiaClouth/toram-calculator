@@ -15,7 +15,7 @@ export type Consumable = Prisma.ConsumableGetPayload<typeof ConsumableInclude>;
 
 export const ConsumableInputSchema = ConsumableSchema.extend({
   modifiersList: ModifiersListInputSchema,
-  statistics: z.nullable(StatisticsInputShcema),
+  statistics: StatisticsInputShcema,
 }) satisfies ZodType<Consumable>;
 
 export const defaultConsumable: Consumable = {

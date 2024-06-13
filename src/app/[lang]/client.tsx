@@ -24,11 +24,13 @@ import { type Session } from "next-auth";
 import * as _ from "lodash-es";
 import { motion } from "framer-motion";
 import { evaluate } from "mathjs";
-import { Monster } from "~/schema/monster";
-import { Skill } from "~/schema/skill";
-import { Crystal } from "~/schema/crystal";
-import { SkillEffect } from "~/schema/skillEffect";
-import { SkillCost } from "~/schema/skillCost";
+import { type Monster } from "~/schema/monster";
+import { type Skill } from "~/schema/skill";
+import { type Crystal } from "~/schema/crystal";
+import { type SkillEffect } from "~/schema/skillEffect";
+import { type SkillCost } from "~/schema/skillCost";
+import { tApi } from "~/trpc/react";
+import { type ConvertToAllString } from "../dictionaries/type";
 
 type DataType = Monster | Skill | Crystal;
 type DataName = "monsters" | "skills" | "crystals";
@@ -51,11 +53,12 @@ type Result =
 export default function IndexPageClient(props: {
   dictionary: ReturnType<typeof getDictionary>;
   session: Session | null;
-  monsterList: Monster[];
-  skillList: Skill[];
-  crystalList: Crystal[];
 }) {
-  const { dictionary, session, skillList, monsterList, crystalList } = props;
+  const { dictionary, session } = props;
+  const monsterQuery = tApi.monster.getAll.useQuery();
+  const skillQuery = tApi.skill.getAll.useQuery();
+  const crystalQuery = tApi.crystal.getAll.useQuery();
+  const searchButtonRef = React.useRef<HTMLButtonElement>(null);
 
   type FinalResult = Partial<Record<DataName, Result[]>>;
 
@@ -76,36 +79,15 @@ export default function IndexPageClient(props: {
 
   // 搜索函数
   const monsterHiddenData = useMemo<Array<keyof Monster>>(
-    () => [
-      "id",
-      "updatedAt",
-      "updatedByUserId",
-      "createdByUserId",
-    ],
+    () => ["id", "updatedAt", "updatedByUserId", "createdByUserId"],
     [],
   );
   const skillHiddenData = useMemo<Array<keyof (Skill & SkillEffect & SkillCost)>>(
-    () => [
-      "id",
-      "skillEffectId",
-      "belongToskillId",
-      "updatedAt",
-      "updatedByUserId",
-      "createdAt",
-      "createdByUserId",
-    ],
+    () => ["id", "skillEffectId", "belongToskillId", "updatedAt", "updatedByUserId", "createdAt", "createdByUserId"],
     [],
   );
   const crystalHiddenData = useMemo<Array<keyof Crystal>>(
-    () => [
-      "id",
-      "front",
-      "updatedAt",
-      "updatedByUserId",
-      "createdAt",
-      "createdByUserId",
-      "modifiersListId",
-    ],
+    () => ["id", "front", "updatedAt", "updatedByUserId", "createdAt", "createdByUserId", "modifiersListId"],
     [],
   );
 
@@ -125,12 +107,12 @@ export default function IndexPageClient(props: {
           const currentArr = obj[key] as unknown[];
           currentArr.forEach((item) => {
             const subRealateds = keyWordSearch(item as Record<string, unknown>, keyWord, hiddenData, currentPath);
-            if(subRealateds) relateds = relateds.concat(subRealateds);
+            if (subRealateds) relateds = relateds.concat(subRealateds);
           });
         } else if (_.isObject(obj[key])) {
           const currentObj = obj[key] as Record<string, unknown>;
           const subRealateds = keyWordSearch(currentObj, keyWord, hiddenData, currentPath);
-          if(subRealateds) relateds = relateds.concat(subRealateds);
+          if (subRealateds) relateds = relateds.concat(subRealateds);
         } else if (_.isNumber(obj[key])) {
           // console.log("数字类型：", currentPath.join("."), obj[key]);
           const value = obj[key] as number;
@@ -171,11 +153,11 @@ export default function IndexPageClient(props: {
   );
 
   // 变量对象，返回所有字符串属性值组成的数组
-  function getAllValues(obj:Record<string, unknown>) {
+  function getAllValues(obj: Record<string, unknown>) {
     const values: string[] = [];
-  
+
     function collectValues(o: object) {
-      _.forOwn(o, value => {
+      _.forOwn(o, (value) => {
         if (_.isObject(value) && !_.isArray(value)) {
           collectValues(value);
         } else if (_.isString(value)) {
@@ -183,114 +165,38 @@ export default function IndexPageClient(props: {
         }
       });
     }
-  
+
     collectValues(obj);
     return values;
   }
 
-  const searchMonster = useCallback(
-    (key: string | number) => {
+  const searchInList = useCallback(
+    <T extends Monster | Skill | Crystal>(
+      list: T[],
+      key: string | number,
+      dictionary: ConvertToAllString<T>,
+      hiddenData: string[],
+    ) => {
+      if (!key) return;
       if (typeof key === "string") {
         // 字典替换
         // 获取所有字典值
-        console.log(getAllValues(dictionary.db.models.monster))
-      };
-      const result: Result[] = [];
-      monsterList.forEach((monster) => {
-        keyWordSearch(monster, key, monsterHiddenData)
-          ? result.push({
-              name: monster.name,
-              relateds: keyWordSearch(monster, key, monsterHiddenData)!,
-              data: monster,
-            })
-          : null;
-      });
-      // console.log("怪物搜索结果：", result);
-      return result;
-    },
-    [dictionary.db.models.monster, keyWordSearch, monsterHiddenData, monsterList],
-  );
-
-  const searchSkill = useCallback(
-    (key: string | number) => {
-      if (typeof key === "string") {
-        // 字典替换
-        // 获取所有字典值
-        console.log(getAllValues(dictionary.db.models.skill))
-      };
-      const result: Result[] = [];
-      skillList.forEach((skill) => {
-        // console.log("技能：", skill, "搜索结果：", keyWordSearch(skill, key, skillHiddenData));
-        keyWordSearch(skill, key, skillHiddenData)
-          ? result.push({
-              name: skill.name,
-              relateds: keyWordSearch(skill, key, skillHiddenData)!,
-              data: skill,
-            })
-          : null;
-      });
-      // console.log("技能搜索结果：", result);
-      return result;
-    },
-    [dictionary.db.models.skill, keyWordSearch, skillHiddenData, skillList],
-  );
-
-  const searchCrystal = useCallback(
-    (key: string | number) => {
-      if (typeof key === "string") {
-        // 字典替换
-        // 获取所有字典值
-        console.log(getAllValues(dictionary.db.models.crystal))
-      };
-      const result: Result[] = [];
-      crystalList.forEach((crystal) => {
-        keyWordSearch(crystal, key, crystalHiddenData)
-          ? result.push({
-              name: crystal.name,
-              relateds: keyWordSearch(crystal, key, crystalHiddenData)!,
-              data: crystal,
-            })
-          : null;
-      });
-      // console.log("锻晶搜索结果：", result);
-      return result;
-    },
-    [crystalHiddenData, crystalList, dictionary.db.models.crystal, keyWordSearch],
-  );
-
-  const search = useCallback(
-    (key: string) => {
-      setIsNullResult(true);
-      if (key === "" || key === null) {
-        setResultDialogOpened(false);
-        return;
+        console.log(getAllValues(dictionary));
       }
-      if (!resultDialogOpened) {
-        setResultDialogOpened(true);
-        history.pushState({ popup: true }, "");
-      }
-
-      const parsedInput = parseFloat(key);
-      const isNumber = !isNaN(parsedInput) && key.trim() !== "";
-      const searchValue = isNumber ? parsedInput : key;
-
-      const finalResult: FinalResult = {
-        monsters: searchMonster(searchValue),
-        skills: searchSkill(searchValue),
-        crystals: searchCrystal(searchValue),
-      };
-      setSearchResult(finalResult);
-      // 动态初始化列表状态
-      const resultListSate: boolean[] = [];
-      Object.entries(finalResult).forEach(([_key, value]) => {
-        if (value.length > 0) {
-          setIsNullResult(false);
-        }
-        resultListSate.push(true);
+      const result: Result[] = [];
+      list.forEach((item) => {
+        keyWordSearch(item, key, hiddenData)
+          ? result.push({
+              name: item.name,
+              relateds: keyWordSearch(item, key, hiddenData)!,
+              data: item,
+            })
+          : null;
       });
-      setResultListState(resultListSate);
+      // console.log("搜索结果：", result);
+      return result;
     },
-    [resultDialogOpened, searchCrystal, searchMonster, searchSkill],
+    [keyWordSearch],
   );
 
   useEffect(() => {
@@ -304,7 +210,7 @@ export default function IndexPageClient(props: {
     // enter键监听
     const handleEnterKeyPress = (e: KeyboardEvent) => {
       if (e.key === "Enter" && searchInputFocused) {
-        search(searchInputValue);
+        searchButtonRef.current?.click();
       }
     };
 
@@ -343,13 +249,7 @@ export default function IndexPageClient(props: {
       mediaQuery.removeEventListener("change", handleMediaQueryChange);
       window.removeEventListener("popstate", handlePopState);
     };
-  }, [
-    dictionary.ui.index.goodAfternoon,
-    dictionary.ui.index.goodEvening,
-    search,
-    searchInputFocused,
-    searchInputValue,
-  ]);
+  }, [dictionary.ui.index.goodAfternoon, dictionary.ui.index.goodEvening, searchInputFocused, searchInputValue]);
 
   return (
     <React.Fragment>
@@ -358,6 +258,13 @@ export default function IndexPageClient(props: {
         animate={resultDialogOpened ? "open" : "closed"}
         className={`Client flex max-h-[100dvh] max-w-[100dvw] flex-1 flex-col justify-between lg:mx-auto lg:max-w-[1536px] lg:p-8`}
       >
+        <motion.div
+         className="QueryStarus hidden lg:flex flex-col fixed left-10 top-10 text-xs text-accent-color-30"
+        >
+          <motion.span>MonsterList: {monsterQuery.status}</motion.span>
+          <motion.span>SkillList: {skillQuery.status}</motion.span>
+          <motion.span>CrystalList:{crystalQuery.status}</motion.span>
+        </motion.div>
         <motion.div
           initial={false}
           className={`Top flex flex-col items-center justify-center lg:px-0`}
@@ -464,10 +371,47 @@ export default function IndexPageClient(props: {
                 className="w-full flex-1 rounded bg-transition-color-8 px-4 py-2 text-lg font-bold mix-blend-multiply backdrop-blur placeholder:font-normal placeholder:text-accent-color-50 dark:mix-blend-normal lg:hidden"
               />
               <Button
+                ref={searchButtonRef}
                 level="tertiary"
                 icon={<IconSearch />}
                 className="flex focus-within:outline-none lg:bg-transparent"
-                onClick={() => search(searchInputValue)}
+                onClick={() => {
+                  setIsNullResult(true);
+                  if (searchInputValue === "" || searchInputValue === null) {
+                    setResultDialogOpened(false);
+                    return;
+                  }
+                  if (!resultDialogOpened) {
+                    setResultDialogOpened(true);
+                    history.pushState({ popup: true }, "");
+                  }
+
+                  const parsedInput = parseFloat(searchInputValue);
+                  const isNumber = !isNaN(parsedInput) && searchInputValue.trim() !== "";
+                  const searchValue = isNumber ? parsedInput : searchInputValue;
+
+                  const finalResult: FinalResult = {
+                    monsters: monsterQuery.isSuccess
+                      ? searchInList(monsterQuery.data, searchValue, dictionary.db.models.monster, monsterHiddenData)
+                      : [],
+                    skills: skillQuery.isSuccess
+                      ? searchInList(skillQuery.data, searchValue, dictionary.db.models.skill, skillHiddenData)
+                      : [],
+                    crystals: crystalQuery.isSuccess
+                      ? searchInList(crystalQuery.data, searchValue, dictionary.db.models.crystal, crystalHiddenData)
+                      : [],
+                  };
+                  setSearchResult(finalResult);
+                  // 动态初始化列表状态
+                  const resultListSate: boolean[] = [];
+                  Object.entries(finalResult).forEach(([_key, value]) => {
+                    if (value.length > 0) {
+                      setIsNullResult(false);
+                    }
+                    resultListSate.push(true);
+                  });
+                  setResultListState(resultListSate);
+                }}
               ></Button>
             </motion.div>
             <motion.div className="hidden w-60 flex-none lg:flex"></motion.div>
@@ -562,7 +506,7 @@ export default function IndexPageClient(props: {
               }}
               className={`Content flex h-full flex-1 flex-col gap-2 overflow-y-auto rounded-md bg-transition-color-8 p-2 backdrop-blur-md`}
             >
-                {Object.entries(searchResult).map(([key, value], groupIndex) => {
+              {Object.entries(searchResult).map(([key, value], groupIndex) => {
                 let icon: React.ReactNode = null;
                 let groupName = "未知分类";
                 switch (key) {
@@ -656,7 +600,7 @@ export default function IndexPageClient(props: {
                                 })}
                               </div>
                               <motion.div
-                                className={`Data ${currentCardId === item?.data.id ? "flex" : "hidden"} flex-wrap flex-1 w-full rounded-md bg-transition-color-8 p-1`}
+                                className={`Data ${currentCardId === item?.data.id ? "flex" : "hidden"} w-full flex-1 flex-wrap rounded-md bg-transition-color-8 p-1`}
                                 // animate={currentCardId === item?.data.id ? "open" : "closed"}
                                 // layout
                                 // variants={{
@@ -681,7 +625,7 @@ export default function IndexPageClient(props: {
                                 {JSON.stringify(item?.data, null, 2)
                                   .split(",")
                                   .map((line, index) => (
-                                    <motion.span key={index} className="lg:basis-1/4 text-left">
+                                    <motion.span key={index} className="text-left lg:basis-1/4">
                                       {line}
                                       <br />
                                     </motion.span>

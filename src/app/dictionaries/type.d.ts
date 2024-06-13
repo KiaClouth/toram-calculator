@@ -1,19 +1,23 @@
 import type { $Enums, User } from "@prisma/client";
 import type { Monster } from "~/schema/monster";
-import { type MonsterData, type SkillData, type CharacterData, type modifiers } from "../[lang]/(functionPage)/analyze/worker";
+import {
+  type MonsterData,
+  type SkillData,
+  type CharacterData,
+  type modifiers,
+} from "../[lang]/(functionPage)/analyze/worker";
 import { type Crystal } from "~/schema/crystal";
 import { type Skill } from "~/schema/skill";
 import { type Character } from "~/schema/characterSchema";
-
 
 // 为了方便编辑器自动补全，这个方法可以将数据库模型的值类型转换为字符串
 export type ConvertToAllString<T> = T extends Date | Date[] | modifiers | Array<object>
   ? string
   : T extends object
-  ? {
-      [K in keyof T]: ConvertToAllString<T[K]>;
-    }
-  : string;
+    ? {
+        [K in keyof T]: ConvertToAllString<T[K]>;
+      }
+    : string;
 
 interface dictionary {
   ui: {
@@ -62,10 +66,10 @@ interface dictionary {
         2: string;
         3: string;
         4: string;
-      }
+      };
       monsterForm: {
         discription: string;
-      }
+      };
     };
     crystal: {
       pageTitle: string;
@@ -73,7 +77,7 @@ interface dictionary {
       canNotModify: string;
       crystalForm: {
         discription: string;
-      }
+      };
     };
     skill: {
       pageTitle: string;
@@ -86,9 +90,9 @@ interface dictionary {
       baseValue: string;
       modifiers: string;
       staticModifiers: string;
-      dynamicModifiers: string
+      dynamicModifiers: string;
       dialogData: ConvertToAllString<CharacterData & MonsterData & SkillData>;
-    }
+    };
     character: {
       pageTitle: string;
       discription: string;
@@ -100,10 +104,10 @@ interface dictionary {
       monster: ConvertToAllString<Monster>;
       crystal: ConvertToAllString<Crystal>;
       skill: ConvertToAllString<Skill>;
-      skillEffect: ConvertToAllString<Skill["skillEffect"][0]>
-      skillCost: ConvertToAllString<Skill["skillEffect"][0]["skillCost"][0]>
-      skillYield: ConvertToAllString<Skill["skillEffect"][0]["skillYield"][0]>
-      user: ConvertToAllString<User>
+      skillEffect: ConvertToAllString<Skill["skillEffect"][0]>;
+      skillCost: ConvertToAllString<Skill["skillEffect"][0]["skillCost"][0]>;
+      skillYield: ConvertToAllString<Skill["skillEffect"][0]["skillYield"][0]>;
+      user: ConvertToAllString<User>;
       character: ConvertToAllString<Character>;
     };
   };

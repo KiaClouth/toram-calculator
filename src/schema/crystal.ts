@@ -16,7 +16,7 @@ export type Crystal = Prisma.CrystalGetPayload<typeof CrystalInclude>;
 
 export const CrystalInputSchema = CrystalSchema.extend({
   modifiersList: ModifiersListInputSchema,
-  statistics: z.nullable(StatisticsInputShcema),
+  statistics: StatisticsInputShcema,
 }) satisfies ZodType<Crystal>;
 
 export const defaultCrystal: Crystal = {

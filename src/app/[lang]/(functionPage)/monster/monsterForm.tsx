@@ -41,15 +41,16 @@ import {
 } from "../../_components/iconsList";
 import { useTheme } from "next-themes";
 import LineWrappingInput from "../../_components/autoLineWrappingInput";
-import { Monster, MonsterInputSchema, defaultMonster } from "~/schema/monster";
+import { type Monster, MonsterInputSchema, defaultMonster } from "~/schema/monster";
+import { type Statistics } from "~/schema/statistics";
 
 export default function MonsterForm(props: {
   dictionary: ReturnType<typeof getDictionary>;
   session: Session | null;
-  defaultMonsterList: Monster[];
-  setDefaultMonsterList: (list: Monster[]) => void;
+  basicMonsterList: Monster[];
+  setBasicMonsterList: (list: Monster[]) => void;
 }) {
-  const { dictionary, session, defaultMonsterList, setDefaultMonsterList } = props;
+  const { dictionary, session, basicMonsterList, setBasicMonsterList } = props;
   // 状态管理参数
   const {
     augmented,
@@ -113,11 +114,11 @@ export default function MonsterForm(props: {
       } satisfies Monster;
       switch (monsterFormState) {
         case "CREATE":
-          createMonster.mutate(newMonster);
+          createMonster.mutate(newMonster as Monster & { statistics: Statistics });
           break;
 
         case "UPDATE":
-          updateMonster.mutate(newMonster);
+          updateMonster.mutate(newMonster as Monster & { statistics: Statistics });
           break;
 
         default:
@@ -146,9 +147,9 @@ export default function MonsterForm(props: {
 
   const createMonster = tApi.monster.create.useMutation({
     onSuccess(data) {
-      const newList = [...defaultMonsterList, data];
+      const newList = [...basicMonsterList, data];
       // 创建成功后更新数据
-      setDefaultMonsterList(newList);
+      setBasicMonsterList(newList);
       setMonsterList(newList);
       // 上传成功后表单转换为展示状态
       setDataUploadingState(false);
@@ -158,14 +159,14 @@ export default function MonsterForm(props: {
 
   const updateMonster = tApi.monster.update.useMutation({
     onSuccess(data) {
-      const newList = defaultMonsterList.map((monster) => {
+      const newList = basicMonsterList.map((monster) => {
         if (monster.id === data.id) {
           return data;
         }
         return monster;
       });
       // 更新成功后更新数据
-      setDefaultMonsterList(newList);
+      setBasicMonsterList(newList);
       setMonsterList(newList);
       // 上传成功后表单转换为展示状态
       setDataUploadingState(false);
@@ -234,7 +235,7 @@ export default function MonsterForm(props: {
                   >
                     {(field) => {
                       const defaultFieldsetClass = "flex basis-full flex-col gap-1 p-2";
-                      let fieldsetClass: string = defaultFieldsetClass;
+                      const fieldsetClass: string = defaultFieldsetClass;
                       switch (key as keyof Monster) {
                         case "monsterType":
                         case "element":
@@ -244,7 +245,9 @@ export default function MonsterForm(props: {
                       return (
                         <fieldset key={key} className={fieldsetClass}>
                           <span>
-                            {dictionary.db.models.monster[key as keyof Monster]}
+                            {typeof dictionary.db.models.monster[key as keyof Monster] === "string"
+                              ? (dictionary.db.models.monster[key as keyof Monster] as string)
+                              : key}
                             <FieldInfo field={field} />
                           </span>
                           <div
@@ -403,7 +406,9 @@ export default function MonsterForm(props: {
                         <fieldset key={key} className={fieldsetClass}>
                           <label htmlFor={field.name} className="flex w-full flex-col gap-1">
                             <span>
-                              {dictionary.db.models.monster[key as keyof Monster]}
+                            {typeof dictionary.db.models.monster[key as keyof Monster] === "string"
+                              ? (dictionary.db.models.monster[key as keyof Monster] as string)
+                              : key}
                               <FieldInfo field={field} />
                             </span>
                             {inputBox}
@@ -533,7 +538,9 @@ export default function MonsterForm(props: {
                         <fieldset key={key} className={fieldsetClass}>
                           <label htmlFor={field.name} className="flex w-full flex-col gap-1">
                             <span>
-                              {dictionary.db.models.monster[key as keyof Monster]}
+                            {typeof dictionary.db.models.monster[key as keyof Monster] === "string"
+                              ? (dictionary.db.models.monster[key as keyof Monster] as string)
+                              : key}
                               <FieldInfo field={field} />
                             </span>
                             {inputBox}

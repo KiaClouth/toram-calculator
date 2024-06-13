@@ -15,7 +15,7 @@ export type Skill = Prisma.SkillGetPayload<typeof SkillInclude>;
 
 export const SkillInputSchema = SkillSchema.extend({
     skillEffect: z.array(SkillEffectInputSchema),
-    statistics: z.nullable(StatisticsInputShcema),
+    statistics: StatisticsInputShcema,
 }) satisfies ZodType<Skill>;
 
 export const defaultSkill: Skill = {

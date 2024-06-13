@@ -1,12 +1,12 @@
 export async function findOrCreateUserEntry<T>(
   model: "userCreate" | "userUpdate",
   userId: string,
-  ctx: any,
+  ctx: unknown,
 ): Promise<T> {
   // 尝试查找用户关联的记录
   let userEntry = await ctx.db[model].findUnique({
     where: { userId: userId },
-  });
+  }) as T;
 
   // 如果不存在，创建新的记录
   if (!userEntry) {
@@ -18,7 +18,7 @@ export async function findOrCreateUserEntry<T>(
         userId: userId,
         // 其他属性，根据实际情况填写
       },
-    });
+    }) as T;
   }
 
   return userEntry;

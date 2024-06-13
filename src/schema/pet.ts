@@ -12,7 +12,7 @@ export const PetInclude = {
 export type Pet = Prisma.PetGetPayload<typeof PetInclude>;
 
 export const PetInputSchema = PetSchema.extend({
-  statistics: z.nullable(StatisticsInputShcema),
+  statistics: StatisticsInputShcema,
 }) satisfies ZodType<Pet>;
 
 export const defaultPet: Pet = {

@@ -18,7 +18,7 @@ export type SpecialEquipment = Prisma.SpecialEquipmentGetPayload<typeof SpecialE
 export const SpecialEquipmentInputSchema = SpecialEquipmentSchema.extend({
   modifiersList: ModifiersListInputSchema,
   crystal: z.array(CrystalInputSchema),
-  statistics: z.nullable(StatisticsInputShcema),
+  statistics: StatisticsInputShcema,
 }) satisfies ZodType<SpecialEquipment>;
 
 export const defaultSpecialEquipment: SpecialEquipment = {

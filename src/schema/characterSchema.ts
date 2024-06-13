@@ -46,7 +46,7 @@ export const CharacterInputSchema = CharacterSchema.extend({
   consumableList: z.array(ConsumableInputSchema),
   combos: z.array(ComboInputSchema),
   modifiersList: ModifiersListInputSchema,
-  statistics: z.nullable(StatisticsInputShcema),
+  statistics: StatisticsInputShcema,
 }) satisfies ZodType<Character>;
 
 export const defaultCharacter: Character = {

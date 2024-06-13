@@ -18,7 +18,7 @@ export type MainWeapon = Prisma.MainWeaponGetPayload<typeof MainWeaponInclude>;
 export const MainWeaponInputSchema = MainWeaponSchema.extend({
     modifiersList: ModifiersListInputSchema,
     crystal: z.array(CrystalInputSchema),
-    statistics: z.nullable(StatisticsInputShcema),
+    statistics: StatisticsInputShcema,
 }) satisfies ZodType<MainWeapon>;
 
 export const defaultMainWeapon: MainWeapon = {

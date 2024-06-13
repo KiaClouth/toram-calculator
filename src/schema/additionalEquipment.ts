@@ -18,7 +18,7 @@ export type AdditionalEquipment = Prisma.AdditionalEquipmentGetPayload<typeof Ad
 export const AdditionalEquipmentInputSchema = AdditionalEquipmentSchema.extend({
   modifiersList: ModifiersListInputSchema,
   crystal: z.array(CrystalInputSchema),
-  statistics: z.nullable(StatisticsInputShcema),
+  statistics: StatisticsInputShcema,
 }) satisfies ZodType<AdditionalEquipment>;
 
 export const defaultAdditionalEquipment: AdditionalEquipment = {

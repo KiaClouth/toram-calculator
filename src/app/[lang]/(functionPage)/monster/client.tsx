@@ -28,12 +28,12 @@ import {
 import Dialog from "../../_components/dialog";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { useStore } from "~/app/store";
-import { Monster, defaultMonster } from "~/schema/monster";
+import { type Monster, defaultMonster } from "~/schema/monster";
+import { tApi } from "~/trpc/react";
 
 interface Props {
   dictionary: ReturnType<typeof getDictionary>;
   session: Session | null;
-  monsterList: Monster[];
 }
 
 // 计算各星级属性的方法
@@ -89,7 +89,8 @@ export const computeMonsterAugmentedList = (monsterList: Monster[], dictionary: 
 
 export default function MonserPageClient(props: Props) {
   const { dictionary, session } = props;
-  const [defaultMonsterList, setDefaultMonsterList] = useState(props.monsterList);
+  const monsterQuery = tApi.monster.getAll.useQuery();
+  const [basicMonsterList, setBasicMonsterList] = useState<Monster[]>(monsterQuery.data ?? []);
 
   // 状态管理参数
   const {
@@ -107,7 +108,7 @@ export default function MonserPageClient(props: Props) {
 
   // 搜索框行为函数
   const handleSearchFilterChange = (value: string) => {
-    const currentList = augmented ? computeMonsterAugmentedList(defaultMonsterList, dictionary) : defaultMonsterList;
+    const currentList = augmented ? computeMonsterAugmentedList(basicMonsterList, dictionary) : basicMonsterList;
     if (value === "" || value === null) {
       setMonsterList(currentList);
     }
@@ -246,11 +247,6 @@ export default function MonserPageClient(props: Props) {
         cell: (info) => info.getValue<Date>().toLocaleDateString(),
         size: 100,
       },
-      {
-        accessorKey: "usageCount",
-        header: () => dictionary.db.models.monster.usageCount,
-        size: 140,
-      },
     ],
     [
       dictionary.db.enums.Element,
@@ -271,7 +267,6 @@ export default function MonserPageClient(props: Props) {
       dictionary.db.models.monster.physicalDefense,
       dictionary.db.models.monster.physicalResistance,
       dictionary.db.models.monster.updatedAt,
-      dictionary.db.models.monster.usageCount,
     ],
   );
 
@@ -372,21 +367,13 @@ export default function MonserPageClient(props: Props) {
     document.addEventListener("mouseup", handleMouseUp);
   };
 
-  // 表格行点击事件
-  // const handleTrClick = (id: string) => {
-  //   console.log(id);
-  //   const targetMonster = monsterList.find((monster) => monster.id === id);
-  //   if (targetMonster) {
-  //     setMonster(targetMonster);
-  //     setSameNameMonsterList(compusteSameNameMonsterList(targetMonster, monsterList));
-  //     setMonsterDialogState(true);
-  //     setMonsterFormState("DISPLAY");
-  //   }
-  // };
-
   useEffect(() => {
     console.log("--Monster Client Render");
-    setMonsterList(augmented ? computeMonsterAugmentedList(defaultMonsterList, dictionary) : defaultMonsterList);
+    if (monsterQuery.isSuccess) {
+      console.log("MonsterQuery.data Success");
+      setBasicMonsterList(monsterQuery.data);
+      setMonsterList(augmented ? computeMonsterAugmentedList(monsterQuery.data, dictionary) : monsterQuery.data);
+    }
     // u键监听
     const handleUKeyPress = (e: KeyboardEvent) => {
       if (e.key === "u") {
@@ -403,8 +390,10 @@ export default function MonserPageClient(props: Props) {
     };
   }, [
     augmented,
-    defaultMonsterList,
+    basicMonsterList,
     dictionary,
+    monsterQuery.data,
+    monsterQuery.isSuccess,
     setMonster,
     setMonsterDialogState,
     setMonsterFormState,
@@ -520,7 +509,9 @@ export default function MonserPageClient(props: Props) {
                             level={column.getIsVisible() ? "tertiary" : "primary"}
                             onClick={column.getToggleVisibilityHandler()}
                           >
-                            {dictionary.db.models.monster[column.id as keyof Monster]}
+                            {typeof dictionary.db.models.monster[column.id as keyof Monster] === "string"
+                              ? (dictionary.db.models.monster[column.id as keyof Monster] as string)
+                              : column.id}
                           </Button>
                         );
                       })}
@@ -634,7 +625,6 @@ export default function MonserPageClient(props: Props) {
                       transform: `translateY(${virtualRow.start}px)`, //this should always be a `style` as it changes on scroll
                     }}
                     className={`group flex cursor-pointer border-y-[1px] border-transition-color-8 transition-none hover:rounded hover:border-transparent hover:bg-transition-color-8 hover:font-bold lg:border-y-1.5`}
-                    // onClick={() => handleTrClick(row.getValue("id"))}
                     onMouseDown={(e) => handleMouseDown(row.getValue("id"), e)}
                   >
                     {row.getVisibleCells().map((cell) => {
@@ -773,8 +763,8 @@ export default function MonserPageClient(props: Props) {
             <MonsterForm
               dictionary={dictionary}
               session={session}
-              defaultMonsterList={defaultMonsterList}
-              setDefaultMonsterList={setDefaultMonsterList}
+              basicMonsterList={basicMonsterList}
+              setBasicMonsterList={setBasicMonsterList}
             />
           </div>
         )}
