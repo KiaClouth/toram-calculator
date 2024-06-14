@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect } from "react";
 import "@mdxeditor/editor/style.css";
-import { tApi } from "~/trpc/react";
+import { rApi } from "~/trpc/react";
 import type { getDictionary } from "~/app/get-dictionary";
 import Button from "../../_components/button";
 import { type FieldApi, useForm } from "@tanstack/react-form";
@@ -112,7 +112,7 @@ export default function CharacterForm(props: {
     return ZodFirstPartyTypeKind.ZodUndefined;
   };
   // modifiersList, fashion, cuisine, baseAbi
-  const createCharacter = tApi.character.create.useMutation({
+  const createCharacter = rApi.character.create.useMutation({
     onSuccess(data) {
       const newList = [...defaultCharacterList, data];
       // 创建成功后更新数据
@@ -124,7 +124,7 @@ export default function CharacterForm(props: {
     },
   });
 
-  const updateCharacter = tApi.character.update.useMutation({
+  const updateCharacter = rApi.character.update.useMutation({
     onSuccess(data) {
       const newList = defaultCharacterList.map((character) => {
         if (character.id === data.id) {

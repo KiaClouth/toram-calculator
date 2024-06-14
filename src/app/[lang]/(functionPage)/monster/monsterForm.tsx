@@ -21,7 +21,7 @@ import {
   toolbarPlugin,
   thematicBreakPlugin,
 } from "@mdxeditor/editor";
-import { tApi } from "~/trpc/react";
+import { rApi } from "~/trpc/react";
 import type { getDictionary } from "~/app/get-dictionary";
 import Button from "../../_components/button";
 import { type FieldApi, useForm } from "@tanstack/react-form";
@@ -145,7 +145,7 @@ export default function MonsterForm(props: {
     return ZodFirstPartyTypeKind.ZodUndefined;
   };
 
-  const createMonster = tApi.monster.create.useMutation({
+  const createMonster = rApi.monster.create.useMutation({
     onSuccess(data) {
       const newList = [...basicMonsterList, data];
       // 创建成功后更新数据
@@ -157,7 +157,7 @@ export default function MonsterForm(props: {
     },
   });
 
-  const updateMonster = tApi.monster.update.useMutation({
+  const updateMonster = rApi.monster.update.useMutation({
     onSuccess(data) {
       const newList = basicMonsterList.map((monster) => {
         if (monster.id === data.id) {

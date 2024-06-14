@@ -29,7 +29,7 @@ import { type Skill } from "~/schema/skill";
 import { type Crystal } from "~/schema/crystal";
 import { type SkillEffect } from "~/schema/skillEffect";
 import { type SkillCost } from "~/schema/skillCost";
-import { tApi } from "~/trpc/react";
+import { rApi } from "~/trpc/react";
 import { type ConvertToAllString } from "../dictionaries/type";
 
 type DataType = Monster | Skill | Crystal;
@@ -55,9 +55,9 @@ export default function IndexPageClient(props: {
   session: Session | null;
 }) {
   const { dictionary, session } = props;
-  const monsterQuery = tApi.monster.getAll.useQuery();
-  const skillQuery = tApi.skill.getAll.useQuery();
-  const crystalQuery = tApi.crystal.getAll.useQuery();
+  const monsterQuery = rApi.monster.getAll.useQuery();
+  const skillQuery = rApi.skill.getAll.useQuery();
+  const crystalQuery = rApi.crystal.getAll.useQuery();
   const searchButtonRef = React.useRef<HTMLButtonElement>(null);
 
   type FinalResult = Partial<Record<DataName, Result[]>>;

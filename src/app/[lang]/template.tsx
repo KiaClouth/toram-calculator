@@ -27,7 +27,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
         opacity: 1,
         // clipPath: "inset(0% 0% 0% 0% round 0px)",
       }}
-      transition={{ ease: "easeInOut", duration: 0.75 }}
+      transition={{ ease: "easeInOut", duration: 1 }}
     >
       {children}
     </motion.div>

@@ -29,7 +29,7 @@ import Dialog from "../../_components/dialog";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { useStore } from "~/app/store";
 import { type Monster, defaultMonster } from "~/schema/monster";
-import { tApi } from "~/trpc/react";
+import { rApi } from "~/trpc/react";
 
 interface Props {
   dictionary: ReturnType<typeof getDictionary>;
@@ -89,7 +89,7 @@ export const computeMonsterAugmentedList = (monsterList: Monster[], dictionary: 
 
 export default function MonserPageClient(props: Props) {
   const { dictionary, session } = props;
-  const monsterQuery = tApi.monster.getAll.useQuery();
+  const monsterQuery = rApi.monster.getAll.useQuery();
   const [basicMonsterList, setBasicMonsterList] = useState<Monster[]>(monsterQuery.data ?? []);
 
   // 状态管理参数

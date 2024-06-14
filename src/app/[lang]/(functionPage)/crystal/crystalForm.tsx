@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect } from "react";
 import "@mdxeditor/editor/style.css";
-import { tApi } from "~/trpc/react";
+import { rApi } from "~/trpc/react";
 import type { getDictionary } from "~/app/get-dictionary";
 import Button from "../../_components/button";
 import { type FieldApi, useForm } from "@tanstack/react-form";
@@ -107,7 +107,7 @@ export default function CrystalForm(props: {
     return ZodFirstPartyTypeKind.ZodUndefined;
   };
   // modifiersList, fashion, cuisine, baseAbi
-  const createCrystal = tApi.crystal.create.useMutation({
+  const createCrystal = rApi.crystal.create.useMutation({
     onSuccess(data) {
       const newList = [...defaultCrystalList, data];
       // 创建成功后更新数据
@@ -119,7 +119,7 @@ export default function CrystalForm(props: {
     },
   });
 
-  const updateCrystal = tApi.crystal.update.useMutation({
+  const updateCrystal = rApi.crystal.update.useMutation({
     onSuccess(data) {
       const newList = defaultCrystalList.map((crystal) => {
         if (crystal.id === data.id) {

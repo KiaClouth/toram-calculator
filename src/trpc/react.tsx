@@ -23,7 +23,7 @@ function newIdbStorage(idbStore: UseStore): AsyncStorage<PersistedQuery> {
   };
 }
 
-export const tApi = createTRPCReact<AppRouter>();
+export const rApi = createTRPCReact<AppRouter>();
 
 export function TRPCReactProvider(props: {
   children: React.ReactNode;
@@ -33,7 +33,7 @@ export function TRPCReactProvider(props: {
     {
       defaultOptions: {
         queries: {
-          gcTime: 1000 * 30, // 30 seconds
+          gcTime: 1000 * 60 * 60 * 12, // 12 hours
           persister: typeof window !== 'undefined' ? experimental_createPersister<PersistedQuery>({
             storage: newIdbStorage(createStore("ToramCalculator本地数据库", "LocalDB")),
             maxAge: 1000 * 60 * 60 * 12, // 12 hours,
@@ -48,7 +48,7 @@ export function TRPCReactProvider(props: {
   ));
 
   const [trpcClient] = useState(() =>
-    tApi.createClient({
+    rApi.createClient({
       links: [
         loggerLink({
           enabled: (op) =>
@@ -71,9 +71,9 @@ export function TRPCReactProvider(props: {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <tApi.Provider client={trpcClient} queryClient={queryClient}>
+      <rApi.Provider client={trpcClient} queryClient={queryClient}>
         {props.children}
-      </tApi.Provider>
+      </rApi.Provider>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );

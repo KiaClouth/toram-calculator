@@ -4,7 +4,7 @@ import { type Post } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-import { tApi } from "~/trpc/react";
+import { rApi } from "~/trpc/react";
 
 export function CreatePost() {
   const router = useRouter();
@@ -17,7 +17,7 @@ export function CreatePost() {
     createdById: ""
   }
 
-  const createPost = tApi.post.create.useMutation({
+  const createPost = rApi.post.create.useMutation({
     onSuccess: () => {
       router.refresh();
       setContent("");

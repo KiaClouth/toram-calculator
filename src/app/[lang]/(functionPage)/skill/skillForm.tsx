@@ -21,7 +21,7 @@ import {
   toolbarPlugin,
   thematicBreakPlugin,
 } from "@mdxeditor/editor";
-import { tApi } from "~/trpc/react";
+import { rApi } from "~/trpc/react";
 import { type sApi } from "~/trpc/server";
 import type { getDictionary } from "~/app/get-dictionary";
 import Button from "../../_components/button";
@@ -185,7 +185,7 @@ export default function SkillForm(props: {
     return ZodFirstPartyTypeKind.ZodUndefined;
   };
 
-  const createSkill = tApi.skill.create.useMutation({
+  const createSkill = rApi.skill.create.useMutation({
     onSuccess(data) {
       const newList = [...defaultSkillList, data];
       // 创建成功后更新数据
@@ -197,7 +197,7 @@ export default function SkillForm(props: {
     },
   });
 
-  const updateSkill = tApi.skill.update.useMutation({
+  const updateSkill = rApi.skill.update.useMutation({
     onSuccess(data) {
       const newList = defaultSkillList.map((skill) => {
         if (skill.id === data.id) {
