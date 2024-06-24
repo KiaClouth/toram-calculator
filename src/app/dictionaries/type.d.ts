@@ -8,7 +8,7 @@ import {
 } from "../[lang]/(functionPage)/analyze/worker";
 import { type Crystal } from "~/schema/crystal";
 import { type Skill } from "~/schema/skill";
-import { type Character } from "~/schema/characterSchema";
+import { type Character } from "~/schema/character";
 
 // 为了方便编辑器自动补全，这个方法可以将数据库模型的值类型转换为字符串
 export type ConvertToAllString<T> = T extends Date | Date[] | modifiers | Array<object>

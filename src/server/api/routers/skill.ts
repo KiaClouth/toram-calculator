@@ -1,11 +1,8 @@
-import { type Prisma, PrismaClient, UserCreate, UserUpdate } from "@prisma/client";
-import { randomUUID } from "crypto";
-import { SkillCostSchema, SkillEffectSchema, SkillYieldSchema } from "prisma/generated/zod";
-import { z } from "zod";
+import { PrismaClient } from "@prisma/client";
 import { SkillInclude, SkillInputSchema } from "~/schema/skill";
 
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "~/server/api/trpc";
-import { findOrCreateUserEntry } from "./untils";
+import { findOrCreateUserCreateData, findOrCreateUserUpateData } from "./untils";
 import { defaultStatistics } from "~/schema/statistics";
 
 const prisma = new PrismaClient();
@@ -52,7 +49,7 @@ export const skillRouter = createTRPCRouter({
 
   create: protectedProcedure.input(SkillInputSchema).mutation(async ({ ctx, input }) => {
     // 检查或创建 UserCreate
-    const userCreate = (await findOrCreateUserEntry("userCreate", ctx.session?.user.id, ctx)) as UserCreate;
+    const userCreate = (await findOrCreateUserCreateData(ctx.session?.user.id, ctx));
     // 使用实务创建多层嵌套数据
     return await prisma.$transaction(async () => {
       // 拆分输入数据
@@ -112,7 +109,7 @@ export const skillRouter = createTRPCRouter({
 
   update: protectedProcedure.input(SkillInputSchema).mutation(async ({ ctx, input }) => {
     // 检查或创建 UserUpdate
-    const userUpdate = (await findOrCreateUserEntry("userUpdate", ctx.session?.user.id, ctx)) as UserUpdate;
+    await findOrCreateUserUpateData(ctx.session?.user.id, ctx);
     // 使用实务创建多层嵌套数据
     return await prisma.$transaction(async () => {
       // 拆分输入数据

@@ -11,7 +11,7 @@ import { type $Enums } from "@prisma/client";
 import { useStore } from "~/app/store";
 import { type Session } from "next-auth";
 import LineWrappingInput from "../../_components/autoLineWrappingInput";
-import { Crystal, CrystalInputSchema, defaultCrystal } from "~/schema/crystal";
+import { type Crystal, CrystalInputSchema, defaultCrystal } from "~/schema/crystal";
 import { defaultStatistics } from "~/schema/statistics";
 
 export default function CrystalForm(props: {
@@ -210,7 +210,7 @@ export default function CrystalForm(props: {
                   >
                     {(field) => {
                       const defaultFieldsetClass = "flex basis-full flex-col gap-1 p-2";
-                      let fieldsetClass: string = defaultFieldsetClass;
+                      const fieldsetClass: string = defaultFieldsetClass;
                       switch (key as keyof Crystal) {
                         // case "rates":
                         // case "id":

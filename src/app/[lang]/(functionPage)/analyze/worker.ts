@@ -3,7 +3,7 @@ import * as _ from "lodash-es";
 import { type MainWeaponType, type SubWeaponType, type BodyArmorType, type $Enums } from "@prisma/client";
 import { type getDictionary } from "~/app/get-dictionary";
 import { type MathNode, all, create, floor, max, min, parse } from "mathjs";
-import { type Character } from "~/schema/characterSchema";
+import { type Character } from "~/schema/character";
 import { type Monster } from "~/schema/monster";
 import { type SkillEffect } from "~/schema/skillEffect";
 import { type ModifiersList } from "~/schema/modifiersList";

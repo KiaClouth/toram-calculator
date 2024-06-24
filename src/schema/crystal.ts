@@ -1,6 +1,6 @@
 
 import { CrystalSchema } from "prisma/generated/zod";
-import { z, type ZodType } from "zod";
+import { type ZodType } from "zod";
 import { ModifiersListInputSchema, defaultModifiersList, ModifiersListInclude } from "./modifiersList";
 import { type Prisma } from "@prisma/client";
 import { StatisticsInputShcema, defaultStatistics, StatisticsInclude } from "./statistics";
@@ -34,5 +34,5 @@ export const defaultCrystal: Crystal = {
   createdAt: new Date(),
   createdByUserId: "",
   statistics: defaultStatistics,
-  statisticsId: null,
+  statisticsId: "",
 };

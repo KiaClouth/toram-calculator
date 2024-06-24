@@ -14,18 +14,6 @@ const statistics: ConvertToAllString<Statistics> = {
   usageCount: "被使用次数",
   usageTimestamps: "被使用记录",
   viewTimestamps: "被查看记录",
-  monsterId: "怪物ID",
-  crystalId: "锻晶ID",
-  mainWeaponId: "主武器ID",
-  subWeaponId: "副武器ID",
-  bodyArmorId: "防具ID",
-  additionalEquipmentId: "追加装备ID",
-  specialEquipmentId: "特殊装备ID",
-  skillId: "技能ID",
-  petId: "宠物ID",
-  consumableId: "消耗品ID",
-  characterId: "角色ID",
-  analyzerId: "分析ID",
 };
 
 const dictionary: dictionary = {

@@ -3,7 +3,7 @@ import { produce } from "immer";
 import { type Monster, defaultMonster } from "~/schema/monster";
 import { type Skill, defaultSkill } from "~/schema/skill";
 import { type Crystal, defaultCrystal } from "~/schema/crystal";
-import { type Character, defaultCharacter } from "~/schema/characterSchema";
+import { type Character, defaultCharacter } from "~/schema/character";
 import { type Analyzer, defaultAnalyzer } from "~/schema/analyzer";
 
 // if you need middleware

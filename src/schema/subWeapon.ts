@@ -36,5 +36,5 @@ export const defaultSubWeapon: SubWeapon = {
   createdAt: new Date(),
   createdByUserId: "",
   statistics: defaultStatistics,
-  statisticsId: null,
+  statisticsId: "",
 };

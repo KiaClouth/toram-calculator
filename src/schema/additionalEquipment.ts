@@ -36,5 +36,5 @@ export const defaultAdditionalEquipment: AdditionalEquipment = {
   createdAt: new Date(),
   createdByUserId: "",
   statistics: defaultStatistics,
-  statisticsId: null,
+  statisticsId: "",
 };

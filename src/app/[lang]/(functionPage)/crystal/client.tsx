@@ -129,22 +129,6 @@ export default function MonserPageClient(props: Props) {
         cell: (info) => info.getValue<Date>().toLocaleDateString(),
         size: 100,
       },
-      {
-        accessorKey: "usageCount",
-        header: () => dictionary.db.models.crystal.usageCount,
-        size: 140,
-      },
-      {
-        accessorKey: "rates",
-        header: () => dictionary.db.models.crystal.rates,
-        cell: (info) => {
-          const rates = info.getValue<Rate[]>();
-          if (rates.length === 0) return 0;
-          const ratesNumber = rates.map((rate) => rate.rate);
-          return math.floor(_.mean(ratesNumber),2);
-        },
-        size: 80,
-      },
     ],
     [
       dictionary.db.models.crystal.updatedAt,
@@ -153,8 +137,6 @@ export default function MonserPageClient(props: Props) {
       dictionary.db.models.crystal.crystalType,
       dictionary.db.models.crystal.modifiersList,
       dictionary.db.models.crystal.front,
-      dictionary.db.models.crystal.usageCount,
-      dictionary.db.models.crystal.rates,
       dictionary.db.enums.CrystalType,
     ],
   );
@@ -576,7 +558,7 @@ export default function MonserPageClient(props: Props) {
                         //     </td>
                         //   );
                         // }
-                          
+
                         // case "id":
                         // case "state":
                         case "crystalType":

@@ -28,5 +28,5 @@ export const defaultAnalyzer: Analyzer = {
   createdAt: new Date(),
   createdByUserId: "",
   statistics: defaultStatistics,
-  statisticsId: null,
+  statisticsId: "",
 };

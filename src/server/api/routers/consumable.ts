@@ -1,6 +1,7 @@
 import type { Prisma } from "@prisma/client";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 import { ConsumableSchema } from "prisma/generated/zod";
+import { findOrCreateUserCreateData, findOrCreateUserUpateData } from "./untils";
 
 export const consumableRouter = createTRPCRouter({
   getPrivate: protectedProcedure.query(({ ctx }) => {
@@ -29,11 +30,9 @@ export const consumableRouter = createTRPCRouter({
         "请求了他可见的消耗品列表",
     );
     if (ctx.session?.user.id) {
-      return ctx.db.consumable.findMany({
-      });
+      return ctx.db.consumable.findMany({});
     }
-    return ctx.db.consumable.findMany({
-    });
+    return ctx.db.consumable.findMany({});
   }),
 
   create: protectedProcedure.input(ConsumableSchema.omit({ id: true })).mutation(async ({ ctx, input }) => {
@@ -45,62 +44,8 @@ export const consumableRouter = createTRPCRouter({
     //   );
     //   return;
     // }
-
-    // 检查用户是否存在关联的 UserCreate
-    let userCreate = await ctx.db.userCreate.findUnique({
-      where: { userId: ctx.session?.user.id },
-    });
-
-    // 如果不存在，创建一个新的 UserCreate
-    if (!userCreate) {
-      console.log(
-        new Date().toLocaleDateString() +
-          "--" +
-          new Date().toLocaleTimeString() +
-          "--" +
-          (ctx.session?.user.name ?? ctx.session?.user.email) +
-          "初次上传消耗品，自动创建对应userCreate",
-      );
-      userCreate = await ctx.db.userCreate.create({
-        data: {
-          userId: ctx.session?.user.id ?? "",
-          // 其他 UserCreate 的属性，根据实际情况填写
-        },
-      });
-    }
-
-    // 检查用户是否存在关联的 UserUpdate
-    let userUpdate = await ctx.db.userUpdate.findUnique({
-      where: { userId: ctx.session?.user.id },
-    });
-
-    // 如果不存在，创建一个新的 UserUpdate
-    if (!userUpdate) {
-      console.log(
-        new Date().toLocaleDateString() +
-          "--" +
-          new Date().toLocaleTimeString() +
-          "--" +
-          (ctx.session?.user.name ?? ctx.session?.user.email) +
-          "初次上传消耗品，自动创建对应userUpdate",
-      );
-      userUpdate = await ctx.db.userUpdate.create({
-        data: {
-          userId: ctx.session?.user.id ?? "",
-          // 其他 UserUpdate 的属性，根据实际情况填写
-        },
-      });
-    }
-
-    console.log(
-      new Date().toLocaleDateString() +
-        "--" +
-        new Date().toLocaleTimeString() +
-        "--" +
-        (ctx.session?.user.name ?? ctx.session?.user.email) +
-        "上传了Consumable: " +
-        input.name,
-    );
+    // 检查或创建 UserCreate
+    const userCreate = await findOrCreateUserCreateData(ctx.session?.user.id, ctx);
     // 创建消耗品并关联创建者和统计信息
     return ctx.db.consumable.create({
       data: {
@@ -120,42 +65,12 @@ export const consumableRouter = createTRPCRouter({
     //   );
     //   return;
     // }
-
-    // 检查用户是否存在关联的 UserUpdate
-    let userUpdate = await ctx.db.userUpdate.findUnique({
-      where: { userId: ctx.session?.user.id },
-    });
-
-    // 如果不存在，创建一个新的 UserUpdate
-    if (!userUpdate) {
-      console.log(
-        new Date().toLocaleDateString() +
-          "--" +
-          new Date().toLocaleTimeString() +
-          "--" +
-          (ctx.session?.user.name ?? ctx.session?.user.email) +
-          "初次上传消耗品，自动创建对应userUpdate",
-      );
-      userUpdate = await ctx.db.userUpdate.create({
-        data: {
-          userId: ctx.session?.user.id ?? "",
-          // 其他 UserUpdate 的属性，根据实际情况填写
-        },
-      });
-    }
-
-    console.log(
-      new Date().toLocaleDateString() +
-        "--" +
-        new Date().toLocaleTimeString() +
-        "--" +
-        (ctx.session?.user.name ?? ctx.session?.user.email) +
-        "更新了Consumable: " +
-        input.name,
-    );
+    // 检查UserUpdate是否存在
+    await findOrCreateUserUpateData(ctx.session?.user.id, ctx);
+    // 更新消耗品
     return ctx.db.consumable.update({
       where: { id: input.id },
       data: { ...input },
     });
   }),
-})
+});

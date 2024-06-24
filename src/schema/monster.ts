@@ -49,5 +49,5 @@ export const defaultMonster: Monster = {
   createdAt: new Date(),
   createdByUserId: "",
   statistics: defaultStatistics,
-  statisticsId: null,
+  statisticsId: "",
 };

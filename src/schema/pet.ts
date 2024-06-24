@@ -26,5 +26,5 @@ export const defaultPet: Pet = {
   createdAt: new Date(),
   createdByUserId: "",
   statistics: defaultStatistics,
-  statisticsId: null,
+  statisticsId: "",
 };

@@ -14,18 +14,6 @@ const statistics: ConvertToAllString<Statistics> = {
   usageTimestamps: "UsageTimestamps",
   viewTimestamps: "ViewTimestamps",
   rates: "Rates",
-  monsterId: "MonsterId",
-  crystalId: "CrystalId",
-  mainWeaponId: "MainWeaponId",
-  subWeaponId: "SubWeaponId",
-  bodyArmorId: "BodyArmorId",
-  additionalEquipmentId: "AdditionalEquipmentId",
-  specialEquipmentId: "SpecialEquipmentId",
-  skillId: "SkillId",
-  petId: "PetId",
-  consumableId: "ConsumableId",
-  characterId: "CharacterId",
-  analyzerId: "AnalyzerId",
 };
 
 const dictionary: dictionary = {

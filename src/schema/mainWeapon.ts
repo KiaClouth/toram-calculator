@@ -1,8 +1,8 @@
 import { MainWeaponSchema } from "prisma/generated/zod";
 import { ModifiersListInputSchema, defaultModifiersList, ModifiersListInclude } from "./modifiersList";
 import { CrystalInclude, CrystalInputSchema, defaultCrystal } from "./crystal";
-import { ZodType, z } from "zod";
-import { Prisma } from "@prisma/client";
+import { type ZodType, z } from "zod";
+import { type Prisma } from "@prisma/client";
 import { StatisticsInputShcema, defaultStatistics, StatisticsInclude } from "./statistics";
 
 export const MainWeaponInclude = {
@@ -40,5 +40,5 @@ export const defaultMainWeapon: MainWeapon = {
   createdAt: new Date(),
   createdByUserId: "",
   statistics: defaultStatistics,
-  statisticsId: null,
+  statisticsId: "",
 };

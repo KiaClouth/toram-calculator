@@ -18,7 +18,7 @@ import { IconCloudUpload, IconFilter } from "../../_components/iconsList";
 import Dialog from "../../_components/dialog";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { useStore } from "~/app/store";
-import { Character, defaultCharacter } from "~/schema/characterSchema";
+import { Character, defaultCharacter } from "~/schema/character";
 
 interface Props {
   dictionary: ReturnType<typeof getDictionary>;
@@ -110,11 +110,6 @@ export default function MonserPageClient(props: Props) {
         cell: (info) => info.getValue<Date>().toLocaleDateString(),
         size: 100,
       },
-      {
-        accessorKey: "usageCount",
-        header: () => dictionary.db.models.character.usageCount,
-        size: 140,
-      },
     ],
     [
       dictionary.db.enums.CharacterType,
@@ -122,7 +117,6 @@ export default function MonserPageClient(props: Props) {
       dictionary.db.models.character.characterType,
       dictionary.db.models.character.name,
       dictionary.db.models.character.updatedAt,
-      dictionary.db.models.character.usageCount,
     ],
   );
 

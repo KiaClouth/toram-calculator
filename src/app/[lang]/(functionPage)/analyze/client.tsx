@@ -18,7 +18,7 @@ import { ObjectRenderer } from "./objectRender";
 import LongSearchBox from "./monsterSearchBox";
 import { computeMonsterAugmentedList } from "../monster/client";
 import { Monster } from "~/schema/monster";
-import { Character } from "~/schema/characterSchema";
+import { Character } from "~/schema/character";
 import { defaultStatistics } from "~/schema/statistics";
 import { defaultModifiersList } from "~/schema/modifiersList";
 import { defaultConsumable } from "~/schema/consumable";

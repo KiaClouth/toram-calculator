@@ -1,7 +1,7 @@
 "use client";
 import * as React from "react";
 import { type getDictionary } from "~/app/get-dictionary";
-import { Monster } from "~/schema/monster";
+import { type Monster } from "~/schema/monster";
 
 interface Film {
   id: string;
@@ -30,12 +30,7 @@ export default function LongSearchBox(props: {
     }
     setOpen(openClass);
     const tempFilm: Film[] = [];
-    const hiddenData: Array<keyof Monster> = [
-      "id",
-      "updatedAt",
-      "updatedByUserId",
-      "createdByUserId",
-    ];
+    const hiddenData: Array<keyof Monster> = ["id", "updatedAt", "updatedByUserId", "createdByUserId"];
     monsterList.forEach((monster) => {
       const related: [string, string | undefined][] = [];
       for (const attr in monster) {
@@ -65,7 +60,7 @@ export default function LongSearchBox(props: {
 
   return (
     <React.Fragment>
-      <div className="SearchBox z-10 w-full flex-1 flex flex-col">
+      <div className="SearchBox z-10 flex w-full flex-1 flex-col">
         <input
           ref={inputRef}
           type="search"
@@ -97,8 +92,9 @@ export default function LongSearchBox(props: {
                     return (
                       <div key={`${attr[0]}${attr[1]}`} className=" flex flex-wrap gap-1">
                         <span>
-                          {dictionary.db.models.monster[`${attr[0]}` as keyof typeof dictionary.db.models.monster] ??
-                            "[此属性名在词库中未找到=。=]"}
+                          {typeof dictionary.db.models.monster[`${attr[0]}` as keyof Monster] === "string"
+                            ? (dictionary.db.models.monster[`${attr[0]}` as keyof Monster] as string)
+                            : `${attr[0]}`}
                           :
                         </span>
                         <span>{attr[1]}</span>

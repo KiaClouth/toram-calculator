@@ -59,13 +59,7 @@ export default function MonserPageClient(props: Props) {
       setSkillList(currentList);
     }
     // 搜索时需要忽略的数据
-    const skillHiddenData: Array<keyof Skill> = [
-      "id",
-      "updatedAt",
-      "updatedByUserId",
-      "createdAt",
-      "createdByUserId",
-    ];
+    const skillHiddenData: Array<keyof Skill> = ["id", "updatedAt", "updatedByUserId", "createdAt", "createdByUserId"];
     const newSkillList: Skill[] = [];
     currentList.forEach((skill) => {
       let filter = false;
@@ -144,11 +138,6 @@ export default function MonserPageClient(props: Props) {
         cell: (info) => info.getValue<Date>().toLocaleDateString(),
         size: 100,
       },
-      {
-        accessorKey: "usageCount",
-        header: () => dictionary.db.models.skill.usageCount,
-        size: 140,
-      },
     ],
     [
       dictionary.db.models.skill.updatedAt,
@@ -158,7 +147,6 @@ export default function MonserPageClient(props: Props) {
       dictionary.db.models.skill.skillType,
       dictionary.db.models.skill.element,
       dictionary.db.models.skill.weaponElementDependencyType,
-      dictionary.db.models.skill.usageCount,
       dictionary.db.enums.SkillType,
       dictionary.db.enums.Element,
     ],
@@ -358,9 +346,11 @@ export default function MonserPageClient(props: Props) {
             </div>
             <div className="Content flex flex-col gap-2">
               <div
-                className={`FilterBox flex bg-transition-color-8 rounded overflow-y-auto ${filterState ? " max-h-[50dvh] " : " max-h-0 "}`}
+                className={`FilterBox flex overflow-y-auto rounded bg-transition-color-8 ${filterState ? " max-h-[50dvh] " : " max-h-0 "}`}
               >
-                <div className={`Content h-fit flex flex-col gap-2 p-4 ${filterState ? " pointer-events-auto opacity-100 " : " pointer-events-none opacity-0 "} `}>
+                <div
+                  className={`Content flex h-fit flex-col gap-2 p-4 ${filterState ? " pointer-events-auto opacity-100 " : " pointer-events-none opacity-0 "} `}
+                >
                   <div className="module flex flex-col gap-3">
                     <div className="title">{dictionary.ui.columnsHidden}</div>
                     <div className="content flex flex-wrap gap-2 ">
@@ -383,7 +373,9 @@ export default function MonserPageClient(props: Props) {
                             level={column.getIsVisible() ? "tertiary" : "primary"}
                             onClick={column.getToggleVisibilityHandler()}
                           >
-                            {dictionary.db.models.skill[column.id as keyof Skill]}
+                            {typeof dictionary.db.models.skill[column.id as keyof Skill] === "string"
+                              ? (dictionary.db.models.skill[column.id as keyof Skill] as string)
+                              : column.id}
                           </Button>
                         );
                       })}

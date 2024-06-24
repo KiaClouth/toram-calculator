@@ -2,6 +2,7 @@ import { PrismaClient, type Prisma } from "@prisma/client";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 import { randomUUID } from "crypto";
 import { CrystalInclude, CrystalInputSchema } from "~/schema/crystal";
+import { findOrCreateUserCreateData, findOrCreateUserUpateData } from "./untils";
 
 const prisma = new PrismaClient();
 
@@ -30,62 +31,8 @@ export const crystalRouter = createTRPCRouter({
     //   );
     //   return;
     // }
-
-    // 检查用户是否存在关联的 UserCreate
-    let userCreate = await ctx.db.userCreate.findUnique({
-      where: { userId: ctx.session?.user.id },
-    });
-
-    // 如果不存在，创建一个新的 UserCreate
-    if (!userCreate) {
-      console.log(
-        new Date().toLocaleDateString() +
-          "--" +
-          new Date().toLocaleTimeString() +
-          "--" +
-          (ctx.session?.user.name ?? ctx.session?.user.email) +
-          "初次上传怪物，自动创建对应userCreate",
-      );
-      userCreate = await ctx.db.userCreate.create({
-        data: {
-          userId: ctx.session?.user.id ?? "",
-          // 其他 UserCreate 的属性，根据实际情况填写
-        },
-      });
-    }
-
-    // 检查用户是否存在关联的 UserUpdate
-    let userUpdate = await ctx.db.userUpdate.findUnique({
-      where: { userId: ctx.session?.user.id },
-    });
-
-    // 如果不存在，创建一个新的 UserUpdate
-    if (!userUpdate) {
-      console.log(
-        new Date().toLocaleDateString() +
-          "--" +
-          new Date().toLocaleTimeString() +
-          "--" +
-          (ctx.session?.user.name ?? ctx.session?.user.email) +
-          "初次上传怪物，自动创建对应userUpdate",
-      );
-      userUpdate = await ctx.db.userUpdate.create({
-        data: {
-          userId: ctx.session?.user.id ?? "",
-          // 其他 UserUpdate 的属性，根据实际情况填写
-        },
-      });
-    }
-
-    console.log(
-      new Date().toLocaleDateString() +
-        "--" +
-        new Date().toLocaleTimeString() +
-        "--" +
-        (ctx.session?.user.name ?? ctx.session?.user.email) +
-        "上传了Crystal: " +
-        input.name,
-    );
+    // 检查或创建 UserCreate
+    const userCreate = (await findOrCreateUserCreateData(ctx.session?.user.id, ctx));
 
     // 输入内容拆分成4个表的数据
     const { modifiersList: modifiersListInput, statistics: statisticsInput, ...crystalInput } = input;
@@ -97,6 +44,7 @@ export const crystalRouter = createTRPCRouter({
           ...crystalInput,
           modifiersList: undefined,
           id: crystalId,
+          createdByUserId: userCreate.userId,
         },
       });
 
@@ -130,16 +78,6 @@ export const crystalRouter = createTRPCRouter({
         },
       });
 
-      console.log(
-        new Date().toLocaleDateString() +
-          "--" +
-          new Date().toLocaleTimeString() +
-          "--" +
-          (ctx.session?.user.name ?? ctx.session?.user.email) +
-          "上传了Crystal: " +
-          input.name,
-      );
-
       return {
         ...crystal,
         modifiersList: {
@@ -162,37 +100,7 @@ export const crystalRouter = createTRPCRouter({
     // }
 
     // 检查用户是否存在关联的 UserUpdate
-    let userUpdate = await ctx.db.userUpdate.findUnique({
-      where: { userId: ctx.session?.user.id },
-    });
-
-    // 如果不存在，创建一个新的 UserUpdate
-    if (!userUpdate) {
-      console.log(
-        new Date().toLocaleDateString() +
-          "--" +
-          new Date().toLocaleTimeString() +
-          "--" +
-          (ctx.session?.user.name ?? ctx.session?.user.email) +
-          "初次上传怪物，自动创建对应userUpdate",
-      );
-      userUpdate = await ctx.db.userUpdate.create({
-        data: {
-          userId: ctx.session?.user.id ?? "",
-          // 其他 UserUpdate 的属性，根据实际情况填写
-        },
-      });
-    }
-
-    console.log(
-      new Date().toLocaleDateString() +
-        "--" +
-        new Date().toLocaleTimeString() +
-        "--" +
-        (ctx.session?.user.name ?? ctx.session?.user.email) +
-        "上传了Crystal: " +
-        input.name,
-    );
+    await findOrCreateUserUpateData(ctx.session?.user.id, ctx);
 
     // 输入内容拆分成4个表的数据
     const { statistics: statisticsInput, modifiersList: modifiersListInput, ...crystalInput } = input;

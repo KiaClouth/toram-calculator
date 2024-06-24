@@ -1,4 +1,3 @@
-import { postRouter } from "~/server/api/routers/post";
 import { monsterRouter } from "~/server/api/routers/monster"
 import { skillRouter } from "./routers/skill";
 // import { equipmentRouter } from "./routers/equipment";
@@ -18,7 +17,6 @@ import { createTRPCRouter } from "~/server/api/trpc";
  */
 export const appRouter = createTRPCRouter({
   user: userRouter,
-  post: postRouter,
   monster: monsterRouter,
   skill: skillRouter,
   // equipment: equipmentRouter,

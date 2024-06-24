@@ -28,9 +28,7 @@ import Button from "../../_components/button";
 import { type FieldApi, useForm } from "@tanstack/react-form";
 import { zodValidator } from "@tanstack/zod-form-adapter";
 import { ZodFirstPartyTypeKind, type z } from "zod";
-import {
-  useStore,
-} from "~/app/store";
+import { useStore } from "~/app/store";
 import { type Session } from "next-auth";
 import {
   IconElementWater,
@@ -42,12 +40,12 @@ import {
   IconElementNoElement,
 } from "../../_components/iconsList";
 import { useTheme } from "next-themes";
-import { Skill, SkillInputSchema, defaultSkill } from "~/schema/skill";
-import { SkillEffect, SkillEffectInputSchema, defaultSkillEffect } from "~/schema/skillEffect";
-import { SkillCost, SkillCostInputSchema, defaultSkillCost } from "~/schema/skillCost";
-import { SkillYield, SkillYieldInputSchema, defaultSkillYield } from "~/schema/skillYield";
+import { type Skill, SkillInputSchema, defaultSkill } from "~/schema/skill";
+import { type SkillEffect, SkillEffectInputSchema, defaultSkillEffect } from "~/schema/skillEffect";
+import { type SkillCost, SkillCostInputSchema, defaultSkillCost } from "~/schema/skillCost";
+import { type SkillYield, SkillYieldInputSchema, defaultSkillYield } from "~/schema/skillYield";
 import { defaultStatistics } from "~/schema/statistics";
-import { $Enums } from "@prisma/client";
+import { type $Enums } from "@prisma/client";
 
 export default function SkillForm(props: {
   dictionary: ReturnType<typeof getDictionary>;
@@ -300,7 +298,9 @@ export default function SkillForm(props: {
                           className={`${skillHiddenData.some((item) => field.name === item) ? "hidden" : "flex"} basis-full flex-col gap-1 p-2`}
                         >
                           <span>
-                            {dictionary.db.models.skill[key as keyof Skill]}
+                            {typeof dictionary.db.models.skill[key as keyof Skill] === "string"
+                              ? (dictionary.db.models.skill[key as keyof Skill] as string)
+                              : key}
                             <FieldInfo field={field} />
                           </span>
                           <div
@@ -602,7 +602,9 @@ export default function SkillForm(props: {
                                                               validators={{
                                                                 onChangeAsyncDebounceMs: 500,
                                                                 onChangeAsync:
-                                                                  SkillCostInputSchema.shape[subsubKey as keyof SkillCost],
+                                                                  SkillCostInputSchema.shape[
+                                                                    subsubKey as keyof SkillCost
+                                                                  ],
                                                               }}
                                                             >
                                                               {(subsubField) => (
@@ -699,7 +701,9 @@ export default function SkillForm(props: {
                                                               validators={{
                                                                 onChangeAsyncDebounceMs: 500,
                                                                 onChangeAsync:
-                                                                SkillCostInputSchema.shape[subsubKey as keyof SkillCost],
+                                                                  SkillCostInputSchema.shape[
+                                                                    subsubKey as keyof SkillCost
+                                                                  ],
                                                               }}
                                                             >
                                                               {(subsubField) => {
@@ -772,7 +776,9 @@ export default function SkillForm(props: {
                                                             validators={{
                                                               onChangeAsyncDebounceMs: 500,
                                                               onChangeAsync:
-                                                              SkillYieldInputSchema.shape[subsubKey as keyof SkillYield],
+                                                                SkillYieldInputSchema.shape[
+                                                                  subsubKey as keyof SkillYield
+                                                                ],
                                                             }}
                                                           >
                                                             {(subsubField) => (
@@ -865,7 +871,9 @@ export default function SkillForm(props: {
                                                             validators={{
                                                               onChangeAsyncDebounceMs: 500,
                                                               onChangeAsync:
-                                                                SkillYieldInputSchema.shape[subsubKey as keyof SkillYield],
+                                                                SkillYieldInputSchema.shape[
+                                                                  subsubKey as keyof SkillYield
+                                                                ],
                                                             }}
                                                           >
                                                             {(subsubField) => {
@@ -978,9 +986,7 @@ export default function SkillForm(props: {
                                                     e.stopPropagation();
                                                     console.log(subField.state.value);
                                                     subField.pushValue(
-                                                      subKey === "skillCost"
-                                                        ? defaultSkillCost
-                                                        : defaultSkillYield,
+                                                      subKey === "skillCost" ? defaultSkillCost : defaultSkillYield,
                                                     );
                                                     console.log(subField.state.value);
                                                   }}
@@ -1049,7 +1055,11 @@ export default function SkillForm(props: {
                         >
                           <div className="title flex items-end gap-6 pt-4">
                             <div className="h-[1px] flex-1 bg-accent-color"></div>
-                            <span className="text-lg">{dictionary.db.models.skill[key as keyof Skill]}</span>
+                            <span className="text-lg">
+                              {typeof dictionary.db.models.skill[key as keyof Skill] === "string"
+                                ? (dictionary.db.models.skill[key as keyof Skill] as string)
+                                : key}
+                            </span>
                             <div className="h-[1px] flex-1 bg-accent-color"></div>
                           </div>
                           <div className="Content flex flex-wrap gap-y-3 rounded-sm border-1.5 border-transition-color-20">
@@ -1062,7 +1072,10 @@ export default function SkillForm(props: {
                                   >
                                     <div className="Title flex w-full items-center justify-between border-b-1.5 border-transition-color-20 p-2">
                                       <span className="">
-                                        {dictionary.db.models.skill[key as keyof Skill] + " " + (i + 1)}
+                                        {typeof dictionary.db.models.skill[key as keyof Skill] === "string"
+                                          ? (dictionary.db.models.skill[key as keyof Skill] as string)
+                                          : key}
+                                        {" " + (i + 1)}
                                       </span>
                                       <Button
                                         level="tertiary"
@@ -1093,7 +1106,11 @@ export default function SkillForm(props: {
                             }}
                             className={`${skillFormState === "DISPLAY" && "hidden"}`}
                           >
-                            Add [ {dictionary.db.models.skill[key as keyof Skill]} ]
+                            Add [{" "}
+                            {typeof dictionary.db.models.skill[key as keyof Skill] === "string"
+                              ? (dictionary.db.models.skill[key as keyof Skill] as string)
+                              : key}{" "}
+                            ]
                           </Button>
                         </fieldset>
                       );
@@ -1123,9 +1140,7 @@ export default function SkillForm(props: {
                           value={typeof field.state.value !== "object" ? field.state.value : undefined}
                           type={inputType}
                           onBlur={field.handleBlur}
-                          onChange={(e) =>
-                            field.handleChange(e.target.value)
-                          }
+                          onChange={(e) => field.handleChange(e.target.value)}
                           className={`mt-1 w-full flex-1 rounded px-4 py-2 ${skillFormState === "DISPLAY" ? " pointer-events-none bg-transparent outline-transition-color-20" : " pointer-events-auto bg-transition-color-8"}`}
                         />
                       );
@@ -1217,7 +1232,9 @@ export default function SkillForm(props: {
                         <fieldset key={key} className={fieldsetClass}>
                           <label htmlFor={field.name} className="flex w-full flex-col gap-1">
                             <span>
-                              {dictionary.db.models.skill[key as keyof Skill]}
+                              {typeof dictionary.db.models.skill[key as keyof Skill] === "string"
+                                ? (dictionary.db.models.skill[key as keyof Skill] as string)
+                                : key}
                               <FieldInfo field={field} />
                             </span>
                             {inputBox}

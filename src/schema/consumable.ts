@@ -1,6 +1,6 @@
 import { type Prisma } from "@prisma/client";
 import { ConsumableSchema } from "prisma/generated/zod";
-import { z, type ZodType } from "zod";
+import { type ZodType } from "zod";
 import { ModifiersListInputSchema, defaultModifiersList, ModifiersListInclude } from "./modifiersList";
 import { StatisticsInputShcema, defaultStatistics, StatisticsInclude } from "./statistics";
 
@@ -31,5 +31,5 @@ export const defaultConsumable: Consumable = {
   createdAt: new Date(),
   createdByUserId: "",
   statistics: defaultStatistics,
-  statisticsId: null,
+  statisticsId: "",
 };

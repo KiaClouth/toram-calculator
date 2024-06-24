@@ -1,8 +1,7 @@
-import { type UserCreate, type UserUpdate, type Prisma } from "@prisma/client";
 import { MonsterInclude, MonsterInputSchema } from "~/schema/monster";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "~/server/api/trpc";
 import { PrismaClient } from "@prisma/client";
-import { findOrCreateUserEntry } from "./untils";
+import { findOrCreateUserCreateData, findOrCreateUserUpateData } from "./untils";
 
 const prisma = new PrismaClient();
 
@@ -41,7 +40,7 @@ export const monsterRouter = createTRPCRouter({
 
   create: protectedProcedure.input(MonsterInputSchema.omit({ id: true })).mutation(async ({ ctx, input }) => {
     // 检查或创建 UserCreate
-    const userCreate = (await findOrCreateUserEntry<UserCreate>("userCreate", ctx.session?.user.id, ctx));
+    const userCreate = (await findOrCreateUserCreateData(ctx.session?.user.id, ctx));
     // 使用实务创建多层嵌套数据
     return await prisma.$transaction(async () => {
       // 拆分输入数据
@@ -78,7 +77,7 @@ export const monsterRouter = createTRPCRouter({
 
   update: protectedProcedure.input(MonsterInputSchema).mutation(async ({ ctx, input }) => {
     // 检查或创建 UserUpdate
-    const userUpdate = (await findOrCreateUserEntry("userUpdate", ctx.session?.user.id, ctx));
+    await findOrCreateUserUpateData(ctx.session?.user.id, ctx);
     // 使用实务更新多层嵌套数据
     return await prisma.$transaction(async () => {
       const monster = await ctx.db.monster.update({

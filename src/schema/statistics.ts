@@ -22,17 +22,4 @@ export const defaultStatistics: Statistics = {
   usageCount: 0,
   usageTimestamps: [],
   viewTimestamps: [],
-
-  monsterId: null,
-  crystalId: null,
-  mainWeaponId: null,
-  subWeaponId: null,
-  bodyArmorId: null,
-  additionalEquipmentId: null,
-  specialEquipmentId: null,
-  skillId: null,
-  petId: null,
-  consumableId: null,
-  characterId: null,
-  analyzerId: null
 };

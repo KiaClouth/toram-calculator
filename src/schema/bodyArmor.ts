@@ -38,5 +38,5 @@ export const defaultBodyArmor: BodyArmor = {
   createdAt: new Date(),
   createdByUserId: "",
   statistics: defaultStatistics,
-  statisticsId: null,
+  statisticsId: "",
 };

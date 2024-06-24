@@ -10,7 +10,7 @@ import { ZodFirstPartyTypeKind, type z } from "zod";
 import { type $Enums } from "@prisma/client";
 import { useStore } from "~/app/store";
 import { type Session } from "next-auth";
-import { Character, CharacterInputSchema, defaultCharacter } from "~/schema/characterSchema";
+import { type Character, CharacterInputSchema, defaultCharacter } from "~/schema/character";
 import { defaultStatistics } from "~/schema/statistics";
 
 export default function CharacterForm(props: {
@@ -208,7 +208,7 @@ export default function CharacterForm(props: {
                   >
                     {(field) => {
                       const defaultFieldsetClass = "flex basis-full flex-col gap-1 p-2";
-                      let fieldsetClass: string = defaultFieldsetClass;
+                      const fieldsetClass: string = defaultFieldsetClass;
                       switch (key as keyof Character) {
                         // case "rates":
                         // case "id":

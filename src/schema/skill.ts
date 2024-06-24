@@ -35,5 +35,5 @@ export const defaultSkill: Skill = {
     createdAt: new Date(),
     createdByUserId: "",
     statistics: defaultStatistics,
-    statisticsId: null,
+    statisticsId: "",
   };

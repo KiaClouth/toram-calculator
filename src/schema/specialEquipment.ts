@@ -35,5 +35,5 @@ export const defaultSpecialEquipment: SpecialEquipment = {
   createdAt: new Date(),
   createdByUserId: "",
   statistics: defaultStatistics,
-  statisticsId: null,
+  statisticsId: "",
 };

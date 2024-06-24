@@ -1,12 +1,13 @@
 import { PrismaClient, type Prisma } from "@prisma/client";
 import { randomUUID } from "crypto";
 import { z } from "zod";
-import { CharacterInclude, CharacterInputSchema } from "~/schema/characterSchema";
+import { CharacterInclude, CharacterInputSchema } from "~/schema/character";
 import { ComboInputSchema } from "~/schema/combo";
 import { ModifiersListInputSchema } from "~/schema/modifiersList";
 import { PetInputSchema } from "~/schema/pet";
 
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "~/server/api/trpc";
+import { findOrCreateUserCreateData, findOrCreateUserUpateData } from "./untils";
 
 const prisma = new PrismaClient();
 export const characterRouter = createTRPCRouter({
@@ -58,37 +59,8 @@ export const characterRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      // 检查用户权限
-      // if (ctx.session.user.role !== "ADMIN") {
-      //   console.log(
-      //     (ctx.session?.user.name ?? ctx.session?.user.email) +
-      //       "没有权限上传技能",
-      //   );
-      //   return;
-      // }
-
-      // 检查用户是否存在关联的 UserCreate
-      let userCreate = await ctx.db.userCreate.findUnique({
-        where: { userId: ctx.session?.user.id },
-      });
-
-      // 如果不存在，创建一个新的 UserCreate
-      if (!userCreate) {
-        console.log(
-          new Date().toLocaleDateString() +
-            "--" +
-            new Date().toLocaleTimeString() +
-            "--" +
-            (ctx.session?.user.name ?? ctx.session?.user.email) +
-            "初次上传技能，自动创建对应userCreate",
-        );
-        userCreate = await ctx.db.userCreate.create({
-          data: {
-            userId: ctx.session?.user.id ?? "",
-            // 其他 UserCreate 的属性，根据实际情况填写
-          },
-        });
-      }
+      // 检查或创建 UserCreate
+      const userCreate = (await findOrCreateUserCreateData(ctx.session?.user.id, ctx));
 
       // 输入内容拆分成4个表的数据
       const { combos: combosInputArray, statistics: statisticsInput, ...characterInput } = input;
@@ -159,28 +131,8 @@ export const characterRouter = createTRPCRouter({
     //   return;
     // }
 
-    // 检查用户是否存在关联的 userUpdate
-    let userUpdate = await ctx.db.userUpdate.findUnique({
-      where: { userId: ctx.session?.user.id },
-    });
-
-    // 如果不存在，创建一个新的 userUpdate
-    if (!userUpdate) {
-      console.log(
-        new Date().toLocaleDateString() +
-          "--" +
-          new Date().toLocaleTimeString() +
-          "--" +
-          (ctx.session?.user.name ?? ctx.session?.user.email) +
-          "初次更新技能，自动创建对应userUpdate",
-      );
-      userUpdate = await ctx.db.userUpdate.create({
-        data: {
-          userId: ctx.session?.user.id ?? "",
-          // 其他 userUpdate 的属性，根据实际情况填写
-        },
-      });
-    }
+    // 检查或创建 UserUpdate
+    await findOrCreateUserUpateData(ctx.session?.user.id, ctx);
 
     // 输入内容拆分成4个表的数据
     const { combos: combosInputArray, statistics: statisticsInput, ...characterInput } = input;
