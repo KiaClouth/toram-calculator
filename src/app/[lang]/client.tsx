@@ -346,7 +346,7 @@ export default function IndexPageClient(props: {
                   width: `100%`,
                 },
                 closed: {
-                  width: isPC ? `400px` : `100%`,
+                  width: isPC ? `426px` : `100%`,
                 },
               }}
             >
