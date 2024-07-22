@@ -9,11 +9,21 @@ const modifiersList: ConvertToAllString<ModifiersList> = {
 }
 const statistics: ConvertToAllString<Statistics> = {
   id: "ID",
-  viewCount: "ViewCount",
-  usageCount: "UsageCount",
   usageTimestamps: "UsageTimestamps",
   viewTimestamps: "ViewTimestamps",
   rates: "Rates",
+  monsterId: "",
+  crystalId: "",
+  mainWeaponId: "",
+  subWeaponId: "",
+  bodyArmorId: "",
+  additionalEquipmentId: "",
+  specialEquipmentId: "",
+  skillId: "",
+  petId: "",
+  consumableId: "",
+  characterId: "",
+  analyzerId: ""
 };
 
 const dictionary: dictionary = {

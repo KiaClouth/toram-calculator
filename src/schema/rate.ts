@@ -10,7 +10,7 @@ export const rateInclude = {
 
 export type Rate = Prisma.RateGetPayload<typeof rateInclude>;
 
-export const RateInputShcema = RateSchema.extend({
+export const RateInputSchema = RateSchema.extend({
     
 }) satisfies ZodType<Rate>;
 

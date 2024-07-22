@@ -1,7 +1,7 @@
 import { z, type ZodType } from "zod";
 import { type Prisma } from "@prisma/client";
 import { SkillSchema } from "prisma/generated/zod";
-import { StatisticsInputShcema, defaultStatistics, StatisticsInclude } from "./statistics";
+import { StatisticsInputSchema, defaultStatistics, StatisticsInclude } from "./statistics";
 import { SkillEffectInclude, SkillEffectInputSchema, defaultSkillEffect } from "./skillEffect";
 
 export const SkillInclude = {
@@ -15,7 +15,7 @@ export type Skill = Prisma.SkillGetPayload<typeof SkillInclude>;
 
 export const SkillInputSchema = SkillSchema.extend({
     skillEffect: z.array(SkillEffectInputSchema),
-    statistics: StatisticsInputShcema,
+    statistics: StatisticsInputSchema,
 }) satisfies ZodType<Skill>;
 
 export const defaultSkill: Skill = {

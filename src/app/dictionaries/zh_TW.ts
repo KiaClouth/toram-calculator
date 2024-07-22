@@ -10,10 +10,20 @@ const modifiersList: ConvertToAllString<ModifiersList> = {
 const statistics: ConvertToAllString<Statistics> = {
   id: "ID",
   rates: "评分",
-  viewCount: "被查看次数",
-  usageCount: "被使用次数",
   usageTimestamps: "被使用记录",
   viewTimestamps: "被查看记录",
+  monsterId: "",
+  crystalId: "",
+  mainWeaponId: "",
+  subWeaponId: "",
+  bodyArmorId: "",
+  additionalEquipmentId: "",
+  specialEquipmentId: "",
+  skillId: "",
+  petId: "",
+  consumableId: "",
+  characterId: "",
+  analyzerId: ""
 };
 
 const dictionary: dictionary = {

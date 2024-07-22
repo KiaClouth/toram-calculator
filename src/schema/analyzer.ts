@@ -1,6 +1,6 @@
 import { type Prisma } from "@prisma/client";
 import { AnalyzerSchema } from "prisma/generated/zod";
-import { StatisticsInputShcema, defaultStatistics, StatisticsInclude } from "./statistics";
+import { StatisticsInputSchema, defaultStatistics, StatisticsInclude } from "./statistics";
 import { z, type ZodType } from "zod";
 
 export const AnalyzerInclude = {
@@ -12,7 +12,7 @@ export const AnalyzerInclude = {
 export type Analyzer = Prisma.AnalyzerGetPayload<typeof AnalyzerInclude>;
 
 export const AnalyzerInputSchema = AnalyzerSchema.extend({
-  statistics: StatisticsInputShcema,
+  statistics: StatisticsInputSchema,
 }) satisfies ZodType<Analyzer>;
 
 export const defaultAnalyzer: Analyzer = {

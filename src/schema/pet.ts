@@ -1,7 +1,7 @@
 import { type Prisma } from "@prisma/client";
 import { PetSchema } from "prisma/generated/zod";
 import { z, type ZodType } from "zod";
-import { StatisticsInputShcema, defaultStatistics, StatisticsInclude } from "./statistics";
+import { StatisticsInputSchema, defaultStatistics, StatisticsInclude } from "./statistics";
 
 export const PetInclude = {
   include: {
@@ -12,7 +12,7 @@ export const PetInclude = {
 export type Pet = Prisma.PetGetPayload<typeof PetInclude>;
 
 export const PetInputSchema = PetSchema.extend({
-  statistics: StatisticsInputShcema,
+  statistics: StatisticsInputSchema,
 }) satisfies ZodType<Pet>;
 
 export const defaultPet: Pet = {

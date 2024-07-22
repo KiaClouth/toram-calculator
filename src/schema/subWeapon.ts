@@ -2,7 +2,7 @@ import { SubWeaponSchema } from "prisma/generated/zod";
 import { ModifiersListInputSchema, defaultModifiersList, ModifiersListInclude } from "./modifiersList";
 import { type Prisma } from "@prisma/client";
 import { z, type ZodType } from "zod";
-import { StatisticsInputShcema, defaultStatistics, StatisticsInclude } from "./statistics";
+import { StatisticsInputSchema, defaultStatistics, StatisticsInclude } from "./statistics";
 
 export const SubWeaponInclude = {
   include: {
@@ -15,7 +15,7 @@ export type SubWeapon = Prisma.SubWeaponGetPayload<typeof SubWeaponInclude>;
 
 export const SubWeaponInputSchema = SubWeaponSchema.extend({
   modifiersList: ModifiersListInputSchema,
-  statistics: StatisticsInputShcema,
+  statistics: StatisticsInputSchema,
 }) satisfies ZodType<SubWeapon>;
 
 export const defaultSubWeapon: SubWeapon = {

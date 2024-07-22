@@ -3,7 +3,7 @@ import { CrystalSchema } from "prisma/generated/zod";
 import { type ZodType } from "zod";
 import { ModifiersListInputSchema, defaultModifiersList, ModifiersListInclude } from "./modifiersList";
 import { type Prisma } from "@prisma/client";
-import { StatisticsInputShcema, defaultStatistics, StatisticsInclude } from "./statistics";
+import { StatisticsInputSchema, defaultStatistics, StatisticsInclude } from "./statistics";
 
 export const CrystalInclude = {
   include: {
@@ -16,7 +16,7 @@ export type Crystal = Prisma.CrystalGetPayload<typeof CrystalInclude>;
 
 export const CrystalInputSchema = CrystalSchema.extend({
   modifiersList: ModifiersListInputSchema,
-  statistics: StatisticsInputShcema,
+  statistics: StatisticsInputSchema,
 }) satisfies ZodType<Crystal>;
 
 export const defaultCrystal: Crystal = {

@@ -3,7 +3,7 @@ import { z, type ZodType } from "zod";
 import { CrystalInclude, CrystalInputSchema, defaultCrystal } from "./crystal";
 import { ModifiersListInputSchema, defaultModifiersList, ModifiersListInclude } from "./modifiersList";
 import { type Prisma } from "@prisma/client";
-import { StatisticsInputShcema, defaultStatistics, StatisticsInclude } from "./statistics";
+import { StatisticsInputSchema, defaultStatistics, StatisticsInclude } from "./statistics";
 
 export const AdditionalEquipmentInclude = {
   include: {
@@ -18,7 +18,7 @@ export type AdditionalEquipment = Prisma.AdditionalEquipmentGetPayload<typeof Ad
 export const AdditionalEquipmentInputSchema = AdditionalEquipmentSchema.extend({
   modifiersList: ModifiersListInputSchema,
   crystal: z.array(CrystalInputSchema),
-  statistics: StatisticsInputShcema,
+  statistics: StatisticsInputSchema,
 }) satisfies ZodType<AdditionalEquipment>;
 
 export const defaultAdditionalEquipment: AdditionalEquipment = {

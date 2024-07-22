@@ -2,7 +2,7 @@ import { type Prisma } from "@prisma/client";
 import { ConsumableSchema } from "prisma/generated/zod";
 import { type ZodType } from "zod";
 import { ModifiersListInputSchema, defaultModifiersList, ModifiersListInclude } from "./modifiersList";
-import { StatisticsInputShcema, defaultStatistics, StatisticsInclude } from "./statistics";
+import { StatisticsInputSchema, defaultStatistics, StatisticsInclude } from "./statistics";
 
 export const ConsumableInclude = {
   include: {
@@ -15,7 +15,7 @@ export type Consumable = Prisma.ConsumableGetPayload<typeof ConsumableInclude>;
 
 export const ConsumableInputSchema = ConsumableSchema.extend({
   modifiersList: ModifiersListInputSchema,
-  statistics: StatisticsInputShcema,
+  statistics: StatisticsInputSchema,
 }) satisfies ZodType<Consumable>;
 
 export const defaultConsumable: Consumable = {

@@ -3,7 +3,7 @@ import { ModifiersListInputSchema, defaultModifiersList, ModifiersListInclude } 
 import { CrystalInclude, CrystalInputSchema, defaultCrystal } from "./crystal";
 import { type ZodType, z } from "zod";
 import { type Prisma } from "@prisma/client";
-import { StatisticsInputShcema, defaultStatistics, StatisticsInclude } from "./statistics";
+import { StatisticsInputSchema, defaultStatistics, StatisticsInclude } from "./statistics";
 
 export const BodyArmorInclude = {
   include: {
@@ -18,7 +18,7 @@ export type BodyArmor = Prisma.BodyArmorGetPayload<typeof BodyArmorInclude>;
 export const BodyArmorInputSchema = BodyArmorSchema.extend({
   modifiersList: ModifiersListInputSchema,
   crystal: z.array(CrystalInputSchema),
-  statistics: StatisticsInputShcema,
+  statistics: StatisticsInputSchema,
 }) satisfies ZodType<BodyArmor>;
 
 export const defaultBodyArmor: BodyArmor = {

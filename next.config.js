@@ -9,7 +9,7 @@ const withSerwist = withSerwistInit({
   swSrc: "src/app/sw.ts",
   swDest: "public/sw.js",
   reloadOnOnline: true,
-  // disable: true,
+  disable: true,
 });
 
 export default withSerwist({

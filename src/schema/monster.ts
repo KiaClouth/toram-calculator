@@ -1,7 +1,7 @@
 import { type ZodType } from "zod";
 import { type Prisma } from "@prisma/client";
 import { MonsterSchema } from "prisma/generated/zod";
-import { StatisticsInputShcema, defaultStatistics, StatisticsInclude } from "./statistics";
+import { StatisticsInputSchema, defaultStatistics, StatisticsInclude } from "./statistics";
 
 export const MonsterInclude = {
     include: {
@@ -12,7 +12,7 @@ export const MonsterInclude = {
 export type Monster = Prisma.MonsterGetPayload<typeof MonsterInclude>;
 
 export const MonsterInputSchema = MonsterSchema.extend({
-    statistics: StatisticsInputShcema,
+    statistics: StatisticsInputSchema,
 }) satisfies ZodType<Monster>;
 
 export const defaultMonster: Monster = {

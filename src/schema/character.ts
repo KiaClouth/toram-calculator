@@ -11,7 +11,7 @@ import { PetInclude, PetInputSchema, defaultPet } from "./pet";
 import { SpecialEquipmentInclude, SpecialEquipmentInputSchema, defaultSpecialEquipment } from "./specialEquipment";
 import { SubWeaponInclude, SubWeaponInputSchema, defaultSubWeapon } from "./subWeapon";
 import { SkillInclude, SkillInputSchema, defaultSkill } from "./skill";
-import { StatisticsInputShcema, defaultStatistics, StatisticsInclude } from "./statistics";
+import { StatisticsInputSchema, defaultStatistics, StatisticsInclude } from "./statistics";
 
 export const CharacterInclude = {
   include: {
@@ -46,7 +46,7 @@ export const CharacterInputSchema = CharacterSchema.extend({
   consumableList: z.array(ConsumableInputSchema),
   combos: z.array(ComboInputSchema),
   modifiersList: ModifiersListInputSchema,
-  statistics: StatisticsInputShcema,
+  statistics: StatisticsInputSchema,
 }) satisfies ZodType<Character>;
 
 export const defaultCharacter: Character = {
