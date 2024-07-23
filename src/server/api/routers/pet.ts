@@ -1,7 +1,7 @@
-import type { Prisma } from "@prisma/client";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 import { PetSchema } from "prisma/generated/zod";
 import { findOrCreateUserCreateData, findOrCreateUserUpateData } from "./untils";
+import { PetInclude } from "~/schema/pet";
 
 export const petRouter = createTRPCRouter({
   getPrivate: protectedProcedure.query(({ ctx }) => {
@@ -17,8 +17,7 @@ export const petRouter = createTRPCRouter({
       where: {
         createdByUserId: ctx.session?.user.id,
       },
-      include: {
-      },
+      include: PetInclude.include,
     });
   }),
 
@@ -33,13 +32,11 @@ export const petRouter = createTRPCRouter({
     );
     if (ctx.session?.user.id) {
       return ctx.db.pet.findMany({
-        include: {
-        },
+        include: PetInclude.include,
       });
     }
     return ctx.db.pet.findMany({
-      include: {
-      },
+      include: PetInclude.include,
     });
   }),
 
@@ -61,8 +58,7 @@ export const petRouter = createTRPCRouter({
         createdByUserId: userCreate.userId,
         updatedByUserId: userCreate.userId,
       },
-      include: {
-      },
+      include: PetInclude.include,
     });
   }),
 
@@ -81,8 +77,7 @@ export const petRouter = createTRPCRouter({
     return ctx.db.pet.update({
       where: { id: input.id },
       data: { ...input },
-      include: {
-      },
+      include: PetInclude.include,
     });
   }),
 });

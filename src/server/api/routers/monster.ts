@@ -2,6 +2,7 @@ import { MonsterInclude, MonsterInputSchema } from "~/schema/monster";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "~/server/api/trpc";
 import { PrismaClient } from "@prisma/client";
 import { findOrCreateUserCreateData, findOrCreateUserUpateData } from "./untils";
+import { StatisticsInclude } from "~/schema/statistics";
 
 const prisma = new PrismaClient();
 
@@ -53,17 +54,21 @@ export const monsterRouter = createTRPCRouter({
         include: {},
       });
 
-      const { rates, ...OtherStatistics } = statisticsInput;
+      const { rates, usageTimestamps, viewTimestamps, ...OtherStatistics } = statisticsInput;
       const statistics = await ctx.db.statistics.create({
         data: {
           ...OtherStatistics,
+          usageTimestamps: {
+            create: usageTimestamps,
+          },
+          viewTimestamps: {
+            create: viewTimestamps,
+          },
           rates: {
             create: rates,
           },
         },
-        include: {
-          rates: true,
-        },
+        include: StatisticsInclude.include,
       });
 
       return {
@@ -84,7 +89,7 @@ export const monsterRouter = createTRPCRouter({
         where: { id: input.id },
         data: {
           ...input,
-          statistics: undefined
+          statistics: undefined,
         },
         include: MonsterInclude.include,
       });

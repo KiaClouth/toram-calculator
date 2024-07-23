@@ -1,4 +1,4 @@
-import { type UserCreate, type Prisma, type PrismaClient } from "@prisma/client";
+import { type UserCreateData, type Prisma, type PrismaClient } from "@prisma/client";
 import { type DefaultArgs } from "@prisma/client/runtime/library";
 import { type Session } from "next-auth";
 
@@ -9,9 +9,9 @@ export async function findOrCreateUserCreateData(
     headers: Headers;
     db: PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>;
   },
-): Promise<UserCreate> {
+): Promise<UserCreateData> {
   // 尝试查找用户关联的记录
-  let userEntry = await ctx.db.userCreate.findUnique({
+  let userEntry = await ctx.db.userCreateData.findUnique({
     where: { userId: userId },
   });
 
@@ -20,7 +20,7 @@ export async function findOrCreateUserCreateData(
     console.log(
       `${new Date().toLocaleDateString()}--${new Date().toLocaleTimeString()}--${ctx.session?.user.name ?? ctx.session?.user.email} 初次上传内容，自动创建对应UserCreate`,
     );
-    userEntry = await ctx.db.userCreate.create({
+    userEntry = await ctx.db.userCreateData.create({
       data: {
         userId: userId,
         // 其他属性，根据实际情况填写
@@ -38,9 +38,9 @@ export async function findOrCreateUserUpateData(
     headers: Headers;
     db: PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>;
   },
-): Promise<UserCreate> {
+): Promise<UserCreateData> {
   // 尝试查找用户关联的记录
-  let userEntry = await ctx.db.userCreate.findUnique({
+  let userEntry = await ctx.db.userCreateData.findUnique({
     where: { userId: userId },
   });
 
@@ -49,7 +49,7 @@ export async function findOrCreateUserUpateData(
     console.log(
       `${new Date().toLocaleDateString()}--${new Date().toLocaleTimeString()}--${ctx.session?.user.name ?? ctx.session?.user.email} 初次上传内容，自动创建对应UserUpdate`,
     );
-    userEntry = await ctx.db.userCreate.create({
+    userEntry = await ctx.db.userCreateData.create({
       data: {
         userId: userId,
         // 其他属性，根据实际情况填写

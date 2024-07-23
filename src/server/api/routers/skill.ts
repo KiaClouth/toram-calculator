@@ -3,7 +3,8 @@ import { SkillInclude, SkillInputSchema } from "~/schema/skill";
 
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "~/server/api/trpc";
 import { findOrCreateUserCreateData, findOrCreateUserUpateData } from "./untils";
-import { defaultStatistics } from "~/schema/statistics";
+import { StatisticsInclude } from "~/schema/statistics";
+import { SkillEffectInclude } from "~/schema/skillEffect";
 
 const prisma = new PrismaClient();
 
@@ -49,7 +50,7 @@ export const skillRouter = createTRPCRouter({
 
   create: protectedProcedure.input(SkillInputSchema).mutation(async ({ ctx, input }) => {
     // 检查或创建 UserCreate
-    const userCreate = (await findOrCreateUserCreateData(ctx.session?.user.id, ctx));
+    const userCreate = await findOrCreateUserCreateData(ctx.session?.user.id, ctx);
     // 使用实务创建多层嵌套数据
     return await prisma.$transaction(async () => {
       // 拆分输入数据
@@ -79,24 +80,25 @@ export const skillRouter = createTRPCRouter({
               },
             },
           },
-          include: {
-            skillCost: true,
-            skillYield: true,
-          },
+          include: SkillEffectInclude.include,
         });
       });
 
-      const { rates, ...OtherStatistics } = statisticsInput?.rates ? statisticsInput : defaultStatistics;
+      const { rates, usageTimestamps, viewTimestamps, ...OtherStatistics } = statisticsInput;
       const statistics = await ctx.db.statistics.create({
         data: {
           ...OtherStatistics,
+          usageTimestamps: {
+            create: usageTimestamps,
+          },
+          viewTimestamps: {
+            create: viewTimestamps,
+          },
           rates: {
             create: rates,
           },
         },
-        include: {
-          rates: true,
-        },
+        include: StatisticsInclude.include,
       });
 
       return {
@@ -113,62 +115,59 @@ export const skillRouter = createTRPCRouter({
     // 使用实务创建多层嵌套数据
     return await prisma.$transaction(async () => {
       // 拆分输入数据
-    const { statistics: statisticsInput, skillEffect: skillEffectInputArray, ...OtherSkillInput } = input;
+      const { statistics: statisticsInput, skillEffect: skillEffectInputArray, ...OtherSkillInput } = input;
 
-    return prisma.$transaction(async () => {
-      const skill = await ctx.db.skill.update({
-        where: { id: input.id },
-        data: {
-          ...OtherSkillInput,
-        },
-      });
-
-      const skillEffect = skillEffectInputArray.map(async (effect) => {
-        const { skillCost: skillCostInputArray, skillYield: skillYieldInputArray, ...skillEffectInput } = effect;
-        const skillEffect = await ctx.db.skillEffect.update({
-          where: { id: skillEffectInput.id },
+      return prisma.$transaction(async () => {
+        const skill = await ctx.db.skill.update({
+          where: { id: input.id },
           data: {
-            ...skillEffectInput,
-          },
-          include: {
-            skillCost: true,
-            skillYield: true,
+            ...OtherSkillInput,
           },
         });
-        const skillCost = skillCostInputArray.map(async (skillCostInput) => {
-          return await ctx.db.skillCost.update({
-            where: { id: skillCostInput.id },
-            data: {
-              ...skillCostInput,
-            },
-          });
-        });
-        const skillYield = skillYieldInputArray.map(async (skillYieldInput) => {
-          return await ctx.db.skillYield.update({
-            where: { id: skillYieldInput.id },
-            data: {
-              ...skillYieldInput,
-            },
-          });
-        });
-        return { ...skillEffect, skillCost: await Promise.all(skillCost), skillYield: await Promise.all(skillYield) };
-      });
 
-      const { rates, ...OtherStatistics } = statisticsInput?.rates ? statisticsInput : defaultStatistics;
-      const statistics = await ctx.db.statistics.update({
-        where: { id: statisticsInput?.id },
-        data: { ...OtherStatistics },
-        include: {
-          rates: true,
-        },
-      });
+        const skillEffect = skillEffectInputArray.map(async (effect) => {
+          const { skillCost: skillCostInputArray, skillYield: skillYieldInputArray, ...skillEffectInput } = effect;
+          const skillEffect = await ctx.db.skillEffect.update({
+            where: { id: skillEffectInput.id },
+            data: {
+              ...skillEffectInput,
+            },
+            include: SkillEffectInclude.include,
+          });
+          const skillCost = skillCostInputArray.map(async (skillCostInput) => {
+            return await ctx.db.skillCost.update({
+              where: { id: skillCostInput.id },
+              data: {
+                ...skillCostInput,
+              },
+            });
+          });
+          const skillYield = skillYieldInputArray.map(async (skillYieldInput) => {
+            return await ctx.db.skillYield.update({
+              where: { id: skillYieldInput.id },
+              data: {
+                ...skillYieldInput,
+              },
+            });
+          });
+          return { ...skillEffect, skillCost: await Promise.all(skillCost), skillYield: await Promise.all(skillYield) };
+        });
 
-      return {
-        ...skill,
-        skillEffect: await Promise.all(skillEffect),
-        statistics: statistics,
-      };
+        const { rates, usageTimestamps, viewTimestamps, ...OtherStatistics } = statisticsInput;
+        const statistics = await ctx.db.statistics.update({
+          where: { id: statisticsInput?.id },
+          data: {
+            ...OtherStatistics,
+          },
+          include: StatisticsInclude.include,
+        });
+
+        return {
+          ...skill,
+          skillEffect: await Promise.all(skillEffect),
+          statistics: statistics,
+        };
+      });
     });
-    })
   }),
 });

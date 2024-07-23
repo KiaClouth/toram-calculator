@@ -1,8 +1,9 @@
-import { PrismaClient, type Prisma } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 import { randomUUID } from "crypto";
 import { CrystalInclude, CrystalInputSchema } from "~/schema/crystal";
 import { findOrCreateUserCreateData, findOrCreateUserUpateData } from "./untils";
+import { StatisticsInclude } from "~/schema/statistics";
 
 const prisma = new PrismaClient();
 
@@ -66,16 +67,21 @@ export const crystalRouter = createTRPCRouter({
         });
       });
 
+      const { rates, usageTimestamps, viewTimestamps, ...OtherStatistics } = statisticsInput
       const statistics = await ctx.db.statistics.create({
         data: {
-          ...statisticsInput,
+          ...OtherStatistics,
           rates: {
-            create: statisticsInput?.rates,
+            create: rates,
           },
+          usageTimestamps: {
+            create: usageTimestamps,
+          },
+          viewTimestamps: {
+            create: viewTimestamps,
+          }
         },
-        include: {
-          rates: true,
-        },
+        include: StatisticsInclude.include,
       });
 
       return {
@@ -133,17 +139,22 @@ export const crystalRouter = createTRPCRouter({
         });
       });
 
+      const { rates, usageTimestamps, viewTimestamps, ...OtherStatistics } = statisticsInput
       const statistics = statisticsInput && await ctx.db.statistics.update({
         where: { id: statisticsInput.id },
         data: {
-          ...statisticsInput,
+          ...OtherStatistics,
           rates: {
-            create: statisticsInput?.rates,
+            create: rates,
           },
+          usageTimestamps: {
+            create: usageTimestamps,
+          },
+          viewTimestamps: {
+            create: viewTimestamps,
+          }
         },
-        include: {
-          rates: true,
-        },
+        include: StatisticsInclude.include,
       });
 
       console.log(

@@ -79,9 +79,9 @@ export default function MonsterForm(props: {
   }) {
     return (
       <React.Fragment>
-        {field.state.meta.touchedErrors ? (
+        {field.state.meta.errors ? (
           <span className=" text-brand-color-2nd">
-            {` `} : {field.state.meta.touchedErrors}
+            {` `} : {field.state.meta.errors}
           </span>
         ) : null}
         {/* {field.state.meta.isValidating ? "正在检查..." : null} */}
@@ -406,9 +406,9 @@ export default function MonsterForm(props: {
                         <fieldset key={key} className={fieldsetClass}>
                           <label htmlFor={field.name} className="flex w-full flex-col gap-1">
                             <span>
-                            {typeof dictionary.db.models.monster[key as keyof Monster] === "string"
-                              ? (dictionary.db.models.monster[key as keyof Monster] as string)
-                              : key}
+                              {typeof dictionary.db.models.monster[key as keyof Monster] === "string"
+                                ? (dictionary.db.models.monster[key as keyof Monster] as string)
+                                : key}
                               <FieldInfo field={field} />
                             </span>
                             {inputBox}
@@ -418,6 +418,10 @@ export default function MonsterForm(props: {
                     }}
                   </form.Field>
                 );
+              }
+              case ZodFirstPartyTypeKind.ZodArray:
+              case ZodFirstPartyTypeKind.ZodObject: {
+                return key;
               }
 
               default: {
@@ -538,9 +542,9 @@ export default function MonsterForm(props: {
                         <fieldset key={key} className={fieldsetClass}>
                           <label htmlFor={field.name} className="flex w-full flex-col gap-1">
                             <span>
-                            {typeof dictionary.db.models.monster[key as keyof Monster] === "string"
-                              ? (dictionary.db.models.monster[key as keyof Monster] as string)
-                              : key}
+                              {typeof dictionary.db.models.monster[key as keyof Monster] === "string"
+                                ? (dictionary.db.models.monster[key as keyof Monster] as string)
+                                : key}
                               <FieldInfo field={field} />
                             </span>
                             {inputBox}

@@ -18,5 +18,5 @@ export const defaultRate: Rate = {
   id: "",
   rate: 0,
   userId: "",
-  statisticsId: null
+  statisticsId: ""
 };

@@ -2,11 +2,11 @@ import { type ZodType } from "zod";
 import { type Prisma } from "@prisma/client";
 import { ViewTimestampSchema } from "prisma/generated/zod";
 
-export const viewTimestampInclude = {
+export const ViewTimestampInclude = {
   include: {},
 };
 
-export type ViewTimestamp = Prisma.ViewTimestampGetPayload<typeof viewTimestampInclude>;
+export type ViewTimestamp = Prisma.ViewTimestampGetPayload<typeof ViewTimestampInclude>;
 
 export const ViewTimestampInputSchema = ViewTimestampSchema.extend({
 
@@ -14,5 +14,5 @@ export const ViewTimestampInputSchema = ViewTimestampSchema.extend({
 
 export const defaultViewTimestamp: ViewTimestamp = {
   timestamp: new Date(),
-  statisticsId: null,
+  statisticsId: "",
 };

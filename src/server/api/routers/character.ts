@@ -1,8 +1,8 @@
-import { PrismaClient, type Prisma } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import { randomUUID } from "crypto";
 import { z } from "zod";
 import { CharacterInclude, CharacterInputSchema } from "~/schema/character";
-import { ComboInputSchema } from "~/schema/combo";
+import { ComboInclude, ComboInputSchema } from "~/schema/combo";
 import { ModifiersListInputSchema } from "~/schema/modifiersList";
 import { PetInputSchema } from "~/schema/pet";
 
@@ -98,9 +98,7 @@ export const characterRouter = createTRPCRouter({
                 },
               },
             },
-            include: {
-              comboStep: true,
-            },
+            include: ComboInclude.include,
           });
         });
 
@@ -165,9 +163,7 @@ export const characterRouter = createTRPCRouter({
           data: {
             ...comboInput,
           },
-          include: {
-            comboStep: true,
-          },
+          include: ComboInclude.include,
         });
         const comboStep = comboStepInputArray.map(async (comboStepInput) => {
           return await ctx.db.comboStep.update({
