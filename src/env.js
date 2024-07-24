@@ -39,6 +39,8 @@ export const env = createEnv({
     EMAIL_SERVER_HOST: z.string(),
     EMAIL_SERVER_PORT: z.string(),
     EMAIL_FROM: z.string(),
+    BAIDU_HTML_LABEL: z.string(),
+    UMAMI_ID: z.string(),
   },
 
   /**
@@ -70,6 +72,8 @@ export const env = createEnv({
     EMAIL_SERVER_HOST: process.env.EMAIL_SERVER_HOST,
     EMAIL_SERVER_PORT: process.env.EMAIL_SERVER_PORT,
     EMAIL_FROM: process.env.EMAIL_FROM,
+    BAIDU_HTML_LABEL: process.env.BAIDU_HTML_LABEL,
+    UMAMI_ID: process.env.UMAMI_ID,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

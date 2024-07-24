@@ -307,7 +307,7 @@ const dictionary: dictionary = {
         magicalResistance: "魔法抗性",
         criticalResistance: "暴击抗性",
         avoidance: "回避值",
-        dodge: "闪避率",
+        dodge: "闪躲率",
         block: "格挡率",
         normalAttackResistanceModifier: "一般惯性变动率",
         physicalAttackResistanceModifier: "物理惯性变动率",

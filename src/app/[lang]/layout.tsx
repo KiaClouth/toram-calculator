@@ -56,7 +56,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(env.NEXTAUTH_URL),
   other: {
     // 百度HTML标签验证字段
-    "baidu-site-verification": "codeva-RFvyQ61tbi",
+    "baidu-site-verification": env.BAIDU_HTML_LABEL,
   },
 };
 
@@ -84,10 +84,9 @@ export default async function RootLayout({
           id="umami"
           defer
           src="https://cloud.umami.is/script.js"
-          data-website-id="6ab25552-3669-47d1-87ad-41cd21e225fb"
+          data-website-id={env.UMAMI_ID}
         ></Script>
       </body>
-      {/* <GoogleAnalytics gaId="G-2QS470LRB3" /> */}
     </html>
   );
 }
