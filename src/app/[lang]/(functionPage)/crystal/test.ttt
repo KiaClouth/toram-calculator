@@ -170,7 +170,7 @@ export const FormFragment = <T extends Record<string, unknown>>(props: Props<T>)
                               dictionaryFragment={dictionaryFragment}
                               hiddenDataList={hiddenDataList}
                               formFragmentState={formFragmentState}
-                              schema={(schema.shape.[key as keyof T]).element}
+                              schema={(schema.shape[key as keyof T]).element}
                             />
                           );
                         })}
@@ -192,7 +192,7 @@ export const FormFragment = <T extends Record<string, unknown>>(props: Props<T>)
                         value={field.state.value as number}
                         type="date"
                         onBlur={field.handleBlur}
-                        onChange={(e) => field.handleChange(new Date(e.target.value as string))}
+                        onChange={(e) => field.handleChange(new Date(e.target.value))}
                         className={`mt-1 w-full flex-1 rounded px-4 py-2 ${formFragmentState ? " pointer-events-none bg-transparent outline-transition-color-20" : " pointer-events-auto bg-transition-color-8"}`}
                       />
                     );

@@ -38,3 +38,5 @@ export const defaultAdditionalEquipment: AdditionalEquipment = {
   statistics: defaultStatistics,
   statisticsId: "",
 };
+
+export const AdditionalEquipmentInputHiddenFields = ["id", "createdByUserId", "updatedByUserId", "modifiersListId", "statisticsId"]
