@@ -177,7 +177,7 @@ export default function CharacterForm(props: {
       <div className="inputArea flex-1 overflow-y-auto">
         {characterFormState !== "DISPLAY" && (
           <div className="mb-4 rounded-sm bg-transition-color-8 p-4">
-            {typeof dictionary.ui.character.discription}
+            {typeof dictionary.ui.character.description}
           </div>
         )}
         <fieldset className="dataKinds flex flex-row flex-wrap gap-y-[4px]">

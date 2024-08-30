@@ -171,7 +171,7 @@ export default function CrystalForm(props: {
       </div>
       <div className="inputArea flex-1 overflow-y-auto">
         {crystalFormState !== "DISPLAY" && (
-          <div className="mb-4 rounded-sm bg-transition-color-8 p-4">{typeof dictionary.ui.crystal.discription}</div>
+          <div className="mb-4 rounded-sm bg-transition-color-8 p-4">{typeof dictionary.ui.crystal.description}</div>
         )}
         <fieldset className="dataKinds flex flex-row flex-wrap gap-y-[4px]">
           {/* <FormFragment

@@ -64,7 +64,7 @@ const dictionary: dictionary = {
     },
     monster: {
       pageTitle: "Monster",
-      discription: "Emmm..............",
+      description: "Emmm..............",
       augmented: "Show All Stars",
       canNotModify: "System Generated",
       monsterDegreeOfDifficulty: {
@@ -75,25 +75,25 @@ const dictionary: dictionary = {
         4: "★★★★",
       },
       monsterForm: {
-        discription:
+        description:
           "When uploading fixed-point boss data, please use one-star data, and the system will automatically calculate the data for other star levels according to the rules.",
       },
     },
     crystal: {
       pageTitle: "Crystal",
-      discription: "Emmm..............",
+      description: "Emmm..............",
       canNotModify: "System Generated",
       crystalForm: {
-        discription: "Emmm..............",
+        description: "Emmm..............",
       }
     },
     skill: {
       pageTitle: "Skill",
-      discription: "Emmm..............",
+      description: "Emmm..............",
     },
     analyze: {
       pageTitle: "Analyzer",
-      discription: "Emmm..............",
+      description: "Emmm..............",
       modifiers: "Modifiers",
       dialogData: {
         lv: "Lv",
@@ -183,7 +183,7 @@ const dictionary: dictionary = {
     },
     character: {
       pageTitle: "Skill",
-      discription: "Emmm..............",
+      description: "Emmm..............",
     },
   },
   db: {

@@ -210,7 +210,7 @@ export default function MonsterForm(props: {
       <div className="inputArea flex-1 overflow-y-auto">
         {monsterFormState !== "DISPLAY" && (
           <div className="mb-4 rounded-sm bg-transition-color-8 p-4">
-            {dictionary.ui.monster.monsterForm.discription}
+            {dictionary.ui.monster.monsterForm.description}
           </div>
         )}
         <fieldset className="dataKinds flex flex-row flex-wrap gap-y-[4px]">

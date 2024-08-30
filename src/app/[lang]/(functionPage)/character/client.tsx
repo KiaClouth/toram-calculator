@@ -358,7 +358,7 @@ export default function MonserPageClient(props: Props) {
               </div>
             </div>
             <div className="Discription my-3 hidden rounded-sm bg-transition-color-8 p-3 lg:block">
-              {dictionary.ui.character.discription}
+              {dictionary.ui.character.description}
             </div>
           </div>
           <table className="Table bg-transition-color-8 px-2 lg:bg-transparent">

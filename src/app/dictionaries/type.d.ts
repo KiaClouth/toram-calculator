@@ -57,7 +57,7 @@ interface dictionary {
     };
     monster: {
       pageTitle: string;
-      discription: string;
+      description: string;
       augmented: string;
       canNotModify: string;
       monsterDegreeOfDifficulty: {
@@ -68,24 +68,24 @@ interface dictionary {
         4: string;
       };
       monsterForm: {
-        discription: string;
+        description: string;
       };
     };
     crystal: {
       pageTitle: string;
-      discription: string;
+      description: string;
       canNotModify: string;
       crystalForm: {
-        discription: string;
+        description: string;
       };
     };
     skill: {
       pageTitle: string;
-      discription: string;
+      description: string;
     };
     analyze: {
       pageTitle: string;
-      discription: string;
+      description: string;
       actualValue: string;
       baseValue: string;
       modifiers: string;
@@ -95,7 +95,7 @@ interface dictionary {
     };
     character: {
       pageTitle: string;
-      discription: string;
+      description: string;
     };
   };
   db: {

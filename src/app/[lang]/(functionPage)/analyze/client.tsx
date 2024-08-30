@@ -1190,7 +1190,7 @@ export default function AnalyzePageClient(props: Props) {
               </div>
             </div>
             <div className="Discription my-3 hidden rounded-sm bg-transition-color-8 p-3 lg:block">
-              {dictionary.ui.analyze.discription}
+              {dictionary.ui.analyze.description}
             </div>
             <div></div>
           </div>
